@@ -1,14 +1,14 @@
-# INFO
+## INFO
 
 Dette repository inneholder Norsk Helsearkiv sin registreringsløsning for pasientjournaler.
 
-# GIT
+## GIT
 
-## Hente prosjektet
+#### Hente prosjektet
 
     git clone https://github.com/arkivverket/NHAREG.git
 
-## Oppdatere endringer
+#### Oppdatere endringer
 	
     git remote add origin https://github.com/arkivverket/NHAREG.git
     git push -u origin master
