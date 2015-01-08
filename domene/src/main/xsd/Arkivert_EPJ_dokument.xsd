@@ -1,0 +1,1639 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://http://eisi.helsedir.no/anno2014/nha-1.61-RGM/dokument" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://http://eisi.helsedir.no/anno2014/nha-1.61-RGM/dokument">
+	<xs:element name="pasientidentifikator">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Ident"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Ident" type="Ident"/>
+	<xs:complexType name="Ident">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type Ident. Dette er en identifikator hvor det identifikatorsett som identifikatoren tilhører, angis med en kode (datatype CV). Gjennom denne koden skal også utsteder av identifikatoren kunne identifisert.
+				Se for øvrig ??? for nærmere beskrivelse av datatypene Ident og ID.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Selve elementverdien.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="type_identifikator" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_ident_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type Ident. Dette er en identifikator hvor det identifikatorsett som identifikatoren tilhører, angis med en kode (datatype CV). Gjennom denne koden skal også utsteder av identifikatoren kunne identifisert.
+				Se for øvrig ??? for nærmere beskrivelse av datatypene Ident og ID.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Ident" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_dataelement" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Dette er en abstrakt klasse som kun benyttes for å gi alle forskjellige typer dataelement en del felles attributter og andre egenskaper.
+				Merk 1: Et dataelement kan ikke endres etter at det (dvs. det dokumentet det inngår i) er godkjent. Dersom endring likevel må foretas, må den aktuelle instansen av dataelementet markeres som slettet (i attributtet "ferdigstillingsstatus") før en ny korrigert instans av dataelement registreres.
+				Merk 2: For alle typer dataelement er det tillatt å ha dataelement uten angitt verdi, f.eks. en tom tekststreng eller et tidspunkt som ikke er angitt. Så framt dette er angitt for den fragmenttypen hvor dataelementet inngår, skal det da kunne angis en årsak til  at verdien mangler
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_komponent"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_komponent" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Dette er en abstrakt klasse som kun benyttes for å samle de egenskaper som er felles for alle komponenttyper som representere en opprinnelig registrering i journalen. (Dette i motsetning til Gjenbrukt komponent som representerer gjenbruk av opplysninger (i form av en komponent) et annet sted i journalen enn der opplysningene opprinnelig ble registrert.)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="komponent_ID" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Unik identifikasjon av komponenten.
+						Følgende regler gjelder:
+						1. Den datatypen som er benyttet, ID, utgjør identifikatordelen av et element av datatypen "Ident". Den koden (datatype CV) som utgjør første ledd av denne "Ident" skal være angitt i attributtet "type komponent ID" i den "Toppnodemappe" som komponentinstansen inngår i.
+						2. En komponent som befinner seg i et "system" skal ha en ID som er utstedt av dette "systemet".
+						3. En  komponent som inngår i en elektronisk melding skal ha samme ID som i avsenderens "system".
+						4. En komponent som overføres fra et "system" til et annet skal gis en ny ID når den registreres i det nye systemet. Dersom det er behov for en entydig referanse tilbake til avsenderen (noe det ofte vil være på dokumentnivå), skal ID fra avsenderens "system" knyttes til komponenten som "Ekstern referanse".
+						Merk: Med "system" menes her ikke nødvendigvis ett konkret IT-system. Det kan like gjerne være et sett av "samarbeidende IT-systemer" som utsteder en ID som kan benyttes på tvers av disse systemene.
+						Se for øvrig ??? for nærmere beskrivelse av datatypene Ident og ID.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="komponenttype" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Unik identifikasjon (i form av en OID) av den type komponent registreringen gjelder. Gjennom denne identifikatoren skal det kunne identifiseres en entydig, formalisert beskrivelse av de regler som gjelder for innholdet av komponenter av den aktuelle type.
+						Merk: Det anvendes forskjellige serier av identifikatorer for de forskjellige hovedtyper av komponenter:
+						" Mappe (EPJ sak)
+						" Dokument (EPJ Dokument)
+						" Fragment (EPJ fragment)
+						" Dataelement
+						Til hver av disse hovedtypene av komponenter er det også knyttet et kodeverk slik at en bestemt komponenttype også kan assosieres med en kode (datatype). For å dokumentere de enkelte komponenttypene, inkludert knytningen mellom ID og kode, er det spesifisert et sett av dertil egnede dokumenttyper:
+						" Beskrivelse mappetype
+						" Beskrivelse EPJ sakstype
+						" Beskrivelse dokumenttype
+						" Beskrivelse EPJ Dokumenttype
+						" Beskrivelse fragmenttype
+						" Beskrivelse EPJ fragmenttype
+						" Beskrivelse dataelementtype
+						Se kapittel 7.2.
+						I tillegg til de identifikatorer som benyttes for nasjonale innholdsstandarder for EPJ (utgitt av KITH), kan det finnes identifikatorer for komponenttyper utgitt av andre aktører.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sortering" type="xs:integer" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Benyttes dersom det er behov for å angi standard sorteringsrekkefølge for komponenter som har samme "far", f.eks. rekkefølgen på EPJ dokumenter i en EPJ sak.
+						Merk: Sorteringsrekkefølgen benyttes ved standard visning på skjerm og ved utskrift. Dette skal ikke være til hinder for at det i spesielle visninger eller utskrifter kan sorteres på en annen måte.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Arkivert_link">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes dersom det er behov for å kunne opprette en link mellom to komponenter i EPJ og hvor selve linken ikke skal være en del av disse komponentene. 
+					(Tilsvarer EPJ Link i versjon 1 av denne standarden)
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="link_til_komponent" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik referanse til komponenten (innen journalen) linken går til.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="link_fra_komponent" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikasjon av den komponenten linken går fra.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="merknad" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Til fri bruk.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="link_fra" type="Arkivert_komponent" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="link_til" type="Arkivert_komponent" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="linktype" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="linkstyrke" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_Strukturkomponent" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Dette er en abstrakt klasse som kun benyttes for å samle de egenskaper som er felles for alle komponenttyperer som representere en opprinnelig registrering i journalen. (Dette i motsetning til Gjenbrukt komponent som representerer gjenbruk av opplysninger (i form av en komponent) et annet sted i journalen enn der opplysningene opprinnelig ble registrert.)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_komponent"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_EPJ_dokument">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen representerer den mest sentrale komponenten i journalen. Et EPJ dokument utgjør en registrering i journalen og godkjennes/signeres alltid som en helhet. Dette innebærer ikke at det stilles krav om et EPJ dokument må registreres komplett med en gang. Men etter at et EPJ dokument skal det ikke kunne foretas noen endringer.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_komponent">
+				<xs:sequence>
+					<xs:element ref="Arkivert_revisjonsinfo" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="komponent_ID" type="xs:string" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Unik identifikasjon av komponenten.
+								Følgende regler gjelder:
+								1. Den datatypen som er benyttet, ID, utgjør identifikatordelen av et element av datatypen "Ident". Den koden (datatype CV) som utgjør første ledd av denne "Ident" skal være angitt i attributtet "type komponent ID" i den "Toppnodemappe" som komponentinstansen inngår i.
+								2. En komponent som befinner seg i et "system" skal ha en ID som er utstedt av dette "systemet".
+								3. En  komponent som inngår i en elektronisk melding skal ha samme ID som i avsenderens "system".
+								4. En komponent som overføres fra et "system" til et annet skal gis en ny ID når den registreres i det nye systemet. Dersom det er behov for en entydig referanse tilbake til avsenderen (noe det ofte vil være på dokumentnivå), skal ID fra avsenderens "system" knyttes til komponenten som "Ekstern referanse".
+								Merk: Med "system" menes her ikke nødvendigvis ett konkret IT-system. Det kan like gjerne være et sett av "samarbeidende IT-systemer" som utsteder en ID som kan benyttes på tvers av disse systemene.
+								Se for øvrig ??? for nærmere beskrivelse av datatypene Ident og ID.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="komponenttype" type="xs:string" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Unik identifikasjon (i form av en OID) av den type komponent registreringen gjelder. Gjennom denne identifikatoren skal det kunne identifiseres en entydig, formalisert beskrivelse av de regler som gjelder for innholdet av komponenter av den aktuelle type.
+								Merk: Det anvendes forskjellige serier av identifikatorer for de forskjellige hovedtyper av komponenter:
+								" Mappe (EPJ sak)
+								" Dokument (EPJ Dokument)
+								" Fragment (EPJ fragment)
+								" Dataelement
+								Til hver av disse hovedtypene av komponenter er det også knyttet et kodeverk slik at en bestemt komponenttype også kan assosieres med en kode (datatype). For å dokumentere de enkelte komponenttypene, inkludert knytningen mellom ID og kode, er det spesifisert et sett av dertil egnede dokumenttyper:
+								" Beskrivelse mappetype
+								" Beskrivelse EPJ sakstype
+								" Beskrivelse dokumenttype
+								" Beskrivelse EPJ Dokumenttype
+								" Beskrivelse fragmenttype
+								" Beskrivelse EPJ fragmenttype
+								" Beskrivelse dataelementtype
+								Se kapittel 7.2.
+								I tillegg til de identifikatorer som benyttes for nasjonale innholdsstandarder for EPJ (utgitt av KITH), kan det finnes identifikatorer for komponenttyper utgitt av andre aktører.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sortering" type="xs:integer" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Benyttes dersom det er behov for å angi standard sorteringsrekkefølge for komponenter som har samme "far", f.eks. rekkefølgen på EPJ dokumenter i en EPJ sak.
+								Merk: Sorteringsrekkefølgen benyttes ved standard visning på skjerm og ved utskrift. Dette skal ikke være til hinder for at det i spesielle visninger eller utskrifter kan sorteres på en annen måte.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Arkivert_revisjonsinfo">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å registrere alle former for hendelser knyttet til de enkelte komponentene. Med hendelse menes her registrering, godkjenning, korrigering etc. Komponent hendelse utgjør forbindelsen mellom den enkelte komponent og revisjoner av komponenten.
+					Alle komponenter skal, direkte eller gjennom den komponent som de har sin primære tilknytning til (dvs. den som komponenten er registrert som Originalkomponent i), være tilknyttet minst en hendelse som identifiserer "forfatter" og tidspunkt for registrering.
+					Merk: Når den aktuelle hendelse indikerer at en komponent er erstattet av, eller erstatter, en eller flere andre komponenter, skal det opprettes referanser mellom erstatningskomponent(ene) og original(ene) ved hjelp av Komponentlink.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="revisjonstidspunkt" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Skal inneholde det tidspunktet hvor den/de endringer som er gjort under revisjonen, blir gjort tilgjengelig for andre enn den som står for registreringen eller, dersom registreringen ikke blir gjort umiddelbart tilgjengelig for andre, det tidspunktet registreringen avsluttes
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="revisjonsnummer" type="xs:integer" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikasjon av en revisjon innenfor en endringslogg. Starter med 1 og telles opp i steg på 1.
+							Merk: Ettersom det skal være en og bare en endringslogg i en EPJ (samt én felles endringslogg for alle grunndata i EPJ-systemet) vil sortering på revisjonsnummer vil gi en ren, kronologisk rekkefølge av endringene.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="merknad" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Til fri bruk.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="komponent_hendelse" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="revisjonstype" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="registrert_av_tjenesteyter" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="signert_av_person" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_EPJ_fragment">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å registrere de fragmenter som Arkivert EPJ dokument bygges opp av.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_komponent">
+					<xs:sequence>
+						<xs:element ref="Arkivert_EPJ_fragment" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="Arkivert_dataelement" type="Arkivert_dataelement" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element ref="Arkivert_revisjonsinfo" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="komponent_ID" type="xs:string" minOccurs="1" maxOccurs="1">
+							<xs:annotation>
+								<xs:documentation>
+									Unik identifikasjon av komponenten.
+									Følgende regler gjelder:
+									1. Den datatypen som er benyttet, ID, utgjør identifikatordelen av et element av datatypen "Ident". Den koden (datatype CV) som utgjør første ledd av denne "Ident" skal være angitt i attributtet "type komponent ID" i den "Toppnodemappe" som komponentinstansen inngår i.
+									2. En komponent som befinner seg i et "system" skal ha en ID som er utstedt av dette "systemet".
+									3. En  komponent som inngår i en elektronisk melding skal ha samme ID som i avsenderens "system".
+									4. En komponent som overføres fra et "system" til et annet skal gis en ny ID når den registreres i det nye systemet. Dersom det er behov for en entydig referanse tilbake til avsenderen (noe det ofte vil være på dokumentnivå), skal ID fra avsenderens "system" knyttes til komponenten som "Ekstern referanse".
+									Merk: Med "system" menes her ikke nødvendigvis ett konkret IT-system. Det kan like gjerne være et sett av "samarbeidende IT-systemer" som utsteder en ID som kan benyttes på tvers av disse systemene.
+									Se for øvrig ??? for nærmere beskrivelse av datatypene Ident og ID.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="komponenttype" type="xs:string" minOccurs="1" maxOccurs="1">
+							<xs:annotation>
+								<xs:documentation>
+									Unik identifikasjon (i form av en OID) av den type komponent registreringen gjelder. Gjennom denne identifikatoren skal det kunne identifiseres en entydig, formalisert beskrivelse av de regler som gjelder for innholdet av komponenter av den aktuelle type.
+									Merk: Det anvendes forskjellige serier av identifikatorer for de forskjellige hovedtyper av komponenter:
+									" Mappe (EPJ sak)
+									" Dokument (EPJ Dokument)
+									" Fragment (EPJ fragment)
+									" Dataelement
+									Til hver av disse hovedtypene av komponenter er det også knyttet et kodeverk slik at en bestemt komponenttype også kan assosieres med en kode (datatype). For å dokumentere de enkelte komponenttypene, inkludert knytningen mellom ID og kode, er det spesifisert et sett av dertil egnede dokumenttyper:
+									" Beskrivelse mappetype
+									" Beskrivelse EPJ sakstype
+									" Beskrivelse dokumenttype
+									" Beskrivelse EPJ Dokumenttype
+									" Beskrivelse fragmenttype
+									" Beskrivelse EPJ fragmenttype
+									" Beskrivelse dataelementtype
+									Se kapittel 7.2.
+									I tillegg til de identifikatorer som benyttes for nasjonale innholdsstandarder for EPJ (utgitt av KITH), kan det finnes identifikatorer for komponenttyper utgitt av andre aktører.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="sortering" type="xs:integer" minOccurs="0" maxOccurs="1">
+							<xs:annotation>
+								<xs:documentation>
+									Benyttes dersom det er behov for å angi standard sorteringsrekkefølge for komponenter som har samme "far", f.eks. rekkefølgen på EPJ dokumenter i en EPJ sak.
+									Merk: Sorteringsrekkefølgen benyttes ved standard visning på skjerm og ved utskrift. Dette skal ikke være til hinder for at det i spesielle visninger eller utskrifter kan sorteres på en annen måte.
+								</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="komponent_hendelse">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen representerer en ekspansjon av attributtet komponent hendelse.
+					
+					Kode som angir hvilken hendelse registreringen gjelder.
+					Standard kodeverk  2.16.578.1.12.4.1.1.9251 Komponent hendelse (EPJ)
+					Eksempler:
+					A1 - Registrering påbegynt
+					A9 - Registrering avsluttet, utkast ikke godkjent ennå
+					A6 - registrt utkast underkjent, nytt utkast skal utarbeides
+					G1 - Godkjent av ansvarlig tjenesteyter
+					G2 - Godkjent av stedfortreder
+					K1 - Kvittering for å ha lest journalinnhold  (f.eks. et mottatt lab-svar) registrert
+					L1 - Ny (EPJ) Link referanse registrert
+					L2 - Tidligere registrert (EPJ) Link referanse endret eller slettet
+					M1 - Nye metdata registrert
+					M2 - Tidligere registrerte metadata endret eller slettet
+					P1 - Retting er godkjent og kan gjennomføres
+					P2 - Sletting er godkjent og kan gjennomføres
+					R1 - Retting utført
+					S1 - Deler av innholdet i komponenten er slettet
+					S3 - Komponentens innhold er slettet men skal kunne reetableres av en representant for leverandøren
+					S5 - Komponentens innhold er permanent slettet etter krav fra pasienten
+					U1 - Komponenten er markert som ugyldig, de opplysninger den inneholder er enten feilaktige eller ikke lengre relevante
+					U2 - Komponenten utgår som en følge av journalansvaligs redigering av journalen
+					Merk: En rekke komponent hendelser vil innebære at også ferdigstillingsstatus må endres.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CV" type="CV"/>
+	<xs:complexType name="CV">
+		<xs:annotation>
+			<xs:documentation>
+				Benyttes for registrering av koder i kodeverk som identifiseres entydig av en OID, og som det ikke er naturlig å benytte datatype CS for.  
+				Merk:  
+				Bruk av datatype CV forutsettes at i spesifikasjonene er angitt hvilke konkrete kodeverk som skal kunne benyttes ved registrering i dette attributtet. Denne datatypen skal kun benyttes for kodeverk som kan identifiseres gjennom en OID.  
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						En tekststeng som inneholder kodeverdien (f.eks., "F40.0")
+						Merk: code skal normalt alltid angis når denne datatypen benyttes. I visse situasjoner kan imidlertid det tillates at CV benyttes uten at det angis kode men kun en originalText. F.eks. kan dette være aktuelt dersom kodingen skal skje hos mottakeren av meldingen (post coding). Det skal i slike tilfeller angis eksplisitt i beskrivelsen av attributtet (i implementasjonsguide el.) dersom dette tillates.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="displayName" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						En tekststeng (term) som beskriver det begrep som koden representerer (F.eks. "Agorafobi" for F40.0)
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codeSystem" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						En Object Identifier (OID) som entydig identifiserer det kodeverk som kodene tilhører.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="codeSystemVersion" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						En tekststeng som beskriver versjonen av kodeverket.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="originalText" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Kan benyttes for å registrere den tekst som dannet grunnlaget for valg av kode.
+						Vær spesielt oppmerksom på at dersom et kodeverk inneholder en kode for "Annet" (eller tilsvarende), så vil det ofte være ønskelig å registrere hva dette "annet" er. I slike tilfeller kan en gjerne benytte parameteren originalText, men dette bør da anmerkes spesielt i implementasjonsguide eller annen relevant dokumentasjon.
+						Merk: originalText må angis dersom code ikke angis.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_CV_dataelement___coded_value">
+		<xs:annotation>
+			<xs:documentation>
+				Benyttes for registrering av koder i kodeverk som identifiseres entydig av en OID, og som det ikke er naturlig å benytte datatype CS for.  
+				Merk:  
+				Bruk av datatype CV forutsettes at i spesifikasjonene er angitt hvilke konkrete kodeverk som skal kunne benyttes ved registrering i dette attributtet. Denne datatypen skal kun benyttes for kodeverk som kan identifiseres gjennom en OID.  
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="CV" type="CV" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="type_identifikator">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Kode som angir hvilken type identifikator somdataelementet inneholder.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="virksomhetstype">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen representerer en ekspansjon av attributtet virksomhet type.
+					
+					Standard kodeverk: 2.16.578.1.12.4.1.1.  9040 Helsevirksomhet type
+					Eksempel:
+					
+					101 Helseforetak/private sykehus    
+					102 Kommune    
+					103 Privatpraktiserende autorisert helsepersonell     
+					104 Privat røntgeninstitutt    
+					105 Privat Laboratorium    
+					106 Privat rehabiliterings- og opptreningssenter    
+					107 Distriktsmedisinsk senter    
+					108 Apotek    
+					109 Bandagist    
+					110 Tannlege / tannlegesenter    
+					111 Fylkeskommunal tannhelsetjeneste    
+					112 Nasjonale registre   
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_V">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatypen R-V, (referanse til) Virksomhet ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="virksomhet_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							ID til det dokument (grunndata) som inneholder de detaljere opplysningene om virksomheten.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="enhetsbetegnelse" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Offisiell betegnelse for virksomheten.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="organisasjonsnummer" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Virksomhetens offisielle, norske organisasjonsnummer.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="HER_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikator i Norsk Helsenetts adresseregister.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="RESH_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikator i Register for enheter i spesialisthelsetjenesten.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="virksomhetstype" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_R_V_dataelement___virksomhet">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-V, (referanse til) Virksomhet ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_V" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="enhetstype">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Kode som angir hvilken type organisatorisk enhet dette er.
+					
+					Eksempel på kodeverk: 2.16.578.1.12.4.1.1.3511   Avdelingskodeverk fra Statens Helsetilsyn, rundskriv IK 44/89.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_E" type="Arkivert_R_E"/>
+	<xs:complexType name="Arkivert_R_E">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatype R-E, (referanse til) organisatorisk enhet ved overføring til arkivdepot.
+				En organisatorisk enhet kan være en Virksomhet, en Administrativ enhet innenfor en virksomhet, et Team etc.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="organisatorisk_enhet_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						ID til det dokument (grunndata) som inneholder de detaljere opplysningene om den organisatorisk enheten.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="enhetsbetegnelse" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Offisiell betegnelse for organisatorisk enhet.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tilhører_virksomhet" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Offisiell betegnelse på den virksomheten som enheten inngår i.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="HER_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Unik identifikator i Norsk Helsenetts adresseregister.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="RESH_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Unik identifikator i Register for enheter i spesialisthelsetjenesten.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="enhetstype" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_E_dataelement___organisatorisk_enhet">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-OE, (referanse til) Organisatorisk enhet ved overføring til arkivdepot. En organisatorisk enhet kan være en Virksomhet, en Administrativ enhet innenfor en virksomhet, et Team etc.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_E" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="rolle___organisatorisk_enhet">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Organisatorisk enhet hvor rollen kan utøves.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_E"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_R" type="Arkivert_R_R"/>
+	<xs:complexType name="Arkivert_R_R">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatype R-R, (referanse til) Roller som Tjenesteytere kan opptre i.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="rolle_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Selve elementverdien.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rollebeskrivelse" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="rolle___organisatorisk_enhet" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_R_dataelement___rolle">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-R, (referanse til) Roller som Tjenesteytere kan opptre i.
+				Standard visningsinformasjon: rollebeskrivelse (fra Rollemal), organisatorisk enhet, rolletittel.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_R" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="tjenesteyters_rolle">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_R"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_T" type="Arkivert_R_T"/>
+	<xs:complexType name="Arkivert_R_T">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatype R-T, (referanse til) person som opptrer som tjenesteyter ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tjenesteyter_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Selve elementverdien.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fullt_navn" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element ref="tjenesteyters_rolle" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_T_dataelement___tjenesteyter">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-T, (referanse til) person som opptrer som Tjenesteyter. For andre personer skal dataelementtype R-P benyttes.
+				Standard visningsinformasjon: Rolletittel, fornavn, etternavn.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_T" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="utførende_tjenesteyter">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Den tjenesteyteren som gjennomførte tiltaket.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_T"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_TU">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere dataelement av type R-TU, (referanse til) Tjenesteutførelse ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="tjenesteutførelse_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Selve elementverdien.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="besluttet_tiltak_som_utføres" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="status_gjennomføring_tiltak" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="utførende_tjenesteyter" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_R_TU_dataelement___tjenesteutførelse">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-TU, (referanse til) Tjenesteutførelse ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_TU" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="besluttet_tiltak_som_utføres">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Det tiltaket besluttede tiltaket som tjenesteutførelsen er knyttet til.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_BT"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_BT" type="Arkivert_R_BT"/>
+	<xs:complexType name="Arkivert_R_BT">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatype R-BT, (referanse til) Besluttet tiltak ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="besluttet_tiltak_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Selve elementverdien.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tiltaksbeskrivelse" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_BT_dataelement___besluttet_tiltak">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-BT, (referanse til) Besluttet tiltak ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_BT" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="status_gjennomføring_tiltak">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					
+					Kode som angir status for gjennomføring av det besluttede tiltaket.  
+					Standard kodeverk: 2.16.578.1.12.4.1.1.  9238 Status for gjennomføring av besluttet tiltak  
+					Eksempler  
+					02 - Tiltak besluttet, gjennomføring ikke påbegynt  
+					04 - Gjennomføring påbegynt (minst en Tjenesteutførelse registrert)  
+					10 - Tiltak ferdig gjennomført   
+					18 - Tiltak suspendert  
+					19 - Tiltak terminert fordi det inngår i et "hovedtiltak" som er terminert  
+					20 - Terminert uten å være ferdig gjennomført.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CS"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CS" type="CS"/>
+	<xs:complexType name="CS">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatypen CS.
+				Benyttes for registrering av kodet verdi hvor koden angis i form av en tekststreng og med mulighet til å angi kodemeningen som opsjon. Kodeverket og versjonen av dette skal være entydig bestemt av dataelementtypen.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						En tekststeng som inneholder kodeverdien (f.eks., "HS")
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="displayName" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						En tekststeng (term) som beskriver det begrep som koden representerer (f.eks. "Helsesøster" for kode "HS")
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_CS_dataelement___coded_simple_value">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type CS.
+				Benyttes for registrering av kodet verdi hvor koden angis i form av en tekststreng og med mulighet til å angi kodemeningen som opsjon. Kodeverket og versjonen av dette skal være entydig bestemt av dataelementtypen.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="CS" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="kjønn">
+		<xs:complexContent>
+			<xs:extension base="CS"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="telekomtype">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Kode som angir hvilken type teleadresse dette er.
+					Kodene skal hentes fra kodeverk 2.16.578.1.12.4.1.1.9061 Type telekommunikasjon
+					Eksempler
+					HP - Hovedtelefon  
+					MC - Mobiltelefon  
+					F - Telefaks
+					WP - Arbeidsplass  
+					WD - Arbeidsplass, direktenummer  
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CS"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_TELE" type="Arkivert_R_TELE"/>
+	<xs:complexType name="Arkivert_R_TELE">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatype R-TELE, (referanse til) teleadresse ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="teleadresse_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						ID til det dokument (grunndata) som inneholder de detaljere opplysningene om teleadressen.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="telekomadresse" type="xs:anyURI" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Telekommunikasjonsadressen, inkludert type (e-post, faks, telefon, angis i prefiks til url).
+						Eksempler
+						&lt;TeleAddress V="tel:12345678"/&gt;
+						&lt;TeleAddress V="fax:12345679" /&gt;
+						&lt;TeleAddress V="mailto:foo.bar@example.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element ref="telekomtype" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_TELE_dataelement___teleadresse">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-TELE, (referanse til) teleadresse ved overføring til arkivdepot.
+				Standard visningsinformasjon: Teleadresse inkl. type teleadresse (telefon, e-post mv.)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_TELE" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="telekomadresse">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Telekommunikasjonsadressen, inkludert type (e-post, faks, telefon, angis i prefiks til url).
+					Eksempler
+					&lt;TeleAddress V="tel:12345678"/&gt;
+					&lt;TeleAddress V="fax:12345679" /&gt;
+					&lt;TeleAddress V="mailto:foo.bar@example.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_TELE"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_A">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatype R-ADR, (referanse til) Adresser ved overføring til arkivdepot.
+					Dataelementtypen kan benyttes til adresser av alle slag, også teleadresser. Teleadresser, (telefonnummer, telefaks mv.) kan knyttes opp mot en gateadresse.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="adresse_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							ID til det dokument (grunndata) som inneholder de detaljere opplysningene om adressen.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="stedsadresse" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Full adresse bestående av f.eks. gatenavn, husnummer, postnummer, poststed etc.
+							Dersom det kun er registrert en strukturert adresse, skal disse settes sammen til en ustrukturert adresse.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="telekomadresse" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_R_A_dataelement___adresse">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-ADR, (referanse til) Adresser ved overføring til arkivdepot.
+				Dataelementtypen kan benyttes til adresser av alle slag, også teleadresser. Teleadresser, (telefonnummer, telefaks mv.) kan knyttes opp mot en gateadresse.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_A" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="linkstyrke">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen representerer en ekspansjon av attributtet linkstyrke. 
+					
+					Kode som angi i hvilken grad den refererte komponenten må være tilgjengelig for den som får tilgang til den komponenten linken er en del av.  
+					Kodene skal hentes fra kodeverk: 2.16.578.1.12.4.1.1.  9206 Linkstyrke  
+					Eksempel:  
+					 1 - Linken refererer en tidligere versjon av samme komponent.   
+					 2 - Den komponent linken refererer til inneholder ikke opplysninger som er nødvendig for forståelsen av den komponenten linken er en del av.  
+					 5 - Den komponent linken refererer til inneholder opplysninger som kan være nyttige for forståelsen av den komponenten linken er en del av.  
+					 9 - Den komponent linken refererer til inneholder opplysninger som er helt nødvendige for forståelsen av den komponenten linken er en del av.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CS"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="registrert_av_tjenesteyter">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Den Tjenesteyter som utførte registreringen. Dette er ikke nødvendigvis den samme som er ansvarlig for den informasjon som ble registrert.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_T"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="programvare_type">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_SW">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatype R-SW, (referanser til) informasjon om programvare ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="programvare_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Selve elementverdien.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="betegnelse" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="programvare_ID" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="programvare_type" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_R_SW_dataelement___programvare">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-SW, (referanser til) informasjon om programvare ved overføring til arkivdepot
+				
+				Eksempel: Programvare. har vært benyttet til å beregne dosering av legemiddel eller annet som er relevant i forbindelse med den helsehjelp pasienten mottar.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_SW" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="programvare_ID">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Ident"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="utstyr_type">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_U">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatype R-U, (referanser til) informasjon om medisinsk-teknisk utstyr ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="utstyr_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Selve elementverdien.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="modellbetegnelse" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="utstyr_type" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="medisinsk_teknisk_utstyr_ID" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_R_U_dataelement___medisinsk_teknisk_utstyr">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-u, (referanser til) informasjon om medisinsk-teknisk utstyr ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_U" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="medisinsk_teknisk_utstyr_ID">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Ident"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="type_eksternt_system">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_SYS">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatype R-SYS, (referanser til) eksterne system ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="betegnelse_eksternt_system" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="eksternt_system_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Selve elementverdien.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="tilhører_virksomhet" type="xs:string" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="ID_eksternt_system" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="type_eksternt_system" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_R_SYS_dataelement___eksternt_system">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-SYS, (referanser til) eksterne systemved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_SYS" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ID_eksternt_system">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Ident"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="linktype">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen representerer en ekspansjon av attributtet linktype.
+					
+					En kode som angir hvilken type link dette gjelder.
+					Standard kodeverk: 2.16.578.1.12.4.1.1.9205 Linktype EPJ
+					Eksempler:
+					01 - Erstatter tidligere versjon
+					11 - Se også. (Generell referanse.)
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="revisjonstype">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen representerer en ekspansjon av  attributtet revisjonstype.
+					
+					Kode som angir hvilken type revisjon dette gjelder.
+					
+					Standard kodeverk: 2.16.578.1.12.4.1.1.9252 Revisjonstype (EPJ)
+					Eksempler:
+					01 - Registrering av nytt innhold gjennom EPJs brukergrensesnitt
+					03 - Registrering av nytt innhold gjennom datafangst fra medisinsk-teknisk utstyr mv.
+					05 - Skanning av papirdokumenter
+					07 - Registrering av innhold elektronisk overført fra annet system i samme virksomhet
+					09 - Registrering av innhold elektronisk overført fra annen virksomhet
+					11 - Godkjenning av registrert journalinnhold
+					31 - Redigering av eksisterende innhold utført av journalansvarlig
+					61 - Retting (i medhold av lov) av feilaktig, mangelfult eller utilbørlige opplysninger
+					71 - Sletting (i medhold av lov) av opplysninger som er feilaktige eller misvisende
+					72 - Sletting (i medhold av lov) av opplysninger ført i feil journal
+					Merk: De forskjellige typer revisjoner må håndteres korrekt av EPJ-systemet. Dette innebærer spesielt at revisjoner som innebærer redigering, retting eller sletting av allerede godkjente registreringer, ikke må blandes med f.eks. nyregistrering.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="CV"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="signert_av_person">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Dersom den aktuelle hendelsen innebærer at komponenten har blitt signert, skal dette attributtet inneholde referanse til den Person som har signert komponenten.
+					Merk: Signaturen skal omfatte "alt" som inngår i komponenten ved den revisjonen denne hendelsen ble registrert, med unntak av hendelsen selv. Dette innebærer at "revisjonen" av komponenten må termineres ved signering.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:complexContent>
+				<xs:extension base="Arkivert_R_P"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Arkivert_R_P" type="Arkivert_R_P"/>
+	<xs:complexType name="Arkivert_R_P">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere datatype R-P, (referanser til) Person ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="personens_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						ID til det dokument (grunndata) som inneholder de detaljerte opplysningene om personen.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fullt_navn" type="xs:string" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Personens fulle navn. Dersom strukturert registrering av navn er benyttet, settes de enkelte komponenter navnet består av sammen adskilt av mellomrom. Fornavn, ev. prefiks til fornavn, skal komme først.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fødselsdato" type="xs:date" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="arbeidsgiver" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Navn til den virksomhet, eventuelt organisatorisk enhet innenfor denne virksomheten, hvor personen innehar den angitte stillingen.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stillingsbetegnelse" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						Betegnelse for stillingen.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_P_dataelement___person">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-P, (referanser til) Person.
+				Standard visningsinformasjon: Fornavn, etternavn
+				Merk: Dersom det er behov for å registrere personer som opptrer som Tjenesteytere skal dataelementtypen Tjenesteyterreferanse benyttes. Tilsvarende, dersom det er personen "som Pasient" det gjelder, bør dataelementtypen R-PAS benyttes.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_P" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_IEE_dataelement___ikke_elektronisk_element">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-IEE, ikke-elektroniske element. Med dette menes referanse til et "element", f.eks. labprøver, papirdokumenter, bilder, kassetter med lyd eller videoopptak som ikke finnes elektronisk lagret som en del av EPJ.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="plassering" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Angivelse av hvor informasjonen, f.eks. papirdokumentet, lydbåndet el., finnes lagret.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="beskrivelse" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Beskrivelse av elementet, f.eks. tittel på papirdokument, referansenummer på lydbånd el.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="merknad" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Til fri bruk.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_PQ_dataelement___physical_quantity">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type PQ. Denne datatypen benyttes for registrering av målte verdier med tilhørende måleenhet.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="PQ" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="PQ">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatypen PQ som benyttes for registrering av målte verdier med tilhørende måleenhet.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="value" type="xs:double" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Målt verdi
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="unit_code" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Måleenhet kode, f.eks "mg".
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="unit_displayName" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Måleenhet, full tekst, f.eks. "milligram".
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_integer_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type integer, dvs. positive og negative hele tall.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:integer" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_PAS_dataelement___pasient">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-PAS, (referanse til) Pasient ved overføring til arkivdepot.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_PAS" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Arkivert_R_PAS">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere datatype R-PAS, (referanse til) Pasient ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="pasientens_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Selve elementverdien.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="fullt_navn" type="xs:string" minOccurs="1" maxOccurs="1"/>
+				<xs:element ref="pasientidentifikator" minOccurs="1" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_ID_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type ID. Dette er en identifikator hvor det identifikatorsett som identifikatoren tilhører, er gitt implisitt gjennom definisjonen av dataelementet.
+				Se for øvrig ??? for nærmere beskrivelse av datatypene Ident og ID.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_ELDOK_dataelement___elektronisk_dokument">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type ELDOK, elektroniske dokument.
+				Merk: Som elektronisk dokument regnes alle former for binært innhold, herunder også bilder, video, lyd, datastrømmer fra forskjellige former for medisinsk-teknisk utstyr etc.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="dokumentinnhold" type="xs:anyURI" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Innholdet av det elektroniske dokumentet.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="format_dokumentinnhold" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								...angivelse av format for dokumentinnhold...
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_boolean_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type boolean. Denne typen dataelement benyttes for å angi at noe er sant eller usant, f.eks. uttrykt ved verdiene ja eller nei i en avkryssningsboks.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:boolean" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien. Verdi "true" uttrykker sant (ja, avkrysset boks etc.) mens verdi "false" uttrykker usant (verdi nei, ikke avkrysset boks etc.).
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_dateTime_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type dateTime.
+				Benyttes for dato og med mulighet for å angi klokkeslett i tillegg.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:dateTime" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien. Dato og eventuelt klokkeslett angis på formen:
+								yyyy-mm-dd T hh:mm:ss.(s+) (zzzzzz)
+								Her representerer yyyy-mm-dd datoen (år, måned, dag i måneden), hh:mm:ss klokkeslettet (time, minutt, sekund) og s+ del av sekund. Når det skal angis en presisjon som er lavere enn standard (yyyy-mm-dd T hh:mm:ss) kan det strykes fra høyre, f.eks. yyyy-mm-dd dersom kun dato angis.
+								Dersom det er behov for å angi tidssone (zzzzzz) plasseres denne til slutt og angis med antall timer og minutter relativt UTC (GMT). Verdiområdet for tidssone er:
+								+14:00 til -14:00. Bokstaven Z kan benyttes som et alternativ til +00:00, altså GMT.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_R_PADR_dataelement___postadresse">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type R-PADR, (referanse til) postadresse.
+				Standard visningsinformasjon: Gateadresse eller postboks, postnr, poststed. For utenlandsadresser også nasjonsnavn.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element ref="Arkivert_R_PADR" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Arkivert_R_PADR">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Denne klassen benyttes for å representere dataelement av type R-PADR, (referanse til) postadresse ved overføring til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="postadresse_komponent_ID" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							ID til det dokument (grunndata) som inneholder de detaljere opplysningene om postadressen.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ustrukturert_adresse" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Full adresse bestående av f.eks. gatenavn, husnummer, postnummer, poststed etc.
+							Dersom det kun er registrert en strukturert adresse, skal disse settes sammen til en ustrukturert adresse.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Arkivert_date_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type date, en dato uten mulighet for å angi klokkeslett.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:date" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien. Dato angis på formen:
+								yyyy-mm-dd (zzzzzz)
+								Her representerer yyyy-mm-dd datoen (år, måned, dag i måneden).
+								Dersom det er behov for å angi tidssone (zzzzzz) plasseres denne til slutt og angis med antall timer og minutter relativt UTC (GMT). Verdiområdet for tidssone er:
+								+14:00 til -14:00. Bokstaven Z kan benyttes som et alternativ til +00:00, altså GMT.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_string_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type string.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien.
+								Merk: For de fleste slike dataelementer skal det være angitt en maksimal lengde i definisjonen av den aktuelle type dataelement.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_double_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type double (desimaltall).
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:double" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_oid_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type oid som benyttes for registrering av ISO objektidentifikatorer (OID).
+				En OID er en globalt unik tekststreng som identifiserer et "objekt". Identifikatoren består av grupper sifre skilt med punktum, f.eks. 2.16.840.1.113883.3.1, og utgjør en tre-struktur.  OID'er tildeles av "tilordningsmyndigheter" som er registrert av ISO og som har fått tilordnet en "namespace", dvs. et "subtre" hvor tildelingsmyndigheten kan utstede nye OID'er.
+				I Norge er det Post- og Teletilsynet som er tilordningsmyndighet.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:string" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Arkivert_time_dataelement">
+		<xs:annotation>
+			<xs:documentation>
+				Denne klassen benyttes for å representere dataelement av type time, et klokkeslett uten datoangivelse.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Arkivert_dataelement">
+				<xs:sequence>
+					<xs:element name="elementverdi" type="xs:time" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>
+								Selve elementverdien. Klokkeslett angis på formen:
+								hh:mm:ss.(s+) (zzzzzz)
+								Her representerer hh:mm:ss klokkeslettet (time, minutt, sekund) og s+ del av sekund. Når det skal angis en presisjon som er lavere enn standard (hh:mm:ss) kan det strykes fra høyre, f.eks. hh:mm dersom kun time og minutt angis.
+								Dersom det er behov for å angi tidssone (zzzzzz) plasseres denne til slutt og angis med antall timer og minutter relativt UTC (GMT). Verdiområdet for tidssone er:
+								+14:00 til -14:00. Bokstaven Z kan benyttes som et alternativ til +00:00, altså GMT.
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="H_nummer">
+		<xs:complexContent>
+			<xs:extension base="Ident"/>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

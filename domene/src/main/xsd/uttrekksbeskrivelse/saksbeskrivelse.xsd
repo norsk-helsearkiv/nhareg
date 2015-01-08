@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://eisi.helsedir.no/nha/uttrekksbeskrivelse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:id="http://eisi.helsedir.no/nha/id" targetNamespace="http://eisi.helsedir.no/nha/uttrekksbeskrivelse" elementFormDefault="qualified">
+	<xs:import namespace="http://eisi.helsedir.no/nha/id" schemaLocation="id.xsd"/>
+	<xs:include schemaLocation="felles.xsd"/>
+	<xs:element name="Beskrivelse_arkivert_EPJ_sakstype">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="beskrivelse">
+					<xs:sequence>
+						<xs:element name="alle_typer_EPJ_sak_kan_inngaa" type="xs:boolean" default="false" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="alle_typer_EPJ_dokument_kan_inngaa" type="xs:boolean" default="false" minOccurs="1" maxOccurs="1"/>
+						<xs:element name="inkludert_arkivert_EPJ_sakstype" type="bestanddel" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="inkludert_arkivert_EPJ_dokumenttype" type="bestanddel" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

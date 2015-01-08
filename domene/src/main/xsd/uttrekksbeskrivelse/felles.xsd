@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://eisi.helsedir.no/nha/uttrekksbeskrivelse" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:id="http://eisi.helsedir.no/nha/id" targetNamespace="http://eisi.helsedir.no/nha/uttrekksbeskrivelse" elementFormDefault="qualified">
+	<xs:import namespace="http://eisi.helsedir.no/nha/id" schemaLocation="id.xsd"/>
+	<xs:complexType name="beskrivelse" abstract="true">
+		<xs:sequence>
+			<xs:element name="komponenttype" type="id:oid" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="betegnelse_komponenttype" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="dokumentasjon" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="bestanddel">
+		<xs:sequence>
+			<xs:element name="inkluder_komponenttype" type="id:oid" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="minimum_antall" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="maksimum_antall" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

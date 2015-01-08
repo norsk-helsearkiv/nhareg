@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema 
+	targetNamespace="http://eisi.helsedir.no/anno2014/nha-1.61-RGM/avlevering/Avleveringsdokumentasjon" 
+	xmlns="http://eisi.helsedir.no/anno2014/nha-1.61-RGM/avlevering/Avleveringsdokumentasjon" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Avleveringsbeskrivelse">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					En instans av denne klassen benyttes for å registrere opplysninger om en avtale om avlevering av materiale fra et pasientarkiv som er inngått mellom arkivskaper og arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="avleveringsidentifikator" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikator (oid) som identifiserer den avtalte avleveringen til arkivdepot. Avleveringsidentifikatoren tildeles av arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="arkivskaper_ID" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikator (oid) som identifiserer arkivskaper.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="arkiv_ID" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikator (oid) som identifiserer det arkivet avleveringen skal skje fra.  
+							Merk: I denne sammenheng vil begrepet arkiv omfatte pasientopplysningene i et IT-system, f.eks. et EPJ-system, et fagsystem eller et pasientadministrativt system.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="avtaledato" type="xs:date" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato avtalen mellom arkivdepot og arkivskaper ble inngått.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="dato_for_pasientutvelgelse" type="xs:date" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato som skal danne utgangspunkt for utvelgelse av hvilke pasienter som skal inngå i avleveringen.   
+							Merk: Alle pasienter hvor morsdato er kjent og tidligere eller lik denne datoen skal inngå i avleveringen. Videre skal datoen danne utgangspunkt for å avgjør hvilke pasienter som antas mors men hvor morsdato er ukjent, som skal inngå i avleveringen.  
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="planlagt_oppstart" type="xs:date" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato en planlegger å gjennomføre første overføring til arkivdepot.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="planlagt_avsluttet" type="xs:date" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato en etter planen skal ha fullført avleveringen.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="utfyllende_opplysninger" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Ved behov kan utfyllende opplysninger om den avtalte avleveringen angis her.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Avleveringsdokumentasjon">
+		<xs:annotation>
+			<xs:documentation>
+				En instans av denne klassen benyttes for å registrere opplysninger om den produksjon av arkivuttrekk for et sett enkeltpasienter og overføring disse til arkivdepot som blir foretatt på grunnlag av en avtale om avlevering inngått mellom arkivskaper og arkivdepot.  
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="Avleveringsoversikt" minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+			<xs:element ref="Overføring_til_arkivdepot" minOccurs="0" maxOccurs="1">
+			</xs:element>
+			<xs:element ref="Oppdateringsinfo" minOccurs="1" maxOccurs="1">
+			</xs:element>
+			<xs:element ref="Avleveringsbeskrivelse" minOccurs="1" maxOccurs="1">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Avleveringsoversikt">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Et sett instanser av denne klassen benyttes for å registrere opplysninger hvilke pasienter som inngår i et arkivuttrekk samt om overføringen av disse til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="pasient_ID" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Fødselsnummer, D-nummer eller annen entydig identifikator for pasient.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="pasient_ID_type" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							
+							Kode som angir hvilken type identifikator som er registrert i pasient ID.  
+							Følgende standard koder kan benyttes:  
+							
+							  FNR - Fødselsnummer  
+							  DNR - D-nummer   
+							  FHN Felles hjelpenummer    
+							  HNR - Virksomhetsinternt hjelpenummer   
+							  DUF - DUF-nummer  
+							Dersom det er avtalt med arkivdepotet at også andre typer identifikatorer kan benyttes ved avleveringen, kan også avtalte koder for disse typene identifikatorer benyttes.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="fødselsdato" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Pasientens fødselsdato, dersom denne er kjent.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="morsdato" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Pasientens morssdato, dersom denne er kjent.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="uttrekksdato" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato arkivuttrekket for denne pasienten ble foretatt.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="kvalitetssikret_dato" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato arkivuttrekket for denne pasienten var ferdig kvalitetssikret.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="overført_dato" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato arkivuttrekket for denne pasienten ble overført til arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="kvittering_mottatt_dato" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato det ble mottatt kvittering fra arkivdepotet for mottak av arkivuttrekk for denne pasienten.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="status_fra_arkivdepot" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Kode som angir og arkivdepotet har godtatt avleveringen eller om det var mangler som må rettes opp før ny avlevering kan skje.  
+							Hvilke koder som benyttes og deres betydning bestemmes av arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="tilbakemelding_fra_arkivdepot" type="xs:string" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Dersom arkivuttrekket for denne pasienten forkastet av arkivdepotet, kan det her gis en beskrivelse av hva som feilet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="dato_godtatt_av_arkivdepot" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato arkivuttrekket for denne pasienten ble godtatt av arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="dato_forkastet_av_arkivdepot" type="xs:date" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato arkivuttrekket for denne pasienten ble forkastet av arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="tidspunkt_slettet_fra_system" type="xs:dateTime" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							
+							Den dato det ble foretatt sletting av de avleverte opplysningene om pasienten fra det aktuelle arkivet (systemet).  
+							Merk: Opplysningene om pasienten kan ikke slettes før avleveringen er godtatt av arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element ref="Overført_til_ny_avlevering" minOccurs="0" maxOccurs="1">
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Overført_til_ny_avlevering">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					Dersom avleveringsuttrekket for en pasient ikke blir godtatt av arkivdepotet, skal pasienten overføres til en ny avlevering. Dette skal registreres i en instans av denne klassen.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="dato_overført_til_ny_avleveringsoversikt" type="xs:date" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato denne pasienten ble overført til ny en avleveringsoversikt.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="ny_avleveringsidentifikator" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Unik identifikator (oid) som identifiserer den avleveringen som pasienten flyttes til. Merk: Før overføring til ny avlevering kan skje, må det være inngått avtale mellom arkivskaper og arkivdepotet om avleveringen. 
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Overføring_til_arkivdepot">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					En instans av denne klassen benyttes for å registrere opplysninger om en overføring av et uttrekk av opplysninger fra arkivskaper til arkivdepot.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="overført_dato" type="xs:date" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Den dato arkivuttrekk for et antall pasienter ble overført til arkivdepotet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="antall_pasienter_overført" type="xs:integer" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Det antall pasienter som overføringen omfattet.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="antall_sakstypebeskrivelser_overført" type="xs:integer" minOccurs="0" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Det antall sakstypebeskrivelser som inngikk i overføringen.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="antall_dokumenttypebeskrivelser_overført" type="xs:integer" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Det antall dokumenttypebeskrivelser som inngikk i overføringen.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Oppdateringsinfo">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>
+					En instans av denne klassen benyttes for å registrere opplysninger om oppdatering av avleveringsbeskrivelsen.
+				</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="sist_oppdatert" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Tidspunkt for siste oppdatering av avleveringsdokumentasjonen.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="oppdatert_av" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Navn på den som foretok siste oppdatering av avleveringsdokumentasjonen.
+						</xs:documentation>
+					</xs:annotation>
+
+				</xs:element>
+				<xs:element name="prosesstrinn" type="xs:string" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:documentation>
+							Angivelse av hvor i avleveringsprosessen en er når avleveringsdokumentasjonen oppdateres.   
+							Følgende tekster skal kunne benyttes:  
+							 - Utvalg  
+							 - Uttrekk  
+							 - Kvalitetssikring  
+							 - Overføring  
+							 - Tilbakemelding  
+							 - Avsluttet 
+						</xs:documentation>
+					</xs:annotation>
+ 
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
