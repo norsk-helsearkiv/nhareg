@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+    <xs:annotation>
+        <xs:documentation>Norsk helsearkiv skal føre register over arkivbestand og tilvekst i Helsearkivregisteret. Bestandsopplysninger skal ikke inneholde opplysninger eller beskrivelser som kan identifisere enkeltpersoner. Opplysningene kan sammenstilles med andre depotinstitusjoners bestandsregistre, og publiseres åpent.</xs:documentation>
+    </xs:annotation>
+    <xs:element name="bestandsoppl">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="virksomhet">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="navn" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation>Navn på virksomhet som har gitt helsehjelpen</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="organisasjonsoppl" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation>Navn på evt. avdeling, post eller tilsvarende</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="opplysninger">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="omfang" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation>Opplysninger om det avleverte materialets omfang</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="beskrivelse" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation>Beskrivelse av inndeling i arkivstykker mm.</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="hensvisning" type="xs:string">
+                                <xs:annotation>
+                                    <xs:documentation>Henvisning til hvor materialet er oppstilt eller lagret</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
