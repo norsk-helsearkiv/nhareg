@@ -60,7 +60,7 @@
                             <goal>xjc</goal>
                         </goals>
                         <configuration>
-                            <schemaFiles>Avleveringsliste.xsd</schemaFiles>
+                            <schemaFiles>Avlevering.xsd</schemaFiles>
                             <packageName>no.arkivverket.helsearkiv.nhareg.domene.avleveringsliste</packageName>
                             <clearOutputDir>false</clearOutputDir>
                         </configuration>
