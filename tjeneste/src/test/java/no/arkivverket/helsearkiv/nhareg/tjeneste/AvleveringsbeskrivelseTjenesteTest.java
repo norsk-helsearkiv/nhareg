@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.util.Calendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -56,6 +57,7 @@ public class AvleveringsbeskrivelseTjenesteTest {
     public void testCreate(){
         Avleveringsbeskrivelse a = new Avleveringsbeskrivelse();
         a.setAvleveringsidentifikator("Avlevering 001");
+        a.setAvtaledato(Calendar.getInstance());
         tjeneste.createAvleveringsbeskrivelse(a);
     }
 }
