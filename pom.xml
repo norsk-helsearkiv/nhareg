@@ -11,5 +11,6 @@
     </properties>
     <modules>
         <module>domene</module>
-    </modules>
+    <module>tjeneste</module>
+  </modules>
 </project>
