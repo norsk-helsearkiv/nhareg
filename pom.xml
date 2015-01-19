@@ -12,5 +12,6 @@
     <modules>
         <module>domene</module>
         <module>tjeneste</module>
+        <module>klient-web</module>
     </modules>
 </project>
