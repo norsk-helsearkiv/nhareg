@@ -29,3 +29,10 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+
+# Web klienten
+klient-web/src/main/vendor/
+klient-web/src/main/build/
+klient-web/src/main/bin/
+klient-web/src/main/node_modules/
+klient-web/src/main/vendor/
