@@ -4,17 +4,54 @@
     xmlns="http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv" 
     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
     elementFormDefault="qualified">
-    <xs:element name="Avleveringsliste">
+    <xs:element name="Avlevering" type="Avlevering">
         <xs:annotation>
             <xs:documentation>Avleverende virksomhet skal utarbeide en avleveringsliste, som er en fullstendig fortegnelse over det fysiske arkivmaterialet som avleveringen omfatter. Avleveringslisten skal leveres i digital form og inneholde oversikt over hva som avleveres og hvordan dette er ordnet.</xs:documentation>
         </xs:annotation>
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="pasientjournal" type="Pasientjournal"  maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:complexType>
     </xs:element>
     
+    <xs:complexType name="Virksomhet">
+        <xs:sequence>
+            <xs:element name="organisasjonsnummer" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>organisasjonsnummer fra Brønnøysundregistrene</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="navn" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Avtale">
+        <xs:sequence>
+            <xs:element name="avtaleidentifikator" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>En unik identifikator som identifiserer den enkelte avleveringsavtale. Tildeles av arkivdepotet ved avtaleinngåelse med arkivskaper.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="avtaledato" type="xs:date"/>
+            <xs:element name="avtalebeskrivelse" type="xs:string"/>
+            <xs:element name="virksomhet" type="Virksomhet"/> 
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="Avlevering">
+        <xs:sequence>
+            <xs:element name="avleveringsidentifikator" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Unik identifikator som identifiserer den enkelte arkivavlevering. Merk: Avleveringsidentifikator fastsettes av NHA i den avtalen som inngås mellom arkivskaper og arkivdepot i forbindelse med en avlevering.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="avleveringsbeskrivelse" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>utfyllende opplysninger</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="avtale" type="Avtale"/>
+            <xs:element name="arkivskaper" type="xs:string"/>
+            <xs:element name="pasientjournal" type="Pasientjournal"  maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+        
     <xs:complexType name="Pasientjournal">
         <xs:sequence>
             <xs:element name="grunnopplysninger" type="Grunnopplysninger">
@@ -29,6 +66,11 @@
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
+        <xs:attribute name="uuid" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Universel unik identifikator som benyttes for entydig å identifisere en pasientjournal</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>   
     <xs:complexType name="Grunnopplysninger">
         <xs:sequence>
