@@ -7,7 +7,7 @@
         <jta-data-source>java:jboss/datasources/NharegTestDS</jta-data-source>
         <mapping-file>META-INF/orm.xml</mapping-file>
         <jar-file>domene.jar</jar-file>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon.Avleveringsbeskrivelse</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Properties for Hibernate -->
