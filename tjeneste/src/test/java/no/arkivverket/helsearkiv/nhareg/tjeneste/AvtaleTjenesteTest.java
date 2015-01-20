@@ -8,10 +8,9 @@ import java.util.List;
 import javax.ejb.EJBException;
 
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon.Avleveringsbeskrivelse;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -20,7 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class AvleveringsbeskrivelseTjenesteTest {
+public class AvtaleTjenesteTest {
     
     @Deployment
     public static WebArchive deployment() {
@@ -28,15 +27,15 @@ public class AvleveringsbeskrivelseTjenesteTest {
     }
    
     @Inject
-    private AvleveringsbeskrivelseTjeneste tjeneste;
+    private AvtaleTjeneste tjeneste;
     
     @Test(expected = EJBException.class)
-    public void testAvleveringsbeskrivelseMedId() {
+    public void testAvtaleMedId() {
         
         // Test loading a single venue
-        Avleveringsbeskrivelse beskrivelse = tjeneste.getSingleInstance("A12345");
+        Avtale beskrivelse = tjeneste.getSingleInstance("A12345");
         assertNotNull(beskrivelse);
-        assertEquals("A12345", beskrivelse.getArkivID());
+        assertEquals("A12345", beskrivelse.getAvtaleidentifikator());
     }
     
     @Test
@@ -48,16 +47,17 @@ public class AvleveringsbeskrivelseTjenesteTest {
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
         
-        List<Avleveringsbeskrivelse> beskrivelser = tjeneste.getAll(queryParameters);
+        List<Avtale> beskrivelser = tjeneste.getAll(queryParameters);
         assertNotNull(beskrivelser);
         assertEquals(0, beskrivelser.size());
 //        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
     }
+    
     @Test
     public void testCreate(){
-        Avleveringsbeskrivelse a = new Avleveringsbeskrivelse();
-        a.setAvleveringsidentifikator("Avlevering 001");
+        Avtale a = new Avtale();
+        a.setAvtaleidentifikator("Avlevering 001");
         a.setAvtaledato(Calendar.getInstance());
-        tjeneste.createAvleveringsbeskrivelse(a);
+        tjeneste.create(a);
     }
 }

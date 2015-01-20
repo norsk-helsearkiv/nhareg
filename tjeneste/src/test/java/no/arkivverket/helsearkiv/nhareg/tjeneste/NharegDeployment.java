@@ -12,8 +12,8 @@ public class NharegDeployment {
                 .addPackage(Resources.class.getPackage())
 //                .addAsResource("META-INF/test-persistence.xml")
                 .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
-                .addAsResource("META-INF/validation.xml" )
-                .addAsResource( "constraints-car.xml" )
+//                .addAsResource("META-INF/validation.xml" )
+//                .addAsResource( "constraints-car.xml" )
 //                .addAsResource("import.sql")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 // Deploy our test datasource
