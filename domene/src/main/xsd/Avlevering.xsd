@@ -49,6 +49,7 @@
             <xs:element name="avtale" type="Avtale"/>
             <xs:element name="arkivskaper" type="xs:string"/>
             <xs:element name="pasientjournal" type="Pasientjournal"  maxOccurs="unbounded"/>
+            <xs:element ref="oppdateringsinfo" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
         
@@ -65,13 +66,23 @@
                     <xs:documentation>Avleveringslisten skal inneholde følgende supplerende opplysninger om hver enkelt pasientjournal, dersom de kan hentes fra virksomhetens pasientadministrative systemer eller annen elektronisk registratur</xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="lagringsenhet" type="Lagringsenhet" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>
+                        Peker til hvor pasientjournalen fysisk befinner seg.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            
+            <xs:element ref="oppdateringsinfo" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="uuid" type="xs:string">
             <xs:annotation>
                 <xs:documentation>Universel unik identifikator som benyttes for entydig å identifisere en pasientjournal</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-    </xs:complexType>   
+    </xs:complexType>
+       
     <xs:complexType name="Grunnopplysninger">
         <xs:sequence>
             <xs:element name="identifikator" type="Identifikator">
@@ -137,29 +148,40 @@
             <xs:element name="henvisning" type="Henvisning"/>
         </xs:sequence>
     </xs:complexType>
-
+    
+    <xs:element name="diagnosekode">
+        <xs:complexType>
+            <xs:annotation>
+                <xs:documentation>
+                    Kode som angir hvilken diagnose det gjelder.					
+                    Eksempel på kodeverk: 
+                    Code System: ICD-10  [2.16.840.1.113883.6.3] (icd10)
+                </xs:documentation>
+            </xs:annotation>
+            <xs:complexContent>
+                <xs:extension base="CV"/>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+        
     <xs:complexType name="Diagnose">
         <xs:sequence>
-            <xs:element name="kode" type="xs:string">
-                <xs:annotation>
-                    <xs:documentation>Diagnosekode</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="kodeverk" type="xs:string">
-                <xs:annotation>
-                    <xs:documentation>Kodeverk (og versjon) som diagnosekoden er hentet fra</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="tekst" type="xs:string">
-                <xs:annotation>
-                    <xs:documentation>Diagnosekodens tekstlige beskrivelse</xs:documentation>
-                </xs:annotation>
-            </xs:element>
             <xs:element minOccurs="0" name="diagdato" type="xs:date">
                 <xs:annotation>
                     <xs:documentation>Dato for fastsettelse av diagnose</xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element ref="diagnosekode" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="diagnosetekst" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Benyttes i de tilfeller der men ikke har diagnosekode.
+                        Kan også benyttes til suplerende tekst.
+                    </xs:documentation>
+                </xs:annotation>
+                
+            </xs:element>
+            <xs:element ref="oppdateringsinfo" minOccurs="1" maxOccurs="1"/>     
         </xs:sequence>
     </xs:complexType>
         
@@ -227,4 +249,140 @@
         </xs:sequence>
     </xs:complexType>
     
+    <xs:complexType name="Lagringsenhet">
+        <xs:annotation>
+            <xs:documentation>
+                Representerer den fysiske enheten (kasse, boks etc.), hvor pasientjournalene oppbevares.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="identifikator" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Identifikator som identifiserer den fysiske enheten (kasse, boks etc.).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="CS">
+        <xs:annotation>
+            <xs:documentation>
+                Denne klassen benyttes for å representere datatypen CS.
+                Benyttes for registrering av kodet verdi hvor koden angis i form av en tekststreng og med mulighet til å angi kodemeningen som opsjon. Kodeverket og versjonen av dette skal være entydig bestemt av dataelementtypen.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="code" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        En tekststeng som inneholder kodeverdien (f.eks., "HS")
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="displayName" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        En tekststeng (term) som beskriver det begrep som koden representerer (f.eks. "Helsesøster" for kode "HS")
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="oppdateringsinfo" type="Oppdateringsinfo"/> 
+    <xs:complexType name="Oppdateringsinfo">
+        <xs:annotation>
+            <xs:documentation>
+                En instans av denne klassen benyttes for å registrere opplysninger om oppdatering av avleveringsbeskrivelsen.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="sist_oppdatert" type="xs:dateTime" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Tidspunkt for siste oppdatering av avleveringsdokumentasjonen.
+                    </xs:documentation>
+                </xs:annotation>
+
+            </xs:element>
+            <xs:element name="oppdatert_av" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Navn på den som foretok siste oppdatering av avleveringsdokumentasjonen.
+                    </xs:documentation>
+                </xs:annotation>
+
+            </xs:element>
+            <xs:element name="prosesstrinn" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Angivelse av hvor i avleveringsprosessen en er når avleveringsdokumentasjonen oppdateres.   
+                        Følgende tekster skal kunne benyttes:  
+                         - Utvalg  
+                         - Uttrekk  
+                         - Kvalitetssikring  
+                         - Overføring  
+                         - Tilbakemelding  
+                         - Avsluttet 
+                    </xs:documentation>
+                </xs:annotation>
+ 
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="CV">
+        <xs:annotation>
+            <xs:documentation>
+                Benyttes for registrering av koder i kodeverk som identifiseres entydig av en OID, og som det ikke er naturlig å benytte datatype CS for.  
+                Merk:  
+                Bruk av datatype CV forutsettes at i spesifikasjonene er angitt hvilke konkrete kodeverk som skal kunne benyttes ved registrering i dette attributtet. Denne datatypen skal kun benyttes for kodeverk som kan identifiseres gjennom en OID.  
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="code" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        En tekststeng som inneholder kodeverdien (f.eks., "F40.0")
+                        Merk: code skal normalt alltid angis når denne datatypen benyttes. I visse situasjoner kan imidlertid det tillates at CV benyttes uten at det angis kode men kun en originalText. F.eks. kan dette være aktuelt dersom kodingen skal skje hos mottakeren av meldingen (post coding). Det skal i slike tilfeller angis eksplisitt i beskrivelsen av attributtet (i implementasjonsguide el.) dersom dette tillates.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="displayName" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        En tekststeng (term) som beskriver det begrep som koden representerer (F.eks. "Agorafobi" for F40.0)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="codeSystem" type="xs:string" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        En Object Identifier (OID) som entydig identifiserer det kodeverk som kodene tilhører.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="codeSystemVersion" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        En tekststeng som beskriver versjonen av kodeverket.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="originalText" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Kan benyttes for å registrere den tekst som dannet grunnlaget for valg av kode.
+                        Vær spesielt oppmerksom på at dersom et kodeverk inneholder en kode for "Annet" (eller tilsvarende), så vil det ofte være ønskelig å registrere hva dette "annet" er. I slike tilfeller kan en gjerne benytte parameteren originalText, men dette bør da anmerkes spesielt i implementasjonsguide eller annen relevant dokumentasjon.
+                        Merk: originalText må angis dersom code ikke angis.
+                        
+                        NB! Merknad(Arnfinn Sandnes) : Tror ikke dette elementet bør ligge her, men bør være et element som bør ligge på elementene som benytter denne typen (CV).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>
