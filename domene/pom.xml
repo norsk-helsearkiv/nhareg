@@ -22,6 +22,7 @@
                 <artifactId>jaxb2-maven-plugin</artifactId>
                 <version>1.6</version>
                 <executions>
+                    <!--
                     <execution>
                         <id>xjc-schema0</id>
                         <goals>
@@ -43,6 +44,7 @@
                             <clearOutputDir>false</clearOutputDir>
                         </configuration>
                     </execution>
+                    -->
                     <execution>
                         <id>xjc-schema2</id>
                         <goals>
@@ -61,7 +63,7 @@
                         </goals>
                         <configuration>
                             <schemaFiles>Avlevering.xsd</schemaFiles>
-                            <packageName>no.arkivverket.helsearkiv.nhareg.domene.avleveringsliste</packageName>
+                            <packageName>no.arkivverket.helsearkiv.nhareg.domene.avlevering</packageName>
                             <clearOutputDir>false</clearOutputDir>
                         </configuration>
                     </execution>
