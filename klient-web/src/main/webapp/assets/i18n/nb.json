@@ -1,8 +1,16 @@
 {
 	"common" : {
-		"APP_TITLE": "Registreringskofferten"
+		"OK": "Ok",
+		"APP_TITTEL": "Registreringskofferten"
 	},
 	"home" : {
-
+		"SOK" : "Søk"
+	},
+	"login" : {
+		"TITTEL" : "Logg inn",
+		"BRUKERNAVN" : "Brukernavn",
+		"PASSORD": "Passord",
+		"HUSK_MEG": "Husk meg",
+		"LOGG_UT" : "Logg ut"
 	}
 }

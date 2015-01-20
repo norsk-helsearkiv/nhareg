@@ -3,7 +3,11 @@ angular.module( 'nha', [
   'templates-common',
   'ui.router',
   'pascalprecht.translate',
-  'nha.home'
+  'nha.common.error-service',
+  'nha.common.http-service',
+  'nha.home',
+  'nha.login',
+  'nha.registrering'
 ])
 
 .config( function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {

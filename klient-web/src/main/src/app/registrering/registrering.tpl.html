@@ -1,0 +1,53 @@
+<nav class="navbar navbar-fixed-top">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">{{ 'common.APP_TITTEL' | translate }}</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+      	<li><a href="" data-ng-click="">Vis hurtigtaster</a></li>
+        <li><a class="loggut" href="" data-ng-click="loggUt()">{{ 'login.LOGG_UT' | translate }}</a></li>
+      </ul>
+  </div>
+</nav>
+
+<div class="container content">
+	<h1>Registrering</h1>
+	<form>
+		<div class="well">
+			<legend>Lagringsenhet</legend>
+			<div class="form-group">
+				<label>Tekstfelt 1:</label>
+				<input type="text" class="form-control" placeholder="Tekstfelt 1..." autofocus>
+			</div>
+
+			<div class="form-group">
+				<label>Tekstfelt 2:</label>
+				<input type="text" class="form-control" placeholder="Tekstfelt 2..." autofocus>
+			</div>
+		</div>
+
+		<div class="well">
+			<legend>Persondata</legend>
+			<div class="form-group">
+				<label>Personnummer / ID</label>
+				<input type="text" class="form-control" placeholder="Tekstfelt 1..." autofocus>
+			</div>
+
+			<div class="form-group">
+				<label>Navn</label>
+				<input type="text" class="form-control" placeholder="Tekstfelt 2..." autofocus>
+			</div>
+		</div>
+
+		<div class="well">
+			<legend>Diagnoser</legend>
+		</div>
+
+		<div class="well">
+			<legend>Vedlegg</legend>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Submit</button>
+		<button class="btn btn-default">Tilbake</button>
+	</form>
+</div>
