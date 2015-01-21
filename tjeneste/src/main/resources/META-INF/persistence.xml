@@ -5,15 +5,24 @@
         http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
    <persistence-unit name="primary">
-      <!-- If you are running in a production environment, add a managed 
-         data source, this example data source is just for development and testing! -->
-      <!-- The datasource is deployed as WEB-INF/ticket-monster-ds.xml, you
-         can find it in the source at src/main/webapp/WEB-INF/ticket-monster-ds.xml -->
-      <jta-data-source>java:jboss/datasources/ticket-monsterDS</jta-data-source>
-      <properties>
-         <!-- Properties for Hibernate -->
-         <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-         <property name="hibernate.show_sql" value="false" />
-      </properties>
+       <jta-data-source>java:jboss/datasources/mysqlDS</jta-data-source>
+        <mapping-file>META-INF/orm.xml</mapping-file>
+        <jar-file>domene.jar</jar-file>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/nha" />
+            <property name="javax.persistence.jdbc.user" value="root" />
+            <property name="javax.persistence.jdbc.password" value="" />
+ 
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+        </properties>
    </persistence-unit>
 </persistence>
