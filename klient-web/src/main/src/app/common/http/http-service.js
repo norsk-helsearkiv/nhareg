@@ -3,16 +3,33 @@ var mod = angular.module('nha.common.http-service', [
 
 mod.factory('httpService', ['$http', httpService]);
 
-function httpService() {
+function httpService($http) {
+	var url = "assets/filer/";
 
-	var avtaler = "attriutt data";
+	function getAvtaler() {
+		return $http({
+			cache: true,
+			accept: "application/json",
+			method: "GET",
+			url: url + "avtaler"
+		});
+	}
+
+	//TODO: fjern denne om ikke den trengs
+	/*
+	function getAvleveringer(id) {
+		return $http({
+			cache: true,
+			accept: "application/json",
+			method: "GET",
+			url: url + "avleveringer/" + id
+		});
+	}*/
 
 	return {
 
-		getAvtaler: function(data) {
-			console.log(avtaler);
-		}
+		getAvtaler: getAvtaler
+		//getAvleveringer : getAvleveringer(id)
 
 	};
-  
 }

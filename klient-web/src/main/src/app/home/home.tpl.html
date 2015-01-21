@@ -16,10 +16,11 @@
     <div class="col-sm-3 col-md-2 sidebar">
       <h4>Avtaler</h4>
       <ul class="nav nav-sidebar">
-        <li class="active"><a href="#">Avtale 1<span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Avtale 2</a></li>
-        <li><a href="#">Avtale 3</a></li>
-        <li><a href="#">Avtale 4</a></li>
+        <li data-ng-repeat="avtale in avtaler"
+            data-ng-click="setValgtAvtale(avtale)"
+            data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
+          <a href="">{{ avtale.avtalebeskrivelse }}</a>
+        </li>
       </ul>
     </div>
 
@@ -34,7 +35,7 @@
         </form>
       </div>
       
-      <h2 class="sub-header">Avleveringer</h2>
+      <h2 class="sub-header">Avleveringer <small> for {{ valgtAvtale.avtalebeskrivelse }}</small></h2>
       <div class="table-responsive">
         <table class="table table-striped">
           <thead>
@@ -47,68 +48,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1,001</td>
-              <td>Lorem</td>
-              <td>ipsum</td>
-              <td>dolor</td>
-              <td>sit</td>
-            </tr>
-            <tr>
-              <td>1,002</td>
-              <td>amet</td>
-              <td>consectetur</td>
-              <td>adipiscing</td>
-              <td>elit</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>Integer</td>
-              <td>nec</td>
-              <td>odio</td>
-              <td>Praesent</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>libero</td>
-              <td>Sed</td>
-              <td>cursus</td>
-              <td>ante</td>
-            </tr>
-            <tr>
-              <td>1,004</td>
-              <td>dapibus</td>
-              <td>diam</td>
-              <td>Sed</td>
-              <td>nisi</td>
-            </tr>
-            <tr>
-              <td>1,005</td>
-              <td>Nulla</td>
-              <td>quis</td>
-              <td>sem</td>
-              <td>at</td>
-            </tr>
-            <tr>
-              <td>1,006</td>
-              <td>nibh</td>
-              <td>elementum</td>
-              <td>imperdiet</td>
-              <td>Duis</td>
-            </tr>
-            <tr>
-              <td>1,007</td>
-              <td>sagittis</td>
-              <td>ipsum</td>
-              <td>Praesent</td>
-              <td>mauris</td>
-            </tr>
-            <tr>
-              <td>1,008</td>
-              <td>Fusce</td>
-              <td>nec</td>
-              <td>tellus</td>
-              <td>sed</td>
+            <tr data-ng-repeat="avlevering in avleveringer">
+              <td>{{ avlevering.id }}</td>
+              <td>{{ avlevering.navn }}</td>
+              <td>{{ avlevering.startdato }}</td>
+              <td>{{ avlevering.sluttdato }}</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
