@@ -56,7 +56,7 @@ public class AvtaleTjenesteTest {
     @Test
     public void testCreate(){
         Avtale a = new Avtale();
-        a.setAvtaleidentifikator("Avlevering 001");
+        a.setAvtaleidentifikator("Avtale 001");
         a.setAvtaledato(Calendar.getInstance());
         tjeneste.create(a);
     }

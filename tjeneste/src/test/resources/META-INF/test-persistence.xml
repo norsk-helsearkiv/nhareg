@@ -8,6 +8,9 @@
         <mapping-file>META-INF/orm.xml</mapping-file>
         <jar-file>domene.jar</jar-file>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Properties for Hibernate -->
