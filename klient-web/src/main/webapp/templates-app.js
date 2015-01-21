@@ -71,10 +71,11 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "    <div class=\"col-sm-3 col-md-2 sidebar\">\n" +
     "      <h4>Avtaler</h4>\n" +
     "      <ul class=\"nav nav-sidebar\">\n" +
-    "        <li class=\"active\"><a href=\"#\">Avtale 1<span class=\"sr-only\">(current)</span></a></li>\n" +
-    "        <li><a href=\"#\">Avtale 2</a></li>\n" +
-    "        <li><a href=\"#\">Avtale 3</a></li>\n" +
-    "        <li><a href=\"#\">Avtale 4</a></li>\n" +
+    "        <li data-ng-repeat=\"avtale in avtaler\"\n" +
+    "            data-ng-click=\"setValgtAvtale(avtale)\"\n" +
+    "            data-ng-class=\"{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}\">\n" +
+    "          <a href=\"\">{{ avtale.avtalebeskrivelse }}</a>\n" +
+    "        </li>\n" +
     "      </ul>\n" +
     "    </div>\n" +
     "\n" +
@@ -89,7 +90,7 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "        </form>\n" +
     "      </div>\n" +
     "      \n" +
-    "      <h2 class=\"sub-header\">Avleveringer</h2>\n" +
+    "      <h2 class=\"sub-header\">Avleveringer <small> for {{ valgtAvtale.avtalebeskrivelse }}</small></h2>\n" +
     "      <div class=\"table-responsive\">\n" +
     "        <table class=\"table table-striped\">\n" +
     "          <thead>\n" +
@@ -102,68 +103,12 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "            </tr>\n" +
     "          </thead>\n" +
     "          <tbody>\n" +
-    "            <tr>\n" +
-    "              <td>1,001</td>\n" +
-    "              <td>Lorem</td>\n" +
-    "              <td>ipsum</td>\n" +
-    "              <td>dolor</td>\n" +
-    "              <td>sit</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,002</td>\n" +
-    "              <td>amet</td>\n" +
-    "              <td>consectetur</td>\n" +
-    "              <td>adipiscing</td>\n" +
-    "              <td>elit</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,003</td>\n" +
-    "              <td>Integer</td>\n" +
-    "              <td>nec</td>\n" +
-    "              <td>odio</td>\n" +
-    "              <td>Praesent</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,003</td>\n" +
-    "              <td>libero</td>\n" +
-    "              <td>Sed</td>\n" +
-    "              <td>cursus</td>\n" +
-    "              <td>ante</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,004</td>\n" +
-    "              <td>dapibus</td>\n" +
-    "              <td>diam</td>\n" +
-    "              <td>Sed</td>\n" +
-    "              <td>nisi</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,005</td>\n" +
-    "              <td>Nulla</td>\n" +
-    "              <td>quis</td>\n" +
-    "              <td>sem</td>\n" +
-    "              <td>at</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,006</td>\n" +
-    "              <td>nibh</td>\n" +
-    "              <td>elementum</td>\n" +
-    "              <td>imperdiet</td>\n" +
-    "              <td>Duis</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,007</td>\n" +
-    "              <td>sagittis</td>\n" +
-    "              <td>ipsum</td>\n" +
-    "              <td>Praesent</td>\n" +
-    "              <td>mauris</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td>1,008</td>\n" +
-    "              <td>Fusce</td>\n" +
-    "              <td>nec</td>\n" +
-    "              <td>tellus</td>\n" +
-    "              <td>sed</td>\n" +
+    "            <tr data-ng-repeat=\"avlevering in avleveringer\">\n" +
+    "              <td>{{ avlevering.id }}</td>\n" +
+    "              <td>{{ avlevering.navn }}</td>\n" +
+    "              <td>{{ avlevering.startdato }}</td>\n" +
+    "              <td>{{ avlevering.sluttdato }}</td>\n" +
+    "              <td></td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +
     "        </table>\n" +

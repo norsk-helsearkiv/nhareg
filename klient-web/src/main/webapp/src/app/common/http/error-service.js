@@ -2,9 +2,9 @@ var mod = angular.module('nha.common.error-service', [
     'ui.bootstrap'
 ]);
 
-mod.factory('errorService', ['$modal', errorService]);
+mod.factory('errorService', ['$modal', '$location', errorService]);
 
-function errorService($modal) {
+function errorService($modal, $location) {
     var template = {
         backdrop: 'static',
         windowClass: "modal-center"
@@ -46,6 +46,10 @@ function errorService($modal) {
             return $modal.open(template);
         },
 
+        unauthorizedError: function() {
+            $location.path('/login');
+        },
+
         errorCode: function (status) {
             switch(status){
                 case 400:
@@ -54,6 +58,8 @@ function errorService($modal) {
                     return this.notFound();
                 case 422:
                     return this.notFound();
+                case 401:
+                    return this.unauthorizedError();
                 default:
                     return this.serverError();
             }

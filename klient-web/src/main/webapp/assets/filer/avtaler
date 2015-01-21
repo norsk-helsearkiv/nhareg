@@ -1,0 +1,77 @@
+[
+	{
+		"avtaleidentifikator" : "Avtale 1",
+		"avtalebeskrivelse": "Demoavtale nr 1",
+		"avtaledato" : "dato",
+		"avleveringer" : [
+			{
+				"id" : 1,
+				"navn": "Avlevering 1",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			},
+			{
+				"id" : 2,
+				"navn": "Avlevering 2",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			},
+			{
+				"id" : 3,
+				"navn": "Avlevering 3",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			}
+		]
+	},
+	{
+		"avtaleidentifikator" : "Avtale 2",
+		"avtalebeskrivelse": "Demoavtale nr 2",
+		"avtaledato" : "dato",
+		"avleveringer" : [
+			{
+				"id" : 4,
+				"navn": "Avlevering 4",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			},
+			{
+				"id" : 5,
+				"navn": "Avlevering 5",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			},
+			{
+				"id" : 6,
+				"navn": "Avlevering 6",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			}
+		]
+	},
+	{
+		"avtaleidentifikator" : "Avtale 3",
+		"avtalebeskrivelse": "Demoavtale nr 3",
+		"avtaledato" : "dato",
+		"avleveringer" : [
+			{
+				"id" : 7,
+				"navn": "Avlevering 7",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			},
+			{
+				"id" : 8,
+				"navn": "Avlevering 8",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			},
+			{
+				"id" : 9,
+				"navn": "Avlevering 9",
+				"startdato" : "20-01-2015",
+				"sluttdato" : "27-01-2015"
+			}
+		]
+	}
+]

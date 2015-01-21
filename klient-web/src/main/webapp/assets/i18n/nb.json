@@ -12,5 +12,14 @@
 		"PASSORD": "Passord",
 		"HUSK_MEG": "Husk meg",
 		"LOGG_UT" : "Logg ut"
-	}
+	},
+	"error" :  {
+        "BAD_REQUEST_STATUS_CODE":      "400 Skjema feil",
+        "BAD_REQUEST":                  "Det er feil i skjema eller inputverdiene",
+        "SERVER_ERROR_STATUS_CODE":     "500 Intern server feil",
+        "SERVER_ERROR":                 "Det har oppstått en problem på serveren. Vennligst prøv igjen senere",
+        "CONFIRM_DELETE":               "Er du sikker på at du vil slette: ",
+        "NOT_FOUND":                    "Resursjen på serveren finnes ikke på angitt plassering.",
+        "NOT_FOUND_STATUS_CODE":        "404 Resursjen finnes ikke"
+    }
 }
