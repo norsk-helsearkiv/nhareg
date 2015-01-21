@@ -1,0 +1,18 @@
+<div class="container">
+
+	<form class="form-signin" data-ng-submit="submit()">
+		<h2 class="form-signin-heading">{{'login.TITTEL' | translate}}</h2>
+
+		<div class="form-group">
+			<label for="inputBrukernavn" class="sr-only">{{'login.BRUKERNAVN' | translate}}</label>
+			<input type="text" id="inputBrukernavn" class="form-control" placeholder="{{brukernavn}}..." autofocus>
+		</div>
+		
+		<div class="form-group">
+			<label for="inputPassord" class="sr-only">{{'login.PASSORD' | translate}}</label>
+			<input type="password" id="inputPassord" class="form-control" placeholder="{{passord}}...">
+		</div>
+
+		<button class="btn btn-lg btn-primary btn-block" type="submit">{{'common.OK' | translate}}</button>
+	</form>
+</div>

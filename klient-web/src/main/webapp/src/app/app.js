@@ -3,10 +3,14 @@ angular.module( 'nha', [
   'templates-common',
   'ui.router',
   'pascalprecht.translate',
-  'nha.home'
+  'nha.common.error-service',
+  'nha.common.http-service',
+  'nha.home',
+  'nha.login',
+  'nha.registrering'
 ])
 
-.config( function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {
+.config( ["$stateProvider", "$urlRouterProvider", "$translateProvider", function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {
   $urlRouterProvider.otherwise( '/' );
 
 	$translateProvider.useStaticFilesLoader({
@@ -14,8 +18,8 @@ angular.module( 'nha', [
 		suffix: '.json'
 	});
 	$translateProvider.preferredLanguage('nb');
-})
+}])
 
 
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
-});
+.controller( 'AppCtrl', ["$scope", "$location", function AppCtrl ( $scope, $location ) {
+}]);

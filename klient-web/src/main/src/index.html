@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html ng-app="nha" ng-controller="AppCtrl">
   <head>
-    <title ng-bind="pageTitle"></title>
+    <title>{{ 'common.APP_TITTEL' | translate }}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
 
     <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
     <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
@@ -12,9 +13,7 @@
     <script type="text/javascript" src="<%= file %>"></script><% }); %>
   </head>
   <body>
-    <h1>Felles: Its working!</h1>
-    <div ui-view="main"></div>
-
-    {{'common.APP_TITLE' | translate}}
+    <div ui-view="main">
+    </div>
   </body>
 </html>

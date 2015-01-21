@@ -1,1 +1,119 @@
-<h1>Home</h1>
+<nav class="navbar navbar-fixed-top">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">{{ 'common.APP_TITTEL' | translate }}</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a class="loggut" href="" data-ng-click="loggUt()">{{ 'login.LOGG_UT' | translate }}</a></li>
+      </ul>
+  </div>
+</nav>
+
+<div class="content">
+<div class="container-fluid">
+  <div class="row">
+    <!-- Avtaleliste -->
+    <div class="col-sm-3 col-md-2 sidebar">
+      <h4>Avtaler</h4>
+      <ul class="nav nav-sidebar">
+        <li class="active"><a href="#">Avtale 1<span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Avtale 2</a></li>
+        <li><a href="#">Avtale 3</a></li>
+        <li><a href="#">Avtale 4</a></li>
+      </ul>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <h2>Pasientsøk</h2>
+      <div class="row placeholders">
+        <form class="input-group">
+          <input type="text" class="form-control" placeholder="{{sok}}...">
+          <span class="input-group-btn">
+            <button class="btn btn-primary" type="button">{{ 'common.OK' | translate }}</button>
+          </span>
+        </form>
+      </div>
+      
+      <h2 class="sub-header">Avleveringer</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Navn</th>
+              <th>Startdato</th>
+              <th>Sluttdato</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1,001</td>
+              <td>Lorem</td>
+              <td>ipsum</td>
+              <td>dolor</td>
+              <td>sit</td>
+            </tr>
+            <tr>
+              <td>1,002</td>
+              <td>amet</td>
+              <td>consectetur</td>
+              <td>adipiscing</td>
+              <td>elit</td>
+            </tr>
+            <tr>
+              <td>1,003</td>
+              <td>Integer</td>
+              <td>nec</td>
+              <td>odio</td>
+              <td>Praesent</td>
+            </tr>
+            <tr>
+              <td>1,003</td>
+              <td>libero</td>
+              <td>Sed</td>
+              <td>cursus</td>
+              <td>ante</td>
+            </tr>
+            <tr>
+              <td>1,004</td>
+              <td>dapibus</td>
+              <td>diam</td>
+              <td>Sed</td>
+              <td>nisi</td>
+            </tr>
+            <tr>
+              <td>1,005</td>
+              <td>Nulla</td>
+              <td>quis</td>
+              <td>sem</td>
+              <td>at</td>
+            </tr>
+            <tr>
+              <td>1,006</td>
+              <td>nibh</td>
+              <td>elementum</td>
+              <td>imperdiet</td>
+              <td>Duis</td>
+            </tr>
+            <tr>
+              <td>1,007</td>
+              <td>sagittis</td>
+              <td>ipsum</td>
+              <td>Praesent</td>
+              <td>mauris</td>
+            </tr>
+            <tr>
+              <td>1,008</td>
+              <td>Fusce</td>
+              <td>nec</td>
+              <td>tellus</td>
+              <td>sed</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
