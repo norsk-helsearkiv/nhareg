@@ -183,6 +183,11 @@
             </xs:element>
             <xs:element ref="oppdateringsinfo" minOccurs="1" maxOccurs="1"/>     
         </xs:sequence>
+        <xs:attribute name="uuid" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Universel unik identifikator som benyttes for entydig å identifisere en fastsatt diagnose</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
         
     <xs:complexType name="Hendelse">
@@ -264,6 +269,11 @@
                 </xs:annotation>
             </xs:element>
         </xs:sequence>
+        <xs:attribute name="uuid" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Universel unik identifikator som benyttes for entydig å identifisere en lagringsenhet</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     
     <xs:complexType name="CS">

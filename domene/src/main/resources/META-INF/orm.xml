@@ -3,10 +3,63 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
         http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd" version="2.1">
+    
     <package>no.arkivverket.helsearkiv.nhareg.domene.avlevering</package>
+    
     <entity class="Avtale">
         <attributes>
             <id name="avtaleidentifikator"/>
+        </attributes>
+    </entity>
+    
+    <entity class="Avlevering" access="FIELD">
+        <attributes>
+            <id name="avleveringsidentifikator"/>
+            <one-to-many name="pasientjournal">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>        
+        </attributes>
+    </entity>
+
+    <entity class="Pasientjournal"  access="FIELD">
+        <attributes>
+            <id name="uuid"/>
+            <!--
+                <generated-value strategy="AUTO"/>
+            </id>
+            -->
+            <one-to-many name="diagnose">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            
+              <!--  
+            <one-to-one name="supplerendeopplysninger">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
+            -->
+            
+            <many-to-many name="lagringsenhet"/>
+            <transient name="supplerendeopplysninger"/>
+            <transient name="grunnopplysninger"/>
+            <transient name="oppdateringsinfo"/>
+        </attributes>
+    </entity>
+    
+    <entity class="Diagnose">
+        <attributes>
+            <id name="uuid"/>
+        </attributes>
+    </entity>
+    
+    <entity class="Lagringsenhet">
+        <attributes>
+            <id name="uuid"/>
         </attributes>
     </entity>
 
