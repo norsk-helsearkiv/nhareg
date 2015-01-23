@@ -5,6 +5,7 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
@@ -34,7 +35,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     @GET
     @Path("/{id}/avleveringer")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Avlevering> getAvleveringer(String avtaleidentifikator) {
+    public List<Avlevering> getAvleveringer(@PathParam("id") String avtaleidentifikator) {
         String select = "select object(o)"
                 + "  from Avlevering as o"
                 + " where o.avtale.avtaleidentifikator = :avtaleidentifikator";
