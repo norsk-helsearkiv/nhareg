@@ -16,12 +16,7 @@
         <attributes>
             <id name="avtaleidentifikator"/>
             
-            <one-to-many name="avlevering" fetch="LAZY">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
-            
+            <many-to-one name="virksomhet"/>
         </attributes>
     </entity>
     
@@ -29,48 +24,63 @@
         <attributes>
             <id name="avleveringsidentifikator"/>
             
-            <many-to-one name="avtale" fetch="LAZY">
-                <join-column name="avtaleidentifikator" />
-            </many-to-one>
-            <one-to-many name="pasientjournal">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
+            <many-to-one name="avtale"/>
+            <one-to-many name="pasientjournal" fetch="EAGER"/>
             
-            <transient name="oppdateringsinfo"/>     
+            <embedded name="oppdateringsinfo"/>
         </attributes>
     </entity>
 
-    <entity class="Pasientjournal"  access="FIELD">
+    <entity class="Pasientjournal" access="FIELD">
         <attributes>
             <id name="uuid"/>
             
-            <many-to-one name="avlevering">
-                <join-column name="avleveringsidentifikator" />
-            </many-to-one>
-            <many-to-many name="lagringsenhet" />
-            <many-to-many name="diagnose" />
+            <one-to-many name="diagnose" fetch="EAGER"/>
+            <many-to-many name="lagringsenhet" fetch="EAGER"/>
+            
+            <embedded name="grunnopplysninger"/>
+            <embedded name="oppdateringsinfo"/>
             
             <transient name="supplerendeopplysninger"/>
-            <transient name="grunnopplysninger"/>
-            <transient name="oppdateringsinfo"/>
         </attributes>
     </entity>
         
-    <entity class="Lagringsenhet">
-        <attributes>
-            <id name="uuid"/>
-            
-            <many-to-many name="pasientjournal"/>
-            
-        </attributes>
-    </entity>
-    
-    <entity class="Diagnose">
+    <entity class="Lagringsenhet" access="FIELD">
         <attributes>
             <id name="uuid"/>
         </attributes>
     </entity>
     
+    <entity class="Diagnose" access="FIELD">
+        <attributes>
+            <id name="uuid"/>
+            <many-to-one name="diagnosekode"/>
+        </attributes>
+    </entity>
+    
+    <entity class="CV" access="FIELD">
+        <inheritance strategy="JOINED"/>        
+        <attributes>
+            <id name="code"/>
+            <id name="codeSystem"/>
+            <id name="codeSystemVersion"/>
+        </attributes>
+    </entity>
+    
+    <entity class="Diagnosekode" access="FIELD">
+    </entity>
+    
+    <entity class="Identifikator" access="FIELD">
+        <attributes>
+            <id name="uuid"/>
+        </attributes>
+    </entity>
+    
+    <embeddable class="Oppdateringsinfo">
+    </embeddable>
+    <embeddable class="Grunnopplysninger">
+        <attributes>
+            <one-to-many name="identifikator"></one-to-many>
+        </attributes>        
+    </embeddable>
 </entity-mappings>
