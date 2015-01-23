@@ -52,4 +52,12 @@ public class AvtaleTjenesteTest {
         assertEquals(0, beskrivelser.size());
 //        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
     }
+    
+    @Test
+    public void testCreate(){
+        Avtale a = new Avtale();
+        a.setAvtaleidentifikator("Avtale 001");
+        a.setAvtaledato(Calendar.getInstance());
+        tjeneste.create(a);
+    }
 }

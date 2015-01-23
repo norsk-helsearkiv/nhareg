@@ -112,7 +112,7 @@ public abstract class EntitetsTjeneste<T, K> {
     /**
      * <p>
      * A method for retrieving all entities of a given type. Supports the query
-     * parameters <code>first</code> and <code>max</code> for pagination.
+     * parameters <code>first</code> and <code>maxResults</code> for pagination.
      * </p>
      *
      * @param uriInfo application and request context information (see {
@@ -137,8 +137,8 @@ public abstract class EntitetsTjeneste<T, K> {
             Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first")) - 1;
             query.setFirstResult(firstRecord);
         }
-        if (queryParameters.containsKey("max")) {
-            Integer maxResults = Integer.parseInt(queryParameters.getFirst("max"));
+        if (queryParameters.containsKey("maxResults")) {
+            Integer maxResults = Integer.parseInt(queryParameters.getFirst("maxResults"));
             query.setMaxResults(maxResults);
         }
         return query.getResultList();
@@ -154,7 +154,7 @@ public abstract class EntitetsTjeneste<T, K> {
      * @return
      */
     @GET
-    @Path("/antall")
+    @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, Long> getCount(@Context UriInfo uriInfo) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -164,7 +164,7 @@ public abstract class EntitetsTjeneste<T, K> {
         Predicate[] predicates = extractPredicates(uriInfo.getQueryParameters(), criteriaBuilder, root);
         criteriaQuery.where(predicates);
         Map<String, Long> result = new HashMap<String, Long>();
-        result.put("antall", entityManager.createQuery(criteriaQuery).getSingleResult());
+        result.put("count", entityManager.createQuery(criteriaQuery).getSingleResult());
         return result;
     }
 
