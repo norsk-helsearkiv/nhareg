@@ -1,21 +1,21 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.Calendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
-import javax.ejb.EJBException;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,12 +53,19 @@ public class AvtaleTjenesteTest {
         // Test pagination logic
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
 
-        queryParameters.add("first", "2");
+        queryParameters.add("first", "1");
         queryParameters.add("maxResults", "1");
         
         List<Avtale> beskrivelser = tjeneste.getAll(queryParameters);
         assertNotNull(beskrivelser);
-        assertEquals(1, beskrivelser.size());
+        assertEquals(2, beskrivelser.size());
 //        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
+    }
+    @Test
+    public void getAvleveringer(){
+        List<Avlevering> avleveringer = tjeneste.getAvleveringer("A1234");
+        assertNotNull(avleveringer);
+        assertFalse(avleveringer.isEmpty());
+        assertEquals(1, avleveringer.size());
     }
 }
