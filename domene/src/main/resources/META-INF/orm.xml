@@ -34,7 +34,6 @@
     <entity class="Pasientjournal" access="FIELD">
         <attributes>
             <id name="uuid"/>
-            
             <one-to-many name="diagnose" fetch="EAGER"/>
             <many-to-many name="lagringsenhet" fetch="EAGER"/>
             
@@ -80,7 +79,10 @@
     </embeddable>
     <embeddable class="Grunnopplysninger">
         <attributes>
-            <one-to-many name="identifikator"></one-to-many>
+            <basic name="kjønn">
+                <column name="kjonn"/>
+            </basic>        
+            <one-to-many name="identifikator"  fetch="EAGER"/>
         </attributes>        
     </embeddable>
 </entity-mappings>
