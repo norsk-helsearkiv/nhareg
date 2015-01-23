@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -32,6 +33,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -81,9 +84,12 @@ import javax.ws.rs.core.UriInfo;
  *
  *
  * @author Marius Bogoevici
+ * @param <T> Entitetsklasse.
+ * @param <K> Nøkkelklasse
  */
 public abstract class EntitetsTjeneste<T, K> {
 
+    Log log = LogFactory.getLog(EntitetsTjeneste.class);
     //@Inject
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
@@ -195,6 +201,7 @@ public abstract class EntitetsTjeneste<T, K> {
             return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
         } catch (ConstraintViolationException e) {
             // If validation of the data failed using Bean Validation, then send an error
+            log.error("Constraint feil. ", e);
             Map<String, Object> errors = new HashMap<String, Object>();
             List<String> errorMessages = new ArrayList<String>();
             for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
@@ -205,6 +212,7 @@ public abstract class EntitetsTjeneste<T, K> {
             // Throwing the exception causes an automatic rollback
             throw new RestServiceException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
         } catch (Exception e) {
+            log.error("Create feilet. ", e);
             // Finally, handle unexpected exceptions
             Map<String, Object> errors = new HashMap<String, Object>();
             errors.put("errors", Collections.singletonList(e.getMessage()));

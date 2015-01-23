@@ -10,6 +10,7 @@ import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -29,13 +30,21 @@ public class AvtaleTjenesteTest {
     @Inject
     private AvtaleTjeneste tjeneste;
     
-    @Test(expected = EJBException.class)
+    @Test
+    public void create(){
+        Avtale avtale = new Avtale();
+        avtale.setAvtaleidentifikator("Avtale-1");
+        Response response = tjeneste.create(avtale);
+        assertNotNull(response);
+    }
+    
+    @Test
     public void testAvtaleMedId() {
         
         // Test loading a single venue
-        Avtale beskrivelse = tjeneste.getSingleInstance("A12345");
-        assertNotNull(beskrivelse);
-        assertEquals("A12345", beskrivelse.getAvtaleidentifikator());
+        Avtale avtale = tjeneste.getSingleInstance("A1234");
+        assertNotNull(avtale);
+        assertEquals("A1234", avtale.getAvtaleidentifikator());
     }
     
     @Test
@@ -49,7 +58,7 @@ public class AvtaleTjenesteTest {
         
         List<Avtale> beskrivelser = tjeneste.getAll(queryParameters);
         assertNotNull(beskrivelser);
-        assertEquals(0, beskrivelser.size());
+        assertEquals(1, beskrivelser.size());
 //        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
     }
 }
