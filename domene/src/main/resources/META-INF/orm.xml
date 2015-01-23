@@ -6,48 +6,64 @@
     
     <package>no.arkivverket.helsearkiv.nhareg.domene.avlevering</package>
     
-    <entity class="Avtale">
+    <entity class="Virksomhet" access="FIELD">
+        <attributes>
+            <id name="organisasjonsnummer" />
+        </attributes>
+    </entity>
+    
+    <entity class="Avtale" access="FIELD">
         <attributes>
             <id name="avtaleidentifikator"/>
+            
+            <one-to-many name="avlevering" fetch="LAZY">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-many>
+            
         </attributes>
     </entity>
     
     <entity class="Avlevering" access="FIELD">
         <attributes>
             <id name="avleveringsidentifikator"/>
+            
+            <many-to-one name="avtale" fetch="LAZY">
+                <join-column name="avtaleidentifikator" />
+            </many-to-one>
             <one-to-many name="pasientjournal">
                 <cascade>
                     <cascade-all/>
                 </cascade>
-            </one-to-many>        
+            </one-to-many>
+            
+            <transient name="oppdateringsinfo"/>     
         </attributes>
     </entity>
 
     <entity class="Pasientjournal"  access="FIELD">
         <attributes>
             <id name="uuid"/>
-            <!--
-                <generated-value strategy="AUTO"/>
-            </id>
-            -->
-            <one-to-many name="diagnose">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-many>
             
-              <!--  
-            <one-to-one name="supplerendeopplysninger">
-                <cascade>
-                    <cascade-all/>
-                </cascade>
-            </one-to-one>
-            -->
+            <many-to-one name="avlevering">
+                <join-column name="avleveringsidentifikator" />
+            </many-to-one>
+            <many-to-many name="lagringsenhet" />
+            <many-to-many name="diagnose" />
             
-            <many-to-many name="lagringsenhet"/>
             <transient name="supplerendeopplysninger"/>
             <transient name="grunnopplysninger"/>
             <transient name="oppdateringsinfo"/>
+        </attributes>
+    </entity>
+        
+    <entity class="Lagringsenhet">
+        <attributes>
+            <id name="uuid"/>
+            
+            <many-to-many name="pasientjournal"/>
+            
         </attributes>
     </entity>
     
@@ -57,10 +73,4 @@
         </attributes>
     </entity>
     
-    <entity class="Lagringsenhet">
-        <attributes>
-            <id name="uuid"/>
-        </attributes>
-    </entity>
-
 </entity-mappings>
