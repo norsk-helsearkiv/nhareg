@@ -1,4 +1,4 @@
-angular.module('templates-app', ['common/http-service/error-modal-400.tpl.html', 'common/http-service/error-modal-404.tpl.html', 'common/http-service/error-modal-500.tpl.html', 'common/http/error-modal-400.tpl.html', 'common/http/error-modal-404.tpl.html', 'common/http/error-modal-500.tpl.html', 'common/list-view/list-view.tpl.html', 'common/modal-service/delete-modal.tpl.html', 'common/modal-service/ny-avlevering.tpl.html', 'common/modal-service/ny-avtale.tpl.html', 'home/home.tpl.html', 'login/login.tpl.html', 'registrering/registrering.tpl.html']);
+angular.module('templates-app', ['common/http-service/error-modal-400.tpl.html', 'common/http-service/error-modal-404.tpl.html', 'common/http-service/error-modal-500.tpl.html', 'common/list-view/list-view.tpl.html', 'common/modal-service/delete-modal.tpl.html', 'common/modal-service/ny-avlevering.tpl.html', 'common/modal-service/ny-avtale.tpl.html', 'home/home.tpl.html', 'login/login.tpl.html', 'registrering/registrering.tpl.html']);
 
 angular.module("common/http-service/error-modal-400.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/http-service/error-modal-400.tpl.html",
@@ -36,57 +36,6 @@ angular.module("common/http-service/error-modal-404.tpl.html", []).run(["$templa
 
 angular.module("common/http-service/error-modal-500.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/http-service/error-modal-500.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "    <h3 class=\"modal-title\">{{'error.SERVER_ERROR_STATUS_CODE' | translate}}</h3>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-body\">\n" +
-    "    <p>\n" +
-    "        {{'error.SERVER_ERROR'| translate}}\n" +
-    "    </p>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-footer\">\n" +
-    "    <button class=\"btn btn-default btn-primary\" ng-click=\"ok()\">{{'common.OK' | translate}}</button>\n" +
-    "</div>");
-}]);
-
-angular.module("common/http/error-modal-400.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("common/http/error-modal-400.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "    <h3 class=\"modal-title\">{{'error.BAD_REQUEST_STATUS_CODE' | translate}}</h3>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-body\">\n" +
-    "    <p>\n" +
-    "        {{'error.BAD_REQUEST' | translate}}\n" +
-    "    </p>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-footer\">\n" +
-    "    <button class=\"btn btn-default btn-primary\" ng-click=\"ok()\">{{'common.OK' | translate}}</button>\n" +
-    "</div>");
-}]);
-
-angular.module("common/http/error-modal-404.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("common/http/error-modal-404.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "    <h3 class=\"modal-title\">{{'error.NOT_FOUND_STATUS_CODE' | translate}}</h3>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-body\">\n" +
-    "    <p>\n" +
-    "        {{message}} {{'error.NOT_FOUND' | translate}}\n" +
-    "    </p>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal-footer\">\n" +
-    "    <button class=\"btn btn-default btn-primary\" ng-click=\"ok()\">{{'common.OK' | translate}}</button>\n" +
-    "</div>");
-}]);
-
-angular.module("common/http/error-modal-500.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("common/http/error-modal-500.tpl.html",
     "<div class=\"modal-header\">\n" +
     "    <h3 class=\"modal-title\">{{'error.SERVER_ERROR_STATUS_CODE' | translate}}</h3>\n" +
     "</div>\n" +
