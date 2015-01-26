@@ -1,0 +1,22 @@
+{
+	"avtaleidentifikator" : "2",
+	"avtalebeskrivelse": "Demoavtale nr 2",
+	"avtaledato" : "dato",
+	"avleveringer" : [
+		{
+				"avleveringsidentifikator" : "4",
+				"arkivskaper": "Robin",
+				"avleveringsbeskrivelse" : "Avlevering 4"
+			},
+			{
+				"avleveringsidentifikator" : "5",
+				"arkivskaper": "Robin",
+				"avleveringsbeskrivelse" : "Avlevering 5"
+			},
+			{
+				"avleveringsidentifikator" : "6",
+				"arkivskaper": "Robin",
+				"avleveringsbeskrivelse" : "Avlevering 6"
+			}
+	]
+}

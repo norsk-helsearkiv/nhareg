@@ -10,7 +10,7 @@
 @import '../app/home/home.less';
 @import '../app/login/login.less';
 @import '../app/registrering/registrering.less';
-@import '../app/common/http/error-modal.less';
+@import '../app/common/list-view/list-view.less';
 
 /*
   Felles styles
@@ -33,4 +33,34 @@ body {
 
 .loggut {
   padding-right: 40px !important;
+}
+
+.modal-header {
+  background-color: @mainColor;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.modal-body {
+  padding: 15px;
+  padding-bottom: 0px;
+  p {
+    display: block;
+    font-size: 14px;
+    line-height: 14px;
+    margin: 0px;
+  }
+}
+
+.modal-footer {
+  
+}
+
+.right {
+  float: right;
+}
+
+.label-error {
+  color: red;
+  font-style: normal;
 }

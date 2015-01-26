@@ -5,6 +5,10 @@ angular.module( 'nha', [
   'pascalprecht.translate',
   'nha.common.error-service',
   'nha.common.http-service',
+  'nha.common.modal-service',
+  'nha.common.list-service',
+  'nha.common.list-view',
+  'nha.home.avleveringer-service',
   'nha.home',
   'nha.login',
   'nha.registrering'

@@ -13,7 +13,7 @@ function errorService($modal, $location) {
     return {
 
         badRequest: function () {
-            template.templateUrl = 'common/http/error-modal-400.tpl.html';
+            template.templateUrl = 'common/http-service/error-modal-400.tpl.html';
             template.controller = function ($scope, $modalInstance) {
                 $scope.ok = function () {
                     $modalInstance.close();
@@ -24,7 +24,7 @@ function errorService($modal, $location) {
         },
 
         notFound: function (message) {
-            template.templateUrl = 'common/http/error-modal-404.tpl.html';
+            template.templateUrl = 'common/http-service/error-modal-404.tpl.html';
             template.controller = function ($scope, $modalInstance) {
                 $scope.message = message;
                 $scope.ok = function () {
@@ -36,7 +36,7 @@ function errorService($modal, $location) {
         },
 
         serverError: function () {
-            template.templateUrl = 'common/http/error-modal-500.tpl.html';
+            template.templateUrl = 'common/http-service/error-modal-500.tpl.html';
             template.controller = function ($scope, $modalInstance) {
                 $scope.ok = function () {
                     $modalInstance.close();
