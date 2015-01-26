@@ -1,10 +1,29 @@
 {
 	"common" : {
+		"APP_TITTEL": "Registreringskofferten",
 		"OK": "Ok",
-		"APP_TITTEL": "Registreringskofferten"
+		"AVBRYT": "Avbryt",
+		"LEGG_TIL" : "Ny",
+		"table" : {
+			"ARKIVSKAPER" : "Arkivskaper",
+			"BESKRIVELSE" : "Beskrivelse",
+			"ID" : "ID"
+		}
 	},
 	"home" : {
-		"SOK" : "Søk"
+		"AVTALE" : "Avtale",
+		"AVTALER" : "Avtaler",
+		"AVLEVERING" : "Avlevering",
+		"AVLEVERINGER" : "Avleveringer", 
+		"FOR" : "for",
+		"PASIENTSOK" : "Pasientsøk",
+		"SOK" : "Søk",
+		"tooltip" : {
+			"LIST" : "Vis pasientjournaler i avleveringen",
+			"ADD" : "Legg til pasientjournal i avleveringen",
+			"FOLDER" : "Generer leveranse",
+			"DELETE" : "Slett avlevering"
+		}
 	},
 	"login" : {
 		"TITTEL" : "Logg inn",
@@ -12,6 +31,16 @@
 		"PASSORD": "Passord",
 		"HUSK_MEG": "Husk meg",
 		"LOGG_UT" : "Logg ut"
+	},
+	"modal" : {
+		"delete" : {
+			"TITTEL" : "Er du sikker på at du vil slette?",
+			"SIKKER" : "Er du sikker på at du vil slette",
+			"MED_ID" : "med id"
+		},
+		"legg_til" : {
+			"TITTEL" : "Opprett ny"
+		}
 	},
 	"error" :  {
         "BAD_REQUEST_STATUS_CODE":      "400 Skjema feil",

@@ -14,46 +14,52 @@
   <div class="row">
     <!-- Avtaleliste -->
     <div class="col-sm-3 col-md-2 sidebar">
-      <h4>Avtaler</h4>
+      <h4>
+        {{ 'home.AVTALER' | translate }}
+        <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()">{{ 'common.LEGG_TIL' | translate }}</button>
+      </h4>
       <ul class="nav nav-sidebar">
-        <li data-ng-repeat="avtale in avtaler"
+        <li data-ng-repeat="avtale in avtaler | orderBy: 'avtalebeskrivelse'"
             data-ng-click="setValgtAvtale(avtale)"
             data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
-          <a href="">{{ avtale.avtalebeskrivelse }}</a>
+            <a href=""><button class="icon icon-padding-right icon-delete" data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)" tooltip="{{text.tooltip.deleteElement}}"></button>{{ avtale.avtalebeskrivelse }}</a>
         </li>
       </ul>
     </div>
 
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h2>Pasientsøk</h2>
+      <h2>{{ text.pasientsok }}</h2>
       <div class="row placeholders">
         <form class="input-group">
-          <input type="text" class="form-control" placeholder="{{sok}}...">
+          <input type="text" data-ng-model="input" class="form-control" placeholder="{{text.pasientsok}}...">
           <span class="input-group-btn">
-            <button class="btn btn-primary" type="button">{{ 'common.OK' | translate }}</button>
+            <button class="btn btn-primary" type="submit" data-ng-click="actionSok(input)">{{ 'common.OK' | translate }}</button>
           </span>
         </form>
       </div>
       
-      <h2 class="sub-header">Avleveringer <small> for {{ valgtAvtale.avtalebeskrivelse }}</small></h2>
+      <h2 class="sub-header">{{ 'home.AVLEVERINGER' | translate }}<small> {{ 'home.FOR' | translate }} {{ valgtAvtale.avtalebeskrivelse }}</small><button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()">{{ 'common.LEGG_TIL' | translate }}</button></h2>
       <div class="table-responsive">
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Navn</th>
-              <th>Startdato</th>
-              <th>Sluttdato</th>
+              <th>{{ 'common.table.ID' | translate }}</th>
+              <th>{{ 'common.table.ARKIVSKAPER' | translate }}</th>
+              <th>{{ 'common.table.BESKRIVELSE' | translate }}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr data-ng-repeat="avlevering in avleveringer">
-              <td>{{ avlevering.id }}</td>
-              <td>{{ avlevering.navn }}</td>
-              <td>{{ avlevering.startdato }}</td>
-              <td>{{ avlevering.sluttdato }}</td>
-              <td></td>
+              <td>{{ avlevering.avleveringsidentifikator }}</td>
+              <td>{{ avlevering.arkivskaper }}</td>
+              <td>{{ avlevering.avleveringsbeskrivelse }}</td>
+              <td>
+                <button class="icon icon-list" data-ng-click="actionVisAvlevering(avlevering)" tooltip="{{text.tooltip.list}}"></button>
+                <button class="icon icon-padding-left icon-add-journal" data-ng-click="actionAdd()" tooltip="{{text.tooltip.add}}"></button>
+                <button class="icon icon-padding-left icon-folder" data-ng-click="actionFolder(avlevering.avleveringsidentifikator)" tooltip="{{text.tooltip.folder}}"></button>
+                <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)" tooltip="{{text.tooltip.deleteElement}}"></button>
+              </td>
             </tr>
           </tbody>
         </table>

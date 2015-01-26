@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{'modal.legg_til.TITTEL' | translate}}</h3>
+</div>
+
+<div class="modal-body">
+	<form>
+		<div class="form-group">
+			<label>ID:</label>
+			<input type="text" class="form-control" ng-model="formData.avtaleidentifikator">
+			<label class="label-error" data-ng-show="formData.error.avtaleidentifikator">{{formData.error.avtaleidentifikator}}</label>
+		</div>
+		<div class="form-group">
+			<label>Beskrivelse:</label>
+			<input type="text" class="form-control" ng-model="formData.avtalebeskrivelse">
+			<label class="label-error" data-ng-show="formData.error.avtalebeskrivelse">{{formData.error.avtalebeskrivelse}}</label>
+		</div>
+		<div class="form-group">
+			<label>Dato:</label>
+			<input type="date" class="form-control" ng-model="formData.avtaledato">
+			<label class="label-error" data-ng-show="formData.error.avtaledato">{{formData.error.avtaledato}}</label>
+		</div>
+		<button type="submit" data-ng-show="false" data-ng-click="ok()"></div>
+	</form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="ok()">{{'common.OK' | translate}}</button>
+    <button class="btn btn-default btn-danger" ng-click="avbryt()">{{'common.AVBRYT' | translate}}</button>
+</div>
