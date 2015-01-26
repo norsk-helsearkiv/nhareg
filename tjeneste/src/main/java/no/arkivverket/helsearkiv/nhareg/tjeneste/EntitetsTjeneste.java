@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
-
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -83,7 +80,7 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  *
  *
- * @author Marius Bogoevici
+ * @author Arnfinn Sandnes
  * @param <T> Entitetsklasse.
  * @param <K> Nøkkelklasse
  */

@@ -38,9 +38,9 @@ public class PasientjournalTjenesteTest {
         queryParameters.add("first", "2");
         queryParameters.add("maxResults", "1");
         
-        List<Pasientjournal> beskrivelser = tjeneste.getAll(queryParameters);
-        assertNotNull(beskrivelser);
-        assertEquals(0, beskrivelser.size());
+        List<Pasientjournal> pjer = tjeneste.getAll(queryParameters);
+        assertNotNull(pjer);
+        assertEquals(1, pjer.size());
     }
     
     @Test
