@@ -3,7 +3,8 @@ angular.module( 'nha.home', [
   'nha.common.http-service',
   'nha.common.error-service',
   'nha.common.list-service',
-  'nha.common.modal-service'
+  'nha.common.modal-service',
+  'nha.registrering.registrering-service'
 ])
 
 .config(function config( $stateProvider ) {
@@ -18,7 +19,7 @@ angular.module( 'nha.home', [
   });
 })
 
-.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, $modal) {
+.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, $modal) {
   //Tekster i vinduet lastet fra kontroller
     $scope.text = {
       "tooltip" : {}
@@ -59,15 +60,6 @@ angular.module( 'nha.home', [
   }).error(function(data, status, headers, config) {
     errorService.errorCode(status);
   });
-
-  $scope.actionFolder = function(id) {
-    httpService.genererAvlevering()
-    .success(function(data, status, headers, config) {
-      conole.log("TODO: handle action folder");
-    }).error(function(data, status, headers, config) {
-      errorService.errorCode(status);
-    });
-  };
 
   $scope.actionSok = function(sokestring) {
     console.log("TODO: Implementere søk");
@@ -119,7 +111,12 @@ angular.module( 'nha.home', [
 
   $scope.actionDeleteAvtale = function(elementType, id, element) {
     modalService.deleteModal(elementType, id, $scope.avtaler, element, function() {
-      httpService.deleteElement("avtaler/" + id);
+      httpService.deleteElement("avtaler/" + id)
+      .success(function(data, status, headers, config) {
+        $scope.setValgtAvtale($scope.avtaler[0]);
+      }).error(function(data, status, headers, config) {
+        errorService.errorCode(status);
+      });
     });
   };
 
@@ -189,13 +186,18 @@ angular.module( 'nha.home', [
     });
   };
 
+  $scope.actionAvleveringLeveranse = function(avlevering) {
+    window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator + "/leveranse";
+  };
+
   //Util
   $scope.loggUt = function() {
     console.log("TODO: logg ut");
     $location.path('/login');
   };
 
-  $scope.actionAdd = function() {
+  $scope.actionLeggTilPasientjournald = function(avlevering) {
+    registreringService.setAvlevering(avlevering);
     $location.path('/registrer');
   };
 });

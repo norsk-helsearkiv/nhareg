@@ -70,6 +70,10 @@ function httpService($http) {
 		});
 	}
 
+	function getRoot() {
+		return url;
+	}
+
 	return {
 		ny: ny,
 		hentAlle: hentAlle,
@@ -78,7 +82,9 @@ function httpService($http) {
 		deleteElement: deleteElement,
 
 		genererAvlevering: genererAvlevering,
-		getSokeresultat: getSokeresultat
+		getSokeresultat: getSokeresultat,
+
+		getRoot: getRoot
 
 	};
 }

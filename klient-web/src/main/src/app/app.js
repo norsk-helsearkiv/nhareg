@@ -10,7 +10,8 @@ angular.module( 'nha', [
   'nha.common.list-view',
   'nha.home',
   'nha.login',
-  'nha.registrering'
+  'nha.registrering',
+  'nha.registrering.registrering-service'
 ])
 
 .config( function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {

@@ -56,8 +56,8 @@
               <td>{{ avlevering.avleveringsbeskrivelse }}</td>
               <td>
                 <button class="icon icon-list" data-ng-click="actionVisAvlevering(avlevering)" tooltip="{{text.tooltip.list}}"></button>
-                <button class="icon icon-padding-left icon-add-journal" data-ng-click="actionAdd()" tooltip="{{text.tooltip.add}}"></button>
-                <button class="icon icon-padding-left icon-folder" data-ng-click="actionFolder(avlevering.avleveringsidentifikator)" tooltip="{{text.tooltip.folder}}"></button>
+                <button class="icon icon-padding-left icon-add-journal" data-ng-click="actionLeggTilPasientjournald(avlevering)" tooltip="{{text.tooltip.add}}"></button>
+                <button class="icon icon-padding-left icon-folder" data-ng-click="actionAvleveringLeveranse(avlevering)" tooltip="{{text.tooltip.folder}}"></button>
                 <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)" tooltip="{{text.tooltip.deleteElement}}"></button>
               </td>
             </tr>

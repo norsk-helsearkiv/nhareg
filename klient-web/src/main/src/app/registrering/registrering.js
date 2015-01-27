@@ -1,5 +1,6 @@
 angular.module( 'nha.registrering', [
-  'ui.router'
+  'ui.router',
+  'nha.registrering.registrering-service'
 ])
 
 .config(function config( $stateProvider ) {
@@ -14,9 +15,11 @@ angular.module( 'nha.registrering', [
   });
 })
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter) {
+.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, registreringService) {
   $scope.$watch(
     function() { return $filter('translate')('home.SOK'); },
     function(newval) { $scope.sok = newval; }
   );
+
+  console.log(registreringService.getAvlevering());
 });
