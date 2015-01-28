@@ -19,7 +19,7 @@
         <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()">{{ 'common.LEGG_TIL' | translate }}</button>
       </h4>
       <ul class="nav nav-sidebar">
-        <li data-ng-repeat="avtale in avtaler | orderBy: 'avtalebeskrivelse'"
+        <li data-ng-repeat="avtale in avtaler"
             data-ng-click="setValgtAvtale(avtale)"
             data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
             <a href=""><button class="icon icon-padding-right icon-delete" data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)" tooltip="{{text.tooltip.deleteElement}}"></button>{{ avtale.avtalebeskrivelse }}</a>

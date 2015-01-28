@@ -20,19 +20,51 @@
   -ids
 
 */
+@media (min-width: 800px) {
+  .span2 {
+    width: 50%;
+  }
+  .span3 {
+    width: 33%;
+  }
+  .span4 {
+    width: 25%;
+  }
+}
+
+@media (max-width: 800px) {
+  .span2 {
+    width: 100%;
+  }
+  .span3 {
+    width: 100%;
+  }
+  .span4 {
+    width: 100%;
+  }
+}
 
 body {
   font-family: @sansFontFamily;
   font-style: normal;
 }
 
-.navbar {
-	border-bottom: 1px solid #ddd;
-	background-color: #eee;
+.btn-small {
+  height: 24px;
+  padding: 0px 7px 0px 7px;
+}
+
+.form-control {
+  margin-bottom: 0px;
 }
 
 .loggut {
   padding-right: 40px !important;
+}
+
+.label-error {
+  color: red;
+  font-style: normal;
 }
 
 .modal-header {
@@ -55,16 +87,32 @@ body {
 .modal-footer {
 }
 
+.navbar {
+	border-bottom: 1px solid #ddd;
+	background-color: #eee;
+}
+
+.padding-bottom {
+  padding-bottom: 10px;
+}
+
 .right {
   float: right;
 }
 
-.label-error {
-  color: red;
-  font-style: normal;
+.row {
+  clear: both;
+  width: 100%;
+  margin-left: 0px;
+  padding-left: 0px;
 }
 
-.btn-small {
-  height: 24px;
-  padding: 0px 7px 0px 7px;
+.span {
+  float: left;
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
+.span:not(:first-child) {
+  padding-left: 1%;
 }

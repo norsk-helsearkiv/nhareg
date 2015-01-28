@@ -11,43 +11,71 @@
 </nav>
 
 <div class="container content">
-	<h1>Registrering</h1>
+	<h1>
+		Registrering
+		<small>{{avlevering.avleveringsbeskrivelse}}</small>
+	</h1>
 	<form>
 		<div class="well">
-			<legend>Lagringsenhet</legend>
-			<div class="form-group">
-				<label>Tekstfelt 1:</label>
-				<input type="text" class="form-control" placeholder="Tekstfelt 1..." autofocus>
+			<label>Lagringsenheter <small>(Klikk 'enter' for å legge til flere)</small></label>
+			<input type="text" id="lagringsenhet" class="form-control" placeholder="Lagringsenhet..." data-ng-model="lagringsenhet" ng-enter="keyAddLagringsenhet()" autofocus>
+			<ul id="lagringsenhet-liste">
+				<li data-ng-repeat="enhet in lagringsenheter">
+					<button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
+					{{ enhet }}
+				</li>
+			</ul>
+			<div class="row"><!-- Brukes for å sørge for at well utvider seg når float:left listen går over flere linjer --></div>
+		</div>
+
+		<div class="well">
+			<div class="row">
+				<div class="span span2 padding-bottom">
+					<label>Navn</label>
+					<input type="text" class="form-control" placeholder="Navn...">
+				</div>
+				<div class="span span4">
+					<label>Personnummer</label>
+					<input type="number" class="form-control" placeholder="Personnummer...">
+				</div>
+				<div class="span span4">
+					<label>Kjønn</label>
+				    <select ng-model="selectedItem" class="form-control"
+            			ng-options="item as item.tekst for item in kjonn">
+            			<option value="" disabled selected>Kjønn...</option>
+            	</select>
+				</div>
 			</div>
 
-			<div class="form-group">
-				<label>Tekstfelt 2:</label>
-				<input type="text" class="form-control" placeholder="Tekstfelt 2..." autofocus>
+			<div class="row">
+				<div class="span span4">
+					<label>Fødselsdato</label>
+					<input type="date" class="form-control">
+				</div>
+				<div class="span span4">
+					<label>Dødsdato</label>
+					<input type="date" class="form-control">
+				</div>
+				<div class="span span4">
+					<label>Første kontaktår</label>
+					<input type="number" class="form-control" placeholder="Årstall...">
+				</div>
+				<div class="span span4">
+					<label>Siste kontaktsår</label>
+					<input type="number" class="form-control" placeholder="Årstall...">
+				</div>
 			</div>
 		</div>
 
 		<div class="well">
-			<legend>Persondata</legend>
-			<div class="form-group">
-				<label>Personnummer / ID</label>
-				<input type="text" class="form-control" placeholder="Tekstfelt 1..." autofocus>
-			</div>
-
-			<div class="form-group">
-				<label>Navn</label>
-				<input type="text" class="form-control" placeholder="Tekstfelt 2..." autofocus>
-			</div>
+			<label>Diagnoser</label>
 		</div>
 
 		<div class="well">
-			<legend>Diagnoser</legend>
+			<label>Vedlegg</label>
 		</div>
 
-		<div class="well">
-			<legend>Vedlegg</legend>
-		</div>
-
-		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="submit" class="btn btn-primary" data-ng-click="submit()">Submit</button>
 		<button class="btn btn-default">Tilbake</button>
 	</form>
 </div>

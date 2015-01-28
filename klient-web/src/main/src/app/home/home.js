@@ -110,9 +110,10 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionDeleteAvtale = function(elementType, id, element) {
-    modalService.deleteModal(elementType, id, $scope.avtaler, element, function() {
+    modalService.deleteModal(elementType, id, function() {
       httpService.deleteElement("avtaler/" + id)
       .success(function(data, status, headers, config) {
+        fjern($scope.avtaler, element);
         $scope.setValgtAvtale($scope.avtaler[0]);
       }).error(function(data, status, headers, config) {
         errorService.errorCode(status);
@@ -165,8 +166,13 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionFjernAvlevering = function(elementType, id, element) {
-    modalService.deleteModal(elementType, id, $scope.avleveringer, element, function() {
-      httpService.deleteElement("avleveringer/" + id);
+    modalService.deleteModal(elementType, id, function() {
+      httpService.deleteElement("avleveringer/" + id)
+      .success(function(data, status, headers, config) {
+        fjern($scope.avleveringer, element);
+      }).error(function(data, status, headers, config) {
+        errorService.errorCode(status);
+      });
     });
   };
 
@@ -200,4 +206,14 @@ angular.module( 'nha.home', [
     registreringService.setAvlevering(avlevering);
     $location.path('/registrer');
   };
+
+  //Hjelpe metode for å fjerne fra liste
+  var fjern = function(list, element) {
+    for(var i = 0; i < list.length; i++) {
+      if(element === list[i]) {
+          list.splice(i, 1);
+      }
+    }
+  };
+
 });
