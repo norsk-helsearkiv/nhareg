@@ -14,6 +14,10 @@ insert into Avtale (avtalebeskrivelse, avtaledato, avtaleidentifikator) values (
 INSERT INTO AVLEVERING (AVLEVERINGSIDENTIFIKATOR, ARKIVSKAPER, AVLEVERINGSBESKRIVELSE, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT, AVTALE_AVTALEIDENTIFIKATOR) VALUES ('Avlevering-1', 'meg', NULL, NULL, NULL, '2015-01-23 17:36:59.588', 'Avtale1');
 insert into Avlevering (avleveringsidentifikator, arkivskaper, avleveringsbeskrivelse, oppdatertAv, prosesstrinn,  sistOppdatert, avtale_avtaleidentifikator) values ('Avlevering-2',           'meg',       'En beskrivelse',       'AS',       'Registrering', '2014-09-30 19:30:00', 'A1234');
 --
+-- KJØNN
+--
+insert into Kjonn(code,displayName) values ('K','Kvinne');
+insert into Kjonn(code,displayName) values ('M','Mann');
 -- PASIENTJOURNAL
 --
 INSERT INTO PASIENTJOURNAL (UUID, DDATO, FDATO, KJONN, KONTAKTAAR, PNAVN, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT) VALUES ('uuid1', '2015-01-23 17:42:47.356', '2015-01-23 17:42:47.356', NULL, NULL, 'Hunden Fido', 'AS', 'Registrering', '2015-01-23 17:42:47.356');

@@ -95,11 +95,8 @@
                     <xs:documentation>Pasientens navn</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="fdato" type="xs:date">
-                <xs:annotation>
-                    <xs:documentation>Pasientens fødselsdato</xs:documentation>
-                </xs:annotation>
-            </xs:element>
+            <xs:element name="født" type="DatoEllerAar">
+            </xs:element>            
             <xs:element minOccurs="0" name="ddato" type="xs:date">
                 <xs:annotation>
                     <xs:documentation>Pasientens dødsdato eller år dersom dette er kjent</xs:documentation>
@@ -112,6 +109,24 @@
             </xs:element>
             <xs:element name="kjønn" type="Kjønn"/>
         </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="DatoEllerAar">
+        <xs:annotation>
+            <xs:documentation>Type for å representere en dato eller et årstall</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="dato" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Dato</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="aar" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>Årstall på formen ÅÅÅÅ (4 siffer)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:choice>
     </xs:complexType>
                        
     <xs:complexType name="Identifikator">
