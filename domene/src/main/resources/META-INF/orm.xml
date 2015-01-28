@@ -74,15 +74,43 @@
             <id name="uuid"/>
         </attributes>
     </entity>
+
+    <entity class="CS" access="FIELD">
+        <inheritance strategy="TABLE_PER_CLASS"/>        
+        <attributes>
+            <id name="code"/>
+        </attributes>
+    </entity>
+
+    <entity class="Kjønn" access="FIELD">
+        <table name="Kjonn"/>
+    </entity>
     
+    <embeddable class="DatoEllerAar">
+    </embeddable>
     <embeddable class="Oppdateringsinfo">
     </embeddable>
+    
     <embeddable class="Grunnopplysninger">
         <attributes>
+            <!--
             <basic name="kjønn">
                 <column name="kjonn"/>
-            </basic>        
+            </basic> -->    
+            <many-to-one name="kjønn">
+                <join-column name="kjonn"/>
+            </many-to-one>
             <one-to-many name="identifikator"  fetch="EAGER"/>
-        </attributes>        
+            <embedded name="født">   
+                <attribute-override name="dato">
+                    <column name="fdato"/>
+                </attribute-override>
+                <attribute-override name="aar">
+                    <column name="faar"/>
+                </attribute-override>
+            </embedded>        
+        </attributes>    
+            
     </embeddable>
+    
 </entity-mappings>
