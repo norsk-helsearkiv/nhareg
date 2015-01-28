@@ -66,7 +66,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
             getEntityManager().remove(avtale);
             return Response.ok().build();
         } 
-        return Response.status(Response.Status.BAD_REQUEST).build();
+        return Response.status(409).build();
     }
     
 }
