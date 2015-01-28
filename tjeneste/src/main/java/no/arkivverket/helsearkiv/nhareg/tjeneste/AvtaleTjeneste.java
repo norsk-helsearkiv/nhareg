@@ -53,16 +53,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     @Path("/oppdater")
     @Produces(MediaType.APPLICATION_JSON)
     public Response oppdaterAvtale(Avtale avtale) {
-        if(avtale == null) {
-            return Response.noContent().build();
-        }
-        Avtale persistertAvtale = super.getEntityManager().find(Avtale.class, avtale.getAvtaleidentifikator());
-        if(persistertAvtale == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        
-        super.getEntityManager().merge(avtale);
-        return Response.ok(avtale).build();  
+        return super.oppdaterAvtale(avtale, avtale.getAvtaleidentifikator());
     }
     
     @DELETE

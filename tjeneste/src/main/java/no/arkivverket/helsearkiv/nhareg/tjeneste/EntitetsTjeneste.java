@@ -22,6 +22,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -30,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -217,6 +219,19 @@ public abstract class EntitetsTjeneste<T, K> {
             // Throwing the exception causes an automatic rollback
             throw new RestServiceException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
         }
+    }
+    
+    public Response oppdaterAvtale(T entity, String id) {
+        if(entity == null) {
+            return Response.noContent().build();
+        }
+        T persistedEntity = getEntityManager().find(entityClass, id);
+        if(persistedEntity == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        
+        getEntityManager().merge(entity);
+        return Response.ok(entity).build();  
     }
 
     /**
