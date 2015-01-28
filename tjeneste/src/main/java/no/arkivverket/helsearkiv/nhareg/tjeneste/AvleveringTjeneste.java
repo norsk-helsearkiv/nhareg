@@ -7,6 +7,7 @@ import java.util.Formatter;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 
@@ -104,4 +106,20 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         return response.build();
     }
 
+    @DELETE
+    @Path("/{id}")
+    @Override
+    public Response delete(@PathParam("id") String id) {
+        Avlevering avlevering = super.getEntityManager().find(Avlevering.class, id);
+        if (avlevering == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        
+        //Slett om det ikke er barn
+        if(avlevering.getPasientjournal().isEmpty()) {
+            getEntityManager().remove(avlevering);
+            return Response.ok().build();
+        } 
+        return Response.status(409).build();
+    }
 }
