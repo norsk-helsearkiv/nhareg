@@ -54,13 +54,14 @@ public class AvtaleTjenesteTest {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
 
         queryParameters.add("first", "1");
-        queryParameters.add("maxResults", "1");
+        queryParameters.add("max", "1");
 
         List<Avtale> beskrivelser = tjeneste.getAll(queryParameters);
         assertNotNull(beskrivelser);
-        assertEquals(3, beskrivelser.size());
+        assertEquals(1, beskrivelser.size());
 //        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
     }
+
     @Test
     public void getAvleveringer() {
         List<Avlevering> avleveringer = tjeneste.getAvleveringer("A1234");
