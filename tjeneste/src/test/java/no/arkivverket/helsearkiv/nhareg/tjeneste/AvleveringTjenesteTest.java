@@ -10,6 +10,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -63,9 +64,10 @@ public class AvleveringTjenesteTest {
     }
     @Test
     public void getAvleveringer() {
-        List<Pasientjournal> pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1");
-        assertNotNull(pasientjournaler);
-        assertFalse(pasientjournaler.isEmpty());
-        assertEquals(1, pasientjournaler.size());
+        ListeObjekt pasientjournaler = tjeneste.getPasientjournaler(null, "Avlevering-1");
+        List<Pasientjournal> liste = (List<Pasientjournal>) pasientjournaler.getListe();
+        assertNotNull(liste);
+        assertFalse(liste.isEmpty());
+        assertEquals(1, liste.size());
     }
 }

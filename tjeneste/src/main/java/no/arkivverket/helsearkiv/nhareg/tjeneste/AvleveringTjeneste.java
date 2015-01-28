@@ -39,6 +39,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     /**
      * Henter pasientjournaler for en avlevering.
      *
+     * @param uriInfo
      * @param avleveringsidentifikator
      * @return
      */
@@ -53,20 +54,23 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         Avlevering avlevering = (Avlevering) totalQuery.getSingleResult();
         
         //Hent url parameter
-        MultivaluedMap<String, String> queryParameters = uriInfo.getPathParameters();
         int total = avlevering.getPasientjournal().size();
         int forste = 0;
         int side = 1;
         int antall = total;
-        if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
-            int paramSide = Integer.parseInt(queryParameters.getFirst("side")) - 1;
-            int paramAntall = Integer.parseInt(queryParameters.getFirst("antall"));
-            
-            if(paramSide > 0 && paramAntall > 0) {
-                side = paramSide;
-                antall = paramAntall;
-                
-                forste = (side * antall) -1;
+        
+        if(uriInfo != null) {
+            MultivaluedMap<String, String> queryParameters = uriInfo.getPathParameters();
+            if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
+                int paramSide = Integer.parseInt(queryParameters.getFirst("side")) - 1;
+                int paramAntall = Integer.parseInt(queryParameters.getFirst("antall"));
+
+                if(paramSide > 0 && paramAntall > 0) {
+                    side = paramSide;
+                    antall = paramAntall;
+
+                    forste = (side * antall) -1;
+                }
             }
         }
         
