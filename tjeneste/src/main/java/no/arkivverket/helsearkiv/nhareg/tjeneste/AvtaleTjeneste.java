@@ -50,7 +50,6 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     }
     
     @PUT
-    @Path("/oppdater")
     @Produces(MediaType.APPLICATION_JSON)
     public Response oppdaterAvtale(Avtale avtale) {
         return super.oppdaterAvtale(avtale, avtale.getAvtaleidentifikator());

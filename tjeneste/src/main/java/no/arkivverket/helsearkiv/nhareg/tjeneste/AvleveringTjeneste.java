@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -104,6 +105,12 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         ResponseBuilder response = Response.ok((Object) file);
         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".zip");
         return response.build();
+    }
+    
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response oppdaterAvtale(Avlevering avlevering) {
+        return super.oppdaterAvtale(avlevering, avlevering.getAvleveringsidentifikator());
     }
 
     @DELETE
