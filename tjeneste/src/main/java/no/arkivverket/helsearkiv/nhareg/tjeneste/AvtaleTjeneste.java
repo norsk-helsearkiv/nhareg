@@ -3,17 +3,19 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 
 /**
  * <p>
- * JAX-RS endepunkt for håndtering av {@link Avtale}r. Arver metodene fra
+ * JAX-RS endepunkt for hÃƒÂ¥ndtering av {@link Avtale}r. Arver metodene fra
  * {@link EntitetsTjeneste}i tillegg til egne metoder.
  * </p>
  *
@@ -44,4 +46,27 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         List<Avlevering> avleveringer = query.getResultList();
         return avleveringer;
     }
+    
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") String id) {
+        Avtale avtale = super.getEntityManager().find(Avtale.class, id);
+        if (avtale == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        
+        //Hent antall barn
+        String jpql = "SELECT count(a) FROM Avlevering a WHERE a.avtale = :avtale";
+        Query q = super.getEntityManager().createQuery(jpql);
+        q.setParameter("avtale", avtale);
+        Long antall = (Long) q.getSingleResult();
+        
+        //Slett om det ikke er barn
+        if(antall == 0) {
+            getEntityManager().remove(avtale);
+            return Response.ok().build();
+        } 
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    
 }
