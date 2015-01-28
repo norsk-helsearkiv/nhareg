@@ -1,11 +1,20 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import static javax.ws.rs.HttpMethod.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 
 /**
  * <p>
@@ -47,6 +57,45 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         query.setParameter("avtaleidentifikator", avtaleidentifikator);
         List<Avlevering> avleveringer = query.getResultList();
         return avleveringer;
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Override
+    public Response create(Avtale entity) {
+        try {
+            getValidator().validate(entity);
+            
+            Virksomhet virksomhet = (Virksomhet) getEntityManager()
+                    .createQuery("SELECT v FROM Virksomhet v")
+                    .getSingleResult();
+            
+            entity.setVirksomhet(virksomhet);
+            
+            getEntityManager().persist(entity);
+            return Response.ok().entity(entity).build();
+            
+        } catch (ConstraintViolationException e) {
+            // If validation of the data failed using Bean Validation, then send an error
+            log.error("Constraint feil. ", e);
+            Map<String, Object> errors = new HashMap<String, Object>();
+            List<String> errorMessages = new ArrayList<String>();
+            for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
+                errorMessages.add(constraintViolation.getMessage());
+            }
+            errors.put("errors", errorMessages);
+            // A WebApplicationException can wrap a response
+            // Throwing the exception causes an automatic rollback
+            throw new RestServiceException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
+        } catch (Exception e) {
+            log.error("Create feilet. ", e);
+            // Finally, handle unexpected exceptions
+            Map<String, Object> errors = new HashMap<String, Object>();
+            errors.put("errors", Collections.singletonList(e.getMessage()));
+            // A WebApplicationException can wrap a response
+            // Throwing the exception causes an automatic rollback
+            throw new RestServiceException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
+        }
     }
     
     @PUT

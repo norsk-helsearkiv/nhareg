@@ -114,6 +114,10 @@ public abstract class EntitetsTjeneste<T, K> {
         return entityManager;
     }
 
+    public Validator getValidator() {
+        return validator;
+    }
+    
     /**
      * <p>
      * A method for retrieving all entities of a given type. Supports the query
