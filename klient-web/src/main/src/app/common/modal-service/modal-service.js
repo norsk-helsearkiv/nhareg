@@ -43,10 +43,10 @@ function modalService($modal, httpService, errorService) {
         
         tpl: link til tpl.html som skal brukes
         list: liste over elementer som det skal legges til et element i scope
-        okFunction: overskrevet metode for validering, returnerer boolean om det
+        valideringFunction: overskrevet metode for validering, returnerer boolean om det
             gikk bra.
     */
-    function nyModal(tpl, list, relativUrl, okFunction) {
+    function nyModal(tpl, list, relativUrl, valideringFunction) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
@@ -54,7 +54,7 @@ function modalService($modal, httpService, errorService) {
             };
 
             $scope.ok = function() {
-                var success = okFunction($scope.formData);
+                var success = valideringFunction($scope.formData);
                 if(success) {
                     httpService.ny(relativUrl, $scope.formData)
                     .success(function(data, status, headers, config) {
@@ -74,9 +74,35 @@ function modalService($modal, httpService, errorService) {
         return $modal.open(template);
     }
 
+    function endreModal(tpl, list, relativUrl, valideringFunction, entitet) {
+        template.templateUrl = tpl;
+        template.controller = function ($scope, $modalInstance) {
+            $scope.formData = entitet;
+            $scope.erEndring = true;
+
+            $scope.ok = function() {
+                var success = valideringFunction($scope.formData);
+                if(success) {
+                    httpService.oppdater(relativUrl, $scope.formData)
+                    .error(function(data, status, headers, config) {
+                        errorService.errorCode(status);
+                    });
+                    $modalInstance.close();
+                }
+            };
+
+            $scope.avbryt = function() {
+                $modalInstance.close();
+            };
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+
     return {
         deleteModal : deleteModal,
-        nyModal : nyModal
+        nyModal : nyModal,
+        endreModal : endreModal
     };
 
 }

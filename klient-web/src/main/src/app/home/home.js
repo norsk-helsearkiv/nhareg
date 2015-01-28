@@ -49,6 +49,10 @@ angular.module( 'nha.home', [
       function(newval) { $scope.text.tooltip.folder = newval; }
     );
     $scope.$watch(
+      function() { return $filter('translate')('home.tooltip.ENDRE'); },
+      function(newval) { $scope.text.tooltip.endre = newval; }
+    );
+    $scope.$watch(
       function() { return $filter('translate')('home.tooltip.DELETE'); },
       function(newval) { $scope.text.tooltip.deleteElement = newval; }
     );
@@ -121,35 +125,40 @@ angular.module( 'nha.home', [
     });
   };
 
+  var validerAvtale = function(formData) {
+    formData.error = {};
+    var success = true;
+
+    if(formData.avtaleidentifikator === undefined || formData.avtaleidentifikator === ''){
+      formData.error.avtaleidentifikator = "ID kan ikke være tom";
+      success = false;
+    }
+    if(formData.avtalebeskrivelse === undefined || formData.avtalebeskrivelse === ''){
+      formData.error.avtalebeskrivelse = "Beskrivelsen kan ikke være tom";
+      success = false;
+    }
+    if(formData.avtaledato === undefined || formData.avtaledato === ''){
+      formData.error.avtaledato = "Dato må være satt";
+      success = false;
+    }
+
+    if(success) {
+      formData.error = undefined;
+    }
+    return success;
+  };
+
   $scope.actionLeggTilAvtale = function() {
-    modalService.nyModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", function(formData) {
-      formData.error = {};
-      var success = true;
+    modalService.nyModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
+  };
 
-      if(formData.avtaleidentifikator === undefined || formData.avtaleidentifikator === ''){
-        formData.error.avtaleidentifikator = "ID kan ikke være tom";
-        success = false;
-      }
-      if(formData.avtalebeskrivelse === undefined || formData.avtalebeskrivelse === ''){
-        formData.error.avtalebeskrivelse = "Beskrivelsen kan ikke være tom";
-        success = false;
-      }
-      if(formData.avtaledato === undefined || formData.avtaledato === ''){
-        formData.error.avtaledato = "Dato må være satt";
-        success = false;
-      }
-
-      if(success) {
-        formData.error = undefined;
-      }
-      return success;
-    });
+  $scope.actionEndreAvtale = function(avtale) {
+    modalService.endreModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
   };
 
   //Avlevering
-  $scope.actionLeggTilAvlevering = function() {
-    modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", function(formData) {
-      formData.error = {};
+  var validering = function(formData) {
+    formData.error = {};
       var success = true;
 
       if(formData.avleveringsidentifikator === undefined || formData.avleveringsidentifikator === ''){
@@ -162,7 +171,14 @@ angular.module( 'nha.home', [
         formData.avtale = $scope.valgtAvtale;
       }
       return success;
-    });
+
+  };
+  $scope.actionLeggTilAvlevering = function() {
+    modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", validering);
+  };
+
+  $scope.actionEndreAvlevering = function(avlevering) {
+    modalService.endreModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", validering, avlevering);
   };
 
   $scope.actionFjernAvlevering = function(elementType, id, element) {

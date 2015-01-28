@@ -6,7 +6,8 @@
 	<form>
 		<div class="form-group">
 			<label>ID:</label>
-			<input type="text" class="form-control" ng-model="formData.avtaleidentifikator">
+			<input type="text" class="form-control" ng-model="formData.avtaleidentifikator" data-ng-show="!erEndring">
+			<p data-ng-show="erEndring">{{formData.avtaleidentifikator}}</p>
 			<label class="label-error" data-ng-show="formData.error.avtaleidentifikator">{{formData.error.avtaleidentifikator}}</label>
 		</div>
 		<div class="form-group">

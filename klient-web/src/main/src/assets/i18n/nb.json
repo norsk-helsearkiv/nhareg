@@ -22,7 +22,8 @@
 			"LIST" : "Vis pasientjournaler i avleveringen",
 			"ADD" : "Legg til pasientjournal i avleveringen",
 			"FOLDER" : "Generer leveranse",
-			"DELETE" : "Slett avlevering"
+			"ENDRE" : "Endre",
+			"DELETE" : "Slett"
 		}
 	},
 	"login" : {

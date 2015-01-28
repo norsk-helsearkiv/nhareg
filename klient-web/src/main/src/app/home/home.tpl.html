@@ -22,7 +22,11 @@
         <li data-ng-repeat="avtale in avtaler"
             data-ng-click="setValgtAvtale(avtale)"
             data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
-            <a href=""><button class="icon icon-padding-right icon-delete" data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)" tooltip="{{text.tooltip.deleteElement}}"></button>{{ avtale.avtalebeskrivelse }}</a>
+            <a href="">
+              <button class="icon icon-edit" data-ng-click="actionEndreAvtale(avtale)" tooltip="{{text.tooltip.endr}}"></button>
+              <button class="icon icon-delete icon-padding-right " data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)" tooltip="{{text.tooltip.deleteElement}}"></button>
+              {{ avtale.avtalebeskrivelse }}
+            </a>
         </li>
       </ul>
     </div>
@@ -58,6 +62,7 @@
                 <button class="icon icon-list" data-ng-click="actionVisAvlevering(avlevering)" tooltip="{{text.tooltip.list}}"></button>
                 <button class="icon icon-padding-left icon-add-journal" data-ng-click="actionLeggTilPasientjournald(avlevering)" tooltip="{{text.tooltip.add}}"></button>
                 <button class="icon icon-padding-left icon-folder" data-ng-click="actionAvleveringLeveranse(avlevering)" tooltip="{{text.tooltip.folder}}"></button>
+                <button class="icon icon-padding-left icon-edit" data-ng-click="actionEndreAvlevering(avlevering)" tooltip="{{text.tooltip.endre}}"></button>
                 <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)" tooltip="{{text.tooltip.deleteElement}}"></button>
               </td>
             </tr>
