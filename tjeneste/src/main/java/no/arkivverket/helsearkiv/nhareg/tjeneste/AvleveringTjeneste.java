@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -85,7 +86,18 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         //Returner objekt
         return new ListeObjekt(pasientjournaler, total, side, antall);
     }
-    
+        
+    /**
+     * Oppretter en ny pasientjournal under avleveringen
+     * @param pasientjournal som skal opprettes
+     * @return Pasientjournal
+     */
+    @POST
+    @Path("/{id}/pasientjournaler")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPasientjournaler(Pasientjournal pasientjournal) {
+        return Response.noContent().build();
+    }
     
     @GET
     @Path("/{id}/leveranse")

@@ -57,18 +57,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     }
     
     /**
-     * Oppretter en ny pasientjournal under avlevering med ID
-     * @param id på avlevering
-     * @return Pasientjournal
-     */
-    @POST
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON) 
-    public Response opprett(@PathParam("id") String id) {
-        return Response.noContent().build();
-    }
-
-    /**
      * Legger til diagnose for pasientjournal
      * @param id på pasientjournalen
      * @param diagnose som skal legges til
