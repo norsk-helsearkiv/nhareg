@@ -37,6 +37,7 @@
             <one-to-many name="diagnose" fetch="EAGER"/>
             <many-to-many name="lagringsenhet" fetch="EAGER"/>
             
+            <embedded name="journalidentifikator"/>
             <embedded name="grunnopplysninger"/>
             <embedded name="oppdateringsinfo"/>
             
@@ -69,12 +70,6 @@
     <entity class="Diagnosekode" access="FIELD">
     </entity>
     
-    <entity class="Identifikator" access="FIELD">
-        <attributes>
-            <id name="uuid"/>
-        </attributes>
-    </entity>
-
     <entity class="CS" access="FIELD">
         <inheritance strategy="TABLE_PER_CLASS"/>        
         <attributes>
@@ -86,21 +81,41 @@
         <table name="Kjonn"/>
     </entity>
     
-    <embeddable class="DatoEllerAar">
-    </embeddable>
-    <embeddable class="Oppdateringsinfo">
+    <embeddable class="DatoEllerAar"/>
+    <embeddable class="Oppdateringsinfo"/>
+    <embeddable class="Journalidentifikator"/>
+    <embeddable class="Identifikator"/>
+    
+    <embeddable class="Kontakt">
+        <attributes>
+            <embedded name="foerste">   
+                <attribute-override name="dato">
+                    <column name="foersteKontaktDato"/>
+                </attribute-override>
+                <attribute-override name="aar">
+                    <column name="foersteKontaktAar"/>
+                </attribute-override>
+            </embedded>        
+            <embedded name="siste">   
+                <attribute-override name="dato">
+                    <column name="sisteKontaktDato"/>
+                </attribute-override>
+                <attribute-override name="aar">
+                    <column name="sisteKontaktAar"/>
+                </attribute-override>
+            </embedded>        
+        </attributes>
     </embeddable>
     
     <embeddable class="Grunnopplysninger">
         <attributes>
-            <!--
-            <basic name="kjønn">
-                <column name="kjonn"/>
-            </basic> -->    
+            <basic name="dødsdatoUkjent">
+                <column name="dodsdatoUkjent"/>
+            </basic>  
             <many-to-one name="kjønn">
                 <join-column name="kjonn"/>
             </many-to-one>
-            <one-to-many name="identifikator"  fetch="EAGER"/>
+            <embedded name="identifikator"/>
             <embedded name="født">   
                 <attribute-override name="dato">
                     <column name="fdato"/>
@@ -109,6 +124,15 @@
                     <column name="faar"/>
                 </attribute-override>
             </embedded>        
+            <embedded name="død">   
+                <attribute-override name="dato">
+                    <column name="ddato"/>
+                </attribute-override>
+                <attribute-override name="aar">
+                    <column name="daar"/>
+                </attribute-override>
+            </embedded>        
+            <embedded name="kontakt"/>
         </attributes>    
             
     </embeddable>

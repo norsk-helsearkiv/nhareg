@@ -17,7 +17,16 @@
                     <xs:documentation>organisasjonsnummer fra Brønnøysundregistrene</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="navn" type="xs:string"/>
+            <xs:element name="navn" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Navn på virksomheten</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="foretaksnavn" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Navn på foretak</xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
     </xs:complexType>
 
@@ -55,6 +64,11 @@
     
     <xs:complexType name="Pasientjournal">
         <xs:sequence>
+            <xs:element name="journalidentifikator" type="Journalidentifikator">
+                <xs:annotation>
+                    <xs:documentation>Identifikator som er påført journalen</xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="grunnopplysninger" type="Grunnopplysninger">
                 <xs:annotation>
                     <xs:documentation>Avleveringslisten skal inneholde følgende opplysningstyper om hver enkelt pasientjournal</xs:documentation>
@@ -74,7 +88,7 @@
                 </xs:annotation>
             </xs:element>
             
-            <xs:element ref="oppdateringsinfo" minOccurs="0" maxOccurs="1"/>
+            <xs:element ref="oppdateringsinfo"/>
         </xs:sequence>
         <xs:attribute name="uuid" type="xs:string">
             <xs:annotation>
@@ -82,10 +96,18 @@
             </xs:annotation>
         </xs:attribute>
     </xs:complexType>
-       
+
+    <xs:complexType name="Journalidentifikator">
+        <xs:sequence>
+            <xs:element name="journalnummer" type="xs:string" minOccurs="0"/>
+            <xs:element name="løpenummer" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+              
     <xs:complexType name="Grunnopplysninger">
         <xs:sequence>
-            <xs:element name="identifikator" type="Identifikator"   maxOccurs="unbounded">
+            <xs:element name="identifikator" type="Identifikator">
                 <xs:annotation>
                     <xs:documentation>Pasientidentifiserende opplysninger; fødselsnummer eller annet entydig identifikasjonsnummer, eventuelle virksomhetsinterne pasientnummer eller hjelpenummer mv.</xs:documentation>
                 </xs:annotation>
@@ -96,13 +118,27 @@
                 </xs:annotation>
             </xs:element>
             <xs:element name="født" type="DatoEllerAar">
+                <xs:annotation>
+                    <xs:documentation>Pasientens fødselsdato eller år</xs:documentation>
+                </xs:annotation>
             </xs:element>            
-            <xs:element minOccurs="0" name="ddato" type="xs:date">
+            
+            <xs:element name="dødsdatoUkjent" type="xs:boolean" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Angir om dødsdato/år er ukjent.
+                        Verdi "true" uttrykker sant (ja, avkrysset boks etc.) mens verdi "false" uttrykker usant (verdi nei, ikke avkrysset boks etc.).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+                                        
+            <xs:element name="død" type="DatoEllerAar" minOccurs="0" >
                 <xs:annotation>
                     <xs:documentation>Pasientens dødsdato eller år dersom dette er kjent</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="kontaktaar" type="Kontaktaar">
+            
+            <xs:element name="kontakt" type="Kontakt" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation>Første og siste året for innleggelse eller konsultasjon</xs:documentation>
                 </xs:annotation>
@@ -121,11 +157,17 @@
                     <xs:documentation>Dato</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="aar" type="xs:int">
+            <xs:element name="aar">
                 <xs:annotation>
-                    <xs:documentation>Årstall på formen ÅÅÅÅ (4 siffer)</xs:documentation>
+                    <xs:documentation>Årstall på formen ÅÅÅÅ (4 siffer) mellom 1800 og 2099</xs:documentation>
                 </xs:annotation>
-            </xs:element>
+                <xs:simpleType>
+                    <xs:restriction base="xs:int">
+                        <xs:minInclusive value="1800"/>
+                        <xs:maxInclusive value="2099"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>        
         </xs:choice>
     </xs:complexType>
                        
@@ -135,30 +177,41 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="PID" type="xs:string"/>
-            <xs:element name="typePID" type="xs:string"/>
+            <xs:element name="typePID">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="D">
+                            <xs:annotation>
+                                <xs:documentation>Virksomhetsinterne pasientnummer</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="H">
+                            <xs:annotation>
+                                <xs:documentation>Hjelpenummer</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="F">
+                            <xs:annotation>
+                                <xs:documentation>Fødselsnummer</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>        
         </xs:sequence>
-        <xs:attribute name="uuid" type="xs:string">
-            <xs:annotation>
-                <xs:documentation>Universel unik identifikator som benyttes for entydig å identifisere en identifikator</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
     </xs:complexType>
                                          
-    <xs:complexType name="Kontaktaar">
+    <xs:complexType name="Kontakt">
         <xs:sequence>
-            <xs:element name="foerste">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:pattern value="[1,2]{1}[8,9,0]{1}[0-9]{2}"/>
-                    </xs:restriction>
-                </xs:simpleType>
+            <xs:element name="foerste" type="DatoEllerAar" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Tidspunkt for første kontakt</xs:documentation>
+                </xs:annotation>
             </xs:element>
-            <xs:element name="siste">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:pattern value="[1,2]{1}[8,9,0]{1}[0-9]{2}"/>
-                    </xs:restriction>
-                </xs:simpleType>
+            <xs:element name="siste" type="DatoEllerAar" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Tidspunkt for siste kontakt</xs:documentation>
+                </xs:annotation>
             </xs:element>
         </xs:sequence>
     </xs:complexType>
