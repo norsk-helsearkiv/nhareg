@@ -4,10 +4,13 @@
 		"OK": "Ok",
 		"AVBRYT": "Avbryt",
 		"LEGG_TIL" : "Ny",
+		"VIS_HURTIGTASTER" : "Vis hurtigtaster",
 		"table" : {
 			"ARKIVSKAPER" : "Arkivskaper",
 			"BESKRIVELSE" : "Beskrivelse",
-			"ID" : "ID"
+			"ID" : "ID",
+			"NAVN" : "Navn",
+			"DATO" : "Dato"
 		}
 	},
 	"home" : {

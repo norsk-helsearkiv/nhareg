@@ -7,7 +7,7 @@ angular.module( 'nha.home', [
   'nha.registrering.registrering-service'
 ])
 
-.config(function config( $stateProvider ) {
+.config(["$stateProvider", function config( $stateProvider ) {
   $stateProvider.state( 'home', {
     url: '/',
     views: {
@@ -17,9 +17,9 @@ angular.module( 'nha.home', [
       }
     }
   });
-})
+}])
 
-.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, $modal) {
+.controller( 'HomeCtrl', ["$scope", "$location", "$filter", "httpService", "errorService", "listService", "modalService", "registreringService", "$modal", function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, $modal) {
   //Tekster i vinduet lastet fra kontroller
     $scope.text = {
       "tooltip" : {}
@@ -232,4 +232,4 @@ angular.module( 'nha.home', [
     }
   };
 
-});
+}]);

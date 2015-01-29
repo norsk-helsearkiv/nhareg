@@ -88,8 +88,8 @@ angular.module("common/list-view/list-view.tpl.html", []).run(["$templateCache",
     "            <table class=\"table table-striped\">\n" +
     "                <thead>\n" +
     "                    <tr>\n" +
-    "                        <th>ID</th>\n" +
-    "                        <th>Navn</th>\n" +
+    "                        <th>{{ 'common.table.ID' | translate }}</th>\n" +
+    "                        <th>{{ 'common.table.NAVN' | translate }}</th>\n" +
     "                    </tr>\n" +
     "                </thead>\n" +
     "                <tbody>\n" +
@@ -132,18 +132,18 @@ angular.module("common/modal-service/ny-avlevering.tpl.html", []).run(["$templat
     "<div class=\"modal-body\">\n" +
     "	<form>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>ID:</label>\n" +
+    "			<label>{{ 'common.table.ID' | transalte }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avleveringsidentifikator\" data-ng-show=\"!erEndring\">\n" +
     "			<p data-ng-show=\"erEndring\">{{formData.avleveringsidentifikator}}</p>\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avleveringsidentifikator\">{{formData.error.avleveringsidentifikator}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>Arkivskaper:</label>\n" +
+    "			<label>{{ 'common.table.ARKIVSKAPER' | transalte }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.arkivskaper\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.arkivskaper\">{{formData.error.arkivskaper}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>Beskrivelse:</label>\n" +
+    "			<label>{{ 'common.table.BESKRIVELSE' | transalte }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avleveringsbeskrivelse\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avleveringsbeskrivelse\">{{formData.error.avleveringsbeskrivelse}}</label>\n" +
     "		</div>\n" +
@@ -166,18 +166,18 @@ angular.module("common/modal-service/ny-avtale.tpl.html", []).run(["$templateCac
     "<div class=\"modal-body\">\n" +
     "	<form>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>ID:</label>\n" +
+    "			<label>{{ 'common.table.ID' | transalte }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avtaleidentifikator\" data-ng-show=\"!erEndring\">\n" +
     "			<p data-ng-show=\"erEndring\">{{formData.avtaleidentifikator}}</p>\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtaleidentifikator\">{{formData.error.avtaleidentifikator}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>Beskrivelse:</label>\n" +
+    "			<label>{{ 'common.table.BESKRIVELSE' | transalte }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avtalebeskrivelse\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtalebeskrivelse\">{{formData.error.avtalebeskrivelse}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>Dato:</label>\n" +
+    "			<label>{{ 'common.table.DATO' | transalte }}</label>\n" +
     "			<input type=\"date\" class=\"form-control\" ng-model=\"formData.avtaledato\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtaledato\">{{formData.error.avtaledato}}</label>\n" +
     "		</div>\n" +
@@ -195,11 +195,11 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
   $templateCache.put("home/home.tpl.html",
     "<nav class=\"navbar navbar-fixed-top\">\n" +
     "    <div class=\"navbar-header\">\n" +
-    "      <a class=\"navbar-brand\" href=\"#\">{{ 'common.APP_TITTEL' | translate }}</a>\n" +
+    "      <a class=\"navbar-brand\" href=\"\" data-ng-click=\"navHome()\">{{ 'common.APP_TITTEL' | translate }}</a>\n" +
     "    </div>\n" +
     "    <div id=\"navbar\" class=\"navbar-collapse collapse\">\n" +
     "      <ul class=\"nav navbar-nav navbar-right\">\n" +
-    "        <li><a class=\"loggut\" href=\"\" data-ng-click=\"loggUt()\">{{ 'login.LOGG_UT' | translate }}</a></li>\n" +
+    "        <li><a class=\"loggut\" href=\"\" data-ng-click=\"navLoggut()\">{{ 'login.LOGG_UT' | translate }}</a></li>\n" +
     "      </ul>\n" +
     "  </div>\n" +
     "</nav>\n" +
@@ -304,7 +304,7 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "    </div>\n" +
     "    <div id=\"navbar\" class=\"navbar-collapse collapse\">\n" +
     "      <ul class=\"nav navbar-nav navbar-right\">\n" +
-    "      	<li><a href=\"/home\" data-ng-click=\"\">Vis hurtigtaster</a></li>\n" +
+    "      	<li><a href=\"/home\" data-ng-click=\"\">{{ 'common.VIS_HURTIGTASTER' | translate }}</a></li>\n" +
     "        <li><a class=\"loggut\" href=\"\" data-ng-click=\"loggUt()\">{{ 'login.LOGG_UT' | translate }}</a></li>\n" +
     "      </ul>\n" +
     "  </div>\n" +

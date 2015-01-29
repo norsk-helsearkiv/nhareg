@@ -3,7 +3,7 @@ angular.module( 'nha.registrering', [
   'nha.registrering.registrering-service'
 ])
 
-.config(function config( $stateProvider ) {
+.config(["$stateProvider", function config( $stateProvider ) {
   $stateProvider.state( 'registrer', {
     url: '/registrer',
     views: {
@@ -13,9 +13,9 @@ angular.module( 'nha.registrering', [
       }
     }
   });
-})
+}])
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, registreringService) {
+.controller( 'RegistrerCtrl', ["$scope", "$location", "$filter", "registreringService", function HomeController($scope, $location, $filter, registreringService) {
   $scope.$watch(
     function() { return $filter('translate')('home.SOK'); },
     function(newval) { $scope.sok = newval; }
@@ -64,4 +64,4 @@ angular.module( 'nha.registrering', [
   $scope.submit = function() {
     console.log("Legger til pasientjournal i avlevering");
   };
-});
+}]);

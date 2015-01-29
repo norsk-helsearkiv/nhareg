@@ -14,7 +14,7 @@ angular.module( 'nha', [
   'nha.registrering.registrering-service'
 ])
 
-.config( function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {
+.config( ["$stateProvider", "$urlRouterProvider", "$translateProvider", function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {
   $urlRouterProvider.otherwise( '/' );
 
 	$translateProvider.useStaticFilesLoader({
@@ -22,7 +22,7 @@ angular.module( 'nha', [
 		suffix: '.json'
 	});
 	$translateProvider.preferredLanguage('nb');
-})
+}])
 
 .directive('ngEnter', function() {
   return function (scope, element, attrs) {
@@ -38,5 +38,5 @@ angular.module( 'nha', [
   };
 })
 
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
-});
+.controller( 'AppCtrl', ["$scope", "$location", function AppCtrl ( $scope, $location ) {
+}]);

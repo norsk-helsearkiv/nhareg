@@ -2,7 +2,7 @@ angular.module( 'nha.login', [
   'ui.router'
 ])
 
-.config(function config( $stateProvider ) {
+.config(["$stateProvider", function config( $stateProvider ) {
   $stateProvider.state( 'login', {
     url: '/login',
     views: {
@@ -12,9 +12,9 @@ angular.module( 'nha.login', [
       }
     }
   });
-})
+}])
 
-.controller( 'LoginCtrl', function HomeController( $scope, $location, $filter ) {
+.controller( 'LoginCtrl', ["$scope", "$location", "$filter", function HomeController( $scope, $location, $filter ) {
 
   //Henter tekster fra fil
   $scope.$watch(
@@ -31,4 +31,4 @@ angular.module( 'nha.login', [
     $location.path('/home');
   };
   
-});
+}]);
