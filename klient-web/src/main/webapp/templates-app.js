@@ -1,4 +1,4 @@
-angular.module('templates-app', ['common/http-service/error-modal-400.tpl.html', 'common/http-service/error-modal-404.tpl.html', 'common/http-service/error-modal-500.tpl.html', 'common/list-view/list-view.tpl.html', 'common/modal-service/delete-modal.tpl.html', 'common/modal-service/ny-avlevering.tpl.html', 'common/modal-service/ny-avtale.tpl.html', 'home/home.tpl.html', 'login/login.tpl.html', 'registrering/registrering.tpl.html']);
+angular.module('templates-app', ['common/http-service/error-modal-400.tpl.html', 'common/http-service/error-modal-404.tpl.html', 'common/http-service/error-modal-409.tpl.html', 'common/http-service/error-modal-500.tpl.html', 'common/list-view/list-view.tpl.html', 'common/modal-service/delete-modal.tpl.html', 'common/modal-service/ny-avlevering.tpl.html', 'common/modal-service/ny-avtale.tpl.html', 'home/home.tpl.html', 'login/login.tpl.html', 'registrering/registrering.tpl.html']);
 
 angular.module("common/http-service/error-modal-400.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/http-service/error-modal-400.tpl.html",
@@ -26,6 +26,23 @@ angular.module("common/http-service/error-modal-404.tpl.html", []).run(["$templa
     "<div class=\"modal-body\">\n" +
     "    <p>\n" +
     "        {{message}} {{'error.NOT_FOUND' | translate}}\n" +
+    "    </p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button class=\"btn btn-default btn-primary\" ng-click=\"ok()\">{{'common.OK' | translate}}</button>\n" +
+    "</div>");
+}]);
+
+angular.module("common/http-service/error-modal-409.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("common/http-service/error-modal-409.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "    <h3 class=\"modal-title\">{{'error.RESOURCE_CONFLICT_CODE' | translate}}</h3>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-body\">\n" +
+    "    <p>\n" +
+    "        {{'error.RESOURCE_CONFLICT' | translate}}\n" +
     "    </p>\n" +
     "</div>\n" +
     "\n" +
@@ -116,7 +133,8 @@ angular.module("common/modal-service/ny-avlevering.tpl.html", []).run(["$templat
     "	<form>\n" +
     "		<div class=\"form-group\">\n" +
     "			<label>ID:</label>\n" +
-    "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avleveringsidentifikator\">\n" +
+    "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avleveringsidentifikator\" data-ng-show=\"!erEndring\">\n" +
+    "			<p data-ng-show=\"erEndring\">{{formData.avleveringsidentifikator}}</p>\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avleveringsidentifikator\">{{formData.error.avleveringsidentifikator}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
@@ -149,7 +167,8 @@ angular.module("common/modal-service/ny-avtale.tpl.html", []).run(["$templateCac
     "	<form>\n" +
     "		<div class=\"form-group\">\n" +
     "			<label>ID:</label>\n" +
-    "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avtaleidentifikator\">\n" +
+    "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avtaleidentifikator\" data-ng-show=\"!erEndring\">\n" +
+    "			<p data-ng-show=\"erEndring\">{{formData.avtaleidentifikator}}</p>\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtaleidentifikator\">{{formData.error.avtaleidentifikator}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
@@ -195,10 +214,14 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "        <button class=\"right btn btn-small btn-success\" data-ng-click=\"actionLeggTilAvtale()\">{{ 'common.LEGG_TIL' | translate }}</button>\n" +
     "      </h4>\n" +
     "      <ul class=\"nav nav-sidebar\">\n" +
-    "        <li data-ng-repeat=\"avtale in avtaler | orderBy: 'avtalebeskrivelse'\"\n" +
+    "        <li data-ng-repeat=\"avtale in avtaler\"\n" +
     "            data-ng-click=\"setValgtAvtale(avtale)\"\n" +
     "            data-ng-class=\"{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}\">\n" +
-    "            <a href=\"\"><button class=\"icon icon-padding-right icon-delete\" data-ng-click=\"actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)\" tooltip=\"{{text.tooltip.deleteElement}}\"></button>{{ avtale.avtalebeskrivelse }}</a>\n" +
+    "            <a href=\"\">\n" +
+    "              <button class=\"icon icon-edit\" data-ng-click=\"actionEndreAvtale(avtale)\" tooltip=\"{{text.tooltip.endr}}\"></button>\n" +
+    "              <button class=\"icon icon-delete icon-padding-right \" data-ng-click=\"actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)\" tooltip=\"{{text.tooltip.deleteElement}}\"></button>\n" +
+    "              {{ avtale.avtalebeskrivelse }}\n" +
+    "            </a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "    </div>\n" +
@@ -232,8 +255,9 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "              <td>{{ avlevering.avleveringsbeskrivelse }}</td>\n" +
     "              <td>\n" +
     "                <button class=\"icon icon-list\" data-ng-click=\"actionVisAvlevering(avlevering)\" tooltip=\"{{text.tooltip.list}}\"></button>\n" +
-    "                <button class=\"icon icon-padding-left icon-add-journal\" data-ng-click=\"actionAdd()\" tooltip=\"{{text.tooltip.add}}\"></button>\n" +
-    "                <button class=\"icon icon-padding-left icon-folder\" data-ng-click=\"actionFolder(avlevering.avleveringsidentifikator)\" tooltip=\"{{text.tooltip.folder}}\"></button>\n" +
+    "                <button class=\"icon icon-padding-left icon-add-journal\" data-ng-click=\"actionLeggTilPasientjournald(avlevering)\" tooltip=\"{{text.tooltip.add}}\"></button>\n" +
+    "                <button class=\"icon icon-padding-left icon-folder\" data-ng-click=\"actionAvleveringLeveranse(avlevering)\" tooltip=\"{{text.tooltip.folder}}\"></button>\n" +
+    "                <button class=\"icon icon-padding-left icon-edit\" data-ng-click=\"actionEndreAvlevering(avlevering)\" tooltip=\"{{text.tooltip.endre}}\"></button>\n" +
     "                <button class=\"icon icon-padding-left icon-delete\" data-ng-click=\"actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)\" tooltip=\"{{text.tooltip.deleteElement}}\"></button>\n" +
     "              </td>\n" +
     "            </tr>\n" +
@@ -287,43 +311,71 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "</nav>\n" +
     "\n" +
     "<div class=\"container content\">\n" +
-    "	<h1>Registrering</h1>\n" +
+    "	<h1>\n" +
+    "		Registrering\n" +
+    "		<small>{{avlevering.avleveringsbeskrivelse}}</small>\n" +
+    "	</h1>\n" +
     "	<form>\n" +
     "		<div class=\"well\">\n" +
-    "			<legend>Lagringsenhet</legend>\n" +
-    "			<div class=\"form-group\">\n" +
-    "				<label>Tekstfelt 1:</label>\n" +
-    "				<input type=\"text\" class=\"form-control\" placeholder=\"Tekstfelt 1...\" autofocus>\n" +
+    "			<label>Lagringsenheter <small>(Klikk 'enter' for å legge til flere)</small></label>\n" +
+    "			<input type=\"text\" id=\"lagringsenhet\" class=\"form-control\" placeholder=\"Lagringsenhet...\" data-ng-model=\"lagringsenhet\" ng-enter=\"keyAddLagringsenhet()\" autofocus>\n" +
+    "			<ul id=\"lagringsenhet-liste\">\n" +
+    "				<li data-ng-repeat=\"enhet in lagringsenheter\">\n" +
+    "					<button type=\"button\" class=\"btn\" data-ng-click=\"actionFjernLagringsenhet(enhet)\"></button>\n" +
+    "					{{ enhet }}\n" +
+    "				</li>\n" +
+    "			</ul>\n" +
+    "			<div class=\"row\"><!-- Brukes for å sørge for at well utvider seg når float:left listen går over flere linjer --></div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<div class=\"well\">\n" +
+    "			<div class=\"row\">\n" +
+    "				<div class=\"span span2 padding-bottom\">\n" +
+    "					<label>Navn</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Navn...\">\n" +
+    "				</div>\n" +
+    "				<div class=\"span span4\">\n" +
+    "					<label>Personnummer</label>\n" +
+    "					<input type=\"number\" class=\"form-control\" placeholder=\"Personnummer...\">\n" +
+    "				</div>\n" +
+    "				<div class=\"span span4\">\n" +
+    "					<label>Kjønn</label>\n" +
+    "				    <select ng-model=\"selectedItem\" class=\"form-control\"\n" +
+    "            			ng-options=\"item as item.tekst for item in kjonn\">\n" +
+    "            			<option value=\"\" disabled selected>Kjønn...</option>\n" +
+    "            	</select>\n" +
+    "				</div>\n" +
     "			</div>\n" +
     "\n" +
-    "			<div class=\"form-group\">\n" +
-    "				<label>Tekstfelt 2:</label>\n" +
-    "				<input type=\"text\" class=\"form-control\" placeholder=\"Tekstfelt 2...\" autofocus>\n" +
+    "			<div class=\"row\">\n" +
+    "				<div class=\"span span4\">\n" +
+    "					<label>Fødselsdato</label>\n" +
+    "					<input type=\"date\" class=\"form-control\">\n" +
+    "				</div>\n" +
+    "				<div class=\"span span4\">\n" +
+    "					<label>Dødsdato</label>\n" +
+    "					<input type=\"date\" class=\"form-control\">\n" +
+    "				</div>\n" +
+    "				<div class=\"span span4\">\n" +
+    "					<label>Første kontaktår</label>\n" +
+    "					<input type=\"number\" class=\"form-control\" placeholder=\"Årstall...\">\n" +
+    "				</div>\n" +
+    "				<div class=\"span span4\">\n" +
+    "					<label>Siste kontaktsår</label>\n" +
+    "					<input type=\"number\" class=\"form-control\" placeholder=\"Årstall...\">\n" +
+    "				</div>\n" +
     "			</div>\n" +
     "		</div>\n" +
     "\n" +
     "		<div class=\"well\">\n" +
-    "			<legend>Persondata</legend>\n" +
-    "			<div class=\"form-group\">\n" +
-    "				<label>Personnummer / ID</label>\n" +
-    "				<input type=\"text\" class=\"form-control\" placeholder=\"Tekstfelt 1...\" autofocus>\n" +
-    "			</div>\n" +
-    "\n" +
-    "			<div class=\"form-group\">\n" +
-    "				<label>Navn</label>\n" +
-    "				<input type=\"text\" class=\"form-control\" placeholder=\"Tekstfelt 2...\" autofocus>\n" +
-    "			</div>\n" +
+    "			<label>Diagnoser</label>\n" +
     "		</div>\n" +
     "\n" +
     "		<div class=\"well\">\n" +
-    "			<legend>Diagnoser</legend>\n" +
+    "			<label>Vedlegg</label>\n" +
     "		</div>\n" +
     "\n" +
-    "		<div class=\"well\">\n" +
-    "			<legend>Vedlegg</legend>\n" +
-    "		</div>\n" +
-    "\n" +
-    "		<button type=\"submit\" class=\"btn btn-primary\">Submit</button>\n" +
+    "		<button type=\"submit\" class=\"btn btn-primary\" data-ng-click=\"submit()\">Submit</button>\n" +
     "		<button class=\"btn btn-default\">Tilbake</button>\n" +
     "	</form>\n" +
     "</div>");

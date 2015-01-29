@@ -3,10 +3,11 @@ angular.module( 'nha.home', [
   'nha.common.http-service',
   'nha.common.error-service',
   'nha.common.list-service',
-  'nha.common.modal-service'
+  'nha.common.modal-service',
+  'nha.registrering.registrering-service'
 ])
 
-.config(["$stateProvider", function config( $stateProvider ) {
+.config(function config( $stateProvider ) {
   $stateProvider.state( 'home', {
     url: '/',
     views: {
@@ -16,9 +17,9 @@ angular.module( 'nha.home', [
       }
     }
   });
-}])
+})
 
-.controller( 'HomeCtrl', ["$scope", "$location", "$filter", "httpService", "errorService", "listService", "modalService", "$modal", function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, $modal) {
+.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, $modal) {
   //Tekster i vinduet lastet fra kontroller
     $scope.text = {
       "tooltip" : {}
@@ -48,6 +49,10 @@ angular.module( 'nha.home', [
       function(newval) { $scope.text.tooltip.folder = newval; }
     );
     $scope.$watch(
+      function() { return $filter('translate')('home.tooltip.ENDRE'); },
+      function(newval) { $scope.text.tooltip.endre = newval; }
+    );
+    $scope.$watch(
       function() { return $filter('translate')('home.tooltip.DELETE'); },
       function(newval) { $scope.text.tooltip.deleteElement = newval; }
     );
@@ -59,15 +64,6 @@ angular.module( 'nha.home', [
   }).error(function(data, status, headers, config) {
     errorService.errorCode(status);
   });
-
-  $scope.actionFolder = function(id) {
-    httpService.genererAvlevering()
-    .success(function(data, status, headers, config) {
-      conole.log("TODO: handle action folder");
-    }).error(function(data, status, headers, config) {
-      errorService.errorCode(status);
-    });
-  };
 
   $scope.actionSok = function(sokestring) {
     console.log("TODO: Implementere søk");
@@ -118,40 +114,51 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionDeleteAvtale = function(elementType, id, element) {
-    modalService.deleteModal(elementType, id, $scope.avtaler, element, function() {
-      httpService.deleteElement("avtaler/" + id);
+    modalService.deleteModal(elementType, id, function() {
+      httpService.deleteElement("avtaler/" + id)
+      .success(function(data, status, headers, config) {
+        fjern($scope.avtaler, element);
+        $scope.setValgtAvtale($scope.avtaler[0]);
+      }).error(function(data, status, headers, config) {
+        errorService.errorCode(status);
+      });
     });
+  };
+
+  var validerAvtale = function(formData) {
+    formData.error = {};
+    var success = true;
+
+    if(formData.avtaleidentifikator === undefined || formData.avtaleidentifikator === ''){
+      formData.error.avtaleidentifikator = "ID kan ikke være tom";
+      success = false;
+    }
+    if(formData.avtalebeskrivelse === undefined || formData.avtalebeskrivelse === ''){
+      formData.error.avtalebeskrivelse = "Beskrivelsen kan ikke være tom";
+      success = false;
+    }
+    if(formData.avtaledato === undefined || formData.avtaledato === ''){
+      formData.error.avtaledato = "Dato må være satt";
+      success = false;
+    }
+
+    if(success) {
+      formData.error = undefined;
+    }
+    return success;
   };
 
   $scope.actionLeggTilAvtale = function() {
-    modalService.nyModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", function(formData) {
-      formData.error = {};
-      var success = true;
+    modalService.nyModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
+  };
 
-      if(formData.avtaleidentifikator === undefined || formData.avtaleidentifikator === ''){
-        formData.error.avtaleidentifikator = "ID kan ikke være tom";
-        success = false;
-      }
-      if(formData.avtalebeskrivelse === undefined || formData.avtalebeskrivelse === ''){
-        formData.error.avtalebeskrivelse = "Beskrivelsen kan ikke være tom";
-        success = false;
-      }
-      if(formData.avtaledato === undefined || formData.avtaledato === ''){
-        formData.error.avtaledato = "Dato må være satt";
-        success = false;
-      }
-
-      if(success) {
-        formData.error = undefined;
-      }
-      return success;
-    });
+  $scope.actionEndreAvtale = function(avtale) {
+    modalService.endreModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
   };
 
   //Avlevering
-  $scope.actionLeggTilAvlevering = function() {
-    modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", function(formData) {
-      formData.error = {};
+  var validering = function(formData) {
+    formData.error = {};
       var success = true;
 
       if(formData.avleveringsidentifikator === undefined || formData.avleveringsidentifikator === ''){
@@ -164,12 +171,24 @@ angular.module( 'nha.home', [
         formData.avtale = $scope.valgtAvtale;
       }
       return success;
-    });
+
+  };
+  $scope.actionLeggTilAvlevering = function() {
+    modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", validering);
+  };
+
+  $scope.actionEndreAvlevering = function(avlevering) {
+    modalService.endreModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", validering, avlevering);
   };
 
   $scope.actionFjernAvlevering = function(elementType, id, element) {
-    modalService.deleteModal(elementType, id, $scope.avleveringer, element, function() {
-      httpService.deleteElement("avleveringer/" + id);
+    modalService.deleteModal(elementType, id, function() {
+      httpService.deleteElement("avleveringer/" + id)
+      .success(function(data, status, headers, config) {
+        fjern($scope.avleveringer, element);
+      }).error(function(data, status, headers, config) {
+        errorService.errorCode(status);
+      });
     });
   };
 
@@ -189,13 +208,28 @@ angular.module( 'nha.home', [
     });
   };
 
+  $scope.actionAvleveringLeveranse = function(avlevering) {
+    window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator + "/leveranse";
+  };
+
   //Util
   $scope.loggUt = function() {
     console.log("TODO: logg ut");
     $location.path('/login');
   };
 
-  $scope.actionAdd = function() {
+  $scope.actionLeggTilPasientjournald = function(avlevering) {
+    registreringService.setAvlevering(avlevering);
     $location.path('/registrer');
   };
-}]);
+
+  //Hjelpe metode for å fjerne fra liste
+  var fjern = function(list, element) {
+    for(var i = 0; i < list.length; i++) {
+      if(element === list[i]) {
+          list.splice(i, 1);
+      }
+    }
+  };
+
+});

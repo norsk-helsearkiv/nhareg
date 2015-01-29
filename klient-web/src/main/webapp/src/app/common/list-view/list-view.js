@@ -5,7 +5,7 @@ angular.module( 'nha.common.list-view', [
   'ui.router'
 ])
 
-.config(["$stateProvider", function config( $stateProvider ) {
+.config(function config( $stateProvider ) {
   $stateProvider.state( 'list', {
     url: '/list',
     views: {
@@ -15,9 +15,9 @@ angular.module( 'nha.common.list-view', [
       }
     }
   });
-}])
+})
 
-.controller( 'ListCtrl', ["$scope", "$location", "listService", "httpService", "errorService", function HomeController($scope, $location, listService, httpService, errorService) {
+.controller( 'ListCtrl', function HomeController($scope, $location, listService, httpService, errorService) {
   $scope.tittel = listService.getTittel();
   $scope.data = listService.getData();
 
@@ -37,4 +37,4 @@ angular.module( 'nha.common.list-view', [
       errorService.errorCode(status);
     });    
   };
-}]);
+});

@@ -35,6 +35,17 @@ function errorService($modal, $location) {
             return $modal.open(template);
         },
 
+        resourceConflict: function () {
+            template.templateUrl = 'common/http-service/error-modal-409.tpl.html';
+            template.controller = function ($scope, $modalInstance) {
+                $scope.ok = function () {
+                    $modalInstance.close();
+                };
+            };
+            template.controller.$inject = ['$scope', '$modalInstance'];
+            return $modal.open(template);
+        },
+
         serverError: function () {
             template.templateUrl = 'common/http-service/error-modal-500.tpl.html';
             template.controller = function ($scope, $modalInstance) {
@@ -60,6 +71,8 @@ function errorService($modal, $location) {
                     return this.notFound();
                 case 401:
                     return this.unauthorizedError();
+                case 409:
+                    return this.resourceConflict();
                 default:
                     return this.serverError();
             }

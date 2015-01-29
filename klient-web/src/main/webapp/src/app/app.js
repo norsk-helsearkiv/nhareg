@@ -10,10 +10,11 @@ angular.module( 'nha', [
   'nha.common.list-view',
   'nha.home',
   'nha.login',
-  'nha.registrering'
+  'nha.registrering',
+  'nha.registrering.registrering-service'
 ])
 
-.config( ["$stateProvider", "$urlRouterProvider", "$translateProvider", function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {
+.config( function myAppConfig ($stateProvider, $urlRouterProvider, $translateProvider) {
   $urlRouterProvider.otherwise( '/' );
 
 	$translateProvider.useStaticFilesLoader({
@@ -21,8 +22,21 @@ angular.module( 'nha', [
 		suffix: '.json'
 	});
 	$translateProvider.preferredLanguage('nb');
-}])
+})
 
+.directive('ngEnter', function() {
+  return function (scope, element, attrs) {
+    element.bind("keydown keypress", function (event) {
+        if(event.which === 13) {
+            scope.$apply(function (){
+                scope.$eval(attrs.ngEnter);
+            });
 
-.controller( 'AppCtrl', ["$scope", "$location", function AppCtrl ( $scope, $location ) {
-}]);
+            event.preventDefault();
+        }
+    });
+  };
+})
+
+.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
+});

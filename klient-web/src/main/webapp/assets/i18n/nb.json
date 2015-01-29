@@ -22,7 +22,8 @@
 			"LIST" : "Vis pasientjournaler i avleveringen",
 			"ADD" : "Legg til pasientjournal i avleveringen",
 			"FOLDER" : "Generer leveranse",
-			"DELETE" : "Slett avlevering"
+			"ENDRE" : "Endre",
+			"DELETE" : "Slett"
 		}
 	},
 	"login" : {
@@ -49,6 +50,8 @@
         "SERVER_ERROR":                 "Det har oppstått en problem på serveren. Vennligst prøv igjen senere",
         "CONFIRM_DELETE":               "Er du sikker på at du vil slette: ",
         "NOT_FOUND":                    "Resursjen på serveren finnes ikke på angitt plassering.",
-        "NOT_FOUND_STATUS_CODE":        "404 Resursjen finnes ikke"
+        "NOT_FOUND_STATUS_CODE":        "404 Resursjen finnes ikke",
+        "RESOURCE_CONFLICT_CODE":		"409 Konsistensfeil",
+        "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først"
     }
 }
