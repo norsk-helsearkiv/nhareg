@@ -132,18 +132,18 @@ angular.module("common/modal-service/ny-avlevering.tpl.html", []).run(["$templat
     "<div class=\"modal-body\">\n" +
     "	<form>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>{{ 'common.table.ID' | transalte }}</label>\n" +
+    "			<label>{{ 'common.table.ID' | translate }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avleveringsidentifikator\" data-ng-show=\"!erEndring\">\n" +
     "			<p data-ng-show=\"erEndring\">{{formData.avleveringsidentifikator}}</p>\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avleveringsidentifikator\">{{formData.error.avleveringsidentifikator}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>{{ 'common.table.ARKIVSKAPER' | transalte }}</label>\n" +
+    "			<label>{{ 'common.table.ARKIVSKAPER' | translate }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.arkivskaper\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.arkivskaper\">{{formData.error.arkivskaper}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>{{ 'common.table.BESKRIVELSE' | transalte }}</label>\n" +
+    "			<label>{{ 'common.table.BESKRIVELSE' | translate }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avleveringsbeskrivelse\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avleveringsbeskrivelse\">{{formData.error.avleveringsbeskrivelse}}</label>\n" +
     "		</div>\n" +
@@ -166,18 +166,18 @@ angular.module("common/modal-service/ny-avtale.tpl.html", []).run(["$templateCac
     "<div class=\"modal-body\">\n" +
     "	<form>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>{{ 'common.table.ID' | transalte }}</label>\n" +
+    "			<label>{{ 'common.table.ID' | translate }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avtaleidentifikator\" data-ng-show=\"!erEndring\">\n" +
     "			<p data-ng-show=\"erEndring\">{{formData.avtaleidentifikator}}</p>\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtaleidentifikator\">{{formData.error.avtaleidentifikator}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>{{ 'common.table.BESKRIVELSE' | transalte }}</label>\n" +
+    "			<label>{{ 'common.table.BESKRIVELSE' | translate }}</label>\n" +
     "			<input type=\"text\" class=\"form-control\" ng-model=\"formData.avtalebeskrivelse\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtalebeskrivelse\">{{formData.error.avtalebeskrivelse}}</label>\n" +
     "		</div>\n" +
     "		<div class=\"form-group\">\n" +
-    "			<label>{{ 'common.table.DATO' | transalte }}</label>\n" +
+    "			<label>{{ 'common.table.DATO' | translate }}</label>\n" +
     "			<input type=\"date\" class=\"form-control\" ng-model=\"formData.avtaledato\">\n" +
     "			<label class=\"label-error\" data-ng-show=\"formData.error.avtaledato\">{{formData.error.avtaledato}}</label>\n" +
     "		</div>\n" +
@@ -219,7 +219,8 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "            data-ng-class=\"{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}\">\n" +
     "            <a href=\"\">\n" +
     "              <button class=\"icon icon-edit\" data-ng-click=\"actionEndreAvtale(avtale)\" tooltip=\"{{text.tooltip.endr}}\"></button>\n" +
-    "              <button class=\"icon icon-delete icon-padding-right \" data-ng-click=\"actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)\" tooltip=\"{{text.tooltip.deleteElement}}\"></button>\n" +
+    "              <button class=\"icon icon-delete icon-padding-right\" data-ng-click=\"actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)\" tooltip=\"{{text.tooltip.deleteElement}}\" data-ng-show=\"valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0\">\n" +
+    "              </button>\n" +
     "              {{ avtale.avtalebeskrivelse }}\n" +
     "            </a>\n" +
     "        </li>\n" +
@@ -258,7 +259,7 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "                <button class=\"icon icon-padding-left icon-add-journal\" data-ng-click=\"actionLeggTilPasientjournald(avlevering)\" tooltip=\"{{text.tooltip.add}}\"></button>\n" +
     "                <button class=\"icon icon-padding-left icon-folder\" data-ng-click=\"actionAvleveringLeveranse(avlevering)\" tooltip=\"{{text.tooltip.folder}}\"></button>\n" +
     "                <button class=\"icon icon-padding-left icon-edit\" data-ng-click=\"actionEndreAvlevering(avlevering)\" tooltip=\"{{text.tooltip.endre}}\"></button>\n" +
-    "                <button class=\"icon icon-padding-left icon-delete\" data-ng-click=\"actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)\" tooltip=\"{{text.tooltip.deleteElement}}\"></button>\n" +
+    "                <button class=\"icon icon-padding-left icon-delete\" data-ng-click=\"actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)\" tooltip=\"{{text.tooltip.deleteElement}}\" data-ng-show=\"avlevering.pasientjournal.length === 0\"></button>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +
@@ -330,17 +331,30 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "\n" +
     "		<div class=\"well\">\n" +
     "			<div class=\"row\">\n" +
-    "				<div class=\"span span2 padding-bottom\">\n" +
-    "					<label>Navn</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Navn...\">\n" +
+    "				<div class=\"span span3\">\n" +
+    "					<label>Journalnummer</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Journalnummer...\">\n" +
     "				</div>\n" +
-    "				<div class=\"span span4\">\n" +
-    "					<label>Personnummer</label>\n" +
-    "					<input type=\"number\" class=\"form-control\" placeholder=\"Personnummer...\">\n" +
+    "				<div class=\"span span3\">\n" +
+    "					<label>Løpenummer</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Løpenummer...\">\n" +
+    "				</div>\n" +
+    "				<div class=\"span span3\">\n" +
+    "					<label>Fødselsnummer</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Fødselsnummer...\" data-ng-model=\"formData.fnr\" data-ng-focus=\"setFnr()\" data-ng-blur=\"populerFelt()\">\n" +
+    "				</div>\n" +
+    "			</div>\n" +
+    "		</div>\n" +
+    "\n" +
+    "		<div class=\"well\">\n" +
+    "			<div class=\"row\">\n" +
+    "				<div class=\"span span43 padding-bottom\">\n" +
+    "					<label>Navn</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Navn...\" data-ng-model=\"formData.navn\" data-ng-blur=\"setFocusEtterNavn()\">\n" +
     "				</div>\n" +
     "				<div class=\"span span4\">\n" +
     "					<label>Kjønn</label>\n" +
-    "				    <select ng-model=\"selectedItem\" class=\"form-control\"\n" +
+    "				    <select  class=\"form-control\" data-ng-model=\"formData.valgtKjonn\"\n" +
     "            			ng-options=\"item as item.tekst for item in kjonn\">\n" +
     "            			<option value=\"\" disabled selected>Kjønn...</option>\n" +
     "            	</select>\n" +
@@ -349,20 +363,20 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "\n" +
     "			<div class=\"row\">\n" +
     "				<div class=\"span span4\">\n" +
-    "					<label>Fødselsdato</label>\n" +
-    "					<input type=\"date\" class=\"form-control\">\n" +
+    "					<label>Født</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.fdato\">\n" +
     "				</div>\n" +
     "				<div class=\"span span4\">\n" +
-    "					<label>Dødsdato</label>\n" +
-    "					<input type=\"date\" class=\"form-control\">\n" +
+    "					<label>Død</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.ddato\" id=\"ddato\">\n" +
     "				</div>\n" +
     "				<div class=\"span span4\">\n" +
-    "					<label>Første kontaktår</label>\n" +
-    "					<input type=\"number\" class=\"form-control\" placeholder=\"Årstall...\">\n" +
+    "					<label>Første kontakt</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.fkontakt\">\n" +
     "				</div>\n" +
     "				<div class=\"span span4\">\n" +
-    "					<label>Siste kontaktsår</label>\n" +
-    "					<input type=\"number\" class=\"form-control\" placeholder=\"Årstall...\">\n" +
+    "					<label>Siste kontakt</label>\n" +
+    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.skontakt\">\n" +
     "				</div>\n" +
     "			</div>\n" +
     "		</div>\n" +
@@ -375,8 +389,8 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "			<label>Vedlegg</label>\n" +
     "		</div>\n" +
     "\n" +
-    "		<button type=\"submit\" class=\"btn btn-primary\" data-ng-click=\"submit()\">Submit</button>\n" +
-    "		<button class=\"btn btn-default\">Tilbake</button>\n" +
+    "		<button type=\"submit\" class=\"btn btn-primary right\" ng-btnFocus=\"\" data-ng-click=\"submit()\">Submit</button>\n" +
+    "		<button class=\"btn btn-default\" ng-btn-focus>Tilbake</button>\n" +
     "	</form>\n" +
     "</div>");
 }]);
