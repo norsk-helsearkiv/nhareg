@@ -3,10 +3,18 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,9 +29,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -35,6 +44,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 @Path("/avleveringer")
 @Stateless
 public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
+    
+    Log log = LogFactory.getLog(AvleveringTjeneste.class);
 
     public AvleveringTjeneste() {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
@@ -63,8 +74,14 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         int side = 1;
         int antall = total;
         
+        log.info("");
+        log.info(uriInfo == null); // false
+        log.info("");
         if(uriInfo != null) {
             MultivaluedMap<String, String> queryParameters = uriInfo.getPathParameters();
+            log.info(queryParameters); //false 
+            log.info(queryParameters.containsKey("antall")); //false
+        log.info("");
             if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
                 int paramSide = Integer.parseInt(queryParameters.getFirst("side")) - 1;
                 int paramAntall = Integer.parseInt(queryParameters.getFirst("antall"));
@@ -94,9 +111,29 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
      */
     @POST
     @Path("/{id}/pasientjournaler")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPasientjournaler(Pasientjournal pasientjournal) {
-        return Response.noContent().build();
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getPasientjournaler(@PathParam("id") String avleveringid, Pasientjournal pasientjournal) {
+        try {
+            //Setter UUID for ny pasientjournal
+            pasientjournal.setUuid(UUID.randomUUID().toString());
+            
+            getValidator().validate(pasientjournal);
+            getEntityManager().persist(pasientjournal);
+            Avlevering avlevering = getEntityManager().find(Avlevering.class, avleveringid);
+            avlevering.getPasientjournal().add(pasientjournal);
+            return Response.ok().entity(pasientjournal).type(MediaType.APPLICATION_JSON_TYPE).build();
+            
+        } catch (ConstraintViolationException e) {
+            // If validation of the data failed using Bean Validation, then send an error
+            Map<String, Object> errors = new HashMap<String, Object>();
+            List<String> errorMessages = new ArrayList<String>();
+            for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
+                errorMessages.add(constraintViolation.getMessage());
+            }
+            errors.put("errors", errorMessages);
+            
+            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+        }
     }
     
     @GET

@@ -43,3 +43,8 @@ INSERT INTO DIAGNOSE (UUID, DIAGDATO, DIAGNOSETEKST, OPPDATERTAV, PROSESSTRINN, 
 INSERT INTO PASIENTJOURNAL_DIAGNOSE (PASIENTJOURNAL_UUID, DIAGNOSE_UUID) VALUES ('uuid1', 'uuid-diagnose-1');
 
 insert into Pasientjournal (uuid) values ('uuid-pj1');
+
+--
+-- AVLEVERING_PASIENTJOURNAL
+--
+INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid-pj1');

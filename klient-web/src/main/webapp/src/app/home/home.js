@@ -103,16 +103,11 @@ angular.module( 'nha.home', [
   };
 
   //Avtale
-  $scope.print = function(avtale) {
-    console.log("===");
-    console.log(avtale);
-    return true;
-  };
-
   $scope.setValgtAvtale = function(avtale) {
     if(avtale === undefined) {
       return;
     }
+    console.log(avtale);
     httpService.hentAlle("avtaler/" + avtale.avtaleidentifikator + "/avleveringer", false)
     .success(function(data, status, headers, config) {
       $scope.avleveringer = data;
