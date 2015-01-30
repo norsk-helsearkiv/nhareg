@@ -238,7 +238,13 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "        </form>\n" +
     "      </div>\n" +
     "      \n" +
-    "      <h2 class=\"sub-header\">{{ 'home.AVLEVERINGER' | translate }}<small> {{ 'home.FOR' | translate }} {{ valgtAvtale.avtalebeskrivelse }}</small><button class=\"right btn btn-success\" data-ng-click=\"actionLeggTilAvlevering()\">{{ 'common.LEGG_TIL' | translate }}</button></h2>\n" +
+    "      <h2 class=\"sub-header\">\n" +
+    "        {{ 'home.AVLEVERINGER' | translate }}\n" +
+    "        <small> {{ 'home.FOR' | translate }} {{ valgtAvtale.avtalebeskrivelse }}</small>\n" +
+    "        <button class=\"right btn btn-success\" data-ng-click=\"actionLeggTilAvlevering()\" data-ng-show=\"valgtAvtale\">\n" +
+    "          {{ 'common.LEGG_TIL' | translate }}\n" +
+    "        </button>\n" +
+    "      </h2>\n" +
     "      <div class=\"table-responsive\">\n" +
     "        <table class=\"table table-striped\">\n" +
     "          <thead>\n" +

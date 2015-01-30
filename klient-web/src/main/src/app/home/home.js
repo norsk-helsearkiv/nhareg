@@ -110,6 +110,9 @@ angular.module( 'nha.home', [
   };
 
   $scope.setValgtAvtale = function(avtale) {
+    if(avtale === undefined) {
+      return;
+    }
     httpService.hentAlle("avtaler/" + avtale.avtaleidentifikator + "/avleveringer", false)
     .success(function(data, status, headers, config) {
       $scope.avleveringer = data;
