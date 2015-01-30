@@ -68,6 +68,6 @@ public class AvleveringTjenesteTest {
         List<Pasientjournal> liste = (List<Pasientjournal>) pasientjournaler.getListe();
         assertNotNull(liste);
         assertFalse(liste.isEmpty());
-        assertEquals(1, liste.size());
+        assertEquals(2, liste.size());
     }
 }

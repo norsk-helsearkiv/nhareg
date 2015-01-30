@@ -114,6 +114,9 @@
             </basic>  
             <many-to-one name="kjønn">
                 <join-column name="kjonn"/>
+                <cascade>
+                    <cascade-all />
+                </cascade>
             </many-to-one>
             <embedded name="identifikator"/>
             <embedded name="født">   
