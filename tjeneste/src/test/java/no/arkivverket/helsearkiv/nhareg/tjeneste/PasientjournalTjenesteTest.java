@@ -35,7 +35,7 @@ public class PasientjournalTjenesteTest {
         // Test pagination logic
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
 
-        queryParameters.add("first", "2");
+        queryParameters.add("first", "1");
         queryParameters.add("maxResults", "1");
         
         List<Pasientjournal> pjer = tjeneste.getAll(queryParameters);
