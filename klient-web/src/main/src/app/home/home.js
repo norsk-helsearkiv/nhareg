@@ -57,7 +57,7 @@ angular.module( 'nha.home', [
       function(newval) { $scope.text.tooltip.deleteElement = newval; }
     );
 
-  httpService.hentAlle("avtaler", false)
+  httpService.hentAlle("avtaler", true)
   .success(function(data, status, headers, config) {
     $scope.avtaler = data;
     $scope.setValgtAvtale(data[0]); 
@@ -103,6 +103,12 @@ angular.module( 'nha.home', [
   };
 
   //Avtale
+  $scope.print = function(avtale) {
+    console.log("===");
+    console.log(avtale);
+    return true;
+  };
+
   $scope.setValgtAvtale = function(avtale) {
     httpService.hentAlle("avtaler/" + avtale.avtaleidentifikator + "/avleveringer", false)
     .success(function(data, status, headers, config) {
