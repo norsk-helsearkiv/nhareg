@@ -36,7 +36,7 @@ public class PasientjournalTjenesteTest {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
 
         queryParameters.add("first", "1");
-        queryParameters.add("maxResults", "1");
+        queryParameters.add("max", "1");
         
         List<Pasientjournal> pjer = tjeneste.getAll(queryParameters);
         assertNotNull(pjer);
