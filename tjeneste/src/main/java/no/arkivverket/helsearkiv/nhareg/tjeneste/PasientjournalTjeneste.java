@@ -4,9 +4,11 @@ import java.io.File;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -54,6 +56,28 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         
         //Returner liste av PasientjournalAvlevering.java
         return Response.noContent().build();
+    }
+    
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response oppdaterPasientjournal(@PathParam("id") String id) {
+        return Response.noContent().build();
+    }
+    
+    @DELETE
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response slettPasientjournal(@PathParam("id") String id) {
+        Pasientjournal p = getSingleInstance(id);
+        if(p == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        p.setSlettet(true);
+        getEntityManager().merge(p);
+        return Response.ok().build();
     }
     
     /**

@@ -83,13 +83,27 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
             }
         }
         
-        List<Pasientjournal> pasientjournaler = new ArrayList<Pasientjournal>();
-        for(int i = forste; i < forste + antall && i < total; i++) {
-            pasientjournaler.add(avlevering.getPasientjournal().get(i));
+        List<Pasientjournal> aktiveJournaler = new ArrayList<Pasientjournal>();
+        List<Pasientjournal> pasientjournaler = avlevering.getPasientjournal();
+        int totalAktive = 0;
+        int antallIListe = 0;
+
+        for(int i = 0; i < total; i++) {
+            //Aktiv
+            if(pasientjournaler.get(i).isSlettet() == null ||
+                    !pasientjournaler.get(i).isSlettet()) {
+                
+                if(antallIListe <= antall) {
+                    aktiveJournaler.add(pasientjournaler.get(i));
+                    antallIListe++;
+                }
+                totalAktive++;
+            }            
         }
         
+        
         //Returner objekt
-        return new ListeObjekt(pasientjournaler, total, side, antall);
+        return new ListeObjekt(aktiveJournaler, totalAktive, side, antall);
     }
         
     /**
