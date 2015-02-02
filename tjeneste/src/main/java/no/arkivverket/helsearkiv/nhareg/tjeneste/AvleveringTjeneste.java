@@ -3,12 +3,10 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -22,6 +20,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -54,14 +53,14 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     /**
      * Henter pasientjournaler for en avlevering.
      *
-     * @param uriInfo
-     * @param avleveringsidentifikator
-     * @return
+     * @param avleveringsidentifikator 
+     * @param uriInfo 
+     * @return Liste over pasientjournaler
      */
     @GET
     @Path("/{id}/pasientjournaler")
     @Produces(MediaType.APPLICATION_JSON)
-    public ListeObjekt getPasientjournaler(@Context UriInfo uriInfo, @PathParam("id") String avleveringsidentifikator) {
+    public ListeObjekt getPasientjournaler(@PathParam("id") String avleveringsidentifikator, @Context UriInfo uriInfo) {
         //Hent total count
         String totalJpql = "SELECT a FROM Avlevering a WHERE a.avleveringsidentifikator LIKE :id";
         Query totalQuery = super.getEntityManager().createQuery(totalJpql);
@@ -74,29 +73,20 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         int side = 1;
         int antall = total;
         
-        log.info("");
-        log.info(uriInfo == null); // false
-        log.info("");
-        if(uriInfo != null) {
-            MultivaluedMap<String, String> queryParameters = uriInfo.getPathParameters();
-            log.info(queryParameters); //false 
-            log.info(queryParameters.containsKey("antall")); //false
-        log.info("");
-            if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
-                int paramSide = Integer.parseInt(queryParameters.getFirst("side")) - 1;
-                int paramAntall = Integer.parseInt(queryParameters.getFirst("antall"));
-
-                if(paramSide > 0 && paramAntall > 0) {
-                    side = paramSide;
-                    antall = paramAntall;
-
-                    forste = (side * antall) -1;
-                }
+        MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+        if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
+            Integer qSide = Integer.parseInt(queryParameters.getFirst("side"));
+            Integer qAntall = Integer.parseInt(queryParameters.getFirst("antall"));
+            
+            if(qSide > 0 && qAntall > 0) {
+                side = qSide;
+                antall = qAntall;
+                forste = (side - 1) * antall;
             }
         }
         
         List<Pasientjournal> pasientjournaler = new ArrayList<Pasientjournal>();
-        for(int i = forste; i < antall; i++) {
+        for(int i = forste; i < forste + antall && i < total; i++) {
             pasientjournaler.add(avlevering.getPasientjournal().get(i));
         }
         
@@ -106,6 +96,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         
     /**
      * Oppretter en ny pasientjournal under avleveringen
+     * @param avleveringid
      * @param pasientjournal som skal opprettes
      * @return Pasientjournal
      */
