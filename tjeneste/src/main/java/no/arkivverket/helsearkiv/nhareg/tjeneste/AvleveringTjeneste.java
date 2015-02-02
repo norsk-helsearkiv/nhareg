@@ -101,7 +101,6 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
             }            
         }
         
-        
         //Returner objekt
         return new ListeObjekt(aktiveJournaler, totalAktive, side, antall);
     }

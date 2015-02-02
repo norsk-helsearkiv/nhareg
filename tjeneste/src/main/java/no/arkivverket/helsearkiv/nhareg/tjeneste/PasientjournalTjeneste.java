@@ -1,8 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 
 /**
  * <p>
@@ -59,11 +63,34 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     }
     
     @PUT
-    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response oppdaterPasientjournal(@PathParam("id") String id) {
-        return Response.noContent().build();
+    public Response oppdaterPasientjournal(Pasientjournal pasientjournal) {
+        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+        
+        //Håndterer null objekt
+        if(pasientjournal == null) {
+            valideringsfeil.add(new Valideringsfeil(Pasientjournal.class + "", "NotNull"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
+        
+        //Validerer obj
+        Set<ConstraintViolation<Pasientjournal>> constraintViolations = getValidator().validate(pasientjournal);
+        for(ConstraintViolation<Pasientjournal> feil : constraintViolations) {
+            String msgTpl = feil.getConstraintDescriptor().getMessageTemplate();
+
+            String attributt = feil.getPropertyPath().toString();
+            String constraint = msgTpl.substring(30, msgTpl.length() - 9);
+
+            valideringsfeil.add((new Valideringsfeil(attributt, constraint)));
+        }
+
+        if(!valideringsfeil.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
+        
+        Pasientjournal persistert = getEntityManager().merge(pasientjournal);
+        return Response.ok(persistert).build();
     }
     
     @DELETE
