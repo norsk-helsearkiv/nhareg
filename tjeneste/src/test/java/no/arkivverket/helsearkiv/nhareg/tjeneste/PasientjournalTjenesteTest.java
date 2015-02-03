@@ -10,6 +10,8 @@ import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -20,32 +22,54 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class PasientjournalTjenesteTest {
-    
+
     @Deployment
     public static WebArchive deployment() {
         return RESTDeployment.deployment();
     }
-   
+
     @Inject
     private PasientjournalTjeneste tjeneste;
-    
+
     @Test
     public void testPagination() {
-        
+
         // Test pagination logic
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
 
         queryParameters.add("first", "1");
         queryParameters.add("max", "1");
-        
+
         List<Pasientjournal> pjer = tjeneste.getAll(queryParameters);
         assertNotNull(pjer);
         assertEquals(1, pjer.size());
     }
-    
+
     @Test
-    public void testCreate(){
+    public void testCreate() {
         Pasientjournal a = new Pasientjournal();
         tjeneste.create(a);
+    }
+
+    @Test
+    public void testCreateMedKjønn() {
+        Pasientjournal pasientjournal = new Pasientjournal();
+        Grunnopplysninger grunnopplysninger = new Grunnopplysninger();
+        Kjønn kjønn = new Kjønn();
+        kjønn.setCode("M");
+        grunnopplysninger.setKjønn(kjønn);
+        pasientjournal.setGrunnopplysninger(grunnopplysninger);
+        tjeneste.create(pasientjournal);
+    }
+
+    @Test(expected = javax.ejb.EJBTransactionRolledbackException.class)
+    public void testCreateMedUgyldigKjønn() {
+        Pasientjournal pasientjournal = new Pasientjournal();
+        Grunnopplysninger grunnopplysninger = new Grunnopplysninger();
+        Kjønn kjønn = new Kjønn();
+        kjønn.setCode("J");
+        grunnopplysninger.setKjønn(kjønn);
+        pasientjournal.setGrunnopplysninger(grunnopplysninger);
+        tjeneste.create(pasientjournal);
     }
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.Consumes;
@@ -20,6 +21,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 
@@ -39,6 +42,11 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfei
  */
 @Stateless
 public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, String> {
+    
+        @Inject
+    private KjønnTjeneste kjønnTjeneste;
+
+
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -162,6 +170,15 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Override
     public Response create(Pasientjournal entity) {
         entity.setUuid(UUID.randomUUID().toString());
+        //
+        if (entity.getGrunnopplysninger() != null){
+            Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
+            if (grunnopplysninger.getKjønn() != null){
+                Kjønn kjønn = grunnopplysninger.getKjønn();
+                kjønn = kjønnTjeneste.getSingleInstance(kjønn.getCode());
+                grunnopplysninger.setKjønn(kjønn);
+            }
+        }
         return super.create(entity);
     }
     
