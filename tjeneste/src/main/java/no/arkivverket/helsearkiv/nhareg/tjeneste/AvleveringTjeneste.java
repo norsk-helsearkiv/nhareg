@@ -115,7 +115,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPasientjournaler(@PathParam("id") String avleveringid, Pasientjournal pasientjournal) {
+    public Response nyPasientjournal(@PathParam("id") String avleveringid, Pasientjournal pasientjournal) {
         ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
         
         //Håndterer null objekt
