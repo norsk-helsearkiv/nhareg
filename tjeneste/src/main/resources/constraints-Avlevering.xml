@@ -48,6 +48,11 @@
             <valid />
             <constraint annotation="javax.validation.constraints.NotNull" />
         </field>
+        
+        <field name="kjønn">
+            <valid />
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
     </bean>
     
     <bean class="Identifikator" ignore-annotations="true">
