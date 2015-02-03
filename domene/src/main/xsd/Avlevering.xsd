@@ -87,6 +87,14 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="slettet" type="xs:boolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Angir om journalen er slettet.
+                        Verdi "true" uttrykker sant (ja, avkrysset boks etc.) mens verdi "false" uttrykker usant (verdi nei, ikke avkrysset boks etc.).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             
             <xs:element name="slettet" type="xs:boolean" minOccurs="0">
                 <xs:annotation>
