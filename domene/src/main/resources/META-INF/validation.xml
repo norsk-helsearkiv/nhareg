@@ -10,4 +10,5 @@
     <constraint-validator-factory>org.hibernate.validator.engine.ConstraintValidatorFactoryImpl</constraint-validator-factory>
      -->
     <constraint-mapping>/constraints-Avleveringsbeskrivelse.xml</constraint-mapping>
+    <constraint-mapping>/constraints-Avlevering.xml</constraint-mapping>
 </validation-config>

@@ -3,17 +3,13 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Formatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -31,6 +27,7 @@ import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,14 +51,14 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     /**
      * Henter pasientjournaler for en avlevering.
      *
-     * @param uriInfo
-     * @param avleveringsidentifikator
-     * @return
+     * @param avleveringsidentifikator 
+     * @param uriInfo 
+     * @return Liste over pasientjournaler
      */
     @GET
     @Path("/{id}/pasientjournaler")
     @Produces(MediaType.APPLICATION_JSON)
-    public ListeObjekt getPasientjournaler(@Context UriInfo uriInfo, @PathParam("id") String avleveringsidentifikator) {
+    public ListeObjekt getPasientjournaler(@PathParam("id") String avleveringsidentifikator, @Context UriInfo uriInfo) {
         //Hent total count
         String totalJpql = "SELECT a FROM Avlevering a WHERE a.avleveringsidentifikator LIKE :id";
         Query totalQuery = super.getEntityManager().createQuery(totalJpql);
@@ -74,66 +71,80 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         int side = 1;
         int antall = total;
         
-        log.info("");
-        log.info(uriInfo == null); // false
-        log.info("");
-        if(uriInfo != null) {
-            MultivaluedMap<String, String> queryParameters = uriInfo.getPathParameters();
-            log.info(queryParameters); //false 
-            log.info(queryParameters.containsKey("antall")); //false
-        log.info("");
-            if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
-                int paramSide = Integer.parseInt(queryParameters.getFirst("side")) - 1;
-                int paramAntall = Integer.parseInt(queryParameters.getFirst("antall"));
-
-                if(paramSide > 0 && paramAntall > 0) {
-                    side = paramSide;
-                    antall = paramAntall;
-
-                    forste = (side * antall) -1;
-                }
+        MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+        if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
+            Integer qSide = Integer.parseInt(queryParameters.getFirst("side"));
+            Integer qAntall = Integer.parseInt(queryParameters.getFirst("antall"));
+            
+            if(qSide > 0 && qAntall > 0) {
+                side = qSide;
+                antall = qAntall;
+                forste = (side - 1) * antall;
             }
         }
         
-        List<Pasientjournal> pasientjournaler = new ArrayList<Pasientjournal>();
-        for(int i = forste; i < antall; i++) {
-            pasientjournaler.add(avlevering.getPasientjournal().get(i));
+        List<Pasientjournal> aktiveJournaler = new ArrayList<Pasientjournal>();
+        List<Pasientjournal> pasientjournaler = avlevering.getPasientjournal();
+        int totalAktive = 0;
+        int antallIListe = 0;
+
+        for(int i = 0; i < total; i++) {
+            //Aktiv
+            if(pasientjournaler.get(i).isSlettet() == null ||
+                    !pasientjournaler.get(i).isSlettet()) {
+                
+                if(antallIListe <= antall) {
+                    aktiveJournaler.add(pasientjournaler.get(i));
+                    antallIListe++;
+                }
+                totalAktive++;
+            }            
         }
         
         //Returner objekt
-        return new ListeObjekt(pasientjournaler, total, side, antall);
+        return new ListeObjekt(aktiveJournaler, totalAktive, side, antall);
     }
         
     /**
      * Oppretter en ny pasientjournal under avleveringen
+     * @param avleveringid
      * @param pasientjournal som skal opprettes
      * @return Pasientjournal
      */
     @POST
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getPasientjournaler(@PathParam("id") String avleveringid, Pasientjournal pasientjournal) {
-        try {
-            //Setter UUID for ny pasientjournal
-            pasientjournal.setUuid(UUID.randomUUID().toString());
-            
-            getValidator().validate(pasientjournal);
-            getEntityManager().persist(pasientjournal);
-            Avlevering avlevering = getEntityManager().find(Avlevering.class, avleveringid);
-            avlevering.getPasientjournal().add(pasientjournal);
-            return Response.ok().entity(pasientjournal).type(MediaType.APPLICATION_JSON_TYPE).build();
-            
-        } catch (ConstraintViolationException e) {
-            // If validation of the data failed using Bean Validation, then send an error
-            Map<String, Object> errors = new HashMap<String, Object>();
-            List<String> errorMessages = new ArrayList<String>();
-            for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
-                errorMessages.add(constraintViolation.getMessage());
-            }
-            errors.put("errors", errorMessages);
-            
-            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+        
+        //Håndterer null objekt
+        if(pasientjournal == null) {
+            valideringsfeil.add(new Valideringsfeil(Pasientjournal.class + "", "NotNull"));
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
+        
+        //Validerer obj
+        Set<ConstraintViolation<Pasientjournal>> constraintViolations = getValidator().validate(pasientjournal);
+        for(ConstraintViolation<Pasientjournal> feil : constraintViolations) {
+            String msgTpl = feil.getConstraintDescriptor().getMessageTemplate();
+
+            String attributt = feil.getPropertyPath().toString();
+            String constraint = msgTpl.substring(30, msgTpl.length() - 9);
+
+            valideringsfeil.add((new Valideringsfeil(attributt, constraint)));
+        }
+
+        if(!valideringsfeil.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
+        
+        //Setter UUID for ny pasientjournal
+        pasientjournal.setUuid(UUID.randomUUID().toString());
+        getEntityManager().persist(pasientjournal);
+        Avlevering avlevering = getEntityManager().find(Avlevering.class, avleveringid);
+        avlevering.getPasientjournal().add(pasientjournal);
+        return Response.ok().entity(pasientjournal).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     
     @GET

@@ -3,23 +3,20 @@
     xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd"
     xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
     <default-package>no.arkivverket.helsearkiv.nhareg.domene.avlevering</default-package>
-     
-    <bean class="Avtale" ignore-annotations="true">
-        <field name="avtaledato">
+    
+    <bean class="Pasientjournal" ignore-annotations="true">
+        <field name="grunnopplysninger">
+            <valid/>
             <constraint annotation="javax.validation.constraints.NotNull" />
         </field>
-         <!--
-        <field name="licensePlate">
+        <field name="lagringsenhet">
             <constraint annotation="javax.validation.constraints.NotNull" />
-             
-            <constraint annotation="javax.validation.constraints.Size">
-                <groups>
-                    <value>org.apache.camel.component.bean.validator.OptionalChecks</value>
-                </groups>
-                <element name="min">5</element>
-                <element name="max">14</element>
-            </constraint>
         </field>
-        -->
+    </bean>    
+        
+    <bean class="Grunnopplysninger">
+        <field name="pnavn">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
     </bean>
 </constraint-mappings>
