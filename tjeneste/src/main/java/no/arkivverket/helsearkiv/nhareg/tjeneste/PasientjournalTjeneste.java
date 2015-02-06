@@ -4,13 +4,10 @@ import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,6 +23,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -55,8 +53,9 @@ import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
 public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, String> {
     
     @EJB
+    private KjønnTjeneste kjønnTjeneste;
+    @EJB
     private AvleveringTjeneste avleveringTjeneste;
-    
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -251,9 +250,22 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return Response.noContent().build();
     }
     
+    /*
+    Dette endepunktet blir ikke brukt er,
+    POST avleveringer/{id}/pasientjournaler
+    */
     @Override
     public Response create(Pasientjournal entity) {
         entity.setUuid(UUID.randomUUID().toString());
+        //
+        if (entity.getGrunnopplysninger() != null){
+            Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
+            if (grunnopplysninger.getKjønn() != null){
+                Kjønn kjønn = grunnopplysninger.getKjønn();
+                kjønn = kjønnTjeneste.getSingleInstance(kjønn.getCode());
+                grunnopplysninger.setKjønn(kjønn);
+            }
+        }
         return super.create(entity);
     }
     

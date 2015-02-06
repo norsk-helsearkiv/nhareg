@@ -40,19 +40,4 @@ public class AvleveringTjenesteTest {
         assertNotNull(avlevering);
         assertEquals("Avlevering-1", avlevering.getAvleveringsidentifikator());
     }
-
-    @Test
-    public void testPagination() {
-
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-
-        queryParameters.add("side", "1");
-        queryParameters.add("antall", "1");
-
-        List<Avlevering> beskrivelser = tjeneste.getAll(queryParameters);
-        assertNotNull(beskrivelser);
-        assertEquals(3, beskrivelser.size());
-//        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
-    }
 }

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DiagnosekodeTjenesteTest {
+public class KjønnTjenesteTest {
 
     @Deployment
     public static WebArchive deployment() {
@@ -26,16 +26,14 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Inject
-    private DiagnosekodeTjeneste tjeneste;
+    private KjønnTjeneste tjeneste;
 
     @Test
     public void create() {
-        Diagnosekode diagnosekode = new Diagnosekode();
-        diagnosekode.setCode("Diagnosekode100");
-        diagnosekode.setCodeSystem("Kodesystem99");
-        diagnosekode.setCodeSystemVersion("0.9.Beta");
-        diagnosekode.setDisplayName("Influensa beta");
-        Response response = tjeneste.create(diagnosekode);
+        Kjønn kjønn = new Kjønn();
+        kjønn.setCode("I");
+        kjønn.setDisplayName("Intetkjønn");
+        Response response = tjeneste.create(kjønn);
         assertNotNull(response);
     }
 }
