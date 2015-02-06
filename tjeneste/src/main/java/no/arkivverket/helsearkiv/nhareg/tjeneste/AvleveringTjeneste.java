@@ -2,14 +2,13 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolation;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -25,9 +24,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -108,43 +112,51 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     /**
      * Oppretter en ny pasientjournal under avleveringen
      * @param avleveringid
-     * @param pasientjournal som skal opprettes
+     * @param person
      * @return Pasientjournal
+     * @throws java.text.ParseException av datoteksten til Date objekt for å sammenligne størrelse
      */
     @POST
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response nyPasientjournal(@PathParam("id") String avleveringid, Pasientjournal pasientjournal) {
+    public Response nyPasientjournal(@PathParam("id") String avleveringid, PersondataDTO person) throws ParseException {
+        // VALIDERING
         ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
-        
-        //Håndterer null objekt
-        if(pasientjournal == null) {
-            valideringsfeil.add(new Valideringsfeil(Pasientjournal.class + "", "NotNull"));
+        if(person == null) {
+            valideringsfeil.add(new Valideringsfeil(PersondataDTO.class + "", "NotNull"));
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
-        
-        //Validerer obj
-        Set<ConstraintViolation<Pasientjournal>> constraintViolations = getValidator().validate(pasientjournal);
-        for(ConstraintViolation<Pasientjournal> feil : constraintViolations) {
-            String msgTpl = feil.getConstraintDescriptor().getMessageTemplate();
-
-            String attributt = feil.getPropertyPath().toString();
-            String constraint = msgTpl.substring(30, msgTpl.length() - 9);
-
-            valideringsfeil.add((new Valideringsfeil(attributt, constraint)));
-        }
+        valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
+        valideringsfeil.addAll(DatoValiderer.valider(person));
 
         if(!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
         
-        //Setter UUID for ny pasientjournal
+        //KONVERTERING
+        Pasientjournal pasientjournal = Konverterer.fraDTO(person);
+        
+        //SETTER VERDIER
         pasientjournal.setUuid(UUID.randomUUID().toString());
+        
+        //Setter visningsnavnet til det som er lagret i databasen for kjønn med koden
+        if(person.getKjonn() != null) {
+            //Får feilmelding ved bruk av WHERE, unexpected Hex 
+            Query q = getEntityManager().createQuery("SELECT k FROM Kjønn k");
+            List<Kjønn> liste = q.getResultList();
+            for(Kjønn k : liste) {
+                if(k.getCode().equals(person.getKjonn())) {
+                    pasientjournal.getGrunnopplysninger().setKjønn(k);
+                }
+            }
+        }
+
+        //LAGRER
         getEntityManager().persist(pasientjournal);
         Avlevering avlevering = getEntityManager().find(Avlevering.class, avleveringid);
         avlevering.getPasientjournal().add(pasientjournal);
-        return Response.ok().entity(pasientjournal).type(MediaType.APPLICATION_JSON_TYPE).build();
+        return Response.ok().entity(pasientjournal).build();
     }
     
     @GET

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -22,7 +23,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,7 +31,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -142,6 +141,7 @@ public abstract class EntitetsTjeneste<T, K> {
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get(idName)));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
+        /*
         if (queryParameters.containsKey("first")) {
             Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first")) - 1;
             query.setFirstResult(firstRecord);
@@ -150,7 +150,9 @@ public abstract class EntitetsTjeneste<T, K> {
             Integer maxResults = Integer.parseInt(queryParameters.getFirst("max"));
             query.setMaxResults(maxResults);
         }
+        */
         return query.getResultList();
+        
     }
 
     /**
@@ -196,33 +198,10 @@ public abstract class EntitetsTjeneste<T, K> {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response create(T entity) {
-        try {
-            Set<ConstraintViolation<T>> constraintViolations
-                    = validator.validate(entity);
-            getEntityManager().persist(entity);
-            return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-        } catch (ConstraintViolationException e) {
-            // If validation of the data failed using Bean Validation, then send an error
-            log.error("Constraint feil. ", e);
-            Map<String, Object> errors = new HashMap<String, Object>();
-            List<String> errorMessages = new ArrayList<String>();
-            for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
-                errorMessages.add(constraintViolation.getMessage());
-            }
-            errors.put("errors", errorMessages);
-            // A WebApplicationException can wrap a response
-            // Throwing the exception causes an automatic rollback
-            throw new RestServiceException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
-        } catch (Exception e) {
-            log.error("Create feilet. ", e);
-            // Finally, handle unexpected exceptions
-            Map<String, Object> errors = new HashMap<String, Object>();
-            errors.put("errors", Collections.singletonList(e.getMessage()));
-            // A WebApplicationException can wrap a response
-            // Throwing the exception causes an automatic rollback
-            throw new RestServiceException(Response.status(Response.Status.BAD_REQUEST).entity(errors).build());
-        }
+        getEntityManager().persist(entity);
+        return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     
     public Response oppdaterAvtale(T entity, String id) {
@@ -249,13 +228,17 @@ public abstract class EntitetsTjeneste<T, K> {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public T getSingleInstance(@PathParam("id") K id) {
+    public T getSingleInstance(@PathParam("id") K id) throws NoResultException {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate condition = criteriaBuilder.equal(root.get(idName), id);
         criteriaQuery.select(criteriaBuilder.createQuery(entityClass).getSelection()).where(condition);
-        return entityManager.createQuery(criteriaQuery).getSingleResult();
+        try {
+            return entityManager.createQuery(criteriaQuery).getSingleResult();
+        } catch(NoResultException nre) {
+            return null;
+        }
     }
 
     @DELETE
@@ -266,6 +249,6 @@ public abstract class EntitetsTjeneste<T, K> {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         getEntityManager().remove(entity);
-        return Response.noContent().build();
+        return Response.ok().build();
     }
 }

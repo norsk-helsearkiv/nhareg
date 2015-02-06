@@ -1,19 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.ArrayList;
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -62,27 +54,5 @@ public class AvleveringTjenesteTest {
         assertNotNull(beskrivelser);
         assertEquals(3, beskrivelser.size());
 //        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
-    }
-    
-    @Test
-    public void testNyPasientjournal_null() {
-        String avleveringsid = "Avlevering-1";
-        Pasientjournal p = null;
-        
-        Response rsp = tjeneste.nyPasientjournal(avleveringsid, p);
-        ArrayList<Valideringsfeil> feil = (ArrayList<Valideringsfeil>) rsp.getEntity();
-        assertTrue(feil.size() > 0);
-    }
-
-    @Test
-    public void testNyPasientjurnal_valid() {
-        String avleveringsid = "Avlevering-1";
-        
-        //Setter opp valid objekt
-        Pasientjournal p = new Pasientjournal();
-        
-        //Persisterer
-        Response rsp = tjeneste.nyPasientjournal(avleveringsid, p);
-        assertTrue(rsp.getEntity() instanceof Pasientjournal);
     }
 }

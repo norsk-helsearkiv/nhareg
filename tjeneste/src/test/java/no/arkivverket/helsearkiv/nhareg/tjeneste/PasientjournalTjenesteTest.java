@@ -1,15 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.Calendar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.List;
-import javax.ejb.EJBException;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -28,20 +20,6 @@ public class PasientjournalTjenesteTest {
    
     @Inject
     private PasientjournalTjeneste tjeneste;
-    
-    @Test
-    public void testPagination() {
-        
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-
-        queryParameters.add("first", "1");
-        queryParameters.add("max", "1");
-        
-        List<Pasientjournal> pjer = tjeneste.getAll(queryParameters);
-        assertNotNull(pjer);
-        assertEquals(1, pjer.size());
-    }
     
     @Test
     public void testCreate(){

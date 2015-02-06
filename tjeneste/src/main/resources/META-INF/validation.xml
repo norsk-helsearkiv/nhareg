@@ -9,5 +9,6 @@
     <traversable-resolver>org.hibernate.validator.engine.resolver.DefaultTraversableResolver</traversable-resolver>
     <constraint-validator-factory>org.hibernate.validator.engine.ConstraintValidatorFactoryImpl</constraint-validator-factory>
      -->
+    <constraint-mapping>/constraints.xml</constraint-mapping>
     <constraint-mapping>/constraints-Avlevering.xml</constraint-mapping>
 </validation-config>
