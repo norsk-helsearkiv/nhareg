@@ -227,7 +227,6 @@ public abstract class EntitetsTjeneste<T, K> {
      */
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public T getSingleInstance(@PathParam("id") K id) throws NoResultException {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
