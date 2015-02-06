@@ -38,19 +38,4 @@ public class DiagnosekodeTjenesteTest {
         Response response = tjeneste.create(diagnosekode);
         assertNotNull(response);
     }
-
-    @Test
-    public void testPagination() {
-
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-
-        queryParameters.add("first", "1");
-        queryParameters.add("max", "1");
-
-        List<Diagnosekode> beskrivelser = tjeneste.getAll(queryParameters);
-        assertNotNull(beskrivelser);
-        assertEquals(1, beskrivelser.size());
-//        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
-    }
 }

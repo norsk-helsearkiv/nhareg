@@ -1,24 +1,25 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.Calendar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
-import javax.ejb.EJBException;
-
+import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class PasientjournalTjenesteTest {
@@ -30,23 +31,102 @@ public class PasientjournalTjenesteTest {
 
     @Inject
     private PasientjournalTjeneste tjeneste;
-
+    
     @Test
-    public void testPagination() {
+    public void testGet() {
+        UriInfo info = getInfo();
+        Response rsp = tjeneste.hentPasientjournaler(info);
+        ListeObjekt lst = (ListeObjekt) rsp.getEntity();
+        assertTrue(lst.getAntall() > 0);
+    }
+    
+    private UriInfo getInfo() {
+        return new UriInfo() {
 
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+            public String getPath() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
 
-        queryParameters.add("first", "1");
-        queryParameters.add("max", "1");
+            public String getPath(boolean bln) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
 
-        List<Pasientjournal> pjer = tjeneste.getAll(queryParameters);
-        assertNotNull(pjer);
-        assertEquals(1, pjer.size());
+            public List<PathSegment> getPathSegments() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public List<PathSegment> getPathSegments(boolean bln) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public URI getRequestUri() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public UriBuilder getRequestUriBuilder() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public URI getAbsolutePath() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public UriBuilder getAbsolutePathBuilder() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public URI getBaseUri() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public UriBuilder getBaseUriBuilder() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public MultivaluedMap<String, String> getPathParameters() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public MultivaluedMap<String, String> getPathParameters(boolean bln) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public MultivaluedMap<String, String> getQueryParameters() {
+                return new MultivaluedHashMap<String, String>();
+            }
+
+            public MultivaluedMap<String, String> getQueryParameters(boolean bln) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public List<String> getMatchedURIs() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public List<String> getMatchedURIs(boolean bln) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public List<Object> getMatchedResources() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public URI resolve(URI uri) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            public URI relativize(URI uri) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
     }
 
+    /*
+    PasientjournalTjeneste har kun funksjonalitet for GET, PUT og DELETE.
+    For POST, se AvleveringTjeneste/{id}/pasientjournaler
+    
     @Test
-    public void testCreate() {
+    public void testCreate(){
         Pasientjournal a = new Pasientjournal();
         tjeneste.create(a);
     }
@@ -67,9 +147,9 @@ public class PasientjournalTjenesteTest {
         Pasientjournal pasientjournal = new Pasientjournal();
         Grunnopplysninger grunnopplysninger = new Grunnopplysninger();
         Kjønn kjønn = new Kjønn();
-        kjønn.setCode("J");
+        kjønn.setCode("tull");
         grunnopplysninger.setKjønn(kjønn);
         pasientjournal.setGrunnopplysninger(grunnopplysninger);
         tjeneste.create(pasientjournal);
-    }
+    }*/
 }

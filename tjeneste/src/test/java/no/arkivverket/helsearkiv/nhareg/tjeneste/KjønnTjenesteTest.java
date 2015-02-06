@@ -36,18 +36,4 @@ public class KjønnTjenesteTest {
         Response response = tjeneste.create(kjønn);
         assertNotNull(response);
     }
-
-    @Test
-    public void testPagination() {
-
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-
-        queryParameters.add("first", "1");
-        queryParameters.add("max", "1");
-
-        List<Kjønn> beskrivelser = tjeneste.getAll(queryParameters);
-        assertNotNull(beskrivelser);
-        assertEquals(1, beskrivelser.size());
-    }
 }

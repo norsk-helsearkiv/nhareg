@@ -35,7 +35,11 @@
         <attributes>
             <id name="uuid"/>
             <one-to-many name="diagnose" fetch="EAGER"/>
-            <many-to-many name="lagringsenhet" fetch="EAGER"/>
+            <many-to-many name="lagringsenhet" fetch="EAGER">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </many-to-many>
             
             <embedded name="journalidentifikator"/>
             <embedded name="grunnopplysninger"/>

@@ -11,4 +11,5 @@
      -->
     <constraint-mapping>/constraints-Avleveringsbeskrivelse.xml</constraint-mapping>
     <constraint-mapping>/constraints-Avlevering.xml</constraint-mapping>
+    <constraint-mapping>/constraints.xml</constraint-mapping>
 </validation-config>

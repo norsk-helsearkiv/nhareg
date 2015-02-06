@@ -1,19 +1,15 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,20 +39,5 @@ public class AvleveringTjenesteTest {
         Avlevering avlevering = tjeneste.getSingleInstance("Avlevering-1");
         assertNotNull(avlevering);
         assertEquals("Avlevering-1", avlevering.getAvleveringsidentifikator());
-    }
-
-    @Test
-    public void testPagination() {
-
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-
-        queryParameters.add("first", "1");
-        queryParameters.add("max", "1");
-
-        List<Avlevering> beskrivelser = tjeneste.getAll(queryParameters);
-        assertNotNull(beskrivelser);
-        assertEquals(1, beskrivelser.size());
-//        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
     }
 }

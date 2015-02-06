@@ -4,18 +4,76 @@
     xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
     <default-package>no.arkivverket.helsearkiv.nhareg.domene.avlevering</default-package>
     
+    <!--
+        <valid /> 
+        Sørger for at objektet blir validert når forelder blir validert
+    
+    -->
+    
     <bean class="Pasientjournal" ignore-annotations="true">
+        
+        <field name="journalidentifikator">
+            <valid/>
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        
         <field name="grunnopplysninger">
             <valid/>
             <constraint annotation="javax.validation.constraints.NotNull" />
         </field>
+        
         <field name="lagringsenhet">
             <constraint annotation="javax.validation.constraints.NotNull" />
+            <constraint annotation="javax.validation.constraints.Size">
+                <element name="min">1</element>
+            </constraint>
         </field>
-    </bean>    
+    </bean>   
+    
+    <bean class="Journalidentifikator" ignore-annotations="true">
+        <field name="journalnummer">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <field name="løpenummer">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>        
+    </bean> 
         
-    <bean class="Grunnopplysninger">
+    <bean class="Grunnopplysninger" ignore-annotations="true">
         <field name="pnavn">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        
+        <field name="identifikator">
+            <valid />
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        
+        <field name="kjønn">
+            <valid />
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+    </bean>
+    
+    <bean class="Identifikator" ignore-annotations="true">
+        <field name="pid">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+    </bean>
+    
+    <bean class="Lagringsenhet" ignore-annotations="true">
+        <field name="identifikator">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+    </bean>
+   
+    <bean class="CS" ignore-annotations="true">
+        <!-- XML required true -->
+        <field name="code">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <!-- XML required true -->
+        <field name="displayName">
             <constraint annotation="javax.validation.constraints.NotNull" />
         </field>
     </bean>
