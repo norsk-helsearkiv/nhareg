@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -116,7 +121,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                     !pasientjournaler.get(i).isSlettet()) {
                 
                 if(antallIListe < antall && i >= forste) {
-                    resultatListe.add(Konverterer.tilDTO(pasientjournaler.get(i)));
+                    resultatListe.add(Konverterer.tilPasientjournalSokeresultatDTO(pasientjournaler.get(i)));
                     antallIListe++;
                 }
                 totalAktive++;
@@ -138,6 +143,19 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         
         ListeObjekt returObj = new ListeObjekt(resultatListe, totalAktive, side, antall);
         return Response.ok(returObj).build();
+    }
+    
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPasientjournal(@PathParam("id") String id) {
+        Pasientjournal pasientjournal = getSingleInstance(id);
+        if(pasientjournal == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        
+        PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
+        return Response.ok(pasientjournalDTO).build();
     }
     
     @PUT
@@ -165,7 +183,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
         
         //KONVERTERING
-        Pasientjournal pasientjournal = Konverterer.fraDTO(pasientjournalDTO.getPersondata());
+        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO.getPersondata());
         //Legger til Diagnoser - Coming soon (tm)
         
         //Setter visningsnavnet til det som er lagret i databasen for kjønn med koden
