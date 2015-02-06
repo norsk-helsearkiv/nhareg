@@ -1,5 +1,5 @@
 --
--- Alle enkeltappostrofer i displayName er erstattet med ## for å få med hele teksten og feil i scriptet.
+-- Alle enkeltappostrofer i displayName er erstattet med '' for å få med hele teksten og feil i scriptet.
 -- 
 --
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A000', 'Kolera som skyldes Vibrio cholerae 01, biovar cholerae');
@@ -368,7 +368,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A90', 'Denguefeber');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A91', 'Hemoragisk denguefeber');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A920', 'Chikungunyavirussykdom');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A921', 'O##nyong-nyongfeber');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A921', 'O''nyong-nyongfeber');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A922', 'Venezuelansk hestefeber');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A923', 'West Nile-virusinfeksjon');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'A924', 'Rift Valley-feber');
@@ -3114,7 +3114,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G218', 'Annen spesifisert sekundær parkinsonisme');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G219', 'Uspesifisert sekundær parkinsonisme');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G22', 'Parkinsonisme ved sykdom klassifisert annet sted');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G230', 'Hallervorden-Spatz## sykdom');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G230', 'Hallervorden-Spatz'' sykdom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G231', 'Progressiv supranukleær oftalmoplegi');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G232', 'Striatonigral degenerasjon');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'G238', 'Annen spesifisert degenerativ sykdom i basalganglier');
@@ -4507,7 +4507,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K228', 'Annen spesifisert sykdom i spiserør');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K229', 'Uspesifisert sykdom i spiserør');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K230', 'Tuberkuløs øsofagitt');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K231', 'Megaøsofagus ved Chagas## sykdom');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K231', 'Megaøsofagus ved Chagas'' sykdom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K238', 'Manifestasjon i spiserør av annen sykdom klassifisert annet sted');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K250', 'Akutt sår med blødning i magesekk');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K251', 'Akutt sår med perforasjon i magesekk');
@@ -4854,7 +4854,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K928', 'Annen spesifisert sykdom i fordøyelsessystemet');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K929', 'Uspesifisert sykdom i fordøyelsessystemet');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K930', 'Tuberkuløs sykdom i tarm, bukhinne eller lymfeknuter i mesenterium');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K931', 'Megacolon ved Chagas## sykdom');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K931', 'Megacolon ved Chagas'' sykdom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'K938', 'Sykdom i annet spesifisert fordøyelsesorgan ved sykdom klassifisert annet sted');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'L00', '«Staphylococcal scalded skin syndrome»');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'L010', 'Impetigo');
@@ -5341,17 +5341,17 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0187', 'Artritt i ankel eller ledd mellom knokler i fot ved annen infeksjonssykdom eller parasittsykdom klassifisert annet sted');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0188', 'Artritt i annen lokalisasjon ved annen infeksjonssykdom eller parasittsykdom klassifisert annet sted');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0189', 'Artritt i uspesifisert lokalisasjon ved annen infeksjonssykdom eller parasittsykdom klassifisert annet sted');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M020', 'Leddlidelse etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0200', 'Leddlidelse i flere lokalisasjoner etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0201', 'Leddlidelse i skulderregionen etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0202', 'Leddlidelse i albue etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0203', 'Leddlidelse i håndledd etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0204', 'Leddlidelse i ledd mellom knokler i hånd etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0205', 'Leddlidelse i hofteledd eller sakroiliakalledd etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0206', 'Leddlidelse i kneledd etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0207', 'Leddlidelse i ankel eller ledd mellom knokler i fot etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0208', 'Leddlidelse i annen lokalisasjon etter tarm-##bypass##');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0209', 'Leddlidelse etter tarm-##bypass##, i uspesifisert lokalisasjon');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M020', 'Leddlidelse etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0200', 'Leddlidelse i flere lokalisasjoner etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0201', 'Leddlidelse i skulderregionen etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0202', 'Leddlidelse i albue etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0203', 'Leddlidelse i håndledd etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0204', 'Leddlidelse i ledd mellom knokler i hånd etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0205', 'Leddlidelse i hofteledd eller sakroiliakalledd etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0206', 'Leddlidelse i kneledd etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0207', 'Leddlidelse i ankel eller ledd mellom knokler i fot etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0208', 'Leddlidelse i annen lokalisasjon etter tarm-''bypass''');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0209', 'Leddlidelse etter tarm-''bypass'', i uspesifisert lokalisasjon');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M021', 'Leddlidelse etter dysenteri');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0210', 'Leddlidelse i flere lokalisasjoner etter dysenteri');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'M0211', 'Leddlidelse i skulderregionen etter dysenteri');
@@ -10726,7 +10726,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q793', 'Gastroschisis');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q794', 'Prune belly-syndrom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q795', 'Annen medfødt misdannelse i bukvegg');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q796', 'Ehlers-Danlos## syndrom');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q796', 'Ehlers-Danlos'' syndrom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q798', 'Annen spesifisert medfødt misdannelse i muskel-skjelettsystem');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q799', 'Uspesifisert medfødt misdannelse i muskel-skjelettsystem');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q800', 'Ichthyosis vulgaris');
@@ -10794,7 +10794,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q910', 'Trisomi 18, meiotisk nondisjunksjon');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q911', 'Trisomi 18, mosaikk (mitotisk nondisjunksjon)');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q912', 'Trisomi 18, translokasjon');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q913', 'Uspesifisert Edwards## syndrom');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q913', 'Uspesifisert Edwards'' syndrom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q914', 'Trisomi 13, meiotisk nondisjunksjon');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q915', 'Trisomi 13, mosaikk (mitotisk nondisjunksjon)');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7110', '1.0', 'Q916', 'Trisomi 13, translokasjon');

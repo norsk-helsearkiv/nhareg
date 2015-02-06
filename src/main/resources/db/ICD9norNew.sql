@@ -1,5 +1,5 @@
 --
--- Alle enkeltappostrofer i displayName er erstattet med ## for å få med hele teksten og feil i scriptet.
+-- Alle enkeltappostrofer i displayName er erstattet med '' for å få med hele teksten og feil i scriptet.
 -- 
 --
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '008', 'Tarminfeksjon forårsaket av andre organismer');
@@ -846,7 +846,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '101', 'Vincents angina');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102', 'Frambøsi');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102.0', 'Frambøsi- initiale lesjoner');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102.1', 'Frambøsi- multiple papillomer og ##wet crab yaws##');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102.1', 'Frambøsi- multiple papillomer og ''wet crab yaws''');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102.2', 'Frambøsi- andre tidlige hudlesjoner');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102.3', 'Frambøsi- hyperkeratose');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '102.4', 'Frambøsi- gummata og sår');
@@ -2096,7 +2096,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '293.83', 'Forbigående organisk betingede affektive tilst.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '293.9', 'Forbigående organisk psykotiske tilst. i.n.a.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '294', 'Andre organisk psykotiske tilst.');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '294.0', 'Korsakoff##s syndr/psykose av annen årsak enn alko/stoff/medikamenter');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '294.0', 'Korsakoff''s syndr/psykose av annen årsak enn alko/stoff/medikamenter');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '294.1', 'Demens v/ sykd. som ikke er klassifisert annet sted i dette kapitlet.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '294.8', 'Andre organisk psykotiske tilst. - annet');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '294.9', 'Andre organisk psykotiske tilst. i.n.a.');
@@ -2410,7 +2410,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.2', 'Tics');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.21', 'Forbigående tics');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.22', 'Kronisk motoriske tics');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.23', 'Gilles de la Tourette##s syndrom');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.23', 'Gilles de la Tourette''s syndrom');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.3', 'Gjentatte stereotype bevegelser');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.4', 'Søvnforstyrrelser');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '307.41', 'Forbigående forstyrrelse av innsovning / avbrutt søvn');
@@ -3414,7 +3414,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '493.9', 'Astma i.n.a.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '494', 'Bronkiektasi');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '495', 'Allergisk alveolitt');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '495.0', 'Treskerlunger (##farmers lung##)');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '495.0', 'Treskerlunger (''farmers lung'')');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '495.1', 'Bagassose');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '495.2', 'Fugleeierlunger');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '495.3', 'Korkarbeiderlunger');
@@ -4516,7 +4516,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '682.9', 'Abscess og flegmone i.n.a.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '683', 'Akutt lymfadenitt');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '684', 'Brennkopper og beslektede tilst.');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '685', 'Håranleggscyste (##tvilling##)');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '685', 'Håranleggscyste (''tvilling'')');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '685.0', 'Håranleggscyste m/ abscess');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '685.1', 'Håranleggscyste u/ opplysning om abscess');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '686', 'Andre lokale infeksjoner i hud og underhud');
@@ -5625,7 +5625,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '724.99', 'I.n.a ryggsykdom - lok. i.n.a.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '725', 'Polymyalgia rheumatica');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '726', 'Perifere entesopatier og lignende syndromer');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '726.0', 'Kapsulitt i skulderen (##frozen shoulder##)');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '726.0', 'Kapsulitt i skulderen (''frozen shoulder'')');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '726.1', 'Sykd. i slimposer og sener i skulderregionen');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '726.2', 'Andre sykd. i skulderen ikke klassifisert annet sted');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '726.3', 'Entesopati i albuen');
@@ -6336,7 +6336,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.1', 'Aksessorisk øremusling');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.2', 'Andre spesif. øremisdannelser');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.3', 'Uspesif. øremisdannelser');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.4', 'Gjelleåpning, cyster og fistler ##preaurikulært sinus##');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.4', 'Gjelleåpning, cyster og fistler ''preaurikulært sinus''');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.5', 'Webbing på halsen');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.8', 'Andre spesif. misd. av ansiktet og halsen');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '744.9', 'Uspesif. misd. av ansiktet og halsen');
@@ -6541,15 +6541,15 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '764', 'Langsom vekst og feilernæring av foster');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '764.0', 'Light-for-dates  u/ opplysning om feilernæring av fosteret');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '764.1', 'Light-for-dates  m/ tegn på feilernæring av fosteret');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '764.2', 'Feilernæring av fosteret u/ opplysning om ##light-for-dates##');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '764.2', 'Feilernæring av fosteret u/ opplysning om ''light-for-dates''');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '764.9', 'Føtal vekstretardasjon - i.n.a.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '765', 'Tilst. som skyldes kortvarig svangerskap og lav fødselsvekt i.n.a.');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '765.0', 'Tilst. hos nyfødt som skyldes ekstrem umodenhet');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '765.1', 'Tilst. som skyldes andre for tidlig fødte');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '766', 'Tilst. som skyldes langvarig svangerskap og høy fødselsvekt');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '766.0', 'Tilst. som skyldes usedvanlig stort barn');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '766.1', 'Tilst. som skyldes andre ##heavy-for-dates## barn');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '766.2', 'Tilst. som skyldes overtidig barn ikke ##heavy-for-dates##');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '766.1', 'Tilst. som skyldes andre ''heavy-for-dates'' barn');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '766.2', 'Tilst. som skyldes overtidig barn ikke ''heavy-for-dates''');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '767', 'Fødselsskader');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '767.0', 'Fødselsskader - subdural og cerebral blødning');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '767.1', 'Fødselsskader - skader av hodebunnen');
@@ -6865,8 +6865,8 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.3', 'Brudd av underkjeven/mandibula, åpent');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.4', 'Brudd av overkjeve og kinnbein, lukket');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.5', 'Brudd av overkjeve og kinnbein, åpent');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.6', 'Brudd av orbitagulvet (##blow-out##), lukket');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.7', 'Brudd av orbitagulvet (##blow-out##), åpent');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.6', 'Brudd av orbitagulvet (''blow-out''), lukket');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.7', 'Brudd av orbitagulvet (''blow-out''), åpent');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.8', 'Brudd av andre ansiktsbein, lukket');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '802.9', 'Brudd av andre ansiktsbein, åpent');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '803', 'Andre og uspesif. skallebrudd');
@@ -7055,7 +7055,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.1', 'Forvridning, forstrekning og forstuvning av korakoklavikularligament');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.2', 'Forvridning, forstrekning og forstuvning av korakohumeralligamentet');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.3', 'Forvridning,forstrekning og forstuvning av infraspinatus-muskel/-sene');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.4', 'Forvridning,forstrekning og forstuvning av rotator mansjetten(##cuff##)');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.4', 'Forvridning,forstrekning og forstuvning av rotator mansjetten(''cuff'')');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.5', 'Forvridning, forstrekning og forstuvning av subscapularis-muskelen');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.6', 'Forvridning, forstrekning og forstuvning av supraspinatusmuskel/-sene');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '840.8', 'Forvridning, forstrekning og forstuvning av annet i skulder/o-arm');
@@ -7860,7 +7860,7 @@ insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.0', 'Forgiftning av antidepressiva');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.1', 'Forgiftning av fenotiazin-baserte nevroleptika');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.2', 'Forgiftning av butyrofenon-baserte nevroleptika');
-insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.3', 'Forgiftning av andre nevroleptika og ##major tranquillizers##');
+insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.3', 'Forgiftning av andre nevroleptika og ''major tranquillizers''');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.4', 'Forgiftning av benzodiazepin-baserte ataraxika');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.5', 'Forgiftning av andre ataraxika');
 insert into CV (codeSystem, codeSystemVersion, code, displayName) values ('2.16.578.1.12.4.1.1.7120', '1.0', '969.6', 'Forgiftning av hallusinogener');
