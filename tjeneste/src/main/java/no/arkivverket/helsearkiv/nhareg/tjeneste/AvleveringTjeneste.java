@@ -135,7 +135,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         }
         
         //KONVERTERING
-        Pasientjournal pasientjournal = Konverterer.fraDTO(person);
+        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(person);
         
         //SETTER VERDIER
         pasientjournal.setUuid(UUID.randomUUID().toString());
