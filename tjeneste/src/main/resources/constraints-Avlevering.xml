@@ -9,6 +9,17 @@
         Sørger for at objektet blir validert når forelder blir validert
     
     -->
+    <bean class="CV" ignore-annotations="true">
+        <field name="code">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <field name="codeSystem">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <field name="codeSystemVersion">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+    </bean>
     
     <bean class="Pasientjournal" ignore-annotations="true">
         

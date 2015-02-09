@@ -38,4 +38,23 @@ public class DiagnosekodeTjenesteTest {
         Response response = tjeneste.create(diagnosekode);
         assertNotNull(response);
     }
+
+    @Test
+    public void getAllUtenPaginering() {
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+        assertNotNull(diagnosekoder);
+        assertEquals(3, diagnosekoder.size());
+    }
+
+    @Test
+    public void getAllMedPaginering() {
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add(EntitetsTjeneste.FORSTE_RAD_QUERY_PARAMETER, "1");
+        queryParameters.add(EntitetsTjeneste.MAX_ANTALL_RADER_QUERY_PARAMETER, "1");
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+        assertNotNull(diagnosekoder);
+        assertEquals(1, diagnosekoder.size());
+    }
+
 }
