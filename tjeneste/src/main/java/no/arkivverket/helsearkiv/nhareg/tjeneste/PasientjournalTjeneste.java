@@ -7,12 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,6 +18,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -73,26 +69,27 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response hentPasientjournaler(@Context UriInfo uriInfo) {
-        List<Pasientjournal> pasientjournaler;
+    @Override
+    public Response getAll(@Context UriInfo uriInfo) {
+        // Legg til søk i stedet for getAll(queryParameter). Skal returnere liste av treff
+        // Sender in et tomt map for å få alle
+        List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
         
-        MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
-        if (queryParameter.containsKey("avlevering")) {
-            String avleveringsidentifikator = queryParameter.getFirst("avlevering");
-            Avlevering avlevering = avleveringTjeneste.getSingleInstance(avleveringsidentifikator);
-            if(avlevering == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            pasientjournaler = avlevering.getPasientjournal();
-        } else {
-            pasientjournaler = getAll(queryParameter);
-        }
-
         if(pasientjournaler.isEmpty()) {
-            log.info("Ingen objekter funnet!");
-            return Response.noContent().build();
+            return Response.ok(pasientjournaler).build();
         }
         
+        return Response.ok(getActiveWithPaging(pasientjournaler, uriInfo)).build();
+    }
+    
+    /**
+     * Pasientjournal has soft delete, this methods removes the inactive and returns
+     * the number of active pasientjournals.
+     * @param pasientjournaler
+     * @param uriInfo
+     * @return ListeObjekt
+     */
+    public ListeObjekt getActiveWithPaging(List<Pasientjournal> pasientjournaler, UriInfo uriInfo) {
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
         int forste = 0;
@@ -140,16 +137,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 obj.setAvtale(a.getAvtale().getAvtalebeskrivelse());
             }
         }
-        
-        ListeObjekt returObj = new ListeObjekt(resultatListe, totalAktive, side, antall);
-        return Response.ok(returObj).build();
+        return new ListeObjekt(resultatListe, totalAktive, side, antall);
     }
     
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPasientjournal(@PathParam("id") String id) {
-        Pasientjournal pasientjournal = getSingleInstance(id);
+    @Override
+    public Response getSingleInstance(@PathParam("id") String id) {
+        Pasientjournal pasientjournal = (Pasientjournal) super.getSingleInstance(id).getEntity();
         if(pasientjournal == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -158,22 +153,15 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return Response.ok(pasientjournalDTO).build();
     }
     
+    //får ikke brukt super sin update, for det er DTO som valideres, ikke Pasientjournal
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response oppdaterPasientjournal(PasientjournalDTO pasientjournalDTO) throws ParseException {
         // VALIDERING - Persondata
-        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
-        if(pasientjournalDTO == null) {
-            valideringsfeil.add(new Valideringsfeil(PasientjournalDTO.class + "", "NotNull"));
-            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
-        }
-        valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, pasientjournalDTO.getPersondata()).valider();
+        ArrayList<Valideringsfeil> valideringsfeil = 
+                new Validator<PersondataDTO>(PersondataDTO.class, pasientjournalDTO.getPersondata()).valider();
+        //Validerer forholdet mellom dataoer
         valideringsfeil.addAll(DatoValiderer.valider(pasientjournalDTO.getPersondata()));
-
-        if(!valideringsfeil.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
-        }
         
         // VALIDERING - Diagnoser
         //Coming soon (tm)
@@ -186,16 +174,13 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO.getPersondata());
         //Legger til Diagnoser - Coming soon (tm)
         
-        //Setter visningsnavnet til det som er lagret i databasen for kjønn med koden
+        //Setter verdier
         if(pasientjournalDTO.getPersondata().getKjonn() != null) {
-            //Får feilmelding ved bruk av WHERE, unexpected Hex 
-            Query q = getEntityManager().createQuery("SELECT k FROM Kjønn k");
-            List<Kjønn> liste = q.getResultList();
-            for(Kjønn k : liste) {
-                if(k.getCode().equals(pasientjournalDTO.getPersondata().getKjonn())) {
-                    pasientjournal.getGrunnopplysninger().setKjønn(k);
-                }
-            }
+            Kjønn k = (Kjønn) kjønnTjeneste
+                    .getSingleInstance(pasientjournalDTO.getPersondata()
+                    .getKjonn())
+                    .getEntity();
+            pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
         
         Pasientjournal persistert = getEntityManager().merge(pasientjournal);
@@ -204,10 +189,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     
     @DELETE
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response slettPasientjournal(@PathParam("id") String id) {
-        Pasientjournal p = getSingleInstance(id);
+    @Override
+    public Response delete(@PathParam("id") String id) {
+        Pasientjournal p = (Pasientjournal) super.getSingleInstance(id).getEntity();
         if(p == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -224,7 +208,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      */
     @POST
     @Path("/{id}/diagnoser")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response leggTilDiagnose(@PathParam("id") String id, Diagnose diagnose) {
         return Response.noContent().build();
     }
@@ -280,7 +263,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
             if (grunnopplysninger.getKjønn() != null){
                 Kjønn kjønn = grunnopplysninger.getKjønn();
-                kjønn = kjønnTjeneste.getSingleInstance(kjønn.getCode());
+                kjønn = (Kjønn) kjønnTjeneste.getSingleInstance(kjønn.getCode()).getEntity();
                 grunnopplysninger.setKjønn(kjønn);
             }
         }

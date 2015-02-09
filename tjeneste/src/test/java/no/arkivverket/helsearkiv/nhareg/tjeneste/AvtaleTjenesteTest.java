@@ -1,21 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.util.Calendar;
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
 import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,41 +24,49 @@ public class AvtaleTjenesteTest {
 
     @Inject
     private AvtaleTjeneste tjeneste;
-
+    
     @Test
-    public void create() {
-        Avtale avtale = new Avtale();
-        avtale.setAvtaleidentifikator("Avtale100");
-        Response response = tjeneste.create(avtale);
-        assertNotNull(response);
+    public void getAvleveringer_henterAvleveringerForAvtale_200() {
+        Response rsp = tjeneste.getAvleveringer("Avtale1");
+        assertEquals(200, rsp.getStatus());
     }
-
+    
     @Test
-    public void testAvtaleMedId() {
-
-        // Test loading a single venue
-        Avtale avtale = tjeneste.getSingleInstance("A1234");
-        assertNotNull(avtale);
-        assertEquals("A1234", avtale.getAvtaleidentifikator());
+    public void getAvleveringer_fantIngenAvtale_404() {
+        Response rsp = tjeneste.getAvleveringer("tull");
+        assertEquals(404, rsp.getStatus());
     }
-
+    
     @Test
-    public void testPagination() {
-
-        // Test pagination logic
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-
-        List<Avtale> beskrivelser = tjeneste.getAll(queryParameters);
-        assertNotNull(beskrivelser);
-        assertEquals(3, beskrivelser.size());
-//        assertEquals("ArkivTestID1", beskrivelser.get(0).getArkivID());
+    public void delete_sletteEnSomIkkeFinnes_404() {
+        Response rsp = tjeneste.delete("tull");
+        assertEquals(404, rsp.getStatus());
     }
-
+    
     @Test
-    public void getAvleveringer() {
-        List<Avlevering> avleveringer = tjeneste.getAvleveringer("A1234");
-        assertNotNull(avleveringer);
-        assertFalse(avleveringer.isEmpty());
-        assertEquals(1, avleveringer.size());
+    public void delete_sletteEnMedAvleveringer_409() {
+        Response rsp = tjeneste.delete("Avtale1");
+        assertEquals(409, rsp.getStatus());
+    }
+    
+    @Test
+    public void delete_sletteEnUtenAvleveringer_200() {
+        Avtale a1 = new Avtale();
+        a1.setAvtalebeskrivelse("beskrivelse");
+        a1.setAvtaleidentifikator("test-avtale");
+        
+        Calendar dag = Calendar.getInstance();
+        a1.setAvtaledato(dag);
+        
+        Virksomhet v = new Virksomhet();
+        v.setOrganisasjonsnummer("100");
+        v.setNavn("Testorganisasjon");
+        a1.setVirksomhet(v);
+        
+        Response ny = tjeneste.create(a1);
+        assertEquals(200, ny.getStatus());
+        
+        Response rsp = tjeneste.delete("test-avtale");
+        assertEquals(200, rsp.getStatus());
     }
 }

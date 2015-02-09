@@ -21,6 +21,8 @@ insert into Kjonn(code,displayName) values ('M','Mann');
 -- PASIENTJOURNAL
 --
 INSERT INTO PASIENTJOURNAL (UUID, DDATO, FDATO, KJONN, foersteKontaktAar, PNAVN, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT) VALUES ('uuid1', '2015-01-23 17:42:47.356', '2015-01-23 17:42:47.356', NULL, NULL, 'Hunden Fido', 'AS', 'Registrering', '2015-01-23 17:42:47.356');
+INSERT INTO PASIENTJOURNAL (UUID, DDATO, FDATO, KJONN, foersteKontaktAar, PNAVN, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT, SLETTET) VALUES ('uuid2', '2015-01-23 17:42:47.356', '2015-01-23 17:42:47.356', NULL, NULL, 'Fido', 'AS', 'Registrering', '2015-01-23 17:42:47.356', true);
+INSERT INTO PASIENTJOURNAL (UUID, DDATO, FDATO, KJONN, foersteKontaktAar, PNAVN, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT) VALUES ('uuid3', '2015-01-23 17:42:47.356', '2015-01-23 17:42:47.356', NULL, NULL, 'Rex', 'AS', 'Registrering', '2015-01-23 17:42:47.356');
 --
 -- AVLEVERING/PASIENTJOURNAL
 --
@@ -42,9 +44,9 @@ INSERT INTO DIAGNOSE (UUID, DIAGDATO, DIAGNOSETEKST, OPPDATERTAV, PROSESSTRINN, 
 --
 INSERT INTO PASIENTJOURNAL_DIAGNOSE (PASIENTJOURNAL_UUID, DIAGNOSE_UUID) VALUES ('uuid1', 'uuid-diagnose-1');
 
-insert into Pasientjournal (uuid) values ('uuid-pj1');
-
 --
 -- AVLEVERING_PASIENTJOURNAL
 --
-INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid-pj1');
+INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid1');
+INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid2');
+INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid3');
