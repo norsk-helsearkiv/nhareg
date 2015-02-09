@@ -5,11 +5,13 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 
 /**
  * <p>
@@ -42,10 +44,20 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         query.setParameter("avtaleidentifikator", avtaleidentifikator);
         List<Avlevering> avleveringer = query.getResultList();
         
-        if(avleveringer.isEmpty()) {
-            return  Response.status(Response.Status.NOT_FOUND).build();
-        }
         return Response.ok(avleveringer).build();
+    }
+    
+    @POST
+    @Override
+    public Response create(Avtale avtale) {
+        //Henter virksomhet
+        List<Virksomhet> virksomheter = getEntityManager()
+                .createQuery("SELECT v FROM Virksomhet v")
+                .getResultList();
+        //Setter virksomhet
+        avtale.setVirksomhet(virksomheter.get(0));
+        //Oppretter avtale
+        return super.create(avtale);
     }
     
     @DELETE

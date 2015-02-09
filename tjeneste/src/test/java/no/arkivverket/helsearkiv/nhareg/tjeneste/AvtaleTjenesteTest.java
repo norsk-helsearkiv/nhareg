@@ -32,12 +32,6 @@ public class AvtaleTjenesteTest {
     }
     
     @Test
-    public void getAvleveringer_fantIngenAvtale_404() {
-        Response rsp = tjeneste.getAvleveringer("tull");
-        assertEquals(404, rsp.getStatus());
-    }
-    
-    @Test
     public void delete_sletteEnSomIkkeFinnes_404() {
         Response rsp = tjeneste.delete("tull");
         assertEquals(404, rsp.getStatus());
