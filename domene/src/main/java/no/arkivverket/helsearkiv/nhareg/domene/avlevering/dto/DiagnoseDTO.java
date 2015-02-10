@@ -1,7 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
 import java.io.Serializable;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 
 /**
  *
@@ -14,7 +13,7 @@ public class DiagnoseDTO implements Serializable {
     
     //Dette feltet skal valideres som en DatoEllerAar i validation.xml
     //Kan være null
-    private DatoEllerAar diagnosedato;
+    private String diagnosedato;
     
     //Kan være null
     private String diagnosekode;
@@ -27,11 +26,11 @@ public class DiagnoseDTO implements Serializable {
         this.diagnosetekst = diagnosetekst;
     }
 
-    public DatoEllerAar getDiagnosedato() {
+    public String getDiagnosedato() {
         return diagnosedato;
     }
 
-    public void setDiagnosedato(DatoEllerAar diagnosedato) {
+    public void setDiagnosedato(String diagnosedato) {
         this.diagnosedato = diagnosedato;
     }
 

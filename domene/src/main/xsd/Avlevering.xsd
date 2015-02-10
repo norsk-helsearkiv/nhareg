@@ -249,7 +249,7 @@
         
     <xs:complexType name="Diagnose">
         <xs:sequence>
-            <xs:element minOccurs="0" name="diagdato" type="xs:date">
+            <xs:element minOccurs="0" name="diagdato" type="DatoEllerAar">
                 <xs:annotation>
                     <xs:documentation>Dato for fastsettelse av diagnose</xs:documentation>
                 </xs:annotation>
