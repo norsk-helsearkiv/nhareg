@@ -1,5 +1,8 @@
 angular.module( 'nha.registrering', [
   'ui.router',
+  'nha.common.http-service',
+  'nha.common.error-service',
+  'nha.common.journal-service',
   'nha.registrering.registrering-service'
 ])
 
@@ -15,53 +18,376 @@ angular.module( 'nha.registrering', [
   });
 })
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, registreringService) {
+.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, registreringService, httpService, errorService, journalService) {
+  //Util
+  $scope.erNy = true;
+  $scope.navHome = function() {
+    $location.path('/');
+  };
+  $scope.loggUt = function() {
+    $location.path('/login');
+  };
+
+  $scope.feilmeldinger = [];
+  $scope.formData = {
+    lagringsenheter : []
+  };
+
+  $scope.kjonn = [{kode: "M", tekst : ""}, {kode: "K", tekst : ""}, {kode: "U", tekst : ""}, {kode: "I", tekst : ""}];
+  $scope.avlevering = registreringService.getAvlevering();
+  var hoppOver = false;
+
+  //Tekster fra i18n
   $scope.$watch(
-    function() { return $filter('translate')('home.SOK'); },
-    function(newval) { $scope.sok = newval; }
+    function() { return $filter('translate')('registrer.kjonn.MANN'); },
+    function(newval) { $scope.kjonn[0].tekst = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('registrer.kjonn.KVINNE'); },
+    function(newval) { $scope.kjonn[1].tekst = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('registrer.kjonn.IKKE_KJENT'); },
+    function(newval) { $scope.kjonn[2].tekst = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('registrer.kjonn.IKKE_SPESIFISERT'); },
+    function(newval) { $scope.kjonn[3].tekst = newval; }
   );
 
-  $scope.avlevering = { // registreringService.getAvlevering();
-    "avleveringsidentifikator" : "1234567",
-    "avleveringsbeskrivelse" : "min første øæå",
-    "avtale" : {
-      "avtaleidentifikator" : "234567",
-      "avtaledato" : "2015-01-20",
-      "avtalebeskrivelse" : "Avtale 1"
-    },
-    "arkivskaper" : "Robin",
-    "pasientjournal" : []
-  };
-  console.log("TODO: Fjern hardkoding");
-  
-  $scope.kjonn = [{"tekst" : "Mann"}, {"tekst" : "Dame"}];
+  //Feil tekster
+  $scope.feilTekster = {};
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.NotNull'); },
+    function(newval) { $scope.feilTekster['NotNull'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.DagEllerAar'); },
+    function(newval) { $scope.feilTekster['DagEllerAar'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.Size'); },
+    function(newval) { $scope.feilTekster['Size'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.FodtEtterDodt'); },
+    function(newval) { $scope.feilTekster['FodtEtterDodt'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.fKontaktForFodt'); },
+    function(newval) { $scope.feilTekster['fKontaktForFodt'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.sKontaktForFodt'); },
+    function(newval) { $scope.feilTekster['sKontaktForFodt'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.fKontaktEtterDod'); },
+    function(newval) { $scope.feilTekster['fKontaktEtterDod'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.sKontaktEtterDod'); },
+    function(newval) { $scope.feilTekster['sKontaktEtterDod'] = newval; }
+  );
+  $scope.$watch(
+    function() { return $filter('translate')('feltfeil.fKontaktEttersKontakt'); },
+    function(newval) { $scope.feilTekster['fKontaktEttersKontakt'] = newval; }
+  );
 
-  $scope.lagringsenheter = [];
+  if($scope.avlevering !== undefined) {
+    $scope.erNy = true;
+  } else 
+  if(journalService.getData() !== undefined) {
+    $scope.formData = journalService.getData().persondata;
+    $scope.erNy = false;
+
+    //Håndtering av kjønn
+    if($scope.formData.kjonn !== undefined) {
+      var funnet = false;
+      for(var i = 0; i < $scope.kjonn.length; i++) {
+        console.log($scope.kjonn[i]);
+        if($scope.kjonn[i] === $scope.formData.kjonn) {
+          $scope.formData.kjonn = $scope.kjonn[i];
+          funnet = true;
+        }
+      }
+      if(!funnet) {
+        $scope.formData.kjonn = {
+          "kode" : $scope.formData.kjonn,
+          "tekst" : " "
+        };
+      }
+    }
+    console.log($scope.formData);
+
+  } else {
+    $scope.navHome();
+  }
+
+  //Hjelpemetode for å sette focus på rett felt
+  var setFocus = function() {
+    if($scope.formData.lagringsenheter.length !== 0) {
+      document.getElementById("journalnummerInput").focus();
+    } else {
+      document.getElementById("lagringsenhet").focus();
+    }
+  };
+  setFocus();
+
   $scope.keyAddLagringsenhet = function() {
     if($scope.lagringsenhet === undefined || $scope.lagringsenhet === '') {
       return;
     }
-    for(var i = 0; i < $scope.lagringsenheter.length; i++) {
-      if($scope.lagringsenhet === $scope.lagringsenheter[i]) {
+    if($scope.formData.lagringsenheter === undefined) {
+      $scope.formData.lagringsenheter = [];
+    }
+
+    for(var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
+      if($scope.lagringsenhet === $scope.formData.lagringsenheter[i].identifikator) {
         $scope.lagringsenhet = "";
         return;
       }
     }
-
-    $scope.lagringsenheter.push($scope.lagringsenhet);
+    $scope.formData.lagringsenheter.push($scope.lagringsenhet);
     $scope.lagringsenhet = "";
   };
 
   $scope.actionFjernLagringsenhet = function(enhet) {
-    for(var i = 0; i < $scope.lagringsenheter.length; i++) {
-      if(enhet === $scope.lagringsenheter[i]) {
-        $scope.lagringsenheter.splice(i, 1);
+    for(var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
+      if(enhet === $scope.formData.lagringsenheter[i]) {
+        $scope.formData.lagringsenheter.splice(i, 1);
         document.getElementById("lagringsenhet").focus();
       }
     }
   };
 
+  var fodselsnummer;
+  $scope.setFnr = function() {
+    if($scope.formData && $scope.formData.fodselsnummer) {
+      fodselsnummer = $scope.formData.fodselsnummer;  
+    }
+  };
+
+  var validerFodselsnr = function(fnr) {
+    var personnr = fnr.substring(6,9);
+    var i = Number(personnr.substring(0,1));
+    var nr = Number(personnr.substring(1,3));
+
+    if(i === 0) {
+      if(nr <= 39) {
+        return 20;
+      } else {
+        return 19;
+      }
+    }
+    if(i >= 1 && i <= 4) {
+      return 19;
+    }
+    if(i >= 5 && i <= 7) {
+      if(nr <= 54) {
+        return 20;
+      } else {
+        return 18;
+      }
+    }
+    if(i === 8 && nr <= 54) {
+      return 20;
+    }
+    if(i === 9) {
+      if(nr <= 39) {
+        return 20;
+      } else {
+        return 19;
+      }
+    }
+  };
+
+  $scope.populerFelt = function() {
+    if($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) {
+      return;
+    }
+
+    //Valider nr
+    var aarhundre = validerFodselsnr($scope.formData.fodselsnummer);
+    if(!aarhundre) {
+      return;
+    }
+
+    var kjonnValidert = false, datoValidert = false;
+    if($scope.formData.fodselsnummer.length == 11) {
+      if(($scope.formData.fodselsnummer % 2) === 0) {
+        $scope.formData.kjonn = $scope.kjonn[0];
+        kjonnValidert = true;
+      } else {
+        $scope.formData.kjonn = $scope.kjonn[1];
+        kjonnValidert = true;
+      }
+
+      //Valider dato
+      var fdato = $scope.formData.fodselsnummer.substring(0, 6);
+      var dag = Number(fdato.substring(0,2));
+      var mnd = Number(fdato.substring(2,4));
+      var aar = Number(fdato.substring(4,6));
+
+      if(dag > 0 && dag < 32 && mnd > 0 && mnd < 13 && aar > 0) {
+        datoValidert = true;
+        $scope.formData.fodt = fdato.substring(0,2) + "." + fdato.substring(2,4) + "." + aarhundre + fdato.substring(4,6); 
+      }
+    }
+
+    hoppOver = kjonnValidert && datoValidert;
+
+  };
+
+  $scope.setFocusEtterNavn = function() {
+    if($scope.formData !== undefined) {
+      if($scope.formData.navn !== undefined && $scope.formData.navn.length > 0) {
+        $scope.formData.navn = $scope.formData.navn.substring(0,1).toUpperCase() + $scope.formData.navn.substring(1);
+      }  
+    }
+
+    if(hoppOver) {
+      document.getElementById("ddato").focus();
+    }
+    hoppOver = false;
+  };
+
+  var getDagEllerAar = function(verdi) {
+    if(verdi === undefined) {
+      return {
+        dato : undefined,
+        aar : undefined
+      };
+    }
+    if(verdi.indexOf(".") > -1) {
+      return {
+        dato : verdi,
+        aar : undefined
+      };
+    } else {
+      return {
+        dato : undefined,
+        aar : verdi
+      };
+    }
+  };
+
+  function compare(a,b) {
+      if (a.indeks < b.indeks) {
+         return -1;
+      }
+      if (a.indeks > b.indeks) {
+        return 1;
+      }
+      return 0;
+  }
+
+  var setFeilmeldinger = function(data, status) {
+    if(status != 400) {
+      errorService.errorCode(status);
+      return;
+    }
+
+    angular.forEach(data, function(element) {
+      $scope.error[element.attributt] = element.constriant;
+
+      var index;
+      var felt;
+      var feil;
+
+      //Konverter attributt
+      if(element.attributt === 'lagringsenheter') {
+        index = 0;
+        felt = document.getElementById('labelLagringsenhet').innerHTML;
+      }
+      if(element.attributt === 'journalnummer') {
+        index = 1;
+        felt = document.getElementById('journalnummer').innerHTML;
+      }
+      if(element.attributt === 'lopenummer') {
+        index = 2;
+        felt = document.getElementById('lopenummer').innerHTML;
+      }
+      if(element.attributt === 'fodselsnummer') {
+        index = 3;
+        felt = document.getElementById('fodselsnummer').innerHTML;
+      }
+      if(element.attributt === 'navn') {
+        index = 4;
+        felt = document.getElementById('navn').innerHTML;
+      }
+      if(element.attributt === 'kjonn') {
+        index = 5;
+        felt = document.getElementById('kjonn').innerHTML;
+      }
+      if(element.attributt === 'fodt') {
+        index = 6;
+        felt = document.getElementById('fodt').innerHTML;
+      }
+      if(element.attributt === 'dod') {
+        index = 7;
+        felt = document.getElementById('dod').innerHTML;
+      }
+      if(element.attributt === 'fKontakt') {
+        index = 8;
+        felt = document.getElementById('fKontakt').innerHTML;
+      }
+      if(element.attributt === 'sKontakt') {
+        index = 9;
+        felt = document.getElementById('sKontakt').innerHTML;
+      }                        
+
+      if(felt !== undefined) {
+        $scope.feilmeldinger.push({
+          indeks : index,
+          felt : felt,
+          feilmelding : $scope.feilTekster[element.constriant]
+        });  
+      }
+    });
+    $scope.feilmeldinger.sort(compare);
+  };
+
   $scope.submit = function() {
-    console.log("Legger til pasientjournal i avlevering");
+    $scope.error = {};
+    $scope.feilmeldinger = [];
+
+    if($scope.formData.lagringsenheter !== undefined && $scope.formData.lagringsenheter.length === 0) {
+      delete $scope.formData.lagringsenheter;
+    }
+    var lagringsenheter = $scope.formData.lagringsenheter;
+    var kjonn = $scope.formData.kjonn;
+    if(kjonn !== undefined) {
+      $scope.formData.kjonn = $scope.formData.kjonn.kode;
+    }
+    if($scope.erNy) {
+      httpService.ny("avleveringer/" + $scope.avlevering.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
+      .success(function(data, status, headers, config) {
+        $scope.formData = {
+          lagringsenheter : lagringsenheter
+        };
+        $scope.erNy = true;
+        setFocus();
+      }).error(function(data, status, headers, config) {
+        $scope.formData.kjonn = kjonn;
+        setFeilmeldinger(data, status);  
+      });
+    } else {
+      var pasientjournalDTO = {
+        "persondata" : $scope.formData,
+        "diagnoser" : []
+      };
+      httpService.oppdater("pasientjournaler/", pasientjournalDTO)
+      .success(function(data, status, headers, config) {
+        var lagringsenheter = $scope.formData.lagringsenheter;
+        $scope.formData = {
+          lagringsenheter : lagringsenheter
+        };
+        $scope.erNy = true;
+        setFocus();
+      }).error(function(data, status, headers, config) {
+        setFeilmeldinger(data, status); 
+      });
+    }
   };
 });

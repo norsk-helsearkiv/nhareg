@@ -11,7 +11,8 @@
 			"ID" : "ID",
 			"NAVN" : "Navn",
 			"DATO" : "Dato"
-		}
+		},
+		"PASIENTJOURNAL" : "Pasientjournal"
 	},
 	"home" : {
 		"AVTALE" : "Avtale",
@@ -21,6 +22,8 @@
 		"FOR" : "for",
 		"PASIENTSOK" : "Pasientsøk",
 		"SOK" : "Søk",
+		"SOKERESULTAT" : "Søkeresultat",
+		"VISER" : "viser",
 		"tooltip" : {
 			"LIST" : "Vis pasientjournaler i avleveringen",
 			"ADD" : "Legg til pasientjournal i avleveringen",
@@ -28,6 +31,15 @@
 			"ENDRE" : "Endre",
 			"DELETE" : "Slett"
 		}
+	},
+	"registrer" : {
+		"kjonn" : {
+			"MANN" : "Mann",
+			"KVINNE" : "Kvinne",
+			"IKKE_KJENT" : "Ikke kjent",
+			"IKKE_SPESIFISERT" : "Ikke spesifisert"
+		},
+		"NAVN" : "Navn"
 	},
 	"login" : {
 		"TITTEL" : "Logg inn",
@@ -40,7 +52,7 @@
 		"delete" : {
 			"TITTEL" : "Er du sikker på at du vil slette?",
 			"SIKKER" : "Er du sikker på at du vil slette",
-			"MED_ID" : "med id"
+			"MED_ID" : ", "
 		},
 		"legg_til" : {
 			"TITTEL" : "Opprett ny"
@@ -56,5 +68,16 @@
         "NOT_FOUND_STATUS_CODE":        "404 Resursjen finnes ikke",
         "RESOURCE_CONFLICT_CODE":		"409 Konsistensfeil",
         "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først"
+    },
+    "feltfeil" : {
+    	"DagEllerAar" : "Feil datoformat, eksempel på format (31.1.1990)",
+    	"NotNull" : "Kan ikke være tom",
+    	"Size" : "Kan ikke være tom",
+    	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
+    	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
+    	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
+    	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
+    	"sKontaktEtterDod" : "Siste kontakt kan ikke være etter død",
+    	"fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt"
     }
 }

@@ -37,6 +37,14 @@ angular.module( 'nha.home', [
       function(newval) { $scope.text.avtale = newval; }
     );
     $scope.$watch(
+      function() { return $filter('translate')('home.SOKERESULTAT'); },
+      function(newval) { $scope.text.sokeresultat = newval; }
+    );  
+    $scope.$watch(
+      function() { return $filter('translate')('home.VISER'); },
+      function(newval) { $scope.text.viser = newval; }
+    );     
+    $scope.$watch(
       function() { return $filter('translate')('home.tooltip.LIST'); },
       function(newval) { $scope.text.tooltip.list = newval; }
     );
@@ -66,49 +74,24 @@ angular.module( 'nha.home', [
   });
 
   $scope.actionSok = function(sokestring) {
-    console.log("TODO: Implementere søk");
-
-    var tittel = {
-      "tittel" : "Søkeresultat",
-      "underTittel" : "viser 4 av 4 resultat"
-    };
-
-    var data = {
-      "total" : 4,
-      "side": 1,
-      "sideantall": 4,
-      "pasientjournal" : [
-        {
-          "personnummer": "12345678901",
-          "navn" : "Batman"
-        },
-        {
-          "personnummer": "22345678901",
-          "navn" : "Robin"
-        },
-        {
-          "personnummer": "32345678901",
-          "navn" : "Joker"
-        },
-        {
-        "personnummer": "42345678901",
-        "navn" : "Harley Quinn"
-        }
-      ]
-    };
-
-    listService.init(tittel, data);
-    $location.path('/list');
-
+    var txt = $scope.text.sokeresultat;
+    var viser = $scope.text.viser;
+    httpService.hentAlle("pasientjournaler")
+    .success(function(data, status, headers, config) {
+    
+      var tittel = {
+        "tittel" : txt,
+        "underTittel" : viser + " " + data.antall + " / " + data.total + " " + txt.toLowerCase()
+      };
+      listService.init(tittel, data);
+      $location.path('/list');
+    
+    }).error(function(data, status, headers, config) {
+      errorService.errorCode(status);
+    });
   };
 
   //Avtale
-  $scope.print = function(avtale) {
-    console.log("===");
-    console.log(avtale);
-    return true;
-  };
-
   $scope.setValgtAvtale = function(avtale) {
     if(avtale === undefined) {
       return;
@@ -202,7 +185,7 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionVisAvlevering = function(avlevering) {
-    httpService.hentAlle("avleveringer/" + avlevering.avleveringsidentifikator + "/pasientjournaler")
+    httpService.hentAlle("pasientjournaler?avlevering=" + avlevering.avleveringsidentifikator)
     .success(function(data, status, headers, config) {
     
       var tittel = {
@@ -218,7 +201,7 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionAvleveringLeveranse = function(avlevering) {
-    window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator + "/leveranse";
+    window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator;
   };
 
   //Util

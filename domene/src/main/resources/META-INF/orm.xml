@@ -87,9 +87,15 @@
     
     <embeddable class="DatoEllerAar"/>
     <embeddable class="Oppdateringsinfo"/>
-    <embeddable class="Journalidentifikator"/>
+    <embeddable class="Journalidentifikator">
+        <attributes>
+            <basic name="løpenummer">
+                <column name="lopenummer" />
+            </basic>
+        </attributes>
+    </embeddable>
     <embeddable class="Identifikator"/>
-    
+
     <embeddable class="Kontakt">
         <attributes>
             <embedded name="foerste">   

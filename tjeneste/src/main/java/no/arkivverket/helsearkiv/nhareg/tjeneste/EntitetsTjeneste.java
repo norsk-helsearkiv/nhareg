@@ -1,11 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -14,15 +12,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -31,6 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -106,8 +102,6 @@ public abstract class EntitetsTjeneste<T, K> {
         this.entityClass = entityClass;
         this.idClass = keyClass;
         this.idName = idName;
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
 
     }
 
@@ -121,8 +115,10 @@ public abstract class EntitetsTjeneste<T, K> {
     
     /**
      * <p>
-     * A method for retrieving all entities of a given type. Supports the query
-     * parameters <code>first</code> and <code>max</code> for pagination.
+     * A method for retrieving all entities of a given type within a repsonse. 
+     * Supports the query parameters <code>first</code> and <code>max</code> 
+     * for pagination.
+     * The response object is used to return error codes where needed
      * </p>
      *
      * @param uriInfo application and request context information (see {
@@ -131,8 +127,8 @@ public abstract class EntitetsTjeneste<T, K> {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<T> getAll(@Context UriInfo uriInfo) {
-        return getAll(uriInfo.getQueryParameters());
+    public Response getAll(@Context UriInfo uriInfo) {
+        return Response.ok(getAll(uriInfo.getQueryParameters())).build();
     }
     
     public List<T> getAll(MultivaluedMap<String, String> queryParameters) {
@@ -195,28 +191,7 @@ public abstract class EntitetsTjeneste<T, K> {
     protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<T> root) {
         return new Predicate[]{};
     }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(T entity) {
-        getEntityManager().persist(entity);
-        return Response.ok().entity(entity).type(MediaType.APPLICATION_JSON_TYPE).build();
-    }
     
-    public Response oppdaterAvtale(T entity, String id) {
-        if(entity == null) {
-            return Response.noContent().build();
-        }
-        T persistedEntity = getEntityManager().find(entityClass, id);
-        if(persistedEntity == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        
-        getEntityManager().merge(entity);
-        return Response.ok(entity).build();  
-    }
-
     /**
      * <p>
      * A method for retrieving individual entity instances.
@@ -227,17 +202,48 @@ public abstract class EntitetsTjeneste<T, K> {
      */
     @GET
     @Path("/{id}")
-    public T getSingleInstance(@PathParam("id") K id) throws NoResultException {
+    public Response getSingleInstance(@PathParam("id") K id) throws NoResultException {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate condition = criteriaBuilder.equal(root.get(idName), id);
         criteriaQuery.select(criteriaBuilder.createQuery(entityClass).getSelection()).where(condition);
         try {
-            return entityManager.createQuery(criteriaQuery).getSingleResult();
+            T obj = entityManager.createQuery(criteriaQuery).getSingleResult();
+            return Response.ok(obj).build();
         } catch(NoResultException nre) {
-            return null;
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response create(T entity) {
+        ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
+        
+        if(!valideringsfeil.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
+                
+        getEntityManager().persist(entity);
+        return Response.ok().entity(entity).build();
+    }
+    
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(T entity) {
+        ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
+
+        if(!valideringsfeil.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
+        
+        getEntityManager().merge(entity);
+        return Response.ok(entity).build();  
+    }
+    
+    private ArrayList<Valideringsfeil> validerObjekt(T entity) {
+        return new Validator<T>(entityClass, entity).valider();
     }
 
     @DELETE

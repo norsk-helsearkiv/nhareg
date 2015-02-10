@@ -56,9 +56,9 @@ function httpService($http) {
 	//ANDRE
 	function genererAvlevering(id) {
 		return $http({
-			accept: "application/json",
+			accept: "application/xml",
 			method: "GET",
-			url: url + "avleveringer/generer"
+			url: url + "avleveringer/" + id
 		});
 	}
 

@@ -3,6 +3,7 @@ angular.module( 'nha', [
   'templates-common',
   'ui.router',
   'pascalprecht.translate',
+  'nha.common.journal-service',
   'nha.common.error-service',
   'nha.common.http-service',
   'nha.common.modal-service',
