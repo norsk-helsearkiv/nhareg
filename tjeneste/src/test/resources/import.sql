@@ -48,7 +48,7 @@ insert into CV (displayName, originalText, codeSystemVersion, codeSystem, code) 
 --
 insert into Diagnosekode (codeSystemVersion, codeSystem, code) values ('1.0', '1.2.3', 'Code0');
 insert into Diagnosekode (codeSystemVersion, codeSystem, code) values ('codeSystemVersion', 'codeSystem', 'code');
-INSERT INTO DIAGNOSE (UUID, DIAGDATO, DIAGNOSETEKST, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT, DIAGNOSEKODE_CODESYSTEMVERSION, DIAGNOSEKODE_CODESYSTEM, DIAGNOSEKODE_CODE) VALUES ('uuid-diagnose-1', CURRENT_TIMESTAMP, 'Influensa', 'AS', 'Registrering', CURRENT_TIMESTAMP, '1.0', '1.2.3', 'Code0');
+INSERT INTO DIAGNOSE (UUID, DATO, DIAGNOSETEKST, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT, DIAGNOSEKODE_CODESYSTEMVERSION, DIAGNOSEKODE_CODESYSTEM, DIAGNOSEKODE_CODE) VALUES ('uuid-diagnose-1', CURRENT_TIMESTAMP, 'Influensa', 'AS', 'Registrering', CURRENT_TIMESTAMP, '1.0', '1.2.3', 'Code0');
 --
 -- PASIENTJOURNAL_DIAGNOSE
 --

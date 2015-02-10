@@ -1,6 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-
 import java.net.URI;
 import java.text.ParseException;
 import java.util.List;
@@ -26,40 +25,39 @@ import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class PasientjournalTjenesteTest {
-    
+
     @Inject
     private PasientjournalTjeneste tjeneste;
-    
+
     @Deployment
     public static WebArchive deployment() {
         return RESTDeployment.deployment();
     }
-    
+
     // GET
-    
     @Test
     public void getAll_utenQueryParameter_allePasientjournaler() {
         Response rsp = tjeneste.getAll(getUriInfoTom());
         ListeObjekt listeObjekt = (ListeObjekt) rsp.getEntity();
         assertEquals(2, listeObjekt.getTotal());
     }
-    
+
     @Test
     public void getActiveWithPaging_henterEnFraSideTo_andreElementIListen() {
         //Henter alle pasientjournaler i databasen for test av paging
         MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
         List<Pasientjournal> pasientjournaler = tjeneste.getAll(map);
-        
+
         UriInfo info = getUriInfo();
         ListeObjekt listeObjekt = tjeneste.getActiveWithPaging(pasientjournaler, info);
-        
+
         assertEquals(2, listeObjekt.getTotal());
         assertEquals(1, listeObjekt.getAntall());
-        List<PasientjournalSokeresultatDTO> resultatListe = 
-                (List<PasientjournalSokeresultatDTO>) listeObjekt.getListe();
+        List<PasientjournalSokeresultatDTO> resultatListe
+                = (List<PasientjournalSokeresultatDTO>) listeObjekt.getListe();
         assertEquals("uuid3", resultatListe.get(0).getUuid());
     }
-    
+
     @Test
     public void getSingleInstance_henterForsteObjekt_returnererDTO() {
         Response rsp = tjeneste.getSingleInstance("uuid1");
@@ -67,11 +65,10 @@ public class PasientjournalTjenesteTest {
         PasientjournalDTO fido = (PasientjournalDTO) rsp.getEntity();
         assertEquals("Hunden Fido", fido.getPersondata().getNavn());
     }
-    
+
     // POST
-    // Se AvleveringTjeneste.POST
     @Test
-    public void leggTilDiagnose(){
+    public void leggTilDiagnose() {
         DiagnoseDTO dto = new DiagnoseDTO();
         dto.setDiagnosedato("15.01.2015");
         dto.setDiagnosetekst("Jeg er syk");
@@ -79,15 +76,35 @@ public class PasientjournalTjenesteTest {
         Response response = tjeneste.leggTilDiagnose("uuid1", dto);
         assertNotNull(response);
     }
-    
+
+    @Test
+    public void fjernDiagnose() {
+
+        Pasientjournal pj = tjeneste.hent("uuid1");
+        assertNotNull(pj);
+        assertNotNull(pj.getDiagnose());
+        assertEquals(2,pj.getDiagnose().size());
+        
+        DiagnoseDTO dto = new DiagnoseDTO();
+        dto.setUuid(pj.getDiagnose().get(0).getUuid());
+        Response response = tjeneste.fjernDiagnose("uuid1", dto);
+        assertNotNull(response);
+        assertEquals(200, response.getStatus());
+        //
+        pj = tjeneste.hent("uuid1");
+        assertNotNull(pj);
+        assertNotNull(pj.getDiagnose());
+        assertEquals(1,pj.getDiagnose().size());
+
+    }
+
 //    @Test
-    public void leggTilDiagnoseNull(){
+    public void leggTilDiagnoseNull() {
         Response response = tjeneste.leggTilDiagnose("uuid1", null);
         assertNotNull(response);
     }
-    
+
     // PUT
-    
     @Test
     public void oppdaterPasientjournal_setterNyttJournalnummer_ok() throws ParseException {
         Response response = tjeneste.getSingleInstance("uuid1");
@@ -96,15 +113,14 @@ public class PasientjournalTjenesteTest {
         tjeneste.oppdaterPasientjournal(pasientjournalDTO);
         //Ingen feilmeldinger
     }
-    
+
     // DELETE
-    
     @Test
     public void delete_finnerIkkeEntitet_404() {
         Response rsp = tjeneste.delete("tull");
         assertEquals(404, rsp.getStatus());
     }
-    
+
     @Test
     public void delete_sletterEntitet_200() {
         Response rsp = tjeneste.delete("uuid1");
@@ -191,7 +207,7 @@ public class PasientjournalTjenesteTest {
             }
         };
     }
-    
+
     private UriInfo getUriInfo() {
         return new UriInfo() {
 
