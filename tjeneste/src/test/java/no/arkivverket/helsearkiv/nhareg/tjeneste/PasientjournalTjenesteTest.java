@@ -74,7 +74,8 @@ public class PasientjournalTjenesteTest {
     
     @Test
     public void oppdaterPasientjournal_setterNyttJournalnummer_ok() throws ParseException {
-        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) tjeneste.getSingleInstance("uuid1").getEntity();
+        Response response = tjeneste.getSingleInstance("uuid1");
+        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) response.getEntity();
         pasientjournalDTO.getPersondata().setJournalnummer("12345");
         tjeneste.oppdaterPasientjournal(pasientjournalDTO);
         //Ingen feilmeldinger

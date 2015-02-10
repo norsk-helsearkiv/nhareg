@@ -55,8 +55,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     
     @EJB
     private KjønnTjeneste kjønnTjeneste;
-    @EJB
-    private AvleveringTjeneste avleveringTjeneste;
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -74,11 +72,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         // Legg til søk i stedet for getAll(queryParameter). Skal returnere liste av treff
         // Sender in et tomt map for å få alle
         List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
-        
-        if(pasientjournaler.isEmpty()) {
-            return Response.ok(pasientjournaler).build();
-        }
-        
         return Response.ok(getActiveWithPaging(pasientjournaler, uriInfo)).build();
     }
     

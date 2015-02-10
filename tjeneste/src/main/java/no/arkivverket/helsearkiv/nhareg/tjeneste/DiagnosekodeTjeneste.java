@@ -1,10 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 
 /**

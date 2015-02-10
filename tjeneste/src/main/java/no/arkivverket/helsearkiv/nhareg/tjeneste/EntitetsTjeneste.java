@@ -83,6 +83,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class EntitetsTjeneste<T, K> {
 
+    public static final String MAX_ANTALL_RADER_QUERY_PARAMETER = "max";
+    public static final String FORSTE_RAD_QUERY_PARAMETER = "first";
     Log log = LogFactory.getLog(EntitetsTjeneste.class);
     //@Inject
     @PersistenceContext(name = "primary")
@@ -128,7 +130,7 @@ public abstract class EntitetsTjeneste<T, K> {
     public Response getAll(@Context UriInfo uriInfo) {
         return Response.ok(getAll(uriInfo.getQueryParameters())).build();
     }
-
+    
     public List<T> getAll(MultivaluedMap<String, String> queryParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
@@ -137,12 +139,12 @@ public abstract class EntitetsTjeneste<T, K> {
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get(idName)));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
-        if (queryParameters.containsKey("first")) {
-            Integer firstRecord = Integer.parseInt(queryParameters.getFirst("first")) - 1;
+        if (queryParameters.containsKey(FORSTE_RAD_QUERY_PARAMETER)) {
+            Integer firstRecord = Integer.parseInt(queryParameters.getFirst(FORSTE_RAD_QUERY_PARAMETER)) - 1;
             query.setFirstResult(firstRecord);
         }
-        if (queryParameters.containsKey("max")) {
-            Integer maxResults = Integer.parseInt(queryParameters.getFirst("max"));
+        if (queryParameters.containsKey(MAX_ANTALL_RADER_QUERY_PARAMETER)) {
+            Integer maxResults = Integer.parseInt(queryParameters.getFirst(MAX_ANTALL_RADER_QUERY_PARAMETER));
             query.setMaxResults(maxResults);
         }
         return query.getResultList();
