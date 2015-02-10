@@ -2,11 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.UUID;
 import javax.ejb.Stateless;
-import javax.validation.Validator;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 
 /**
  * <p>
@@ -31,9 +31,9 @@ public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
     }
 
     @Override
-    public Response create(Diagnose entity) {
+    public Response create(@NotNull Diagnose entity) {
         entity.setUuid(UUID.randomUUID().toString());
-        return super.create(entity); //To change body of generated methods, choose Tools | Templates.
+        return super.create(entity);
     }
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -112,13 +113,13 @@ public abstract class EntitetsTjeneste<T, K> {
     public Validator getValidator() {
         return validator;
     }
-    
+
     /**
      * <p>
-     * A method for retrieving all entities of a given type within a repsonse. 
-     * Supports the query parameters <code>first</code> and <code>max</code> 
-     * for pagination.
-     * The response object is used to return error codes where needed
+     * A method for retrieving all entities of a given type within a repsonse.
+     * Supports the query parameters <code>first</code> and <code>max</code> for
+     * pagination. The response object is used to return error codes where
+     * needed
      * </p>
      *
      * @param uriInfo application and request context information (see {
@@ -130,7 +131,7 @@ public abstract class EntitetsTjeneste<T, K> {
     public Response getAll(@Context UriInfo uriInfo) {
         return Response.ok(getAll(uriInfo.getQueryParameters())).build();
     }
-    
+
     public List<T> getAll(MultivaluedMap<String, String> queryParameters) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
@@ -148,7 +149,7 @@ public abstract class EntitetsTjeneste<T, K> {
             query.setMaxResults(maxResults);
         }
         return query.getResultList();
-        
+
     }
 
     /**
@@ -191,7 +192,7 @@ public abstract class EntitetsTjeneste<T, K> {
     protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<T> root) {
         return new Predicate[]{};
     }
-    
+
     /**
      * <p>
      * A method for retrieving individual entity instances.
@@ -211,37 +212,49 @@ public abstract class EntitetsTjeneste<T, K> {
         try {
             T obj = entityManager.createQuery(criteriaQuery).getSingleResult();
             return Response.ok(obj).build();
-        } catch(NoResultException nre) {
+        } catch (NoResultException nre) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
+    /**
+     * Hent entitet bassert på entitetens nøkkel.
+     *
+     * @param id ID for entiteten.
+     * @return Entiteten for gitt ID.
+     */
+    public T hent(@NotNull final K id) {
+        // TODO kast exception dersom ikke finnes?
+//        Validate.notNull(id, "id");
+        return getEntityManager().find(entityClass, id);
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(T entity) {
+    public Response create(@NotNull T entity) {
         ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
-        
-        if(!valideringsfeil.isEmpty()) {
+
+        if (!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
-                
+
         getEntityManager().persist(entity);
         return Response.ok().entity(entity).build();
     }
-    
+
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(T entity) {
         ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
 
-        if(!valideringsfeil.isEmpty()) {
+        if (!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
-        
+
         getEntityManager().merge(entity);
-        return Response.ok(entity).build();  
+        return Response.ok(entity).build();
     }
-    
+
     private ArrayList<Valideringsfeil> validerObjekt(T entity) {
         return new Validator<T>(entityClass, entity).valider();
     }

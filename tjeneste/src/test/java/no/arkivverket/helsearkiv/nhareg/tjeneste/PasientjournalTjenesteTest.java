@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -69,6 +70,21 @@ public class PasientjournalTjenesteTest {
     
     // POST
     // Se AvleveringTjeneste.POST
+    @Test
+    public void leggTilDiagnose(){
+        DiagnoseDTO dto = new DiagnoseDTO();
+        dto.setDiagnosedato("15.01.2015");
+        dto.setDiagnosetekst("Jeg er syk");
+        dto.setDiagnosekode("Code0");
+        Response response = tjeneste.leggTilDiagnose("uuid1", dto);
+        assertNotNull(response);
+    }
+    
+//    @Test
+    public void leggTilDiagnoseNull(){
+        Response response = tjeneste.leggTilDiagnose("uuid1", null);
+        assertNotNull(response);
+    }
     
     // PUT
     

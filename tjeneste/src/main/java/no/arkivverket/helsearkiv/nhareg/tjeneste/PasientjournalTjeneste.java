@@ -27,6 +27,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
@@ -35,6 +36,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import org.apache.commons.collections4.Transformer;
 
 /**
  * <p>
@@ -55,6 +57,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     
     @EJB
     private KjønnTjeneste kjønnTjeneste;
+    @EJB
+    DiagnoseTjeneste diagnoseTjeneste;
+
+    @EJB(name = "DiagnoseDTOTransformer")
+    Transformer<DiagnoseDTO,Diagnose> diagnoseDTOTransformer;
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -137,7 +144,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Path("/{id}")
     @Override
     public Response getSingleInstance(@PathParam("id") String id) {
-        Pasientjournal pasientjournal = (Pasientjournal) super.getSingleInstance(id).getEntity();
+        Pasientjournal pasientjournal = super.hent(id);
         if(pasientjournal == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -196,13 +203,21 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     /**
      * Legger til diagnose for pasientjournal
      * @param id på pasientjournalen
+     * @param diagnoseDTO
      * @param diagnose som skal legges til
      * @return 200 OK
      */
     @POST
     @Path("/{id}/diagnoser")
-    public Response leggTilDiagnose(@PathParam("id") String id, Diagnose diagnose) {
-        return Response.noContent().build();
+    public Response leggTilDiagnose(@PathParam("id") String id, DiagnoseDTO diagnoseDTO) {
+        Pasientjournal pasientjournal = hent(id);
+        if (pasientjournal == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        Diagnose diagnose = diagnoseDTOTransformer.transform(diagnoseDTO);
+        diagnoseTjeneste.create(diagnose);
+        pasientjournal.getDiagnose().add(diagnose);
+        return Response.ok().build();
     }
     
     /**

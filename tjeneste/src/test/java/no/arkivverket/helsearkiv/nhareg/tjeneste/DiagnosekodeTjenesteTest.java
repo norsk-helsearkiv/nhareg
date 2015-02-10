@@ -57,4 +57,26 @@ public class DiagnosekodeTjenesteTest {
         assertEquals(1, diagnosekoder.size());
     }
 
+    @Test
+    public void hentDiagnosekoderMedCode() {
+        String code = "Code0";
+        List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+        assertNotNull(diagnosekoder);
+        assertEquals(1, diagnosekoder.size());
+    }
+
+    @Test
+    public void hentDiagnosekoderMedUkjentCode() {
+        String code = "Ukjent";
+        List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+        assertNotNull(diagnosekoder);
+        assertEquals(0, diagnosekoder.size());
+    }
+    @Test
+    public void hentDiagnosekoderMedNulltCode() {
+        String code = null;
+        List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+        assertNotNull(diagnosekoder);
+        assertEquals(0, diagnosekoder.size());
+    }
 }
