@@ -85,17 +85,25 @@ angular.module("common/list-view/list-view.tpl.html", []).run(["$templateCache",
     "    <div class=\"container\">\n" +
     "        <h2>{{ tittel.tittel }} <small> {{ tittel.underTittel }}</small></h2>\n" +
     "        <div class=\"table-responsive\">\n" +
-    "            <table class=\"table table-striped\">\n" +
+    "            <table class=\"table table-striped table-hover\">\n" +
     "                <thead>\n" +
     "                    <tr>\n" +
+    "                        <th>{{ 'home.AVTALE' | translate }}</th>\n" +
+    "                        <th>{{ 'home.AVLEVERING' | translate }}</th>\n" +
     "                        <th>{{ 'common.table.ID' | translate }}</th>\n" +
     "                        <th>{{ 'common.table.NAVN' | translate }}</th>\n" +
+    "                        <th></th>\n" +
     "                    </tr>\n" +
     "                </thead>\n" +
     "                <tbody>\n" +
-    "                    <tr class=\"clickable\" data-ng-repeat=\"pasient in data.pasientjournal\" data-ng-click=\"actionVisJournal(pasient.personnummer)\">\n" +
-    "                        <td>{{ pasient.personnummer }}</td>\n" +
-    "                        <td>{{ pasient.navn }}</td>\n" +
+    "                    <tr class=\"clickable\" data-ng-repeat=\"pasient in data.liste\">\n" +
+    "                        <td data-ng-click=\"actionVisJournal(pasient.uuid)\">{{ pasient.avtale }}</td>\n" +
+    "                        <td data-ng-click=\"actionVisJournal(pasient.uuid)\">{{ pasient.avlevering }}</td>\n" +
+    "                        <td data-ng-click=\"actionVisJournal(pasient.uuid)\">{{ pasient.fodselsnummer }}</td>\n" +
+    "                        <td data-ng-click=\"actionVisJournal(pasient.uuid)\">{{ pasient.navn }}</td>\n" +
+    "                        <td>\n" +
+    "                            <button class=\"icon icon-padding-left icon-delete\" data-ng-click=\"actionFjernPasientjournal(pasient)\" tooltip=\"{{text.tooltip.deleteElement}}\"></button>\n" +
+    "                        </td>\n" +
     "                    </tr>\n" +
     "                </tbody>\n" +
     "            </table>\n" +
@@ -311,92 +319,105 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "    </div>\n" +
     "    <div id=\"navbar\" class=\"navbar-collapse collapse\">\n" +
     "      <ul class=\"nav navbar-nav navbar-right\">\n" +
-    "      	<li><a href=\"/home\" data-ng-click=\"\">{{ 'common.VIS_HURTIGTASTER' | translate }}</a></li>\n" +
+    "      	<!--<li><a href=\"\" data-ng-click=\"navHome()\">{{ 'common.VIS_HURTIGTASTER' | translate }}</a></li>-->\n" +
     "        <li><a class=\"loggut\" href=\"\" data-ng-click=\"loggUt()\">{{ 'login.LOGG_UT' | translate }}</a></li>\n" +
     "      </ul>\n" +
     "  </div>\n" +
     "</nav>\n" +
     "\n" +
-    "<div class=\"container content\">\n" +
-    "	<h1>\n" +
-    "		Registrering\n" +
-    "		<small>{{avlevering.avleveringsbeskrivelse}}</small>\n" +
-    "	</h1>\n" +
-    "	<form>\n" +
-    "		<div class=\"well\">\n" +
-    "			<label>Lagringsenheter <small>(Klikk 'enter' for å legge til flere)</small></label>\n" +
-    "			<input type=\"text\" id=\"lagringsenhet\" class=\"form-control\" placeholder=\"Lagringsenhet...\" data-ng-model=\"lagringsenhet\" ng-enter=\"keyAddLagringsenhet()\" autofocus>\n" +
-    "			<ul id=\"lagringsenhet-liste\">\n" +
-    "				<li data-ng-repeat=\"enhet in lagringsenheter\">\n" +
-    "					<button type=\"button\" class=\"btn\" data-ng-click=\"actionFjernLagringsenhet(enhet)\"></button>\n" +
-    "					{{ enhet }}\n" +
-    "				</li>\n" +
-    "			</ul>\n" +
-    "			<div class=\"row\"><!-- Brukes for å sørge for at well utvider seg når float:left listen går over flere linjer --></div>\n" +
-    "		</div>\n" +
-    "\n" +
-    "		<div class=\"well\">\n" +
-    "			<div class=\"row\">\n" +
-    "				<div class=\"span span3\">\n" +
-    "					<label>Journalnummer</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Journalnummer...\">\n" +
-    "				</div>\n" +
-    "				<div class=\"span span3\">\n" +
-    "					<label>Løpenummer</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Løpenummer...\">\n" +
-    "				</div>\n" +
-    "				<div class=\"span span3\">\n" +
-    "					<label>Fødselsnummer</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Fødselsnummer...\" data-ng-model=\"formData.fnr\" data-ng-focus=\"setFnr()\" data-ng-blur=\"populerFelt()\">\n" +
-    "				</div>\n" +
+    "<div class=\"content\">\n" +
+    "	<div class=\"col-sm-3 col-md-2 sidebar\">\n" +
+    "		<h4>Valideringsfeil</h4>\n" +
+    "		<ul class=\"nav nav-sidebar\">\n" +
+    "			<li data-ng-repeat=\"feil in feilmeldinger\">\n" +
+    "				<span class=\"error error-tittel\">{{feil.felt}}</span><br />\n" +
+    "				<span class=\"error-beskrivelse\">{{feil.feilmelding}}</span>\n" +
+    "			</li>\n" +
+    "		</ul>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n" +
+    "		<h1>\n" +
+    "			Registrering\n" +
+    "			<small>{{avlevering.avleveringsbeskrivelse}}</small>\n" +
+    "		</h1>\n" +
+    "		<form>\n" +
+    "			<div class=\"well\">\n" +
+    "				<label id=\"labelLagringsenhet\" data-ng-class=\"{error: error['lagringsenheter'] !== undefined }\">\n" +
+    "					Lagringsenheter \n" +
+    "				</label><small> (Klikk 'enter' for å legge til flere)</small>\n" +
+    "				<input type=\"text\" id=\"lagringsenhet\" class=\"form-control\" placeholder=\"Lagringsenhet...\" data-ng-model=\"lagringsenhet\" ng-enter=\"keyAddLagringsenhet()\" autofocus>\n" +
+    "				<ul id=\"lagringsenhet-liste\">\n" +
+    "					<li data-ng-repeat=\"enhet in formData.lagringsenheter\">\n" +
+    "						<button type=\"button\" class=\"btn\" data-ng-click=\"actionFjernLagringsenhet(enhet)\"></button>\n" +
+    "						{{ enhet }}\n" +
+    "					</li>\n" +
+    "				</ul>\n" +
+    "				<div class=\"row\"><!-- Brukes for å sørge for at well utvider seg når float:left listen går over flere linjer --></div>\n" +
     "			</div>\n" +
-    "		</div>\n" +
     "\n" +
-    "		<div class=\"well\">\n" +
-    "			<div class=\"row\">\n" +
-    "				<div class=\"span span43 padding-bottom\">\n" +
-    "					<label>Navn</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Navn...\" data-ng-model=\"formData.navn\" data-ng-blur=\"setFocusEtterNavn()\">\n" +
-    "				</div>\n" +
-    "				<div class=\"span span4\">\n" +
-    "					<label>Kjønn</label>\n" +
-    "				    <select  class=\"form-control\" data-ng-model=\"formData.valgtKjonn\"\n" +
-    "            			ng-options=\"item as item.tekst for item in kjonn\">\n" +
-    "            			<option value=\"\" disabled selected>Kjønn...</option>\n" +
-    "            	</select>\n" +
+    "			<div class=\"well\">\n" +
+    "				<div class=\"row\">\n" +
+    "					<div class=\"span span3\">\n" +
+    "						<label id=\"journalnummer\" data-ng-class=\"{error: error['journalnummer'] !== undefined }\">Journalnummer</label>\n" +
+    "						<input type=\"text\" id=\"journalnummerInput\" class=\"form-control\" placeholder=\"Journalnummer...\" data-ng-model=\"formData.journalnummer\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span3\">\n" +
+    "						<label id=\"lopenummer\" data-ng-class=\"{error: error['lopenummer'] !== undefined }\">Løpenummer</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"Løpenummer...\" data-ng-model=\"formData.lopenummer\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span3\">\n" +
+    "						<label id=\"fodselsnummer\" data-ng-class=\"{error: error['fodselsnummer'] !== undefined }\">Fødselsnummer</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"Fødselsnummer...\" data-ng-model=\"formData.fodselsnummer\" data-ng-focus=\"setFnr()\" data-ng-blur=\"populerFelt()\">\n" +
+    "					</div>\n" +
     "				</div>\n" +
     "			</div>\n" +
     "\n" +
-    "			<div class=\"row\">\n" +
-    "				<div class=\"span span4\">\n" +
-    "					<label>Født</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.fdato\">\n" +
+    "			<div class=\"well\">\n" +
+    "				<div class=\"row\">\n" +
+    "					<div class=\"span span43 padding-bottom\">\n" +
+    "						<label id=\"navn\" data-ng-class=\"{error: error['navn'] !== undefined }\">{{ 'registrer.NAVN' | translate }}</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"Navn...\" data-ng-model=\"formData.navn\" data-ng-blur=\"setFocusEtterNavn()\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span4\">\n" +
+    "						<label id=\"kjonn\" data-ng-class=\"{error: error['kjonn'] !== undefined }\">Kjønn</label>\n" +
+    "					    <select  class=\"form-control\" data-ng-model=\"formData.kjonn\"\n" +
+    "	            			ng-options=\"item as item.tekst for item in kjonn\">\n" +
+    "	            			<option value=\"\" disabled selected>Kjønn...</option>\n" +
+    "	            	</select>\n" +
+    "					</div>\n" +
     "				</div>\n" +
-    "				<div class=\"span span4\">\n" +
-    "					<label>Død</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.ddato\" id=\"ddato\">\n" +
-    "				</div>\n" +
-    "				<div class=\"span span4\">\n" +
-    "					<label>Første kontakt</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.fkontakt\">\n" +
-    "				</div>\n" +
-    "				<div class=\"span span4\">\n" +
-    "					<label>Siste kontakt</label>\n" +
-    "					<input type=\"text\" class=\"form-control\" placeholder=\"Dato...\" data-ng-model=\"formData.skontakt\">\n" +
+    "\n" +
+    "				<div class=\"row\">\n" +
+    "					<div class=\"span span4\">\n" +
+    "						<label id=\"fodt\" data-ng-class=\"{error: error['fodt'] !== undefined }\">Født</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"dd.mm.åååå\" data-ng-model=\"formData.fodt\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span4\">\n" +
+    "						<label id=\"dod\"  data-ng-class=\"{error: error['dod'] !== undefined }\">Død</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"dd.mm.åååå\" data-ng-model=\"formData.dod\" id=\"ddato\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span4\">\n" +
+    "						<label id=\"fKontakt\"  data-ng-class=\"{error: error['fKontakt'] !== undefined }\">Første kontakt</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"dd.mm.åååå\" data-ng-model=\"formData.fKontakt\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span4\">\n" +
+    "						<label id=\"sKontakt\"  data-ng-class=\"{error: error['sKontakt'] !== undefined }\">Siste kontakt</label>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"dd.mm.åååå\" data-ng-model=\"formData.sKontakt\">\n" +
+    "					</div>\n" +
     "				</div>\n" +
     "			</div>\n" +
-    "		</div>\n" +
     "\n" +
-    "		<div class=\"well\">\n" +
-    "			<label>Diagnoser</label>\n" +
-    "		</div>\n" +
+    "			<div class=\"well\">\n" +
+    "				<label>Diagnoser</label>\n" +
+    "			</div>\n" +
     "\n" +
-    "		<div class=\"well\">\n" +
-    "			<label>Vedlegg</label>\n" +
-    "		</div>\n" +
+    "			<div class=\"well\">\n" +
+    "				<label>Vedlegg</label>\n" +
+    "			</div>\n" +
     "\n" +
-    "		<button type=\"submit\" class=\"btn btn-primary right\" ng-btnFocus=\"\" data-ng-click=\"submit()\">Submit</button>\n" +
-    "		<button class=\"btn btn-default\" ng-btn-focus>Tilbake</button>\n" +
-    "	</form>\n" +
+    "			<button type=\"submit\" class=\"btn btn-primary right\" ng-btnFocus=\"\" data-ng-click=\"submit()\">Kontroller og lagre</button>\n" +
+    "			<button class=\"btn btn-default\" ng-btn-focus>Tilbake</button>\n" +
+    "		</form>\n" +
+    "	</div>\n" +
     "</div>");
 }]);
