@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @author robing
  */
 public class DiagnoseDTO implements Serializable {
+    private String uuid;
     
     //I validation.xml skal denne være satt (required)
     private String diagnosetekst;
@@ -17,6 +18,14 @@ public class DiagnoseDTO implements Serializable {
     
     //Kan være null
     private String diagnosekode;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
     public String getDiagnosetekst() {
         return diagnosetekst;

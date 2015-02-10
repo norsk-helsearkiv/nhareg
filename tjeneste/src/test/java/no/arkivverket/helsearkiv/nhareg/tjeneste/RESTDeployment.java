@@ -4,7 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar;
-import no.arkivverket.helsearkiv.nhareg.util.DiagnoseDTOTransformer;
+import no.arkivverket.helsearkiv.nhareg.util.DiagnoseFraDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
@@ -26,7 +26,7 @@ public class RESTDeployment {
                 .addPackage(PersondataDTO.class.getPackage())
                 .addPackage(Konverterer.class.getPackage())
                 .addPackage(DagEllerAar.class.getPackage())
-                .addPackage(DiagnoseDTOTransformer.class.getPackage())
+                .addPackage(DiagnoseFraDTOTransformer.class.getPackage())
                 //
                 // Denne blokken er med for å få med commons-collections4 i testene
                 //

@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DiagnoseDTOTransformerTest {
+public class DiagnoseFraDTOTransformerTest {
 
     @Deployment
     public static WebArchive deployment() {

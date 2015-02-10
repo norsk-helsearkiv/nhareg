@@ -3,11 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import org.apache.commons.collections4.Transformer;
 
 /**
