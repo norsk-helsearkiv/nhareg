@@ -17,6 +17,10 @@ public class DatoValiderer {
     public static ArrayList<Valideringsfeil> valider(PersondataDTO person) throws ParseException {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         
+        if(person == null) {
+            return feil;
+        }
+        
         //Regler basert på født
         if(sjekk(person.getFodt())) {
             Date fodt = getDate(person.getFodt());
