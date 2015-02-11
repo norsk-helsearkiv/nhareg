@@ -4,7 +4,7 @@ connect
 ## 
 ## Deployer Mysql-driver
 ##
-deploy ~\.m2\repository\mysql\mysql-connector-java\5.1.6\mysql-connector-java-5.1.6.jar --force
+deploy ~\.m2\repository\mysql\mysql-connector-java\5.1.26\mysql-connector-java-5.1.26.jar --force
 ##
 ## List installerte drivere
 ##
@@ -16,7 +16,7 @@ deploy ~\.m2\repository\mysql\mysql-connector-java\5.1.6\mysql-connector-java-5.
 ##
 ## Legger til datasource
 ##
-data-source add --name=nhareg-datasource --jndi-name=java:jboss/datasources/NharegDS --driver-name=mysql-connector-java-5.1.6.jar --connection-url=jdbc:mysql://localhost:3306/nhareg --user-name=nhareg --password=nhareg
+data-source add --name=nhareg-datasource --jndi-name=java:jboss/datasources/NharegDS --driver-name=mysql-connector-java-5.1.26.jar --connection-url=jdbc:mysql://localhost:3306/nhareg --user-name=nhareg --password=nhareg
 ##
 ## Test datasource
 ##
@@ -28,4 +28,4 @@ data-source add --name=nhareg-datasource --jndi-name=java:jboss/datasources/Nhar
 ##
 ## Fjerner driver
 ##
-## undeploy mysql-connector-java-5.1.6.jar
+## undeploy mysql-connector-java-5.1.26.jar

@@ -126,7 +126,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.6</version>
+                <version>5.1.26</version>
                 <scope>runtime</scope>
             </dependency>
         <dependency>
@@ -159,4 +159,10 @@
         <module>tjeneste</module>
         <module>klient-web</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+    </dependencies>
 </project>

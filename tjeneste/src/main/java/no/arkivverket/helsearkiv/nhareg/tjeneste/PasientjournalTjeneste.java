@@ -228,6 +228,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (pasientjournal == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        new Validator<DiagnoseDTO>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
         Diagnose diagnose = diagnoseDTOTransformer.transform(diagnoseDTO);
         diagnoseTjeneste.create(diagnose);
         pasientjournal.getDiagnose().add(diagnose);
