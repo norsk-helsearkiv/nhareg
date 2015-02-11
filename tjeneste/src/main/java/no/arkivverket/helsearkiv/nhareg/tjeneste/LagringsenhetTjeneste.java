@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 
 /**
  * <p>
@@ -50,7 +51,13 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
             throw new IllegalArgumentException("Lagringsenhet med identifikator " + entity.getIdentifikator() + " finnes allerede.");
         }
         entity.setUuid(UUID.randomUUID().toString());
-        valider(entity);
+        //
+        // Validering
+        //
+        new Validator<Lagringsenhet>(Lagringsenhet.class).validerMedException(entity);
+        //
+        // Oppretter
+        //
         return super.create(entity);
     }
 
@@ -60,10 +67,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
      * @param entity 
      */
     private void valider(Lagringsenhet entity) {
-        Set<ConstraintViolation<Lagringsenhet>> constraintViolations = validator.validate(entity);
-        if (constraintViolations != null && !constraintViolations.isEmpty()) {
-            throw new IllegalArgumentException(constraintViolations.toString());
-        }
+        new Validator<Lagringsenhet>(Lagringsenhet.class).validerMedException(entity);
     }
 
     /**

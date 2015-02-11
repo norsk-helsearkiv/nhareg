@@ -27,6 +27,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
 
@@ -84,7 +85,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         valideringsfeil.addAll(DatoValiderer.valider(person));
 
         if(!valideringsfeil.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+            throw new ValideringsfeilException(valideringsfeil);
         }
         
         //KONVERTERING
