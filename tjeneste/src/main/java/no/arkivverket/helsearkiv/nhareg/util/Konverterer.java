@@ -2,9 +2,12 @@ package no.arkivverket.helsearkiv.nhareg.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Identifikator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Journalidentifikator;
@@ -12,14 +15,16 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kontakt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 
 /**
- *
+ * Implementeres som Transformer
  * @author robing
  */
+@Deprecated
 public class Konverterer {
 
     public static Pasientjournal tilPasientjournal(PersondataDTO person) throws ParseException {
@@ -146,6 +151,18 @@ public class Konverterer {
         dto.setPersondata(person);
 
         //Diagnoser
+        List<DiagnoseDTO> diagnoser = new ArrayList<DiagnoseDTO>();
+        
+        for(Diagnose d : pasientjournal.getDiagnose()) {
+            DiagnoseDTO ddto = new DiagnoseDTO();
+            ddto.setDiagnosedato(d.getDiagdato().toString());
+            ddto.setDiagnosekode(d.getDiagnosekode().getCode());
+            ddto.setDiagnosetekst(d.getDiagnosetekst());
+            ddto.setUuid(d.getUuid());
+            diagnoser.add(ddto);
+        }
+        dto.setDiagnoser(diagnoser);
+        
         return dto;
     }
 
