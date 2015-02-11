@@ -1,12 +1,15 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Identifikator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Journalidentifikator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kontakt;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
@@ -59,12 +62,18 @@ public class KonvertererTest {
     @Test
     public void tilPasientjournalDTOTest() {
         PasientjournalDTO dto = Konverterer.tilPasientjournalDTO(getPasientjournal());
+        assertEquals(1, dto.getPersondata().getLagringsenheter().length);
         assertEquals("01010942345", dto.getPersondata().getFodselsnummer());
         assertEquals("Natalie", dto.getPersondata().getNavn());
     }
     
     private Pasientjournal getPasientjournal() {
         Pasientjournal pasientjournal = new Pasientjournal();
+        
+        Lagringsenhet lght = new Lagringsenhet();
+        lght.setIdentifikator("Boks1");
+        lght.setUuid("lagring-1-boks-1");
+        pasientjournal.getLagringsenhet().add(lght);
         
         Grunnopplysninger grn = new Grunnopplysninger();
         Identifikator id = new Identifikator();
