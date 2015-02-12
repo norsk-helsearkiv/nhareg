@@ -27,6 +27,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 @Deprecated
 public class Konverterer {
 
+    private static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
     public static Pasientjournal tilPasientjournal(PersondataDTO person) throws ParseException {
         Pasientjournal pasientjournal = new Pasientjournal();
 
@@ -166,8 +167,7 @@ public class Konverterer {
         return dto;
     }
 
-    private static String tilString(DatoEllerAar dato) {
-        SimpleDateFormat format = new SimpleDateFormat("dd.mm.yyyy");
+    static String tilString(DatoEllerAar dato) {
         if (dato != null) {
             if (dato.getDato() != null) {
                 return format.format(dato.getDato().getTime());
@@ -178,7 +178,7 @@ public class Konverterer {
         return null;
     }
 
-    private static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
+    static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
         if (tid.toLowerCase().equals("mors")) {
             return null;
         }
@@ -190,8 +190,7 @@ public class Konverterer {
         }
 
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
-        cal.setTime(sdf.parse(tid));
+        cal.setTime(format.parse(tid));
 
         dea.setDato(cal);
         return dea;
