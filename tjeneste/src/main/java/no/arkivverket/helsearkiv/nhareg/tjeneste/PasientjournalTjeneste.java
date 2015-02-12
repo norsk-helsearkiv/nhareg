@@ -41,6 +41,7 @@ import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.util.EksisterendeLagringsenhetPredicate;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import no.arkivverket.helsearkiv.nhareg.util.PasientjournalSokestringPredicate;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -64,6 +65,8 @@ import org.apache.commons.collections4.Transformer;
 @Stateless
 public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, String> {
 
+    public static final String SOKESTRING_QUERY_PARAMETER = "sokestring";
+    
     @EJB
     private KjønnTjeneste kjønnTjeneste;
     @EJB
@@ -105,7 +108,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * @param uriInfo
      * @return ListeObjekt
      */
-    public ListeObjekt getActiveWithPaging(List<Pasientjournal> pasientjournaler, UriInfo uriInfo) {
+    public ListeObjekt getActiveWithPaging(List<Pasientjournal> pasientjournalerInput, UriInfo uriInfo) {
+        //
+        // Kopierer for ikke å manipulere på input-collection.
+        //
+        List<Pasientjournal> pasientjournaler = new ArrayList<Pasientjournal>(pasientjournalerInput);
+        //
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
         int forste = 0;
@@ -122,6 +130,13 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 antall = qAntall;
                 forste = (side - 1) * antall;
             }
+        }
+        //
+        // Søk : Filtrer ved med hensyn på søketerm
+        //
+        if (queryParameters.containsKey(SOKESTRING_QUERY_PARAMETER)){
+            Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
+            pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
         }
 
         List<PasientjournalSokeresultatDTO> resultatListe = new ArrayList<PasientjournalSokeresultatDTO>();
