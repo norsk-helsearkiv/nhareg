@@ -66,7 +66,7 @@ function httpService($http) {
 		return $http({
 			accept: "application/json",
 			method: "GET",
-			url: url + "sok?sokestring=" + sokestring
+			url: url + "pasientjournaler?sokestring=" + sokestring
 		});
 	}
 
