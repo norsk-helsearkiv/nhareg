@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,6 +28,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -37,9 +39,12 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.DiagnoseTilDTOTransformer;
+import no.arkivverket.helsearkiv.nhareg.util.EksisterendeLagringsenhetPredicate;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
 
 /**
@@ -68,6 +73,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     Transformer<DiagnoseDTO, Diagnose> diagnoseDTOTransformer;
 
     Transformer<Diagnose, DiagnoseDTO> diagnoseTilDTOTransformer = new DiagnoseTilDTOTransformer();
+
+    @EJB(name = "EksisterendeLagringsenhetPredicate")
+    Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -163,7 +171,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //
         Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
         pasientjournalDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
-        
+
         return Response.ok(pasientjournalDTO).build();
     }
 
@@ -299,10 +307,41 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
             if (grunnopplysninger.getKjønn() != null) {
                 Kjønn kjønn = grunnopplysninger.getKjønn();
-                kjønn = (Kjønn) kjønnTjeneste.getSingleInstance(kjønn.getCode()).getEntity();
+                kjønn = kjønnTjeneste.hent(kjønn.getCode());
                 grunnopplysninger.setKjønn(kjønn);
             }
         }
+
+        //
+        // Oppretter lagringsenheter som ikke finnes fra før.
+        //
+        CollectionUtils.forAllDo(entity.getLagringsenhet(), new Closure<Lagringsenhet>() {
+            @Inject
+            private LagringsenhetTjeneste lagringsenhetTjeneste;
+            @EJB(name = "EksisterendeLagringsenhetPredicate")
+            Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
+
+            public void execute(Lagringsenhet input) {
+                if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
+                    lagringsenhetTjeneste.create(input);
+                }
+            }
+        });
+
+        //
+        // Attach lagringsenheter
+        //
+        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(entity.getLagringsenhet(),new Transformer<Lagringsenhet, Lagringsenhet>() {
+           @Inject
+            private LagringsenhetTjeneste lagringsenhetTjeneste;
+ 
+            public Lagringsenhet transform(Lagringsenhet input) {
+                return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
+            }
+        });
+        entity.getLagringsenhet().clear();
+        entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
+
         return super.create(entity);
     }
 

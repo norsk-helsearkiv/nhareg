@@ -1,11 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
@@ -62,15 +60,6 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     }
 
     /**
-     * Validering. 
-     * TOD: Kaster nå IllegalArgumentException inntil vi har fått orden på håndtering av ConstraintViolationException.
-     * @param entity 
-     */
-    private void valider(Lagringsenhet entity) {
-        new Validator<Lagringsenhet>(Lagringsenhet.class).validerMedException(entity);
-    }
-
-    /**
      * Henter lagringsenhet med identifikator.
      *
      * @param identifikator
@@ -94,5 +83,22 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         }
         return lagringsenhet;
     }
-
+    
+    /**
+     * Henter Lagringsenheter for en avlevering.
+     * @param avleveringsidentifikator
+     * @return 
+     */
+    public List<Lagringsenhet> hentLagringsenheterForAvlevering(String avleveringsidentifikator) {
+        String select = "SELECT distinct l"
+                +"         FROM Avlevering a"
+                + "  INNER JOIN a.pasientjournal p"
+                + "  INNER JOIN p.lagringsenhet l"
+                + "       WHERE a.avleveringsidentifikator = :avleveringsidentifikator"
+                + "    ORDER BY l.identifikator";
+        final Query query = getEntityManager().createQuery(select);
+        query.setParameter("avleveringsidentifikator", avleveringsidentifikator);
+        List<Lagringsenhet> lagringsenheter = query.getResultList();
+        return lagringsenheter;
+    }
 }
