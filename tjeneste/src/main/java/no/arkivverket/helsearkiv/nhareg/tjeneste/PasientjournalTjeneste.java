@@ -104,7 +104,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * Pasientjournal has soft delete, this methods removes the inactive and
      * returns the number of active pasientjournals.
      *
-     * @param pasientjournaler
+     * @param pasientjournalerInput
      * @param uriInfo
      * @return ListeObjekt
      */
@@ -114,13 +114,20 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //
         List<Pasientjournal> pasientjournaler = new ArrayList<Pasientjournal>(pasientjournalerInput);
         //
+        // Søk : Filtrer ved med hensyn på søketerm
+        //
+        MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+        if (queryParameters.containsKey(SOKESTRING_QUERY_PARAMETER)){
+            Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
+            pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
+        }
+        //
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
         int forste = 0;
         int side = 1;
         int antall = total;
 
-        MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
         if (queryParameters.containsKey("side") && queryParameters.containsKey("antall")) {
             Integer qSide = Integer.parseInt(queryParameters.getFirst("side"));
             Integer qAntall = Integer.parseInt(queryParameters.getFirst("antall"));
@@ -130,13 +137,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 antall = qAntall;
                 forste = (side - 1) * antall;
             }
-        }
-        //
-        // Søk : Filtrer ved med hensyn på søketerm
-        //
-        if (queryParameters.containsKey(SOKESTRING_QUERY_PARAMETER)){
-            Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
-            pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
         }
 
         List<PasientjournalSokeresultatDTO> resultatListe = new ArrayList<PasientjournalSokeresultatDTO>();
