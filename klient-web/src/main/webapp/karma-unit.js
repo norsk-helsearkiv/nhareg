@@ -15,6 +15,7 @@ module.exports = function ( karma ) {
       'vendor/angular-ui-router/release/angular-ui-router.js',
       'vendor/angular-translate/angular-translate.js',
       'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
+      'vendor/angular-cookies/angular-cookies.js',
       'webapp/templates-app.js',
       'webapp/templates-common.js',
       'vendor/angular-mocks/angular-mocks.js',

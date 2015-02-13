@@ -46,7 +46,8 @@
 		"BRUKERNAVN" : "Brukernavn",
 		"PASSORD": "Passord",
 		"HUSK_MEG": "Husk meg",
-		"LOGG_UT" : "Logg ut"
+		"LOGG_UT" : "Logg ut",
+		"ERROR" : "Feil brukernavn eller passord"
 	},
 	"modal" : {
 		"delete" : {
@@ -79,5 +80,8 @@
     	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
     	"sKontaktEtterDod" : "Siste kontakt kan ikke være etter død",
     	"fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt"
+    },
+    "konfig" : {
+    	"ANTALL" : "15"
     }
 }

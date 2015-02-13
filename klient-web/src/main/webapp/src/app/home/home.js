@@ -4,7 +4,8 @@ angular.module( 'nha.home', [
   'nha.common.error-service',
   'nha.common.list-service',
   'nha.common.modal-service',
-  'nha.registrering.registrering-service'
+  'nha.registrering.registrering-service',
+  'nha.common.diagnose-service'
 ])
 
 .config(["$stateProvider", function config( $stateProvider ) {
@@ -19,11 +20,19 @@ angular.module( 'nha.home', [
   });
 }])
 
-.controller( 'HomeCtrl', ["$scope", "$location", "$filter", "httpService", "errorService", "listService", "modalService", "registreringService", "$modal", function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, $modal) {
+.controller( 'HomeCtrl', ["$scope", "$location", "$filter", "httpService", "errorService", "listService", "modalService", "registreringService", "diagnoseService", "$modal", function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, $modal) {
+  var antall = 15;
+  //Henter ned diagnosene, dette tar litt tid så gjøres ved oppstart, en gang.
+  diagnoseService.getDiagnoser();
+
   //Tekster i vinduet lastet fra kontroller
     $scope.text = {
       "tooltip" : {}
     };
+    $scope.$watch(
+      function() { return $filter('translate')('konfig.ANTALL'); },
+      function(newval) { antall = Number(newval); }
+    );    
     $scope.$watch(
       function() { return $filter('translate')('home.PASIENTSOK'); },
       function(newval) { $scope.text.pasientsok = newval; }
@@ -76,7 +85,8 @@ angular.module( 'nha.home', [
   $scope.actionSok = function(sokestring) {
     var txt = $scope.text.sokeresultat;
     var viser = $scope.text.viser;
-    httpService.hentAlle("pasientjournaler")
+    listService.setSok($scope.sokInput);
+    httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
     .success(function(data, status, headers, config) {
     
       var tittel = {
@@ -84,6 +94,7 @@ angular.module( 'nha.home', [
         "underTittel" : viser + " " + data.antall + " / " + data.total + " " + txt.toLowerCase()
       };
       listService.init(tittel, data);
+      listService.setSok($scope.sokInput);
       $location.path('/list');
     
     }).error(function(data, status, headers, config) {
@@ -185,7 +196,7 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionVisAvlevering = function(avlevering) {
-    httpService.hentAlle("pasientjournaler?avlevering=" + avlevering.avleveringsidentifikator)
+    httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + "&avlevering=" + avlevering.avleveringsidentifikator)
     .success(function(data, status, headers, config) {
     
       var tittel = {
@@ -193,6 +204,7 @@ angular.module( 'nha.home', [
         "underTittel" : avlevering.arkivskaper
       };
       listService.init(tittel, data);
+      listService.setAvlevering(avlevering.avleveringsidentifikator);
       $location.path('/list');
     
     }).error(function(data, status, headers, config) {

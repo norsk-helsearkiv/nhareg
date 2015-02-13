@@ -69,7 +69,8 @@ module.exports = {
       'vendor/angular-ui-utils/modules/route/route.js',
 
       'vendor/angular-translate/angular-translate.js',
-      'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js'
+      'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
+      'vendor/angular-cookies/angular-cookies.js'
     ],
     css: [
     ],

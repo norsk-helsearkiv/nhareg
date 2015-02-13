@@ -2,8 +2,8 @@ angular.module( 'nha.registrering', [
   'ui.router',
   'nha.common.http-service',
   'nha.common.error-service',
-  'nha.common.journal-service',
-  'nha.registrering.registrering-service'
+  'nha.registrering.registrering-service',
+  'nha.common.diagnose-service'
 ])
 
 .config(["$stateProvider", function config( $stateProvider ) {
@@ -18,9 +18,8 @@ angular.module( 'nha.registrering', [
   });
 }])
 
-.controller( 'RegistrerCtrl', ["$scope", "$location", "$filter", "registreringService", "httpService", "errorService", "journalService", function HomeController($scope, $location, $filter, registreringService, httpService, errorService, journalService) {
+.controller( 'RegistrerCtrl', ["$scope", "$location", "$filter", "httpService", "errorService", "registreringService", "diagnoseService", function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService) {
   //Util
-  $scope.erNy = true;
   $scope.navHome = function() {
     $location.path('/');
   };
@@ -28,85 +27,95 @@ angular.module( 'nha.registrering', [
     $location.path('/login');
   };
 
+  //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
   $scope.feilmeldinger = [];
+  $scope.error = [];
+  $scope.kjonn = [{kode: "M", tekst : ""}, {kode: "K", tekst : ""}, {kode: "U", tekst : ""}, {kode: "I", tekst : ""}];
+  $scope.state = 0; //0 = ny, 1 = legg til diagnoser, 2 = endre
+  var hoppOver = false;
+
+    //Tekster fra i18n
+    $scope.$watch(
+      function() { return $filter('translate')('registrer.kjonn.MANN'); },
+      function(newval) { $scope.kjonn[0].tekst = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('registrer.kjonn.KVINNE'); },
+      function(newval) { $scope.kjonn[1].tekst = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('registrer.kjonn.IKKE_KJENT'); },
+      function(newval) { $scope.kjonn[2].tekst = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('registrer.kjonn.IKKE_SPESIFISERT'); },
+      function(newval) { $scope.kjonn[3].tekst = newval; }
+    );
+
+    //Feil tekster
+    $scope.feilTekster = {};
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.NotNull'); },
+      function(newval) { $scope.feilTekster['NotNull'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.DagEllerAar'); },
+      function(newval) { $scope.feilTekster['DagEllerAar'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.Size'); },
+      function(newval) { $scope.feilTekster['Size'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.FodtEtterDodt'); },
+      function(newval) { $scope.feilTekster['FodtEtterDodt'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.fKontaktForFodt'); },
+      function(newval) { $scope.feilTekster['fKontaktForFodt'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.sKontaktForFodt'); },
+      function(newval) { $scope.feilTekster['sKontaktForFodt'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.fKontaktEtterDod'); },
+      function(newval) { $scope.feilTekster['fKontaktEtterDod'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.sKontaktEtterDod'); },
+      function(newval) { $scope.feilTekster['sKontaktEtterDod'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.fKontaktEttersKontakt'); },
+      function(newval) { $scope.feilTekster['fKontaktEttersKontakt'] = newval; }
+    );
+
   $scope.formData = {
     lagringsenheter : []
   };
-
-  $scope.kjonn = [{kode: "M", tekst : ""}, {kode: "K", tekst : ""}, {kode: "U", tekst : ""}, {kode: "I", tekst : ""}];
+  $scope.formDiagnose = {};
   $scope.avlevering = registreringService.getAvlevering();
-  var hoppOver = false;
+  $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
 
-  //Tekster fra i18n
-  $scope.$watch(
-    function() { return $filter('translate')('registrer.kjonn.MANN'); },
-    function(newval) { $scope.kjonn[0].tekst = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('registrer.kjonn.KVINNE'); },
-    function(newval) { $scope.kjonn[1].tekst = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('registrer.kjonn.IKKE_KJENT'); },
-    function(newval) { $scope.kjonn[2].tekst = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('registrer.kjonn.IKKE_SPESIFISERT'); },
-    function(newval) { $scope.kjonn[3].tekst = newval; }
-  );
-
-  //Feil tekster
-  $scope.feilTekster = {};
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.NotNull'); },
-    function(newval) { $scope.feilTekster['NotNull'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.DagEllerAar'); },
-    function(newval) { $scope.feilTekster['DagEllerAar'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.Size'); },
-    function(newval) { $scope.feilTekster['Size'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.FodtEtterDodt'); },
-    function(newval) { $scope.feilTekster['FodtEtterDodt'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.fKontaktForFodt'); },
-    function(newval) { $scope.feilTekster['fKontaktForFodt'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.sKontaktForFodt'); },
-    function(newval) { $scope.feilTekster['sKontaktForFodt'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.fKontaktEtterDod'); },
-    function(newval) { $scope.feilTekster['fKontaktEtterDod'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.sKontaktEtterDod'); },
-    function(newval) { $scope.feilTekster['sKontaktEtterDod'] = newval; }
-  );
-  $scope.$watch(
-    function() { return $filter('translate')('feltfeil.fKontaktEttersKontakt'); },
-    function(newval) { $scope.feilTekster['fKontaktEttersKontakt'] = newval; }
-  );
-
+  //Setter verdier fra registrering-service
   if($scope.avlevering !== undefined) {
-    $scope.erNy = true;
+    //Ny pasientjouranl
+    $scope.state = 0;
   } else 
-  if(journalService.getData() !== undefined) {
-    $scope.formData = journalService.getData().persondata;
-    $scope.erNy = false;
+  if($scope.pasientjournalDTO !== undefined) {
+    //Endre pasientjournal
+    $scope.state = 2;
 
-    //Håndtering av kjønn
+    console.log($scope.pasientjournalDTO);
+    $scope.formData = $scope.pasientjournalDTO.persondata;
+
+
+    //Håndtering av kjønn - Sender kode til server, viser Tekst basert på i18n
     if($scope.formData.kjonn !== undefined) {
       var funnet = false;
       for(var i = 0; i < $scope.kjonn.length; i++) {
-        console.log($scope.kjonn[i]);
-        if($scope.kjonn[i] === $scope.formData.kjonn) {
+        if($scope.kjonn[i].kode === $scope.formData.kjonn) {
           $scope.formData.kjonn = $scope.kjonn[i];
           funnet = true;
         }
@@ -118,17 +127,27 @@ angular.module( 'nha.registrering', [
         };
       }
     }
-    console.log($scope.formData);
-
   } else {
+    //Ingen verdier er satt, naviger til home
     $scope.navHome();
   }
 
   //Hjelpemetode for å sette focus på rett felt
   var setFocus = function() {
-    if($scope.formData.lagringsenheter.length !== 0) {
-      document.getElementById("journalnummerInput").focus();
-    } else {
+    //Ny
+    if($scope.state === 0) {
+      if($scope.formData.lagringsenheter.length !== 0) {
+        document.getElementById("journalnummerInput").focus();
+      } else {
+        document.getElementById("lagringsenhet").focus();
+      }  
+    } else
+    //Legg til diagnoser
+    if($scope.state === 1) {
+      document.getElementById("diagnoseDato").focus();
+    } else
+    //Oppdater
+    if($scope.state === 2) {
       document.getElementById("lagringsenhet").focus();
     }
   };
@@ -138,12 +157,12 @@ angular.module( 'nha.registrering', [
     if($scope.lagringsenhet === undefined || $scope.lagringsenhet === '') {
       return;
     }
-    if($scope.formData.lagringsenheter === undefined) {
+    if($scope.formData.lagringsenheter === undefined || $scope.formData.lagringsenheter === null) {
       $scope.formData.lagringsenheter = [];
     }
 
     for(var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
-      if($scope.lagringsenhet === $scope.formData.lagringsenheter[i].identifikator) {
+      if($scope.lagringsenhet === $scope.formData.lagringsenheter[i]) {
         $scope.lagringsenhet = "";
         return;
       }
@@ -236,7 +255,6 @@ angular.module( 'nha.registrering', [
     }
 
     hoppOver = kjonnValidert && datoValidert;
-
   };
 
   $scope.setFocusEtterNavn = function() {
@@ -335,8 +353,20 @@ angular.module( 'nha.registrering', [
       if(element.attributt === 'sKontakt') {
         index = 9;
         felt = document.getElementById('sKontakt').innerHTML;
-      }                        
-
+      }
+      if(element.attributt === 'diagnosedato') {
+        index = 10;
+        felt = document.getElementById('diagnosedato').innerHTML;
+      }
+      if(element.attributt === 'diagnosekode') {
+        index = 11;
+        felt = document.getElementById('diagnosekode').innerHTML;
+      }    
+      if(element.attributt === 'diagnosetekst') {
+        index = 12;
+        felt = document.getElementById('diagnosetekst').innerHTML;
+      }         
+                         
       if(felt !== undefined) {
         $scope.feilmeldinger.push({
           indeks : index,
@@ -348,46 +378,115 @@ angular.module( 'nha.registrering', [
     $scope.feilmeldinger.sort(compare);
   };
 
-  $scope.submit = function() {
+  $scope.nyEllerOppdater = function() {
     $scope.error = {};
     $scope.feilmeldinger = [];
 
     if($scope.formData.lagringsenheter !== undefined && $scope.formData.lagringsenheter.length === 0) {
       delete $scope.formData.lagringsenheter;
     }
+
     var lagringsenheter = $scope.formData.lagringsenheter;
     var kjonn = $scope.formData.kjonn;
     if(kjonn !== undefined) {
       $scope.formData.kjonn = $scope.formData.kjonn.kode;
     }
-    if($scope.erNy) {
+
+    //NY
+    if($scope.state === 0) {
       httpService.ny("avleveringer/" + $scope.avlevering.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
       .success(function(data, status, headers, config) {
-        $scope.formData = {
-          lagringsenheter : lagringsenheter
+        $scope.pasientjournalDTO = {
+          persondata : data,
+          diagnoser : []
         };
-        $scope.erNy = true;
-        setFocus();
+        $scope.state = 1;
       }).error(function(data, status, headers, config) {
         $scope.formData.kjonn = kjonn;
         setFeilmeldinger(data, status);  
       });
-    } else {
-      var pasientjournalDTO = {
-        "persondata" : $scope.formData,
-        "diagnoser" : []
-      };
-      httpService.oppdater("pasientjournaler/", pasientjournalDTO)
+    }
+
+    //Endre
+    if($scope.state === 2) {
+      console.log("ENDRE");
+      console.log($scope.pasientjournalDTO);
+      httpService.oppdater("pasientjournaler/", $scope.pasientjournalDTO)
       .success(function(data, status, headers, config) {
         var lagringsenheter = $scope.formData.lagringsenheter;
         $scope.formData = {
           lagringsenheter : lagringsenheter
         };
-        $scope.erNy = true;
+        $scope.state = 0;
         setFocus();
       }).error(function(data, status, headers, config) {
+        $scope.formData.kjonn = kjonn;
         setFeilmeldinger(data, status); 
       });
     }
+    
   };
+
+  var diagnosekode = "";
+  //Tar vare på verdi ved fokus, for å sammenligne etterpå, for å ikke endre teksten
+  $scope.setDiagnoseKode = function() {
+    if($scope.formDiagnose === null || $scope.formDiagnose.diagnosekode === null) {
+      return;
+    }
+    diagnose = $scope.formDiagnose.diagnosekode;
+  };
+
+  //Setter diagnoseteksten når koden er endret
+  $scope.setDiagnoseTekt = function() {
+    if($scope.formDiagnose.diagnosekode === diagnosekode) {
+      return;
+    }
+    var diagnosekoder = diagnoseService.getDiagnoser();
+    $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode];
+  };
+
+  //Nullstiller diagnose skjema
+  var resetDiagnose = function() {
+    $scope.formDiagnose = {};
+    document.getElementById("diagnoseDato").focus();
+  };
+
+  //Legger til diagnose i skjema
+  $scope.leggTilDiagnose = function() {
+    $scope.error = {};
+    $scope.feilmeldinger = [];
+
+    if($scope.pasientjournalDTO.diagnoser == null) {
+      $scope.pasientjournalDTO.diagnoser = [];
+    }
+    console.log($scope.formDiagnose);
+    httpService.ny("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
+    .success(function(data, status, headers, config) {
+      $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
+      resetDiagnose();
+    }).error(function(data, status, headers, config) {
+      if(status === 400) {
+        setFeilmeldinger(data, status);   
+      } else {
+        errorService.errorCode(status);
+      }
+    });
+  };
+
+  //Fjerner diagnose
+  $scope.fjernDiagnose = function(diagnose) {
+    httpService.slett("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", diagnose)
+    .success(function(data, status, headers, config) {
+      for(var i = 0; i < $scope.pasientjournalDTO.diagnoser.length; i++) {
+        if(diagnose === $scope.pasientjournalDTO.diagnoser[i]) {
+            $scope.pasientjournalDTO.diagnoser.splice(i, 1);
+        }
+      }
+      resetDiagnose();
+    }).error(function(data, status, headers, config) {
+        errorService.errorCode(status);
+    });
+
+  };
+
 }]);

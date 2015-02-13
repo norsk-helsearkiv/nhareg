@@ -6,6 +6,15 @@ mod.factory('registreringService', [registreringService]);
 function registreringService() {
 
     var avlevering;
+    var pasientjournalDTO;
+
+    function setPasientjournalDTO(data) {
+        pasientjournalDTO = data;
+    }
+
+    function getPasientjournalDTO() {
+        return pasientjournalDTO;
+    }
 
     function setAvlevering(a) {
         avlevering = a;
@@ -17,7 +26,10 @@ function registreringService() {
 
     return {
         setAvlevering: setAvlevering,
-        getAvlevering: getAvlevering
+        getAvlevering: getAvlevering,
+
+        setPasientjournalDTO: setPasientjournalDTO,
+        getPasientjournalDTO: getPasientjournalDTO
     };
 
 }
