@@ -74,6 +74,7 @@
     	"DagEllerAar" : "Feil datoformat, eksempel på format (31.1.1990)",
     	"NotNull" : "Kan ikke være tom",
     	"Size" : "Kan ikke være tom",
+    	"NotUnique" : "Lagringsenhet finnes i annen avlevering",
     	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
     	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
     	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",

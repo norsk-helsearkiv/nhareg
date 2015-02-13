@@ -63,6 +63,10 @@ angular.module( 'nha.registrering', [
       function(newval) { $scope.feilTekster['DagEllerAar'] = newval; }
     );
     $scope.$watch(
+      function() { return $filter('translate')('feltfeil.NotUnique'); },
+      function(newval) { $scope.feilTekster['NotUnique'] = newval; }
+    );
+    $scope.$watch(
       function() { return $filter('translate')('feltfeil.Size'); },
       function(newval) { $scope.feilTekster['Size'] = newval; }
     );
@@ -428,6 +432,7 @@ angular.module( 'nha.registrering', [
   };
 
   var diagnosekode = "";
+  $scope.diagnosetekstErSatt = false;
   //Tar vare på verdi ved fokus, for å sammenligne etterpå, for å ikke endre teksten
   $scope.setDiagnoseKode = function() {
     if($scope.formDiagnose === null || $scope.formDiagnose.diagnosekode === null) {
@@ -443,11 +448,18 @@ angular.module( 'nha.registrering', [
     }
     var diagnosekoder = diagnoseService.getDiagnoser();
     $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode];
+    if($scope.formDiagnose.diagnosetekst) {
+      $scope.diagnosetekstErSatt = true;
+      document.getElementById("btn-diagnose").focus();
+    } else {
+      $scope.diagnosetekstErSatt = false;
+    }
   };
 
   //Nullstiller diagnose skjema
   var resetDiagnose = function() {
     $scope.formDiagnose = {};
+    $scope.diagnosetekstErSatt = false;
     document.getElementById("diagnoseDato").focus();
   };
 

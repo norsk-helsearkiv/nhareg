@@ -458,23 +458,28 @@ angular.module("registrering/registrering.tpl.html", []).run(["$templateCache", 
     "			<div class=\"well\" data-ng-show=\"state !== 0\">\n" +
     "				<div class=\"row\">\n" +
     "					<!-- Diagnosedato -->\n" +
-    "					<div class=\"span span3\">\n" +
+    "					<div class=\"span span4\">\n" +
     "						<label id=\"diagnosedato\" data-ng-class=\"{error: error['diagnosedato'] !== undefined }\">\n" +
     "							Diagnosedato\n" +
     "						</label>\n" +
     "						<input type=\"text\" id=\"diagnoseDato\" class=\"form-control\" placeholder=\"dd.mm.åååå...\" data-ng-model=\"formDiagnose.diagnosedato\" data-ng-enter=\"leggTilDiagnose()\">\n" +
     "					</div>\n" +
-    "					<div class=\"span span3\">\n" +
+    "					<div class=\"span span4\">\n" +
     "						<label id=\"diagnosekode\" data-ng-class=\"{error: error['diagnosekode'] !== undefined }\">\n" +
     "							Diagnosekode\n" +
     "						</label>\n" +
     "						<input type=\"text\" class=\"form-control\" placeholder=\"Diagnosekode...\" data-ng-model=\"formDiagnose.diagnosekode\" data-ng-blur=\"setDiagnoseTekt()\" data-ng-enter=\"leggTilDiagnose()\" data-ng-focus=\"setDiagnoseKode()\">\n" +
     "					</div>\n" +
-    "					<div class=\"span span3\">\n" +
+    "					<div class=\"span span4\">\n" +
     "						<label id=\"diagnosetekst\" data-ng-class=\"{error: error['diagnosetekst'] !== undefined }\">\n" +
     "							Diagnosetekst\n" +
     "						</label>\n" +
-    "						<input type=\"text\" class=\"form-control\" placeholder=\"Diagnosetekst...\" data-ng-model=\"formDiagnose.diagnosetekst\" data-ng-enter=\"leggTilDiagnose()\">\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"Diagnosetekst...\" data-ng-model=\"formDiagnose.diagnosetekst\" data-ng-enter=\"leggTilDiagnose()\" data-ng-show=\"diagnosetekstErSatt\" disabled>\n" +
+    "						<input type=\"text\" class=\"form-control\" placeholder=\"Diagnosetekst...\" data-ng-model=\"formDiagnose.diagnosetekst\" data-ng-enter=\"leggTilDiagnose()\" data-ng-show=\"!diagnosetekstErSatt\">\n" +
+    "					</div>\n" +
+    "					<div class=\"span span4\">\n" +
+    "						<label></label>\n" +
+    "						<button id=\"btn-diagnose\" class=\"btn btn-diagnose\" type=\"submit\" data-ng-click=\"leggTilDiagnose()\" data-ng-enter=\"leggTilDiagnose()\">Legg Til Diagnose</button>\n" +
     "					</div>\n" +
     "				</div>\n" +
     "\n" +

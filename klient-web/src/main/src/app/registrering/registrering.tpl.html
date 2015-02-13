@@ -121,23 +121,28 @@
 			<div class="well" data-ng-show="state !== 0">
 				<div class="row">
 					<!-- Diagnosedato -->
-					<div class="span span3">
+					<div class="span span4">
 						<label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
 							Diagnosedato
 						</label>
 						<input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-enter="leggTilDiagnose()">
 					</div>
-					<div class="span span3">
+					<div class="span span4">
 						<label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
 							Diagnosekode
 						</label>
 						<input type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekt()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
 					</div>
-					<div class="span span3">
+					<div class="span span4">
 						<label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
 							Diagnosetekst
 						</label>
-						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()">
+						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()" data-ng-show="diagnosetekstErSatt" disabled>
+						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()" data-ng-show="!diagnosetekstErSatt">
+					</div>
+					<div class="span span4">
+						<label></label>
+						<button id="btn-diagnose" class="btn btn-diagnose" type="submit" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg Til Diagnose</button>
 					</div>
 				</div>
 
