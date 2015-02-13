@@ -50,7 +50,7 @@ import org.apache.commons.collections4.Predicate;
 @Stateless
 public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
-    private static final String FINNES_I_ANNEN_AVLEVERING_CONSTRAINT = "Lagringsenhet finnes i annen avlevering";
+    private static final String FINNES_I_ANNEN_AVLEVERING_CONSTRAINT = "NotUnique";
     private static final String FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT = "lagringsenheter";
 
     @EJB
