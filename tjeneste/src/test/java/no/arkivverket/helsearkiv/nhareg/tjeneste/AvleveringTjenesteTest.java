@@ -28,16 +28,17 @@ public class AvleveringTjenesteTest {
 
     @Inject
     private AvleveringTjeneste tjeneste;
+
     @Test
-    public void validerLagringsenheter(){
+    public void validerLagringsenheter() {
         List<Lagringsenhet> ll = new ArrayList<Lagringsenhet>();
         Lagringsenhet la = new Lagringsenhet();
         la.setIdentifikator("boks1");
         ll.add(la);
         String av = "Avlevering-1";
-        assertEquals(0,tjeneste.validerLagringsenheter(av, ll).size());
+        assertEquals(0, tjeneste.validerLagringsenheter(av, ll).size());
         av = "Annen";
-        assertEquals(1,tjeneste.validerLagringsenheter(av, ll).size());        
+        assertEquals(1, tjeneste.validerLagringsenheter(av, ll).size());
     }
 
     @Test
@@ -47,22 +48,18 @@ public class AvleveringTjenesteTest {
         Pasientjournal nyPasient = (Pasientjournal) tjeneste.nyPasientjournal(avleveringsid, pasient).getEntity();
         assertTrue(nyPasient.getUuid() != null);
     }
-    
+
     @Test
     public void delete_sletterAvleveringUtenPasientjournaler_200() {
         Avlevering avlevering = tjeneste.delete("Avlevering-2");
         assertNotNull(avlevering);
     }
-    
-    @Test
+
+    @Test(expected = ValideringsfeilException.class)
     public void delete_sletterAvleveringMedPasientjournaler_409() {
-        try {
-            tjeneste.delete("Avlevering-1");
-        } catch(EJBException e) {
-            assertEquals(ValideringsfeilException.class, e.getCause().getClass());
-        }
+        tjeneste.delete("Avlevering-1");
     }
-    
+
     private PersondataDTO getPasient() {
         PersondataDTO pasient = new PersondataDTO();
         pasient.setDod("2000");
@@ -70,7 +67,7 @@ public class AvleveringTjenesteTest {
         pasient.setFodt("1.1.1999");
         pasient.setJournalnummer("123");
         pasient.setKjonn("K");
-        String[] lagringsenheter = { "boks-1" };
+        String[] lagringsenheter = {"boks-1"};
         pasient.setLagringsenheter(lagringsenheter);
         pasient.setLopenummer("2345");
         pasient.setNavn("Nora");
@@ -78,5 +75,5 @@ public class AvleveringTjenesteTest {
         pasient.setsKontakt("2000");
         return pasient;
     }
-    
+
 }

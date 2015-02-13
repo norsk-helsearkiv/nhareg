@@ -78,5 +78,9 @@
             <artifactId>javax.el-api</artifactId>
             <scope>test</scope>
         </dependency>    
+        <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

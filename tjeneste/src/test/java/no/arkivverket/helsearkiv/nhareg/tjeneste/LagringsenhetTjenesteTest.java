@@ -27,14 +27,10 @@ public class LagringsenhetTjenesteTest {
     @Inject
     private LagringsenhetTjeneste tjeneste;
 
-    @Test
+    @Test(expected = ValideringsfeilException.class)
     public void createUtenIdentifikator() {
         Lagringsenhet lagringsenhet = new Lagringsenhet();
-        try {
-            tjeneste.create(lagringsenhet);
-        } catch(EJBException e) {
-            assertEquals(ValideringsfeilException.class, e.getCause().getClass());
-        }
+        tjeneste.create(lagringsenhet);
     }
 
     @Test
@@ -44,26 +40,26 @@ public class LagringsenhetTjenesteTest {
         Lagringsenhet lgt = tjeneste.create(lagringsenhet);
         assertNotNull(lgt);
     }
-    
+
     @Test
-    public void  hentLagringsenhetMedIdentifikator(){
+    public void hentLagringsenhetMedIdentifikator() {
         Lagringsenhet l = tjeneste.hentLagringsenhetMedIdentifikator("boks1");
         assertNotNull(l);
     }
-    
+
     @Test
-    public void hentLagringsenheterForAvlevering(){
+    public void hentLagringsenheterForAvlevering() {
         String avleveringsidentifikator = "Avlevering-1";
         List<Lagringsenhet> lagringsenheter = tjeneste.hentLagringsenheterForAvlevering(avleveringsidentifikator);
         assertNotNull(lagringsenheter);
-        assertEquals(1,lagringsenheter.size());
+        assertEquals(1, lagringsenheter.size());
     }
-    
+
     @Test
-    public void hentLagringsenheterForUkjentAvlevering(){
+    public void hentLagringsenheterForUkjentAvlevering() {
         String avleveringsidentifikator = "Avlevering-ukjent";
         List<Lagringsenhet> lagringsenheter = tjeneste.hentLagringsenheterForAvlevering(avleveringsidentifikator);
         assertNotNull(lagringsenheter);
-        assertEquals(0,lagringsenheter.size());
+        assertEquals(0, lagringsenheter.size());
     }
 }

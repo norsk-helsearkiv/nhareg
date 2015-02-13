@@ -143,8 +143,7 @@ public class PasientjournalTjenesteTest {
 
     @Test
     public void oppdaterPasientjournal_antall_diagnoser() throws ParseException {
-        Response response = tjeneste.getSingleInstance("uuid1");
-        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        PasientjournalDTO pasientjournalDTO = tjeneste.get("uuid1");
         assertNotNull(pasientjournalDTO);
         assertNotNull(pasientjournalDTO.getDiagnoser());
         assertFalse(pasientjournalDTO.getDiagnoser().isEmpty());
@@ -154,8 +153,7 @@ public class PasientjournalTjenesteTest {
         //
         // Sjekker antall diagnoser som er lagret
         //
-        response = tjeneste.getSingleInstance("uuid1");
-        pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        pasientjournalDTO = tjeneste.get("uuid1");
         assertNotNull(pasientjournalDTO);
         assertNotNull(pasientjournalDTO.getDiagnoser());
         assertEquals(antallDiagnoser, pasientjournalDTO.getDiagnoser().size());
@@ -168,8 +166,7 @@ public class PasientjournalTjenesteTest {
         assertNotNull(pasientjournal);
         assertNotNull(pasientjournal.getLagringsenhet());
         assertEquals(1, pasientjournal.getLagringsenhet().size());
-        Response response = tjeneste.getSingleInstance("uuid1");
-        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        PasientjournalDTO pasientjournalDTO = tjeneste.get("uuid1");
         assertNotNull(pasientjournalDTO);
         //
         //
@@ -183,8 +180,7 @@ public class PasientjournalTjenesteTest {
         //
         // Sjekker antall diagnoser som er lagret
         //
-        response = tjeneste.getSingleInstance("uuid1");
-        pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        pasientjournalDTO = tjeneste.get("uuid1");
         assertNotNull(pasientjournalDTO);
         assertNotNull(pasientjournalDTO.getPersondata());
         assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
