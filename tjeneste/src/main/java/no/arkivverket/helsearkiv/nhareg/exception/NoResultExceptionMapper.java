@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.exception;
 
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.Response;

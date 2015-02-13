@@ -1,18 +1,20 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
 public class LagringsenhetTjenesteTest {
@@ -25,19 +27,22 @@ public class LagringsenhetTjenesteTest {
     @Inject
     private LagringsenhetTjeneste tjeneste;
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void createUtenIdentifikator() {
         Lagringsenhet lagringsenhet = new Lagringsenhet();
-        Response response = tjeneste.create(lagringsenhet);
-        assertNotNull(response);
+        try {
+            tjeneste.create(lagringsenhet);
+        } catch(EJBException e) {
+            assertEquals(ValideringsfeilException.class, e.getCause().getClass());
+        }
     }
 
     @Test
     public void create() {
         Lagringsenhet lagringsenhet = new Lagringsenhet();
         lagringsenhet.setIdentifikator("LagringsenhetForEnhetstesting");
-        Response response = tjeneste.create(lagringsenhet);
-        assertNotNull(response);
+        Lagringsenhet lgt = tjeneste.create(lagringsenhet);
+        assertNotNull(lgt);
     }
     
     @Test

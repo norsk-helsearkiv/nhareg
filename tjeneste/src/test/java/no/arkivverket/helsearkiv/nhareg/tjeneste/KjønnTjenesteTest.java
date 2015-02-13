@@ -1,13 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -33,7 +28,7 @@ public class KjønnTjenesteTest {
         Kjønn kjønn = new Kjønn();
         kjønn.setCode("I");
         kjønn.setDisplayName("Intetkjønn");
-        Response response = tjeneste.create(kjønn);
-        assertNotNull(response);
+        Kjønn rsp = tjeneste.create(kjønn);
+        assertNotNull(rsp);
     }
 }

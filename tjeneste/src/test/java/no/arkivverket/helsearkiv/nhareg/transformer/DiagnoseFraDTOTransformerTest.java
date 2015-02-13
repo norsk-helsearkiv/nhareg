@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.transformer;
 
 
 import javax.ejb.EJB;
@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.RESTDeployment;
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import org.apache.commons.collections4.Transformer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

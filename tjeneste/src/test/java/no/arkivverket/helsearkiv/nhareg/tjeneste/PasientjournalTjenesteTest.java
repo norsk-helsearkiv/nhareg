@@ -1,9 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
@@ -37,8 +40,7 @@ public class PasientjournalTjenesteTest {
     // GET
     @Test
     public void getAll_utenQueryParameter_allePasientjournaler() {
-        Response rsp = tjeneste.getAll(getUriInfoTom());
-        ListeObjekt listeObjekt = (ListeObjekt) rsp.getEntity();
+        ListeObjekt listeObjekt = tjeneste.hentAlle(getUriInfoTom());
         assertEquals(2, listeObjekt.getTotal());
     }
 
@@ -60,10 +62,8 @@ public class PasientjournalTjenesteTest {
 
     @Test
     public void getSingleInstance_henterForsteObjekt_returnererDTO() {
-        Response rsp = tjeneste.getSingleInstance("uuid1");
-        assertEquals(PasientjournalDTO.class, rsp.getEntity().getClass());
-        PasientjournalDTO fido = (PasientjournalDTO) rsp.getEntity();
-        assertEquals("Hunden Fido", fido.getPersondata().getNavn());
+        PasientjournalDTO dto = tjeneste.get("uuid1");
+        assertEquals("Hunden Fido", dto.getPersondata().getNavn());
     }
 
     // POST
@@ -107,8 +107,7 @@ public class PasientjournalTjenesteTest {
     // PUT
     @Test
     public void oppdaterPasientjournal_setterNyttJournalnummer_ok() throws ParseException {
-        Response response = tjeneste.getSingleInstance("uuid1");
-        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        PasientjournalDTO pasientjournalDTO = tjeneste.get("uuid1");
         pasientjournalDTO.getPersondata().setJournalnummer("12345");
         tjeneste.oppdaterPasientjournal(pasientjournalDTO);
         //Ingen feilmeldinger
@@ -117,14 +116,17 @@ public class PasientjournalTjenesteTest {
     // DELETE
     @Test
     public void delete_finnerIkkeEntitet_404() {
-        Response rsp = tjeneste.delete("tull");
-        assertEquals(404, rsp.getStatus());
+        try {
+            tjeneste.delete("tull");
+        } catch(EJBException e) {
+            assertEquals(NoResultException.class, e.getCause().getClass());
+        }
     }
 
     @Test
     public void delete_sletterEntitet_200() {
-        Response rsp = tjeneste.delete("uuid1");
-        assertEquals(200, rsp.getStatus());
+        Pasientjournal rsp = tjeneste.delete("uuid1");
+        assertNotNull(rsp);
     }
 
     private UriInfo getUriInfoTom() {

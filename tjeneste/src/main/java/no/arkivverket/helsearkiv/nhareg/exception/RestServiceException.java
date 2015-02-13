@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.exception;
 
 import javax.ejb.ApplicationException;
 import javax.ws.rs.WebApplicationException;

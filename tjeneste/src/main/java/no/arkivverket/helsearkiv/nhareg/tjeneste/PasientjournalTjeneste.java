@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -38,13 +39,11 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.DiagnoseTilDTOTransformer;
-import no.arkivverket.helsearkiv.nhareg.util.EksisterendeLagringsenhetPredicate;
-import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
+import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.PasientjournalSokestringPredicate;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.logging.Log;
@@ -76,7 +75,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
     
-    Log log = LogFactory.getLog(PasientjournalTjeneste.class);
+    //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
 
     @EJB(name = "DiagnoseDTOTransformer")
     Transformer<DiagnoseDTO, Diagnose> diagnoseDTOTransformer;
@@ -98,20 +97,17 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Override
-    public Response getAll(@Context UriInfo uriInfo) {
+    public ListeObjekt hentAlle(@Context UriInfo uriInfo) {
         //Underliggende pasientjouranler for avlevering
         MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
         if(queryParameter.containsKey("avlevering")) {
             ListeObjekt lstObj = avleveringTjeneste
                     .getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
-            return Response.ok(lstObj).build();
+            return lstObj;
         }
         
-        // Legg til søk i stedet for getAll(queryParameter). Skal returnere liste av treff
-        // Sender in et tomt map for å få alle
         List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
-        return Response.ok(getActiveWithPaging(pasientjournaler, uriInfo)).build();
+        return getActiveWithPaging(pasientjournaler, uriInfo);
     }
 
     /**
@@ -187,11 +183,10 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
     @GET
     @Path("/{id}")
-    @Override
-    public Response getSingleInstance(@PathParam("id") String id) {
+    public PasientjournalDTO get(@PathParam("id") String id) {
         Pasientjournal pasientjournal = super.hent(id);
         if (pasientjournal == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NoResultException(id);
         }
 
         PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
@@ -201,7 +196,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
         pasientjournalDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
 
-        return Response.ok(pasientjournalDTO).build();
+        return pasientjournalDTO;
     }
 
     //får ikke brukt super sin update, for det er DTO som valideres, ikke Pasientjournal
@@ -226,10 +221,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         //Setter verdier
         if (pasientjournalDTO.getPersondata().getKjonn() != null) {
-            Kjønn k = (Kjønn) kjønnTjeneste
+            Kjønn k = kjønnTjeneste
                     .getSingleInstance(pasientjournalDTO.getPersondata()
-                            .getKjonn())
-                    .getEntity();
+                            .getKjonn());
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
 
@@ -240,14 +234,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @DELETE
     @Path("/{id}")
     @Override
-    public Response delete(@PathParam("id") String id) {
-        Pasientjournal p = (Pasientjournal) super.getSingleInstance(id).getEntity();
-        if (p == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+    public Pasientjournal delete(@PathParam("id") String id) {
+        Pasientjournal p = super.getSingleInstance(id);
         p.setSlettet(true);
         getEntityManager().merge(p);
-        return Response.ok().build();
+        return p;
     }
 
     /**
@@ -255,7 +246,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      *
      * @param id på pasientjournalen
      * @param diagnoseDTO
-     * @param diagnose som skal legges til
      * @return 200 OK
      */
     @POST
@@ -326,11 +316,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     }
 
     /*
-     Dette endepunktet blir ikke brukt er,
+     Dette endepunktet blir ikke brukt her,
      POST avleveringer/{id}/pasientjournaler
      */
     @Override
-    public Response create(Pasientjournal entity) {
+    public Pasientjournal create(Pasientjournal entity) {
         entity.setUuid(UUID.randomUUID().toString());
         //
         if (entity.getGrunnopplysninger() != null) {

@@ -1,5 +1,6 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.transformer;
 
+import no.arkivverket.helsearkiv.nhareg.transformer.StringTilDatoEllerAarTransformer;
 import java.util.Calendar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import org.junit.After;

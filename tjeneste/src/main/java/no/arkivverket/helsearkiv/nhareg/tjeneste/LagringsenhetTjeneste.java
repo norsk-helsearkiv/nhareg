@@ -1,16 +1,17 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 /**
  * <p>
@@ -38,15 +39,19 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     }
 
     @Override
-    public Response create(@NotNull Lagringsenhet entity) {
+    public Lagringsenhet create(Lagringsenhet entity) {
         //
         // Lagringsenhet.identifikator skal være unikt,
         // så vi må hindre at det opprettes flere med samme identifikator.
         //
+                
+        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
         if (entity == null) {
-            throw new IllegalArgumentException("Lagringsenhet er udefinert.");
+            valideringsfeil.add(new Valideringsfeil("Lagringsenhet", "NotNull"));
+            throw new ValideringsfeilException(valideringsfeil);
         } else if (hentLagringsenhetMedIdentifikator(entity.getIdentifikator()) != null) {
-            throw new IllegalArgumentException("Lagringsenhet med identifikator " + entity.getIdentifikator() + " finnes allerede.");
+            valideringsfeil.add(new Valideringsfeil("Lagringsenhet.identifikator", "NotNull"));
+            throw new ValideringsfeilException(valideringsfeil);
         }
         entity.setUuid(UUID.randomUUID().toString());
         //

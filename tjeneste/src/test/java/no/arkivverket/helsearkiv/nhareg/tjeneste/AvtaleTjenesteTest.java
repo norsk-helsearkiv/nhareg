@@ -1,16 +1,21 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import java.util.Calendar;
+import javax.ejb.EJBException;
 import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,14 +38,20 @@ public class AvtaleTjenesteTest {
     
     @Test
     public void delete_sletteEnSomIkkeFinnes_404() {
-        Response rsp = tjeneste.delete("tull");
-        assertEquals(404, rsp.getStatus());
+        try {
+            tjeneste.delete("tull");
+        } catch(EJBException e) {
+            assertEquals(NoResultException.class, e.getCause().getClass());
+        }
     }
     
     @Test
     public void delete_sletteEnMedAvleveringer_409() {
-        Response rsp = tjeneste.delete("Avtale1");
-        assertEquals(409, rsp.getStatus());
+        try {
+            tjeneste.delete("Avtale1");
+        } catch(EJBException e) {
+            assertEquals(ValideringsfeilException.class, e.getCause().getClass());
+        }
     }
     
     @Test
@@ -57,10 +68,10 @@ public class AvtaleTjenesteTest {
         v.setNavn("Testorganisasjon");
         a1.setVirksomhet(v);
         
-        Response ny = tjeneste.create(a1);
-        assertEquals(200, ny.getStatus());
+        Avtale ny = tjeneste.create(a1);
+        assertNotNull(ny);
         
-        Response rsp = tjeneste.delete("test-avtale");
-        assertEquals(200, rsp.getStatus());
+        Avtale rsp = tjeneste.delete("test-avtale");
+        assertNotNull(rsp);
     }
 }

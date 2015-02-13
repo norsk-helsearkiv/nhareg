@@ -1,13 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -47,14 +50,17 @@ public class AvleveringTjenesteTest {
     
     @Test
     public void delete_sletterAvleveringUtenPasientjournaler_200() {
-        Response rsp = tjeneste.delete("Avlevering-2");
-        assertEquals(200, rsp.getStatus());
+        Avlevering avlevering = tjeneste.delete("Avlevering-2");
+        assertNotNull(avlevering);
     }
     
     @Test
     public void delete_sletterAvleveringMedPasientjournaler_409() {
-        Response rsp = tjeneste.delete("Avlevering-1");
-        assertEquals(409, rsp.getStatus());
+        try {
+            tjeneste.delete("Avlevering-1");
+        } catch(EJBException e) {
+            assertEquals(ValideringsfeilException.class, e.getCause().getClass());
+        }
     }
     
     private PersondataDTO getPasient() {

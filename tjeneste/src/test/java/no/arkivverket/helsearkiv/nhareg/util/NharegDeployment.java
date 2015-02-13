@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.util;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;

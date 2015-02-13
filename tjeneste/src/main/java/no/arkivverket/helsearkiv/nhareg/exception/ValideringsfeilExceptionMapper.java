@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.exception;
 
 /**
  * ExceptionMapper for å gi klienter respons på ValideringsfeilException.

@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import java.text.SimpleDateFormat;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;

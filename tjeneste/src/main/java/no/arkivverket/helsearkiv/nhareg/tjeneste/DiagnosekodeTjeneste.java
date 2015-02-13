@@ -4,8 +4,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 
 /**

@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -12,6 +13,8 @@ import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 /**
  * <p>
@@ -49,7 +52,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     
     @POST
     @Override
-    public Response create(Avtale avtale) {
+    public Avtale create(Avtale avtale) {
         //Henter virksomhet
         List<Virksomhet> virksomheter = getEntityManager()
                 .createQuery("SELECT v FROM Virksomhet v")
@@ -63,11 +66,8 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     @DELETE
     @Path("/{id}")
     @Override
-    public Response delete(@PathParam("id") String id) {
-        Avtale avtale = (Avtale) getSingleInstance(id).getEntity();
-        if (avtale == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+    public Avtale delete(@PathParam("id") String id) {
+        Avtale avtale = getSingleInstance(id);
         
         //Hent antall barn
         String jpql = "SELECT count(a) FROM Avlevering a WHERE a.avtale = :avtale";
@@ -78,9 +78,12 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         //Slett om det ikke er barn
         if(antall == 0) {
             getEntityManager().remove(avtale);
-            return Response.ok().build();
+            return avtale;
         } 
-        return Response.status(409).build();
+        
+        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+        valideringsfeil.add(new Valideringsfeil("Avtale", "HasChildren"));
+        throw new ValideringsfeilException(valideringsfeil);
     }
     
 }

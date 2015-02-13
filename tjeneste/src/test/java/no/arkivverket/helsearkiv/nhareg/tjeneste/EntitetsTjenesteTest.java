@@ -1,16 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Specializes;
+import javax.ejb.EJBException;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
@@ -53,41 +53,46 @@ public class EntitetsTjenesteTest {
     
     @Test
     public void getSingleInstance_FinnerIngen_404() {
-        Response rsp = tjeneste.getSingleInstance("tull");
-        assertEquals(404, rsp.getStatus());
+        try {
+            tjeneste.getSingleInstance("tull");
+        } catch(EJBException e) {
+            assertEquals(NoResultException.class, e.getCause().getClass());
+        }
     }
     
     @Test
     public void getSingleInstance_HenterObjekt_200() {
-        Response rsp = tjeneste.getSingleInstance("Avtale1");
-        assertEquals(200, rsp.getStatus());        
+        Avtale a = tjeneste.getSingleInstance("Avtale1");
+        assertTrue(a != null);
     }
     
     @Test
     public void create_oppretterNy_200() {
-        Response rsp = tjeneste.create(getAvtale());
-        assertEquals(200, rsp.getStatus());  
+        Avtale rsp = tjeneste.create(getAvtale());
+        assertNotNull(rsp);
     }
     
     @Test
     public void update_Oppdterer_200() {
-        Avtale a = (Avtale) tjeneste.getSingleInstance("Avtale1").getEntity();
+        Avtale a = tjeneste.getSingleInstance("Avtale1");
         a.setAvtalebeskrivelse("ny beskrivelse");
-        Response rsp = tjeneste.update(a);
-        assertEquals(200, rsp.getStatus());  
+        Avtale rsp = tjeneste.update(a);
+        assertNotNull(rsp);
     }
     
-    @Test
     public void delete_finnerIngen_404() {
-        Response rsp = tjeneste.delete("tull");
-        assertEquals(404, rsp.getStatus()); 
+        try {
+            tjeneste.delete("tull");
+        } catch(EJBException e) {
+            assertEquals(NoResultException.class, e.getCause().getClass());
+        }
     }
     
     @Test
     public void delete_sletter_200() {
         tjeneste.create(getAvtale());
-        Response rsp = tjeneste.delete(getAvtale().getAvtaleidentifikator());
-        assertEquals(200, rsp.getStatus()); 
+        Avtale rsp = tjeneste.delete(getAvtale().getAvtaleidentifikator());
+        assertNotNull(rsp);
     }
     
     private Avtale getAvtale() {

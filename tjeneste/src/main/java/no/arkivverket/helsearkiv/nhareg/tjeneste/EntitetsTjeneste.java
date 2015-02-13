@@ -24,10 +24,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -84,8 +84,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class EntitetsTjeneste<T, K> {
 
-    public static final String MAX_ANTALL_RADER_QUERY_PARAMETER = "max";
-    public static final String FORSTE_RAD_QUERY_PARAMETER = "first";
+    public static final String ANTALL = "antall";
+    public static final String SIDE = "side";
     Log log = LogFactory.getLog(EntitetsTjeneste.class);
     //@Inject
     @PersistenceContext(name = "primary")
@@ -128,8 +128,8 @@ public abstract class EntitetsTjeneste<T, K> {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@Context UriInfo uriInfo) {
-        return Response.ok(getAll(uriInfo.getQueryParameters())).build();
+    public List<T> getAll(@Context UriInfo uriInfo) {
+        return getAll(uriInfo.getQueryParameters());
     }
 
     public List<T> getAll(MultivaluedMap<String, String> queryParameters) {
@@ -140,16 +140,15 @@ public abstract class EntitetsTjeneste<T, K> {
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get(idName)));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
-        if (queryParameters.containsKey(FORSTE_RAD_QUERY_PARAMETER)) {
-            Integer firstRecord = Integer.parseInt(queryParameters.getFirst(FORSTE_RAD_QUERY_PARAMETER)) - 1;
-            query.setFirstResult(firstRecord);
-        }
-        if (queryParameters.containsKey(MAX_ANTALL_RADER_QUERY_PARAMETER)) {
-            Integer maxResults = Integer.parseInt(queryParameters.getFirst(MAX_ANTALL_RADER_QUERY_PARAMETER));
-            query.setMaxResults(maxResults);
+        if(queryParameters.containsKey(SIDE)
+                && queryParameters.containsKey(ANTALL)) {
+            Integer side = Integer.parseInt(queryParameters.getFirst(SIDE));
+            Integer antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
+            
+            query.setFirstResult((side * antall) - 1);
+            query.setMaxResults(antall);
         }
         return query.getResultList();
-
     }
 
     /**
@@ -203,17 +202,16 @@ public abstract class EntitetsTjeneste<T, K> {
      */
     @GET
     @Path("/{id}")
-    public Response getSingleInstance(@PathParam("id") K id) throws NoResultException {
+    public T getSingleInstance(@PathParam("id") K id) throws NoResultException {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate condition = criteriaBuilder.equal(root.get(idName), id);
         criteriaQuery.select(criteriaBuilder.createQuery(entityClass).getSelection()).where(condition);
         try {
-            T obj = entityManager.createQuery(criteriaQuery).getSingleResult();
-            return Response.ok(obj).build();
+            return entityManager.createQuery(criteriaQuery).getSingleResult();
         } catch (NoResultException nre) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NoResultException(id.toString());
         }
     }
 
@@ -233,28 +231,28 @@ public abstract class EntitetsTjeneste<T, K> {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response create(@NotNull T entity) {
+    public T create(@NotNull T entity) {
         ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
 
         if (!valideringsfeil.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+            throw new ValideringsfeilException(valideringsfeil);
         }
 
         getEntityManager().persist(entity);
-        return Response.ok().entity(entity).build();
+        return entity;
     }
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(T entity) {
+    public T update(T entity) {
         ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
 
         if (!valideringsfeil.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+            throw new ValideringsfeilException(valideringsfeil);
         }
 
         getEntityManager().merge(entity);
-        return Response.ok(entity).build();
+        return entity;
     }
 
     private ArrayList<Valideringsfeil> validerObjekt(T entity) {
@@ -263,12 +261,12 @@ public abstract class EntitetsTjeneste<T, K> {
 
     @DELETE
     @Path("/{id}")
-    public Response delete(@PathParam("id") K id) {
+    public T delete(@PathParam("id") K id) {
         T entity = getEntityManager().find(entityClass, id);
         if (entity == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new NoResultException(id.toString());
         }
         getEntityManager().remove(entity);
-        return Response.ok().build();
+        return entity;
     }
 }

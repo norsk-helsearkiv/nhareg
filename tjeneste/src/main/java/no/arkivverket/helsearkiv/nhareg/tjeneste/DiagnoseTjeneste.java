@@ -2,9 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.UUID;
 import javax.ejb.Stateless;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 
 /**
@@ -30,8 +28,12 @@ public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
     }
 
     @Override
-    public Response create(@NotNull Diagnose entity) {
-        entity.setUuid(UUID.randomUUID().toString());
+    public Diagnose create(Diagnose entity) {
+        if(entity != null) {
+            entity.setUuid(UUID.randomUUID().toString());
+        }
+        
+        //Kaster exception i super hvis er null
         return super.create(entity);
     }
 

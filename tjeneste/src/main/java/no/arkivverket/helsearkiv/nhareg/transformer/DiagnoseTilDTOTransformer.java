@@ -1,5 +1,6 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.transformer;
 
+import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import org.apache.commons.collections4.Transformer;

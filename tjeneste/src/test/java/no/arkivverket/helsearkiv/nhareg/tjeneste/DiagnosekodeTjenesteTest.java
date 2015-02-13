@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -35,7 +35,7 @@ public class DiagnosekodeTjenesteTest {
         diagnosekode.setCodeSystem("Kodesystem99");
         diagnosekode.setCodeSystemVersion("0.9.Beta");
         diagnosekode.setDisplayName("Influensa beta");
-        Response response = tjeneste.create(diagnosekode);
+        Diagnosekode response = tjeneste.create(diagnosekode);
         assertNotNull(response);
     }
 
@@ -50,8 +50,8 @@ public class DiagnosekodeTjenesteTest {
     @Test
     public void getAllMedPaginering() {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add(EntitetsTjeneste.FORSTE_RAD_QUERY_PARAMETER, "1");
-        queryParameters.add(EntitetsTjeneste.MAX_ANTALL_RADER_QUERY_PARAMETER, "1");
+        queryParameters.add(EntitetsTjeneste.SIDE, "1");
+        queryParameters.add(EntitetsTjeneste.ANTALL, "1");
         List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
         assertNotNull(diagnosekoder);
         assertEquals(1, diagnosekoder.size());

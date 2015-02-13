@@ -1,11 +1,12 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.util;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar;
-import no.arkivverket.helsearkiv.nhareg.util.DiagnoseFraDTOTransformer;
-import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
+import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
@@ -21,13 +22,19 @@ public class RESTDeployment {
     public static WebArchive deployment() {
 
         return NharegDeployment.deployment()
+                //model
                 .addPackage(Avtale.class.getPackage())
-                .addPackage(EntitetsTjeneste.class.getPackage())
                 .addPackage(ListeObjekt.class.getPackage())
                 .addPackage(PersondataDTO.class.getPackage())
-                .addPackage(Konverterer.class.getPackage())
                 .addPackage(DagEllerAar.class.getPackage())
-                .addPackage(DiagnoseFraDTOTransformer.class.getPackage())
+                // exception
+                .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
+                // tjeneste
+                .addPackage(EntitetsTjeneste.class.getPackage())
+                //transformer
+                .addPackage(DatoEllerAarTilStringTransformer.class.getPackage())
+                //util
+                .addPackage(DatoValiderer.class.getPackage())
                 //
                 // Denne blokken er med for å få med commons-collections4 i testene
                 //
@@ -39,7 +46,7 @@ public class RESTDeployment {
                 .addPackage(CommandVisitor.class.getPackage())
                 .addPackage(AbstractSortedMapDecorator.class.getPackage())
                 .addPackage(PredicatedList.class.getPackage());
-        
+
 //                .addClass(AllocatedSeats.class)
 //                .addClass(MediaPath.class)
 //                .addClass(MediaManager.class);

@@ -33,10 +33,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.EksisterendeLagringsenhetPredicate;
-import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
 
 /**
@@ -78,7 +76,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Path("/{id}/pasientjournaler")
     @Produces(MediaType.APPLICATION_JSON)
     public ListeObjekt getPasientjournaler(@PathParam("id") String avleveringsidentifikator, @Context UriInfo uriInfo) {
-        Avlevering avlevering = (Avlevering) getSingleInstance(avleveringsidentifikator).getEntity();
+        Avlevering avlevering = getSingleInstance(avleveringsidentifikator);
         return pasientjournalTjeneste.getActiveWithPaging(avlevering.getPasientjournal(), uriInfo);
     }
 
@@ -118,13 +116,13 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
         //Setter visningsnavnet til det som er lagret i databasen for kjønn med koden
         if (person.getKjonn() != null) {
-            Kjønn k = (Kjønn) kjønnTjeneste.getSingleInstance(person.getKjonn()).getEntity();
+            Kjønn k = kjønnTjeneste.getSingleInstance(person.getKjonn());
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
 
         //LAGRER
         getEntityManager().persist(pasientjournal);
-        Avlevering avlevering = (Avlevering) getSingleInstance(avleveringid).getEntity();
+        Avlevering avlevering = getSingleInstance(avleveringid);
         avlevering.getPasientjournal().add(pasientjournal);
         return Response.ok().entity(pasientjournal).build();
     }
@@ -149,18 +147,17 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @DELETE
     @Path("/{id}")
     @Override
-    public Response delete(@PathParam("id") String id) {
-        Avlevering avlevering = (Avlevering) getSingleInstance(id).getEntity();
-        if (avlevering == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+    public Avlevering delete(@PathParam("id") String id) {
+        Avlevering avlevering = getSingleInstance(id);
 
         //Slett om det ikke er barn
         if (avlevering.getPasientjournal().isEmpty()) {
             getEntityManager().remove(avlevering);
-            return Response.ok().build();
+            return avlevering;
         }
-        return Response.status(409).build();
+        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+        valideringsfeil.add(new Valideringsfeil("Avlevering", "HasChildren"));
+        throw new ValideringsfeilException(valideringsfeil);
     }
 
     /**
