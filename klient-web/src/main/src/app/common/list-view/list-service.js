@@ -37,7 +37,7 @@ function listService($http) {
 			return "&avlevering=" + avlevering;
 		}
 		if(sok !== null && sok !== undefined) {
-			return "&sok=" + sok;	
+			return "&sokestring=" + sok;	
 		}
 		return '';
 	}
