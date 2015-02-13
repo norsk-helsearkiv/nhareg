@@ -36,7 +36,6 @@ INSERT INTO PASIENTJOURNAL_LAGRINGSENHET VALUES('uuid3', 'enhet-1');
 --
 -- AVLEVERING/PASIENTJOURNAL
 --
-INSERT INTO AVLEVERING_PASIENTJOURNAL (AVLEVERING_AVLEVERINGSIDENTIFIKATOR, PASIENTJOURNAL_UUID) VALUES ('Avlevering-1', 'uuid1');
 --
 -- CV
 --
@@ -57,6 +56,6 @@ INSERT INTO PASIENTJOURNAL_DIAGNOSE (PASIENTJOURNAL_UUID, DIAGNOSE_UUID) VALUES 
 --
 -- AVLEVERING_PASIENTJOURNAL
 --
-INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid1');
-INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid2');
-INSERT INTO avlevering_pasientjournal VALUES ('Avlevering-1', 'uuid3');
+INSERT INTO Avlevering_Pasientjournal(Avlevering_avleveringsidentifikator,pasientjournal_uuid) VALUES ('Avlevering-1', 'uuid1');
+INSERT INTO Avlevering_Pasientjournal(Avlevering_avleveringsidentifikator,pasientjournal_uuid) VALUES ('Avlevering-1', 'uuid2');
+INSERT INTO Avlevering_Pasientjournal(Avlevering_avleveringsidentifikator,pasientjournal_uuid) VALUES ('Avlevering-1', 'uuid3');

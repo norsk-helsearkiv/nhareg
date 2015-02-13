@@ -129,6 +129,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     @GET
     @Path("/{id}/leveranse")
+    @Produces(MediaType.TEXT_XML)
     public Response getLeveranse(@PathParam("id") String avleveringsidentifikator) throws FileNotFoundException {
         //Tmp fil
         File file = new File("leveranse");
@@ -139,8 +140,10 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         //Generer XML
         //Legg til vedlegg
         //Returner fil
-        ResponseBuilder response = Response.ok((Object) file);
-        response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".zip");
+//        ResponseBuilder response = Response.ok((Object) file);
+//        response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".zip");
+        ResponseBuilder response = Response.ok(hent(avleveringsidentifikator));
+        response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
         return response.build();
     }
 

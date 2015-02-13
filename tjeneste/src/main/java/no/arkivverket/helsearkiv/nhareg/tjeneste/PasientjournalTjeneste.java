@@ -89,6 +89,21 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         super(Pasientjournal.class, String.class, "uuid");
     }
 
+    @Override
+    public Pasientjournal hent(String id) {
+        Pasientjournal pasientjournal = super.hent(id);
+      
+        //
+        // Lagt inn denne for å simulere EAGER-loading,
+        // uten å havne i en Hibernate-BUG rundt cartesisk produkt ved EAGER-loading
+        // av flere collections.
+        //
+        if(pasientjournal != null){
+            pasientjournal.getLagringsenhet().size();
+        }
+        return pasientjournal;
+    }
+    
     /**
      * Returnerer pasientjournaler basert på søk i query parmeter med paging
      *

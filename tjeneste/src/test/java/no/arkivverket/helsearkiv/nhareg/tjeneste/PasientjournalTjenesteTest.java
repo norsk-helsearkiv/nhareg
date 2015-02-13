@@ -69,12 +69,40 @@ public class PasientjournalTjenesteTest {
     // POST
     @Test
     public void leggTilDiagnose() {
+        Pasientjournal pasientjournal = tjeneste.hent("uuid1");
+        assertNotNull(pasientjournal);
+        assertNotNull(pasientjournal.getDiagnose());
+        //
+        // Henter antall diagnoser før.
+        //
+        int antallDiagnoserFør = pasientjournal.getDiagnose().size();
+        //
+        // Henter antall lagringsenheter før.
+        //
+        assertNotNull(pasientjournal.getLagringsenhet());
+        int antallLagringsenheterFør = pasientjournal.getLagringsenhet().size();
+        //
+        // Legger til diagnose.
+        //
         DiagnoseDTO dto = new DiagnoseDTO();
         dto.setDiagnosedato("15.01.2015");
         dto.setDiagnosetekst("Jeg er syk");
         dto.setDiagnosekode("Code0");
         Response response = tjeneste.leggTilDiagnose("uuid1", dto);
         assertNotNull(response);
+        //
+        // Sjekker at antall diagnoser har økt med 1.
+        //
+        pasientjournal = tjeneste.hent("uuid1");
+        assertNotNull(pasientjournal);
+        assertNotNull(pasientjournal.getDiagnose());
+        assertEquals(antallDiagnoserFør + 1, pasientjournal.getDiagnose().size());
+        //
+        // Sjekker at antall lagringsenheter er det samme
+        //
+        assertNotNull(pasientjournal.getLagringsenhet());
+        assertEquals(antallLagringsenheterFør, pasientjournal.getLagringsenhet().size());
+
     }
 
     @Test
@@ -83,8 +111,8 @@ public class PasientjournalTjenesteTest {
         Pasientjournal pj = tjeneste.hent("uuid1");
         assertNotNull(pj);
         assertNotNull(pj.getDiagnose());
-        assertEquals(2,pj.getDiagnose().size());
-        
+        assertEquals(2, pj.getDiagnose().size());
+
         DiagnoseDTO dto = new DiagnoseDTO();
         dto.setUuid(pj.getDiagnose().get(0).getUuid());
         Response response = tjeneste.fjernDiagnose("uuid1", dto);
@@ -94,7 +122,7 @@ public class PasientjournalTjenesteTest {
         pj = tjeneste.hent("uuid1");
         assertNotNull(pj);
         assertNotNull(pj.getDiagnose());
-        assertEquals(1,pj.getDiagnose().size());
+        assertEquals(1, pj.getDiagnose().size());
 
     }
 
@@ -111,6 +139,56 @@ public class PasientjournalTjenesteTest {
         pasientjournalDTO.getPersondata().setJournalnummer("12345");
         tjeneste.oppdaterPasientjournal(pasientjournalDTO);
         //Ingen feilmeldinger
+    }
+
+    @Test
+    public void oppdaterPasientjournal_antall_diagnoser() throws ParseException {
+        Response response = tjeneste.getSingleInstance("uuid1");
+        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        assertNotNull(pasientjournalDTO);
+        assertNotNull(pasientjournalDTO.getDiagnoser());
+        assertFalse(pasientjournalDTO.getDiagnoser().isEmpty());
+        int antallDiagnoser = pasientjournalDTO.getDiagnoser().size();
+        //
+        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+        //
+        // Sjekker antall diagnoser som er lagret
+        //
+        response = tjeneste.getSingleInstance("uuid1");
+        pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        assertNotNull(pasientjournalDTO);
+        assertNotNull(pasientjournalDTO.getDiagnoser());
+        assertEquals(antallDiagnoser, pasientjournalDTO.getDiagnoser().size());
+    }
+
+    @Test
+    public void oppdaterPasientjournal_antall_Lagringsenheter() throws ParseException {
+        String id = "uuid1";
+        Pasientjournal pasientjournal = tjeneste.hent(id);
+        assertNotNull(pasientjournal);
+        assertNotNull(pasientjournal.getLagringsenhet());
+        assertEquals(1, pasientjournal.getLagringsenhet().size());
+        Response response = tjeneste.getSingleInstance("uuid1");
+        PasientjournalDTO pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        assertNotNull(pasientjournalDTO);
+        //
+        //
+        assertNotNull(pasientjournalDTO.getPersondata());
+        assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
+        assertEquals(1, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+        //
+        // Gjør en oppdatering.
+        //
+        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+        //
+        // Sjekker antall diagnoser som er lagret
+        //
+        response = tjeneste.getSingleInstance("uuid1");
+        pasientjournalDTO = (PasientjournalDTO) response.getEntity();
+        assertNotNull(pasientjournalDTO);
+        assertNotNull(pasientjournalDTO.getPersondata());
+        assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
+        assertEquals(1, pasientjournalDTO.getPersondata().getLagringsenheter().length);
     }
 
     // DELETE
