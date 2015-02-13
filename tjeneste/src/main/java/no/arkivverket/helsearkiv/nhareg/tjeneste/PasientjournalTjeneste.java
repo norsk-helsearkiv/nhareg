@@ -39,8 +39,9 @@ import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -63,6 +64,10 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     private KjønnTjeneste kjønnTjeneste;
     @EJB
     DiagnoseTjeneste diagnoseTjeneste;
+    @EJB
+    private AvleveringTjeneste avleveringTjeneste;
+    
+    Log log = LogFactory.getLog(PasientjournalTjeneste.class);
 
     @EJB(name = "DiagnoseDTOTransformer")
     Transformer<DiagnoseDTO, Diagnose> diagnoseDTOTransformer;
@@ -83,6 +88,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Produces(MediaType.APPLICATION_JSON)
     @Override
     public Response getAll(@Context UriInfo uriInfo) {
+        //Underliggende pasientjouranler for avlevering
+        MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
+        if(queryParameter.containsKey("avlevering")) {
+            ListeObjekt lstObj = avleveringTjeneste
+                    .getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
+            return Response.ok(lstObj).build();
+        }
+        
         // Legg til søk i stedet for getAll(queryParameter). Skal returnere liste av treff
         // Sender in et tomt map for å få alle
         List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
@@ -163,7 +176,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //
         Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
         pasientjournalDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
-        
+
         return Response.ok(pasientjournalDTO).build();
     }
 
@@ -184,7 +197,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         //KONVERTERING
-        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO.getPersondata());
+        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
         //Legger til Diagnoser - Coming soon (tm)
 
         //Setter verdier
@@ -244,6 +257,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      */
     @DELETE
     @Path("/{id}/diagnoser")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response fjernDiagnose(@PathParam("id") String id, DiagnoseDTO diagnoseDTO) {
         Pasientjournal pasientjournal = hent(id);
