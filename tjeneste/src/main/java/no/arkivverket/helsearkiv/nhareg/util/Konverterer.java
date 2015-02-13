@@ -39,12 +39,9 @@ public class Konverterer {
             Diagnose diagnose = new Diagnose();
             diagnose.setDiagdato(tilDatoEllerAar(dto.getDiagnosedato()));
             diagnose.setDiagnosetekst(dto.getDiagnosetekst());
-            Diagnosekode diagnoseKode = new Diagnosekode();
-            try{
-                diagnoseKode = diagnosekodeTjeneste.hent(dto.getDiagnosedato());
-            } catch (Exception ec) {
-            }
+            Diagnosekode diagnoseKode = diagnosekodeTjeneste.hent(dto.getDiagnosekode());
             diagnose.setDiagnosekode(diagnoseKode);
+            diagnose.setUuid(dto.getUuid());
             pasientjournal.getDiagnose().add(diagnose);
         }
         return pasientjournal;

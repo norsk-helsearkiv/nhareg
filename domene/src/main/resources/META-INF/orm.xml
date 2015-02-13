@@ -34,7 +34,11 @@
     <entity class="Pasientjournal" access="FIELD">
         <attributes>
             <id name="uuid"/>
-            <one-to-many name="diagnose" fetch="EAGER"/>
+            <one-to-many name="diagnose" fetch="EAGER">
+                <cascade>
+                    <cascade-all />
+                </cascade>
+            </one-to-many>
             <many-to-many name="lagringsenhet" fetch="EAGER">
                 <cascade>
                     <cascade-all />
