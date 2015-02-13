@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Formatter;
+import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -22,6 +25,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
@@ -29,7 +33,11 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+import no.arkivverket.helsearkiv.nhareg.util.EksisterendeLagringsenhetPredicate;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.Predicate;
 
 /**
  * <p>
@@ -41,23 +49,29 @@ import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
 @Path("/avleveringer")
 @Stateless
 public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
-    
+
+    private static final String FINNES_I_ANNEN_AVLEVERING_CONSTRAINT = "Lagringsenhet finnes i annen avlevering";
+    private static final String FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT = "lagringsenheter";
+
     @EJB
     private PasientjournalTjeneste pasientjournalTjeneste;
     @EJB
     private KjønnTjeneste kjønnTjeneste;
-    
+
+    @EJB(name = "EksisterendeLagringsenhetPredicate")
+    Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
+
     public AvleveringTjeneste() {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
     }
 
     /**
-     * Henter pasientjournaler for en avlevering. Skal kun returnere pasientjournaler
-     * til en avlevering som ikke er slettet.
-     * Har også støtte for paging med query parameter 'side' og 'antall'
+     * Henter pasientjournaler for en avlevering. Skal kun returnere
+     * pasientjournaler til en avlevering som ikke er slettet. Har også støtte
+     * for paging med query parameter 'side' og 'antall'
      *
-     * @param avleveringsidentifikator 
-     * @param uriInfo 
+     * @param avleveringsidentifikator
+     * @param uriInfo
      * @return Liste over pasientjournaler
      */
     @GET
@@ -67,35 +81,43 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         Avlevering avlevering = (Avlevering) getSingleInstance(avleveringsidentifikator).getEntity();
         return pasientjournalTjeneste.getActiveWithPaging(avlevering.getPasientjournal(), uriInfo);
     }
-        
+
     /**
      * Oppretter en ny pasientjournal under avleveringen
+     *
      * @param avleveringid
      * @param person
      * @return Pasientjournal
-     * @throws java.text.ParseException av datoteksten til Date objekt for å sammenligne størrelse
+     * @throws java.text.ParseException av datoteksten til Date objekt for å
+     * sammenligne størrelse
      */
     @POST
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response nyPasientjournal(@PathParam("id") String avleveringid, PersondataDTO person) throws ParseException {
         // VALIDERING - kun grunnopplysninger
-        ArrayList<Valideringsfeil> valideringsfeil = 
-                new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
+        ArrayList<Valideringsfeil> valideringsfeil
+                = new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
         valideringsfeil.addAll(DatoValiderer.valider(person));
-
-        if(!valideringsfeil.isEmpty()) {
+        if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);
         }
-        
+
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(person);
-        
+        //
+        // Validerer lagringsenheter.
+        //
+        valideringsfeil.addAll(validerLagringsenheter(avleveringid, pasientjournal.getLagringsenhet()));
+        if (!valideringsfeil.isEmpty()) {
+            throw new ValideringsfeilException(valideringsfeil);
+        }
+
         //SETTER VERDIER
         pasientjournal.setUuid(UUID.randomUUID().toString());
-        
+
         //Setter visningsnavnet til det som er lagret i databasen for kjønn med koden
-        if(person.getKjonn() != null) {
+        if (person.getKjonn() != null) {
             Kjønn k = (Kjønn) kjønnTjeneste.getSingleInstance(person.getKjonn()).getEntity();
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
@@ -106,7 +128,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         avlevering.getPasientjournal().add(pasientjournal);
         return Response.ok().entity(pasientjournal).build();
     }
-    
+
     @GET
     @Path("/{id}/leveranse")
     public Response getLeveranse(@PathParam("id") String avleveringsidentifikator) throws FileNotFoundException {
@@ -115,17 +137,15 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         Formatter out = new Formatter(file);
         out.format("data");
         out.close();
-        
+
         //Generer XML
-        
         //Legg til vedlegg
-        
         //Returner fil
         ResponseBuilder response = Response.ok((Object) file);
         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".zip");
         return response.build();
     }
-    
+
     @DELETE
     @Path("/{id}")
     @Override
@@ -134,12 +154,47 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         if (avlevering == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        
+
         //Slett om det ikke er barn
-        if(avlevering.getPasientjournal().isEmpty()) {
+        if (avlevering.getPasientjournal().isEmpty()) {
             getEntityManager().remove(avlevering);
             return Response.ok().build();
-        } 
+        }
         return Response.status(409).build();
     }
+
+    /**
+     * Henter Avlevering for en lagringsenhet.
+     *
+     * @param identifikator
+     * @return
+     */
+    public Avlevering hentAvleveringForLagringsenhet(String identifikator) {
+        String select = "SELECT distinct a"
+                + "        FROM Avlevering a"
+                + "  INNER JOIN a.pasientjournal p"
+                + "  INNER JOIN p.lagringsenhet l"
+                + "       WHERE l.identifikator = :identifikator";
+        final Query query = getEntityManager().createQuery(select);
+        query.setParameter("identifikator", identifikator);
+        return (Avlevering) query.getSingleResult();
+    }
+
+    public List<Valideringsfeil> validerLagringsenheter(String avleveringid, List<Lagringsenhet> lagringsenheter) {
+        List<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+        //
+        // Plukker ut de eksisterende lagringsenhetene
+        //
+        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.select(lagringsenheter, eksisterendeLagringsenhetPredicate);
+        for (Lagringsenhet lagringsenhet : eksisterendeLagringsenheter) {
+
+            Avlevering avlevering = hentAvleveringForLagringsenhet(lagringsenhet.getIdentifikator());
+            if (!avlevering.getAvleveringsidentifikator().equals(avleveringid)) {
+                valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
+                break;
+            }
+        }
+        return valideringsfeil;
+    }
+
 }

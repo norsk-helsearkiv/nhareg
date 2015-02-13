@@ -1,8 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -22,6 +25,17 @@ public class AvleveringTjenesteTest {
 
     @Inject
     private AvleveringTjeneste tjeneste;
+    @Test
+    public void validerLagringsenheter(){
+        List<Lagringsenhet> ll = new ArrayList<Lagringsenhet>();
+        Lagringsenhet la = new Lagringsenhet();
+        la.setIdentifikator("boks1");
+        ll.add(la);
+        String av = "Avlevering-1";
+        assertEquals(0,tjeneste.validerLagringsenheter(av, ll).size());
+        av = "Annen";
+        assertEquals(1,tjeneste.validerLagringsenheter(av, ll).size());        
+    }
 
     @Test
     public void nyPasientjournal_oppretterNyPasientjournal_200() throws ParseException {
@@ -58,4 +72,5 @@ public class AvleveringTjenesteTest {
         pasient.setsKontakt("2000");
         return pasient;
     }
+    
 }

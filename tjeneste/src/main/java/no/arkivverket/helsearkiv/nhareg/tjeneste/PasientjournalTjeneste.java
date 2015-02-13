@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,6 +28,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -37,8 +39,13 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.DiagnoseTilDTOTransformer;
+import no.arkivverket.helsearkiv.nhareg.util.EksisterendeLagringsenhetPredicate;
 import no.arkivverket.helsearkiv.nhareg.util.Konverterer;
+import no.arkivverket.helsearkiv.nhareg.util.PasientjournalSokestringPredicate;
+import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,6 +67,8 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, String> {
 
+    public static final String SOKESTRING_QUERY_PARAMETER = "sokestring";
+    
     @EJB
     private KjønnTjeneste kjønnTjeneste;
     @EJB
@@ -73,6 +82,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     Transformer<DiagnoseDTO, Diagnose> diagnoseDTOTransformer;
 
     Transformer<Diagnose, DiagnoseDTO> diagnoseTilDTOTransformer = new DiagnoseTilDTOTransformer();
+
+    @EJB(name = "EksisterendeLagringsenhetPredicate")
+    Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -110,7 +122,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * @param uriInfo
      * @return ListeObjekt
      */
-    public ListeObjekt getActiveWithPaging(List<Pasientjournal> pasientjournaler, UriInfo uriInfo) {
+    public ListeObjekt getActiveWithPaging(List<Pasientjournal> pasientjournalerInput, UriInfo uriInfo) {
+        //
+        // Kopierer for ikke å manipulere på input-collection.
+        //
+        List<Pasientjournal> pasientjournaler = new ArrayList<Pasientjournal>(pasientjournalerInput);
+        //
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
         int forste = 0;
@@ -127,6 +144,13 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 antall = qAntall;
                 forste = (side - 1) * antall;
             }
+        }
+        //
+        // Søk : Filtrer ved med hensyn på søketerm
+        //
+        if (queryParameters.containsKey(SOKESTRING_QUERY_PARAMETER)){
+            Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
+            pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
         }
 
         List<PasientjournalSokeresultatDTO> resultatListe = new ArrayList<PasientjournalSokeresultatDTO>();
@@ -313,10 +337,41 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
             if (grunnopplysninger.getKjønn() != null) {
                 Kjønn kjønn = grunnopplysninger.getKjønn();
-                kjønn = (Kjønn) kjønnTjeneste.getSingleInstance(kjønn.getCode()).getEntity();
+                kjønn = kjønnTjeneste.hent(kjønn.getCode());
                 grunnopplysninger.setKjønn(kjønn);
             }
         }
+
+        //
+        // Oppretter lagringsenheter som ikke finnes fra før.
+        //
+        CollectionUtils.forAllDo(entity.getLagringsenhet(), new Closure<Lagringsenhet>() {
+            @Inject
+            private LagringsenhetTjeneste lagringsenhetTjeneste;
+            @EJB(name = "EksisterendeLagringsenhetPredicate")
+            Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
+
+            public void execute(Lagringsenhet input) {
+                if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
+                    lagringsenhetTjeneste.create(input);
+                }
+            }
+        });
+
+        //
+        // Attach lagringsenheter
+        //
+        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(entity.getLagringsenhet(),new Transformer<Lagringsenhet, Lagringsenhet>() {
+           @Inject
+            private LagringsenhetTjeneste lagringsenhetTjeneste;
+ 
+            public Lagringsenhet transform(Lagringsenhet input) {
+                return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
+            }
+        });
+        entity.getLagringsenhet().clear();
+        entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
+
         return super.create(entity);
     }
 

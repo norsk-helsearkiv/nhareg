@@ -10,6 +10,7 @@ import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
 import org.apache.commons.collections4.keyvalue.AbstractMapEntryDecorator;
+import org.apache.commons.collections4.list.PredicatedList;
 import org.apache.commons.collections4.map.AbstractSortedMapDecorator;
 import org.apache.commons.collections4.sequence.CommandVisitor;
 import org.apache.commons.collections4.set.AbstractSetDecorator;
@@ -36,7 +37,8 @@ public class RESTDeployment {
                 .addPackage(AbstractSetDecorator.class.getPackage())
                 .addPackage(AbstractCollectionDecorator.class.getPackage())
                 .addPackage(CommandVisitor.class.getPackage())
-                .addPackage(AbstractSortedMapDecorator.class.getPackage());
+                .addPackage(AbstractSortedMapDecorator.class.getPackage())
+                .addPackage(PredicatedList.class.getPackage());
         
 //                .addClass(AllocatedSeats.class)
 //                .addClass(MediaPath.class)
