@@ -8,7 +8,8 @@
     "angular-bootstrap": "~0.10.0",
     "angular-ui-router": "~0.2",
 
-    "angular-translate-loader-static-files" : "2.5.2"
+    "angular-translate-loader-static-files" : "2.5.2",
+    "angular-cookies" : "~1.2.0"
   },
   "dependencies": {}
 }

@@ -224,9 +224,11 @@ public abstract class EntitetsTjeneste<T, K> {
      * @return Entiteten for gitt ID.
      */
     public T hent(@NotNull final K id) {
-        // TODO kast exception dersom ikke finnes?
-//        Validate.notNull(id, "id");
-        return getEntityManager().find(entityClass, id);
+        try {
+            return getEntityManager().find(entityClass, id);
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @POST

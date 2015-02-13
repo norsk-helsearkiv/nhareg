@@ -4,7 +4,7 @@ var mod = angular.module('nha.common.http-service', [
 mod.factory('httpService', ['$http', httpService]);
 
 function httpService($http) {
-	var url = "https://localhost:8443/api/";
+	var url = "http://localhost:8080/api/";
 
 	//CREATE
 	function ny(relativUrl, data) {
@@ -53,6 +53,18 @@ function httpService($http) {
 		});
 	}
 
+	function slett(relativUrl, data) {
+		return $http({
+			accept: "application/json",
+			headers: {
+				"Content-Type" : "application/json"
+			},
+			method: "DELETE",
+			url: url + relativUrl,
+			data: data
+		});
+	}
+
 	//ANDRE
 	function genererAvlevering(id) {
 		return $http({
@@ -74,17 +86,23 @@ function httpService($http) {
 		return url;
 	}
 
+	function setCredentials(authdata) {
+		$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
+	}
+
 	return {
 		ny: ny,
 		hentAlle: hentAlle,
 		hent: hent,
 		oppdater: oppdater,
 		deleteElement: deleteElement,
+		slett: slett,
 
 		genererAvlevering: genererAvlevering,
 		getSokeresultat: getSokeresultat,
 
-		getRoot: getRoot
+		getRoot: getRoot,
+		setCredentials: setCredentials
 
 	};
 }

@@ -1,5 +1,7 @@
 angular.module( 'nha.login', [
-  'ui.router'
+  'ui.router',
+  'nha.common.authentication-service',
+  'nha.common.error-service'
 ])
 
 .config(function config( $stateProvider ) {
@@ -14,8 +16,10 @@ angular.module( 'nha.login', [
   });
 })
 
-.controller( 'LoginCtrl', function HomeController( $scope, $location, $filter ) {
-
+.controller( 'LoginCtrl', function HomeController($scope, $location, $filter, authenticationService, errorService) {
+  $scope.formLogin = {};
+  $scope.feilmeldinger = false;
+  
   //Henter tekster fra fil
   $scope.$watch(
     function() { return $filter('translate')('login.BRUKERNAVN'); },
@@ -27,8 +31,20 @@ angular.module( 'nha.login', [
   );
 
   $scope.submit = function() {
-    console.log("TODO: logikk i LoginCtrl");
-    $location.path('/home');
+    $scope.feilmeldinger = false;
+
+    authenticationService.clearCredentials();
+    
+    authenticationService.login($scope.formLogin)
+    .success(function(data, status, headers, config) {
+      $location.path('/');
+    }).error(function(data, status, headers, config) {
+      if(status === 401) {
+        $scope.feilmeldinger = true;
+      } else {
+        errorService.errorCode(status);
+      }
+    });
   };
   
 });

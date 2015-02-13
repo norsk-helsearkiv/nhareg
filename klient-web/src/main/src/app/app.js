@@ -3,12 +3,12 @@ angular.module( 'nha', [
   'templates-common',
   'ui.router',
   'pascalprecht.translate',
-  'nha.common.journal-service',
   'nha.common.error-service',
   'nha.common.http-service',
   'nha.common.modal-service',
   'nha.common.list-service',
   'nha.common.list-view',
+  'nha.common.diagnose-service',
   'nha.home',
   'nha.login',
   'nha.registrering',
@@ -39,5 +39,5 @@ angular.module( 'nha', [
   };
 })
 
-.controller( 'AppCtrl', function AppCtrl ( $scope, $location ) {
+.controller( 'AppCtrl', function AppCtrl ($http, $scope, $location, diagnoseService ) {
 });
