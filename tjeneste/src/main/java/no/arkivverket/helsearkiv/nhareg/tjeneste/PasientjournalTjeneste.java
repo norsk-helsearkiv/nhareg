@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
@@ -46,8 +47,6 @@ import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -198,7 +197,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
     @GET
     @Path("/{id}")
-    public PasientjournalDTO get(@PathParam("id") String id) {
+    public PasientjournalDTO getPasientjournalDTO(@PathParam("id") String id) {
         Pasientjournal pasientjournal = super.hent(id);
         if (pasientjournal == null) {
             throw new NoResultException(id);
@@ -218,6 +217,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response oppdaterPasientjournal(PasientjournalDTO pasientjournalDTO) throws ParseException {
+        log.error(pasientjournalDTO.getPersondata().getKjonn());
         // VALIDERING - Persondata
         ArrayList<Valideringsfeil> valideringsfeil
                 = new Validator<PersondataDTO>(PersondataDTO.class, pasientjournalDTO.getPersondata()).valider();
@@ -232,7 +232,24 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
-        //Legger til Diagnoser - Coming soon (tm)
+        for (DiagnoseDTO dto : pasientjournalDTO.getDiagnoser()) {
+            Diagnose diagnose = new Diagnose();
+            diagnose.setDiagdato(Konverterer.tilDatoEllerAar(dto.getDiagnosedato()));
+            diagnose.setUuid(dto.getUuid());
+
+            if (dto.getDiagnosekode() != null) {
+                Diagnose persistertDiagnose = diagnoseTjeneste.hentDiagnoseMedKode(dto.getDiagnosekode());
+                if (persistertDiagnose == null) {
+                    diagnose.setDiagnosetekst(dto.getDiagnosetekst());
+                    diagnose.setDiagnosekode(new Diagnosekode());
+                } else {
+                    diagnose.setDiagnosetekst(persistertDiagnose.getDiagnosetekst());
+                    diagnose.setDiagnosekode(persistertDiagnose.getDiagnosekode());
+                }
+            }
+
+            pasientjournal.getDiagnose().add(diagnose);
+        }
 
         //Setter verdier
         if (pasientjournalDTO.getPersondata().getKjonn() != null) {

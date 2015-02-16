@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,6 +28,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -36,6 +38,8 @@ import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -58,11 +62,24 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
+    
+    Log log = LogFactory.getLog(AvleveringTjeneste.class);
 
     public AvleveringTjeneste() {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
     }
-
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AvleveringDTO> getAvleveringDTO(@Context UriInfo uriInfo) {
+        List<Avlevering> list = getAll(uriInfo.getQueryParameters());
+        List<AvleveringDTO> avleveringer = new ArrayList<AvleveringDTO>();
+        for(Avlevering a : list) {
+            avleveringer.add(new AvleveringDTO(a));
+        }
+        return avleveringer;
+    }
+    
     /**
      * Henter pasientjournaler for en avlevering. Skal kun returnere
      * pasientjournaler til en avlevering som ikke er slettet. Har også støtte
@@ -100,7 +117,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);
         }
-
+        
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(person);
         //
@@ -110,7 +127,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);
         }
-
+        
         //SETTER VERDIER
         pasientjournal.setUuid(UUID.randomUUID().toString());
 
@@ -124,7 +141,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         getEntityManager().persist(pasientjournal);
         Avlevering avlevering = getSingleInstance(avleveringid);
         avlevering.getPasientjournal().add(pasientjournal);
-        return Response.ok().entity(pasientjournal).build();
+        return Response.ok().entity(Konverterer.tilPasientjournalDTO(pasientjournal)).build();
     }
 
     @GET
@@ -187,11 +204,15 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         //
         Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.select(lagringsenheter, eksisterendeLagringsenhetPredicate);
         for (Lagringsenhet lagringsenhet : eksisterendeLagringsenheter) {
-
-            Avlevering avlevering = hentAvleveringForLagringsenhet(lagringsenhet.getIdentifikator());
-            if (!avlevering.getAvleveringsidentifikator().equals(avleveringid)) {
-                valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
-                break;
+            
+            try {
+                Avlevering avlevering = hentAvleveringForLagringsenhet(lagringsenhet.getIdentifikator());
+                if (!avlevering.getAvleveringsidentifikator().equals(avleveringid)) {
+                    valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
+                    break;
+                }
+            } catch (NoResultException nre) {
+                // Ingen Avleveringer med pasientjournaler som har lagringsenhet med ID.
             }
         }
         return valideringsfeil;

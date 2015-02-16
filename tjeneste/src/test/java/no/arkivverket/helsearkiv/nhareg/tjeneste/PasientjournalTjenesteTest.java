@@ -62,8 +62,11 @@ public class PasientjournalTjenesteTest {
 
     @Test
     public void getSingleInstance_henterForsteObjekt_returnererDTO() {
-        PasientjournalDTO dto = tjeneste.get("uuid1");
+        PasientjournalDTO dto = tjeneste.getPasientjournalDTO("uuid1");
+        
         assertEquals("Hunden Fido", dto.getPersondata().getNavn());
+        assertEquals(3, dto.getPersondata().getLagringsenheter().length);
+        assertFalse(dto.getDiagnoser().isEmpty());
     }
 
     // POST
@@ -111,8 +114,9 @@ public class PasientjournalTjenesteTest {
         Pasientjournal pj = tjeneste.hent("uuid1");
         assertNotNull(pj);
         assertNotNull(pj.getDiagnose());
-        assertEquals(2, pj.getDiagnose().size());
-
+        assertFalse(pj.getDiagnose().isEmpty());
+        int sizeFor = pj.getDiagnose().size();
+        
         DiagnoseDTO dto = new DiagnoseDTO();
         dto.setUuid(pj.getDiagnose().get(0).getUuid());
         Response response = tjeneste.fjernDiagnose("uuid1", dto);
@@ -122,7 +126,7 @@ public class PasientjournalTjenesteTest {
         pj = tjeneste.hent("uuid1");
         assertNotNull(pj);
         assertNotNull(pj.getDiagnose());
-        assertEquals(1, pj.getDiagnose().size());
+        assertEquals(sizeFor - 1, pj.getDiagnose().size());
 
     }
 
@@ -135,7 +139,7 @@ public class PasientjournalTjenesteTest {
     // PUT
     @Test
     public void oppdaterPasientjournal_setterNyttJournalnummer_ok() throws ParseException {
-        PasientjournalDTO pasientjournalDTO = tjeneste.get("uuid1");
+        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
         pasientjournalDTO.getPersondata().setJournalnummer("12345");
         tjeneste.oppdaterPasientjournal(pasientjournalDTO);
         //Ingen feilmeldinger
@@ -143,7 +147,7 @@ public class PasientjournalTjenesteTest {
 
     @Test
     public void oppdaterPasientjournal_antall_diagnoser() throws ParseException {
-        PasientjournalDTO pasientjournalDTO = tjeneste.get("uuid1");
+        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
         assertNotNull(pasientjournalDTO);
         assertNotNull(pasientjournalDTO.getDiagnoser());
         assertFalse(pasientjournalDTO.getDiagnoser().isEmpty());
@@ -153,7 +157,7 @@ public class PasientjournalTjenesteTest {
         //
         // Sjekker antall diagnoser som er lagret
         //
-        pasientjournalDTO = tjeneste.get("uuid1");
+        pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
         assertNotNull(pasientjournalDTO);
         assertNotNull(pasientjournalDTO.getDiagnoser());
         assertEquals(antallDiagnoser, pasientjournalDTO.getDiagnoser().size());
@@ -165,14 +169,14 @@ public class PasientjournalTjenesteTest {
         Pasientjournal pasientjournal = tjeneste.hent(id);
         assertNotNull(pasientjournal);
         assertNotNull(pasientjournal.getLagringsenhet());
-        assertEquals(1, pasientjournal.getLagringsenhet().size());
-        PasientjournalDTO pasientjournalDTO = tjeneste.get("uuid1");
+        assertEquals(3, pasientjournal.getLagringsenhet().size());
+        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
         assertNotNull(pasientjournalDTO);
         //
         //
         assertNotNull(pasientjournalDTO.getPersondata());
         assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
-        assertEquals(1, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+        assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
         //
         // Gjør en oppdatering.
         //
@@ -180,11 +184,11 @@ public class PasientjournalTjenesteTest {
         //
         // Sjekker antall diagnoser som er lagret
         //
-        pasientjournalDTO = tjeneste.get("uuid1");
+        pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
         assertNotNull(pasientjournalDTO);
         assertNotNull(pasientjournalDTO.getPersondata());
         assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
-        assertEquals(1, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+        assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
     }
 
     // DELETE

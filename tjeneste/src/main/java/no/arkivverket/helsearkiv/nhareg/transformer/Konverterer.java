@@ -6,10 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
-import javax.ejb.EJB;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Identifikator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Journalidentifikator;
@@ -21,33 +19,22 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
 
 /**
  * Implementeres som Transformer
+ *
  * @author robing
  */
 @Deprecated
 public class Konverterer {
     
-    @EJB
-    private static DiagnosekodeTjeneste diagnosekodeTjeneste;
-    
     public static Pasientjournal tilPasientjournal(PasientjournalDTO person) throws ParseException {
         Pasientjournal pasientjournal = tilPasientjournal(person.getPersondata());
-        for(DiagnoseDTO dto : person.getDiagnoser()) {
-            Diagnose diagnose = new Diagnose();
-            diagnose.setDiagdato(tilDatoEllerAar(dto.getDiagnosedato()));
-            diagnose.setDiagnosetekst(dto.getDiagnosetekst());
-            Diagnosekode diagnoseKode = diagnosekodeTjeneste.hent(dto.getDiagnosekode());
-            diagnose.setDiagnosekode(diagnoseKode);
-            diagnose.setUuid(dto.getUuid());
-            pasientjournal.getDiagnose().add(diagnose);
-        }
         return pasientjournal;
     }
 
     private static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+
     public static Pasientjournal tilPasientjournal(PersondataDTO person) throws ParseException {
         Pasientjournal pasientjournal = new Pasientjournal();
 
@@ -169,11 +156,23 @@ public class Konverterer {
             person.setLopenummer(pasientjournal.getJournalidentifikator().getLøpenummer());
             person.setJournalnummer(pasientjournal.getJournalidentifikator().getJournalnummer());
         }
+
+        List<DiagnoseDTO> diagnoser = new ArrayList<DiagnoseDTO>();
+        for (Diagnose d : pasientjournal.getDiagnose()) {
+            DiagnoseDTO diagnoseDTO = new DiagnoseDTO();
+            diagnoseDTO.setDiagnosedato(d.getDiagdato().toString());
+            diagnoseDTO.setDiagnosekode(d.getDiagnosekode().getCode());
+            diagnoseDTO.setDiagnosetekst(d.getDiagnosetekst());
+            diagnoseDTO.setUuid(d.getUuid());
+            diagnoser.add(diagnoseDTO);
+        }
+        dto.setDiagnoser(diagnoser);
+
         dto.setPersondata(person);
         return dto;
     }
 
-    static String tilString(DatoEllerAar dato) {
+    public static String tilString(DatoEllerAar dato) {
         if (dato != null) {
             if (dato.getDato() != null) {
                 return format.format(dato.getDato().getTime());
@@ -184,7 +183,7 @@ public class Konverterer {
         return null;
     }
 
-    static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
+    public static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
         if (tid.toLowerCase().equals("mors")) {
             return null;
         }
