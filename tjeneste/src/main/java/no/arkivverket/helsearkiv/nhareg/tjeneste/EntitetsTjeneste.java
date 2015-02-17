@@ -1,6 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -140,11 +137,11 @@ public abstract class EntitetsTjeneste<T, K> {
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get(idName)));
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
-        if(queryParameters.containsKey(SIDE)
+        if (queryParameters.containsKey(SIDE)
                 && queryParameters.containsKey(ANTALL)) {
             Integer side = Integer.parseInt(queryParameters.getFirst(SIDE));
             Integer antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
-            
+
             query.setFirstResult((side * antall) - 1);
             query.setMaxResults(antall);
         }
@@ -222,22 +219,19 @@ public abstract class EntitetsTjeneste<T, K> {
      * @return Entiteten for gitt ID.
      */
     public T hent(@NotNull final K id) {
-        try {
-            return getEntityManager().find(entityClass, id);
-        } catch (NoResultException e) {
-            return null;
-        }
+        return getEntityManager().find(entityClass, id);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public T create(@NotNull T entity) {
-        ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
-
-        if (!valideringsfeil.isEmpty()) {
-            throw new ValideringsfeilException(valideringsfeil);
-        }
-
+        //
+        // Validerer.
+        //
+        new Validator<T>(entityClass).validerMedException(entity);
+        //
+        // Oppretter.
+        //
         getEntityManager().persist(entity);
         return entity;
     }
@@ -245,27 +239,21 @@ public abstract class EntitetsTjeneste<T, K> {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public T update(T entity) {
-        ArrayList<Valideringsfeil> valideringsfeil = validerObjekt(entity);
-
-        if (!valideringsfeil.isEmpty()) {
-            throw new ValideringsfeilException(valideringsfeil);
-        }
-
+        //
+        // Validerer.
+        //
+        new Validator<T>(entityClass).validerMedException(entity);
+        //
+        // Oppdaterer.
+        //
         getEntityManager().merge(entity);
         return entity;
-    }
-
-    private ArrayList<Valideringsfeil> validerObjekt(T entity) {
-        return new Validator<T>(entityClass, entity).valider();
     }
 
     @DELETE
     @Path("/{id}")
     public T delete(@PathParam("id") K id) {
-        T entity = getEntityManager().find(entityClass, id);
-        if (entity == null) {
-            throw new NoResultException(id.toString());
-        }
+        T entity = getSingleInstance(id);
         getEntityManager().remove(entity);
         return entity;
     }

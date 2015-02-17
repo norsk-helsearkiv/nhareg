@@ -66,16 +66,47 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
+    public void getAllMedCode() {
+        String code = "Code0";
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add("code", code);
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+        assertNotNull(diagnosekoder);
+        assertEquals(1, diagnosekoder.size());
+    }
+
+    @Test
     public void hentDiagnosekoderMedUkjentCode() {
         String code = "Ukjent";
         List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
         assertNotNull(diagnosekoder);
         assertEquals(0, diagnosekoder.size());
     }
+
+    @Test
+    public void getAllMedUkjentCode() {
+        String code = "Ukjent";
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add("code", code);
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+        assertNotNull(diagnosekoder);
+        assertEquals(0, diagnosekoder.size());
+    }
+
     @Test
     public void hentDiagnosekoderMedNulltCode() {
         String code = null;
         List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+        assertNotNull(diagnosekoder);
+        assertEquals(0, diagnosekoder.size());
+    }
+
+    @Test
+    public void getAllMedNulltCode() {
+        String code = null;
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add("code", code);
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
         assertNotNull(diagnosekoder);
         assertEquals(0, diagnosekoder.size());
     }

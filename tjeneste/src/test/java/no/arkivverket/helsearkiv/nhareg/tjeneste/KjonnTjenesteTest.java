@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class KjønnTjenesteTest {
+public class KjonnTjenesteTest {
 
     @Deployment
     public static WebArchive deployment() {

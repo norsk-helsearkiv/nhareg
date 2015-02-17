@@ -4,6 +4,8 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
@@ -27,7 +29,9 @@ public class DiagnoseFraDTOTransformer implements Transformer<DiagnoseDTO, Diagn
             diagnose = new Diagnose();
             diagnose.setUuid(input.getUuid());
             diagnose.setDiagnosetekst(input.getDiagnosetekst());
-            List<Diagnosekode> list = tjeneste.hentDiagnosekoderMedCode(input.getDiagnosekode());
+            MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+            queryParameters.add("code", input.getDiagnosekode());
+            List<Diagnosekode> list = tjeneste.getAll(queryParameters);
             if (list.size() == 1) {
                 diagnose.setDiagnosekode(list.get(0));
             } else {
