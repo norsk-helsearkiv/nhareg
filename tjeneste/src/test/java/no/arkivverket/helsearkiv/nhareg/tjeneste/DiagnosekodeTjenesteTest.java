@@ -51,10 +51,10 @@ public class DiagnosekodeTjenesteTest {
     public void getAllMedPaginering() {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add(EntitetsTjeneste.SIDE, "1");
-        queryParameters.add(EntitetsTjeneste.ANTALL, "1");
+        queryParameters.add(EntitetsTjeneste.ANTALL, "15");
         List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
         assertNotNull(diagnosekoder);
-        assertEquals(1, diagnosekoder.size());
+        assertEquals(3, diagnosekoder.size());
     }
 
     @Test
