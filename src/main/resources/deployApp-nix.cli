@@ -1,0 +1,11 @@
+# $JBOSS_HOME/bin/jboss-cli.sh --file=deployApp.cli
+connect
+#
+# deploy jasperserver.war
+#
+# deploy $NHAREG/tjeneste/target/web.war
+#
+deploy ../../../tjeneste/target/api.war --force
+deploy ../../../klient-web/target/web.war --force
+#
+# undeploy mysql-connector-java-5.1.26.jar
