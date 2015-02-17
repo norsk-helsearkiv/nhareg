@@ -145,7 +145,7 @@ public abstract class EntitetsTjeneste<T, K> {
             Integer side = Integer.parseInt(queryParameters.getFirst(SIDE));
             Integer antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
             
-            query.setFirstResult((side * antall) - 1);
+            query.setFirstResult((side - 1) * antall);
             query.setMaxResults(antall);
         }
         return query.getResultList();
