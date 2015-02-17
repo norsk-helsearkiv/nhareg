@@ -1,0 +1,31 @@
+# $JBOSS_HOME/bin/jboss-cli.sh --file=mysql-database-config-wildfly.cli
+connect
+## batch
+##
+## Deployer Mysql-driver
+##
+deploy ~/.m2/repository/mysql/mysql-connector-java/5.1.26/mysql-connector-java-5.1.26.jar --force
+##
+## List installerte drivere
+##
+/subsystem=datasources:installed-drivers-list
+##
+## List datasource
+##
+/subsystem=datasources:read-resource(recursive=true)
+##
+## Legger til datasource
+##
+data-source add --name=nhareg-datasource --jndi-name=java:jboss/datasources/NharegDS --driver-name=mysql-connector-java-5.1.26.jar --connection-url=jdbc:mysql://localhost:3306/nhareg --user-name=nhareg --password=nhareg
+##
+## Test datasource
+##
+## /subsystem=datasources/data-source=nhareg-datasource:test-connection-in-pool
+##
+## Fjern datasource
+##
+## data-source remove --name=nhareg-datasource
+##
+## Fjerner driver
+##
+## undeploy mysql-connector-java-5.1.26.jar
