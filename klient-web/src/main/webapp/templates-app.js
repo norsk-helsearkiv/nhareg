@@ -291,7 +291,7 @@ angular.module("home/home.tpl.html", []).run(["$templateCache", function($templa
     "                <button class=\"icon icon-padding-left icon-add-journal\" data-ng-click=\"actionLeggTilPasientjournald(avlevering)\" tooltip=\"{{text.tooltip.add}}\"></button>\n" +
     "                <button class=\"icon icon-padding-left icon-folder\" data-ng-click=\"actionAvleveringLeveranse(avlevering)\" tooltip=\"{{text.tooltip.folder}}\"></button>\n" +
     "                <button class=\"icon icon-padding-left icon-edit\" data-ng-click=\"actionEndreAvlevering(avlevering)\" tooltip=\"{{text.tooltip.endre}}\"></button>\n" +
-    "                <button class=\"icon icon-padding-left icon-delete\" data-ng-click=\"actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)\" tooltip=\"{{text.tooltip.deleteElement}}\" data-ng-show=\"avlevering.pasientjournal.length === 0\"></button>\n" +
+    "                <button class=\"icon icon-padding-left icon-delete\" data-ng-click=\"actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)\" tooltip=\"{{text.tooltip.deleteElement}}\" data-ng-show=\"avlevering.antallPasientjournaler === 0\"></button>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +
