@@ -8,9 +8,23 @@
             <web-resource-name>Klient-web</web-resource-name>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
+        <auth-constraint>
+            <role-name>bruker</role-name>
+            <role-name>administrator</role-name>
+        </auth-constraint>
         <user-data-constraint>
             <description/>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>ApplicationRealm</realm-name>
+    </login-config>
+    <security-role>
+        <role-name>administrator</role-name>
+    </security-role>
+    <security-role>
+        <role-name>bruker</role-name>
+    </security-role>
 </web-app>

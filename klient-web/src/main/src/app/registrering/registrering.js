@@ -111,7 +111,6 @@ angular.module( 'nha.registrering', [
     //Endre pasientjournal
     $scope.state = 2;
 
-    console.log($scope.pasientjournalDTO);
     $scope.formData = $scope.pasientjournalDTO.persondata;
 
 
@@ -390,7 +389,6 @@ angular.module( 'nha.registrering', [
       delete $scope.formData.lagringsenheter;
     }
 
-    var lagringsenheter = $scope.formData.lagringsenheter;
     var kjonn = $scope.formData.kjonn;
     if(kjonn !== undefined) {
       $scope.formData.kjonn = $scope.formData.kjonn.kode;
@@ -400,10 +398,8 @@ angular.module( 'nha.registrering', [
     if($scope.state === 0) {
       httpService.ny("avleveringer/" + $scope.avlevering.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
       .success(function(data, status, headers, config) {
-        $scope.pasientjournalDTO = {
-          persondata : data,
-          diagnoser : []
-        };
+        $scope.formData.kjonn = kjonn;
+        $scope.pasientjournalDTO = data;
         $scope.state = 1;
       }).error(function(data, status, headers, config) {
         $scope.formData.kjonn = kjonn;
@@ -413,8 +409,6 @@ angular.module( 'nha.registrering', [
 
     //Endre
     if($scope.state === 2) {
-      console.log("ENDRE");
-      console.log($scope.pasientjournalDTO);
       httpService.oppdater("pasientjournaler/", $scope.pasientjournalDTO)
       .success(function(data, status, headers, config) {
         var lagringsenheter = $scope.formData.lagringsenheter;
@@ -471,7 +465,6 @@ angular.module( 'nha.registrering', [
     if($scope.pasientjournalDTO.diagnoser == null) {
       $scope.pasientjournalDTO.diagnoser = [];
     }
-    console.log($scope.formDiagnose);
     httpService.ny("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
     .success(function(data, status, headers, config) {
       $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);

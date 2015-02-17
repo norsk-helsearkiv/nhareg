@@ -2,6 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.UUID;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.ws.rs.Path;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 
@@ -35,6 +37,17 @@ public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
         
         //Kaster exception i super hvis er null
         return super.create(entity);
+    }
+    
+    public Diagnose hentDiagnoseMedKode(String kode) {
+        String jpql = "SELECT d FROM Diagnose d WHERE d.diagnosekode.code = :kode";
+        Query q = getEntityManager().createQuery(jpql);
+        q.setParameter("kode", kode);
+        try {
+            return (Diagnose) q.getResultList().get(0);
+        } catch(NoResultException nre) {
+            return null;
+        }
     }
 
 }

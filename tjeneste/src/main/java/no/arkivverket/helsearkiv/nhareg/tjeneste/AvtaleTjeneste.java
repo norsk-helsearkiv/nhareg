@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
@@ -47,9 +48,14 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         query.setParameter("avtaleidentifikator", avtaleidentifikator);
         List<Avlevering> avleveringer = query.getResultList();
         
-        return Response.ok(avleveringer).build();
+        List<AvleveringDTO> dtoListe = new ArrayList<AvleveringDTO>();
+        for(Avlevering a : avleveringer) {
+            dtoListe.add(new AvleveringDTO(a));
+        }
+        
+        return Response.ok(dtoListe).build();
     }
-    
+        
     @POST
     @Override
     public Avtale create(Avtale avtale) {

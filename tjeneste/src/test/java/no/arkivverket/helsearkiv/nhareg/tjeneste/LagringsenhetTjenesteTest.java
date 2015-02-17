@@ -52,7 +52,7 @@ public class LagringsenhetTjenesteTest {
         String avleveringsidentifikator = "Avlevering-1";
         List<Lagringsenhet> lagringsenheter = tjeneste.hentLagringsenheterForAvlevering(avleveringsidentifikator);
         assertNotNull(lagringsenheter);
-        assertEquals(1, lagringsenheter.size());
+        assertEquals(3, lagringsenheter.size());
     }
 
     @Test

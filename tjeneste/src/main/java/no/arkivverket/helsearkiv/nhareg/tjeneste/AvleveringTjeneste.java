@@ -2,6 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,15 +21,18 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -36,6 +42,8 @@ import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -59,8 +67,21 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
 
+    Log log = LogFactory.getLog(AvleveringTjeneste.class);
+
     public AvleveringTjeneste() {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AvleveringDTO> getAvleveringDTO(@Context UriInfo uriInfo) {
+        List<Avlevering> list = getAll(uriInfo.getQueryParameters());
+        List<AvleveringDTO> avleveringer = new ArrayList<AvleveringDTO>();
+        for (Avlevering a : list) {
+            avleveringer.add(new AvleveringDTO(a));
+        }
+        return avleveringer;
     }
 
     /**
@@ -124,27 +145,26 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         getEntityManager().persist(pasientjournal);
         Avlevering avlevering = getSingleInstance(avleveringid);
         avlevering.getPasientjournal().add(pasientjournal);
-        return Response.ok().entity(pasientjournal).build();
+        return Response.ok().entity(Konverterer.tilPasientjournalDTO(pasientjournal)).build();
     }
 
     @GET
     @Path("/{id}/leveranse")
-    @Produces(MediaType.TEXT_XML)
+    @Produces(MediaType.APPLICATION_XML)
     public Response getLeveranse(@PathParam("id") String avleveringsidentifikator) throws FileNotFoundException {
-        //Tmp fil
-        File file = new File("leveranse");
-        Formatter out = new Formatter(file);
-        out.format("data");
-        out.close();
+        
+         Avlevering avlevering = hent(avleveringsidentifikator);
+        
+         //EAGER LOADING ALL
+         for(Pasientjournal p : avlevering.getPasientjournal()) {
+         p.getLagringsenhet().size();
+         p.getDiagnose().size();
+         }
+        
+         ResponseBuilder response = Response.ok(avlevering);
+         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
+         return response.build();
 
-        //Generer XML
-        //Legg til vedlegg
-        //Returner fil
-//        ResponseBuilder response = Response.ok((Object) file);
-//        response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".zip");
-        ResponseBuilder response = Response.ok(hent(avleveringsidentifikator));
-        response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
-        return response.build();
     }
 
     @DELETE
@@ -188,10 +208,14 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.select(lagringsenheter, eksisterendeLagringsenhetPredicate);
         for (Lagringsenhet lagringsenhet : eksisterendeLagringsenheter) {
 
-            Avlevering avlevering = hentAvleveringForLagringsenhet(lagringsenhet.getIdentifikator());
-            if (!avlevering.getAvleveringsidentifikator().equals(avleveringid)) {
-                valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
-                break;
+            try {
+                Avlevering avlevering = hentAvleveringForLagringsenhet(lagringsenhet.getIdentifikator());
+                if (!avlevering.getAvleveringsidentifikator().equals(avleveringid)) {
+                    valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
+                    break;
+                }
+            } catch (NoResultException nre) {
+                // Ingen Avleveringer med pasientjournaler som har lagringsenhet med ID.
             }
         }
         return valideringsfeil;

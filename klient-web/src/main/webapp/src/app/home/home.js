@@ -213,7 +213,7 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionAvleveringLeveranse = function(avlevering) {
-    window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator;
+    window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator + "/leveranse";
   };
 
   //Util

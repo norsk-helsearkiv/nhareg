@@ -2,12 +2,14 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import java.util.Calendar;
+import java.util.List;
 import javax.ejb.EJBException;
 import static org.junit.Assert.assertEquals;
 
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.Response;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
@@ -34,6 +36,9 @@ public class AvtaleTjenesteTest {
     public void getAvleveringer_henterAvleveringerForAvtale_200() {
         Response rsp = tjeneste.getAvleveringer("Avtale1");
         assertEquals(200, rsp.getStatus());
+        
+        List<Avlevering> avleveriner = (List<Avlevering>) rsp.getEntity();
+        assertEquals(1, avleveriner.size());
     }
 
     @Test

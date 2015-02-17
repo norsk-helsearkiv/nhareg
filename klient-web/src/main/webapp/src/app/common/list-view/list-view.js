@@ -38,7 +38,7 @@ angular.module( 'nha.common.list-view', [
   );
 
   $scope.navHome = function() {
-    $location.path('/home');
+    $location.path('/');
   };
 
   $scope.navLoggut = function() {
@@ -67,7 +67,7 @@ angular.module( 'nha.common.list-view', [
     if($scope.data.total <= $scope.data.antall) {
       return new Array(1);
     }
-    sider = Math.round($scope.data.total / $scope.data.antall) + 1;
+    sider = Math.round($scope.data.total / $scope.data.antall);
     return new Array(Math.round(sider)); 
   };
 
