@@ -63,7 +63,7 @@ public class PasientjournalTjenesteTest {
     @Test
     public void getSingleInstance_henterForsteObjekt_returnererDTO() {
         PasientjournalDTO dto = tjeneste.getPasientjournalDTO("uuid1");
-        
+
         assertEquals("Hunden Fido", dto.getPersondata().getNavn());
         assertEquals(3, dto.getPersondata().getLagringsenheter().length);
         assertFalse(dto.getDiagnoser().isEmpty());
@@ -116,7 +116,7 @@ public class PasientjournalTjenesteTest {
         assertNotNull(pj.getDiagnose());
         assertFalse(pj.getDiagnose().isEmpty());
         int sizeFor = pj.getDiagnose().size();
-        
+
         DiagnoseDTO dto = new DiagnoseDTO();
         dto.setUuid(pj.getDiagnose().get(0).getUuid());
         Response response = tjeneste.fjernDiagnose("uuid1", dto);
@@ -191,12 +191,37 @@ public class PasientjournalTjenesteTest {
         assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
     }
 
+    @Test
+    public void oppdaterPasientjournal_nha_98() throws ParseException {
+        //
+        // Oppretter diagnoser uten diagnosekoder, men med tekst og lagrer.
+        // Tar opp igjen pasientjournalen og endrer f.eks. dato.
+        // Resultatet er at de registrerte diagnosetekstene er forsvunnet.
+        //
+        String id = "uuid1";
+        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
+        assertNotNull(pasientjournalDTO);
+        //
+        // Legger til diagnose.
+        //
+        DiagnoseDTO dto = new DiagnoseDTO();
+        dto.setDiagnosedato("15.01.2015");
+        dto.setDiagnosetekst("Jeg er syk");
+        Response response = tjeneste.leggTilDiagnose("uuid1", dto);
+        assertNotNull(response);
+        
+        pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
+        assertNotNull(pasientjournalDTO);
+        pasientjournalDTO.getPersondata().setFodt("1990");
+        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+    }
+
     // DELETE
     @Test
     public void delete_finnerIkkeEntitet_404() {
         try {
             tjeneste.delete("tull");
-        } catch(EJBException e) {
+        } catch (EJBException e) {
             assertEquals(NoResultException.class, e.getCause().getClass());
         }
     }

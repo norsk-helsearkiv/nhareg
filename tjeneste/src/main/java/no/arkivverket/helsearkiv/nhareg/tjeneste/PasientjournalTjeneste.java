@@ -80,10 +80,10 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     private AvleveringTjeneste avleveringTjeneste;
 
     //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
-    @EJB(name = "DiagnoseDTOTransformer")
-    Transformer<DiagnoseDTO, Diagnose> diagnoseDTOTransformer;
+    @EJB(name = "DiagnoseFraDTOTransformer")
+    private Transformer<DiagnoseDTO, Diagnose> diagnoseFraDTOTransformer;
 
-    Transformer<Diagnose, DiagnoseDTO> diagnoseTilDTOTransformer = new DiagnoseTilDTOTransformer();
+    private Transformer<Diagnose, DiagnoseDTO> diagnoseTilDTOTransformer = new DiagnoseTilDTOTransformer();
 
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
@@ -239,25 +239,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
-        for (DiagnoseDTO dto : pasientjournalDTO.getDiagnoser()) {
-            Diagnose diagnose = new Diagnose();
-            diagnose.setDiagdato(Konverterer.tilDatoEllerAar(dto.getDiagnosedato()));
-            diagnose.setUuid(dto.getUuid());
-
-            if (dto.getDiagnosekode() != null) {
-                Diagnose persistertDiagnose = diagnoseTjeneste.hentDiagnoseMedKode(dto.getDiagnosekode());
-                if (persistertDiagnose == null) {
-                    diagnose.setDiagnosetekst(dto.getDiagnosetekst());
-                    diagnose.setDiagnosekode(new Diagnosekode());
-                } else {
-                    diagnose.setDiagnosetekst(persistertDiagnose.getDiagnosetekst());
-                    diagnose.setDiagnosekode(persistertDiagnose.getDiagnosekode());
-                }
-            }
-
-            pasientjournal.getDiagnose().add(diagnose);
-        }
-
+        pasientjournal.getDiagnose().addAll(CollectionUtils.collect(pasientjournalDTO.getDiagnoser(), diagnoseFraDTOTransformer));
         //Setter verdier
         if (pasientjournalDTO.getPersondata().getKjonn() != null) {
             Kjønn k = kjønnTjeneste
@@ -295,7 +277,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         new Validator<DiagnoseDTO>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
-        Diagnose diagnose = diagnoseDTOTransformer.transform(diagnoseDTO);
+        Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
         diagnoseTjeneste.create(diagnose);
         pasientjournal.getDiagnose().add(diagnose);
         pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
