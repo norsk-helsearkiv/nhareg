@@ -27,7 +27,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
  */
 @Deprecated
 public class Konverterer {
-    
+
     public static Pasientjournal tilPasientjournal(PasientjournalDTO person) throws ParseException {
         Pasientjournal pasientjournal = tilPasientjournal(person.getPersondata());
         return pasientjournal;
@@ -161,7 +161,9 @@ public class Konverterer {
         for (Diagnose d : pasientjournal.getDiagnose()) {
             DiagnoseDTO diagnoseDTO = new DiagnoseDTO();
             diagnoseDTO.setDiagnosedato(d.getDiagdato().toString());
-            diagnoseDTO.setDiagnosekode(d.getDiagnosekode().getCode());
+            if (d.getDiagnosekode() != null) {
+                diagnoseDTO.setDiagnosekode(d.getDiagnosekode().getCode());
+            }
             diagnoseDTO.setDiagnosetekst(d.getDiagnosetekst());
             diagnoseDTO.setUuid(d.getUuid());
             diagnoser.add(diagnoseDTO);

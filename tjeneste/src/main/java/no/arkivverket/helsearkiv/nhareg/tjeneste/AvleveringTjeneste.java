@@ -1,16 +1,14 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
-import java.util.Formatter;
 import java.util.List;
-import java.util.UUID;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -21,16 +19,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
@@ -59,6 +55,8 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     private static final String FINNES_I_ANNEN_AVLEVERING_CONSTRAINT = "NotUnique";
     private static final String FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT = "lagringsenheter";
 
+    @Resource
+    private SessionContext sessionContext;
     @EJB
     private PasientjournalTjeneste pasientjournalTjeneste;
     @EJB
@@ -71,6 +69,15 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     public AvleveringTjeneste() {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
+    }
+
+    @Override
+    public Avlevering create(Avlevering entity) {
+        //
+        // Sporing.
+        //
+        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
+        return super.create(entity);
     }
 
     @GET
@@ -132,19 +139,14 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
             throw new ValideringsfeilException(valideringsfeil);
         }
 
-        //SETTER VERDIER
-        pasientjournal.setUuid(UUID.randomUUID().toString());
-
-        //Setter visningsnavnet til det som er lagret i databasen for kjønn med koden
-        if (person.getKjonn() != null) {
-            Kjønn k = kjønnTjeneste.getSingleInstance(person.getKjonn());
-            pasientjournal.getGrunnopplysninger().setKjønn(k);
-        }
-
         //LAGRER
-        getEntityManager().persist(pasientjournal);
+        pasientjournalTjeneste.create(pasientjournal);
         Avlevering avlevering = getSingleInstance(avleveringid);
         avlevering.getPasientjournal().add(pasientjournal);
+        //
+        // Sporing.
+        //
+        avlevering.setOppdateringsinfo(konstruerOppdateringsinfo());
         return Response.ok().entity(Konverterer.tilPasientjournalDTO(pasientjournal)).build();
     }
 
@@ -152,18 +154,18 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Path("/{id}/leveranse")
     @Produces(MediaType.APPLICATION_XML)
     public Response getLeveranse(@PathParam("id") String avleveringsidentifikator) throws FileNotFoundException {
-        
-         Avlevering avlevering = hent(avleveringsidentifikator);
-        
-         //EAGER LOADING ALL
-         for(Pasientjournal p : avlevering.getPasientjournal()) {
-         p.getLagringsenhet().size();
-         p.getDiagnose().size();
-         }
-        
-         ResponseBuilder response = Response.ok(avlevering);
-         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
-         return response.build();
+
+        Avlevering avlevering = hent(avleveringsidentifikator);
+
+        //EAGER LOADING ALL
+        for (Pasientjournal p : avlevering.getPasientjournal()) {
+            p.getLagringsenhet().size();
+            p.getDiagnose().size();
+        }
+
+        ResponseBuilder response = Response.ok(avlevering);
+        response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
+        return response.build();
 
     }
 
@@ -221,4 +223,10 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         return valideringsfeil;
     }
 
+    private Oppdateringsinfo konstruerOppdateringsinfo() {
+        Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
+        oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
+        oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
+        return oppdateringsinfo;
+    }
 }

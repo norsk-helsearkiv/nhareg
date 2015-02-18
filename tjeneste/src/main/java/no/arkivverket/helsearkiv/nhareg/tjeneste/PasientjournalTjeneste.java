@@ -3,12 +3,14 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.Consumes;
@@ -31,6 +33,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -66,16 +69,17 @@ import org.apache.commons.collections4.Transformer;
 public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, String> {
 
     public static final String SOKESTRING_QUERY_PARAMETER = "sokestring";
-    
+
+    @Resource
+    private SessionContext sessionContext;
     @EJB
     private KjønnTjeneste kjønnTjeneste;
     @EJB
     DiagnoseTjeneste diagnoseTjeneste;
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
-    
-    //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
 
+    //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
     @EJB(name = "DiagnoseDTOTransformer")
     Transformer<DiagnoseDTO, Diagnose> diagnoseDTOTransformer;
 
@@ -84,6 +88,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
 
+    @EJB
+    private LagringsenhetTjeneste lagringsenhetTjeneste;
+
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
     }
@@ -91,18 +98,18 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Override
     public Pasientjournal hent(String id) {
         Pasientjournal pasientjournal = super.hent(id);
-      
+
         //
         // Lagt inn denne for å simulere EAGER-loading,
         // uten å havne i en Hibernate-BUG rundt cartesisk produkt ved EAGER-loading
         // av flere collections.
         //
-        if(pasientjournal != null){
+        if (pasientjournal != null) {
             pasientjournal.getLagringsenhet().size();
         }
         return pasientjournal;
     }
-    
+
     /**
      * Returnerer pasientjournaler basert på søk i query parmeter med paging
      *
@@ -114,12 +121,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public ListeObjekt hentAlle(@Context UriInfo uriInfo) {
         //Underliggende pasientjouranler for avlevering
         MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
-        if(queryParameter.containsKey("avlevering")) {
+        if (queryParameter.containsKey("avlevering")) {
             ListeObjekt lstObj = avleveringTjeneste
                     .getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
             return lstObj;
         }
-        
+
         List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
         return getActiveWithPaging(pasientjournaler, uriInfo);
     }
@@ -141,7 +148,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         // Søk : Filtrer ved med hensyn på søketerm
         //
         MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
-        if (queryParameters.containsKey(SOKESTRING_QUERY_PARAMETER)){
+        if (queryParameters.containsKey(SOKESTRING_QUERY_PARAMETER)) {
             Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
             pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
         }
@@ -259,7 +266,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
 
-        Pasientjournal persistert = getEntityManager().merge(pasientjournal);
+        Pasientjournal persistert = update(pasientjournal);
         return Response.ok(persistert).build();
     }
 
@@ -269,8 +276,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public Pasientjournal delete(@PathParam("id") String id) {
         Pasientjournal p = super.getSingleInstance(id);
         p.setSlettet(true);
-        getEntityManager().merge(p);
-        return p;
+        p.setOppdateringsinfo(konstruerOppdateringsinfo());
+        return update(p);
     }
 
     /**
@@ -291,6 +298,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         Diagnose diagnose = diagnoseDTOTransformer.transform(diagnoseDTO);
         diagnoseTjeneste.create(diagnose);
         pasientjournal.getDiagnose().add(diagnose);
+        pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
         return Response.ok().build();
     }
 
@@ -316,6 +324,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
         pasientjournal.getDiagnose().remove(diagnose);
         diagnoseTjeneste.delete(diagnose.getUuid());
+        pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
         return Response.ok().build();
     }
 
@@ -368,10 +377,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         // Oppretter lagringsenheter som ikke finnes fra før.
         //
         CollectionUtils.forAllDo(entity.getLagringsenhet(), new Closure<Lagringsenhet>() {
-            @Inject
-            private LagringsenhetTjeneste lagringsenhetTjeneste;
-            @EJB(name = "EksisterendeLagringsenhetPredicate")
-            Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
 
             public void execute(Lagringsenhet input) {
                 if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
@@ -383,18 +388,23 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //
         // Attach lagringsenheter
         //
-        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(entity.getLagringsenhet(),new Transformer<Lagringsenhet, Lagringsenhet>() {
-           @Inject
-            private LagringsenhetTjeneste lagringsenhetTjeneste;
- 
+        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(entity.getLagringsenhet(), new Transformer<Lagringsenhet, Lagringsenhet>() {
             public Lagringsenhet transform(Lagringsenhet input) {
                 return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
             }
         });
         entity.getLagringsenhet().clear();
         entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
+        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
 
         return super.create(entity);
+    }
+
+    private Oppdateringsinfo konstruerOppdateringsinfo() {
+        Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
+        oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
+        oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
+        return oppdateringsinfo;
     }
 
 }

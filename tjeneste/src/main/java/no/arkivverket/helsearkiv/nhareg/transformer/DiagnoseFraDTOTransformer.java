@@ -30,12 +30,14 @@ public class DiagnoseFraDTOTransformer implements Transformer<DiagnoseDTO, Diagn
             diagnose.setUuid(input.getUuid());
             diagnose.setDiagnosetekst(input.getDiagnosetekst());
             MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-            queryParameters.add("code", input.getDiagnosekode());
-            List<Diagnosekode> list = tjeneste.getAll(queryParameters);
-            if (list.size() == 1) {
-                diagnose.setDiagnosekode(list.get(0));
-            } else {
-                throw new IllegalArgumentException(input.getDiagnosekode());
+            if (input.getDiagnosekode() != null) {
+                queryParameters.add("code", input.getDiagnosekode());
+                List<Diagnosekode> list = tjeneste.getAll(queryParameters);
+                if (list.size() == 1) {
+                    diagnose.setDiagnosekode(list.get(0));
+                } else {
+                    throw new IllegalArgumentException(input.getDiagnosekode());
+                }
             }
             diagnose.setDiagdato(stringTilDatoEllerAarTransformer.transform(input.getDiagnosedato()));
         }
