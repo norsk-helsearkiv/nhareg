@@ -3,7 +3,7 @@
         <serializable/>
         <javaType name="java.util.Calendar" xmlType="xs:date"
               parseMethod="javax.xml.bind.DatatypeConverter.parseDate"
-              printMethod="javax.xml.bind.DatatypeConverter.printDate"
+              printMethod="no.arkivverket.helsearkiv.nhareg.domene.felles.DatatypeConverter.printDate"
         />
         <javaType name="java.util.Calendar" xmlType="xs:dateTime"
               parseMethod="javax.xml.bind.DatatypeConverter.parseDateTime"
