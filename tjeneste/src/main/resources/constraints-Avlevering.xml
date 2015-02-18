@@ -9,6 +9,21 @@
         Sørger for at objektet blir validert når forelder blir validert
     
     -->
+    <bean class="Avtale" ignore-annotations="true">
+        <field name="avtaleidentifikator">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <field name="avtalebeskrivelse">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <field name="avtaledato">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+        <field name="virksomhet">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+    </bean>
+    
     <bean class="CV" ignore-annotations="true">
         <field name="code">
             <constraint annotation="javax.validation.constraints.NotNull" />
@@ -37,6 +52,16 @@
             <constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">
                 <element name="min">1</element>
+            </constraint>
+        </field>
+    </bean>   
+    
+    <bean class="Diagnose" ignore-annotations="true">
+        <field name="diagnosetekst">
+            <constraint annotation="javax.validation.constraints.NotNull" />
+            <constraint annotation="javax.validation.constraints.Size">
+                <element name="min">2</element>
+                <element name="max">255</element>
             </constraint>
         </field>
     </bean>   
@@ -86,6 +111,17 @@
         <!-- XML required true -->
         <field name="displayName">
             <constraint annotation="javax.validation.constraints.NotNull" />
+        </field>
+    </bean>
+    
+    <bean class="DatoEllerAar" ignore-annotations="true">
+        <field name="aar">
+            <constraint annotation="javax.validation.constraints.Min">
+                <element name="value">1800</element>
+            </constraint>
+            <constraint annotation="javax.validation.constraints.Max">
+                <element name="value">2099</element>
+            </constraint>
         </field>
     </bean>
 </constraint-mappings>
