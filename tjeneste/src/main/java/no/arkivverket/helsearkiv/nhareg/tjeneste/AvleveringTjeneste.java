@@ -71,6 +71,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
     }
 
+    @POST
     @Override
     public Avlevering create(Avlevering entity) {
         //
