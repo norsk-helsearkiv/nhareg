@@ -190,7 +190,7 @@ angular.module( 'nha.registrering', [
     }
   };
 
-  var validerFodselsnr = function(fnr) {
+  var getAarhundreFromFnr = function(fnr) {
     var personnr = fnr.substring(6,9);
     var i = Number(personnr.substring(0,1));
     var nr = Number(personnr.substring(1,3));
@@ -224,19 +224,57 @@ angular.module( 'nha.registrering', [
     }
   };
 
+kjonnFromFodselsnummer = function(fnr){
+    var individsifre = fnr.substring(6,9);
+    var kjonn = Number(individsifre.substring(2,3));
+    return kjonn%2===0?$scope.kjonn[0]:$scope.kjonn[1];
+};
+
+gyldigFodselsnummer = function (fnr) {
+  var faktor1 = [3, 7, 6, 1, 8, 9, 4, 5, 2];
+  var faktor2 = [5, 4, 3, 2, 7, 6, 5, 4, 3];
+  var nestSisteFnrSiffer = fnr.charAt(9);
+  var sisteFnrSiffer = fnr.charAt(10);
+ 
+  var summerSjekksum = function (sum, verdi, index) {
+    var ettSiffer = fnr.charAt(index);
+    return sum + verdi * ettSiffer;
+  };
+ 
+  var finnKontrollSiffer = function(sjekksum) {
+    var kontrollSiffer = 11 - (sjekksum % 11);
+    return kontrollSiffer == 11 ? 0 : kontrollSiffer;
+  };
+ 
+  var forsteSjekksum = _.reduce(faktor1, summerSjekksum, 0);
+  var forsteKontrollsiffer = finnKontrollSiffer(forsteSjekksum);
+ 
+  var andreSjekksum = _.reduce(faktor2, summerSjekksum, forsteKontrollsiffer*2);
+  var andreKontrollsiffer = finnKontrollSiffer(andreSjekksum);
+ 
+  return forsteKontrollsiffer == nestSisteFnrSiffer && andreKontrollsiffer == sisteFnrSiffer;
+};
+
   $scope.populerFelt = function() {
     if($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) {
       return;
     }
 
     //Valider nr
-    var aarhundre = validerFodselsnr($scope.formData.fodselsnummer);
+    var aarhundre = getAarhundreFromFnr($scope.formData.fodselsnummer);
     if(!aarhundre) {
       return;
     }
 
     var kjonnValidert = false, datoValidert = false;
-    if($scope.formData.fodselsnummer.length == 11) {
+    if (gyldigFodselsnummer($scope.formData.fodselsnummer)){
+    //if($scope.formData.fodselsnummer.length == 11) {
+    var kjonn = kjonnFromFodselsnummer();
+    if (kjonn){
+        $scope.formData.kjonn = kjonn;
+        kjonnValidert = true;
+    }
+    /*
       if(($scope.formData.fodselsnummer % 2) === 0) {
         $scope.formData.kjonn = $scope.kjonn[0];
         kjonnValidert = true;
@@ -244,7 +282,7 @@ angular.module( 'nha.registrering', [
         $scope.formData.kjonn = $scope.kjonn[1];
         kjonnValidert = true;
       }
-
+*/
       //Valider dato
       var fdato = $scope.formData.fodselsnummer.substring(0, 6);
       var dag = Number(fdato.substring(0,2));

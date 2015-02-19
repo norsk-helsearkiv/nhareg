@@ -8,7 +8,7 @@ module.exports = {
    * completely built.
    */
   build_dir: 'bulid',
-  compile_dir: 'dist',
+  compile_dir: 'distr',
 
   /**
    * This is a collection of file patterns that refer to our app code (the
@@ -70,7 +70,8 @@ module.exports = {
 
       'vendor/angular-translate/angular-translate.js',
       'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-      'vendor/angular-cookies/angular-cookies.js'
+      'vendor/angular-cookies/angular-cookies.js',
+      'vendor/underscore/underscore-min.js'
     ],
     css: [
     ],

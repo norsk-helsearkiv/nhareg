@@ -1,0 +1,88 @@
+{
+	"common" : {
+		"APP_TITTEL": "Registreringskofferten",
+		"OK": "Ok",
+		"AVBRYT": "Avbryt",
+		"LEGG_TIL" : "Ny",
+		"VIS_HURTIGTASTER" : "Vis hurtigtaster",
+		"table" : {
+			"ARKIVSKAPER" : "Arkivskaper",
+			"BESKRIVELSE" : "Beskrivelse",
+			"ID" : "ID",
+			"NAVN" : "Navn",
+			"DATO" : "Dato"
+		},
+		"PASIENTJOURNAL" : "Pasientjournal"
+	},
+	"home" : {
+		"AVTALE" : "Avtale",
+		"AVTALER" : "Avtaler",
+		"AVLEVERING" : "Avlevering",
+		"AVLEVERINGER" : "Avleveringer", 
+		"FOR" : "for",
+		"PASIENTSOK" : "Pasientsøk",
+		"SOK" : "Søk",
+		"SOKERESULTAT" : "Søkeresultat",
+		"VISER" : "viser",
+		"tooltip" : {
+			"LIST" : "Vis pasientjournaler i avleveringen",
+			"ADD" : "Legg til pasientjournal i avleveringen",
+			"FOLDER" : "Generer leveranse",
+			"ENDRE" : "Endre",
+			"DELETE" : "Slett"
+		}
+	},
+	"registrer" : {
+		"kjonn" : {
+			"MANN" : "Mann",
+			"KVINNE" : "Kvinne",
+			"IKKE_KJENT" : "Ikke kjent",
+			"IKKE_SPESIFISERT" : "Ikke spesifisert"
+		},
+		"NAVN" : "Navn"
+	},
+	"login" : {
+		"TITTEL" : "Logg inn",
+		"BRUKERNAVN" : "Brukernavn",
+		"PASSORD": "Passord",
+		"HUSK_MEG": "Husk meg",
+		"LOGG_UT" : "Logg ut",
+		"ERROR" : "Feil brukernavn eller passord"
+	},
+	"modal" : {
+		"delete" : {
+			"TITTEL" : "Er du sikker på at du vil slette?",
+			"SIKKER" : "Er du sikker på at du vil slette",
+			"MED_ID" : ", "
+		},
+		"legg_til" : {
+			"TITTEL" : "Opprett ny"
+		}
+	},
+	"error" :  {
+        "BAD_REQUEST_STATUS_CODE":      "400 Skjema feil",
+        "BAD_REQUEST":                  "Det er feil i skjema eller inputverdiene",
+        "SERVER_ERROR_STATUS_CODE":     "500 Intern server feil",
+        "SERVER_ERROR":                 "Det har oppstått en problem på serveren. Vennligst prøv igjen senere",
+        "CONFIRM_DELETE":               "Er du sikker på at du vil slette: ",
+        "NOT_FOUND":                    "Resursjen på serveren finnes ikke på angitt plassering.",
+        "NOT_FOUND_STATUS_CODE":        "404 Ressursen finnes ikke",
+        "RESOURCE_CONFLICT_CODE":		"409 Konsistensfeil",
+        "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først"
+    },
+    "feltfeil" : {
+    	"DagEllerAar" : "Feil datoformat, eksempel på format (31.1.1990)",
+    	"NotNull" : "Kan ikke være tom",
+    	"Size" : "Kan ikke være tom",
+    	"NotUnique" : "Lagringsenhet finnes i annen avlevering",
+    	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
+    	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
+    	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
+    	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
+    	"sKontaktEtterDod" : "Siste kontakt kan ikke være etter død",
+    	"fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt"
+    },
+    "konfig" : {
+    	"ANTALL" : "15"
+    }
+}
