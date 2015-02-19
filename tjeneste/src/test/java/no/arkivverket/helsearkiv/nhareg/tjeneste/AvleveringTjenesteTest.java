@@ -15,6 +15,7 @@ import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
@@ -68,14 +69,38 @@ public class AvleveringTjenesteTest {
     public void delete_sletterAvleveringMedPasientjournaler_409() {
         tjeneste.delete("Avlevering-1");
     }
-    
+
     @Test
     public void getPasientjournaler_henterPasienjounaler_utenLagringsenhetOgDiagnoser() {
         ListeObjekt lstObj = tjeneste.getPasientjournaler("Avlevering-1", getInfo());
         assertNotNull(lstObj);
-        
+
         List<PasientjournalSokeresultatDTO> liste = (List<PasientjournalSokeresultatDTO>) lstObj.getListe();
         assertTrue(liste.size() > 0);
+    }
+
+    @Test
+    public void updateAvlevering() {
+        String id = "Avlevering-1";
+        Avlevering avlevering = tjeneste.getSingleInstance(id);
+        assertNotNull(avlevering);
+        assertNotNull(avlevering.getAvtale());
+        
+        int apj = avlevering.getPasientjournal().size();
+        
+        AvleveringDTO avleveringDTO = new AvleveringDTO(avlevering);
+        avleveringDTO.setArkivskaper("JUnit test");
+        
+        avleveringDTO = tjeneste.updateAvlevering(avleveringDTO);
+        assertNotNull(avleveringDTO);
+        //
+        // sjekker at antall pasientjournaler er det samme
+        //
+        avlevering = tjeneste.getSingleInstance(id);
+        assertNotNull(avlevering);
+        assertNotNull(avlevering.getAvtale());
+        assertNotNull(avlevering.getOppdateringsinfo());
+        assertEquals(apj, avlevering.getPasientjournal().size());
     }
 
     private PersondataDTO getPasient() {
@@ -93,7 +118,7 @@ public class AvleveringTjenesteTest {
         pasient.setsKontakt("2000");
         return pasient;
     }
-    
+
     private UriInfo getInfo() {
         return new UriInfo() {
 

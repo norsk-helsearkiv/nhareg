@@ -15,6 +15,9 @@ public class AvleveringDTO implements Serializable{
     protected Avtale avtale;
     protected String arkivskaper;
     protected int antallPasientjournaler;
+
+    public AvleveringDTO() {
+    }
     
     public AvleveringDTO(Avlevering avlevering) {
         this.avleveringsidentifikator = avlevering.getAvleveringsidentifikator();

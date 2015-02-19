@@ -16,6 +16,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -29,6 +30,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -90,6 +92,34 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
             avleveringer.add(new AvleveringDTO(a));
         }
         return avleveringer;
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public AvleveringDTO updateAvlevering(AvleveringDTO entity) {
+        //
+        // Validerer.
+        //
+        new Validator<AvleveringDTO>(AvleveringDTO.class).validerMedException(entity);      
+       //
+        // Henter eksisterende forekomst.
+        //
+        Avlevering avlevering = getSingleInstance(entity.getAvleveringsidentifikator());
+        //
+        // Kopierer verdier
+        //
+        avlevering.setAvleveringsidentifikator(entity.getAvleveringsidentifikator());
+        avlevering.setAvleveringsbeskrivelse(entity.getAvleveringsbeskrivelse());
+        avlevering.setArkivskaper(entity.getArkivskaper());
+        //
+        // Setter sporingsinformasjon.
+        //
+        avlevering.setOppdateringsinfo(konstruerOppdateringsinfo());
+        //
+        // Oppdaterer
+        //
+        avlevering= super.update(avlevering);  
+        return new AvleveringDTO(avlevering);
     }
 
     /**
