@@ -227,7 +227,7 @@ angular.module( 'nha.registrering', [
 kjonnFromFodselsnummer = function(fnr){
     var individsifre = fnr.substring(6,9);
     var kjonn = Number(individsifre.substring(2,3));
-    return kjonn%2===0?$scope.kjonn[0]:$scope.kjonn[1];
+    return kjonn%2===0?$scope.kjonn[1]:$scope.kjonn[0];
 };
 
 gyldigFodselsnummer = function (fnr) {
@@ -269,7 +269,7 @@ gyldigFodselsnummer = function (fnr) {
     var kjonnValidert = false, datoValidert = false;
     if (gyldigFodselsnummer($scope.formData.fodselsnummer)){
     //if($scope.formData.fodselsnummer.length == 11) {
-    var kjonn = kjonnFromFodselsnummer();
+    var kjonn = kjonnFromFodselsnummer($scope.formData.fodselsnummer);
     if (kjonn){
         $scope.formData.kjonn = kjonn;
         kjonnValidert = true;
