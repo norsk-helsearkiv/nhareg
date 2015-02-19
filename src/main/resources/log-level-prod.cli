@@ -1,0 +1,12 @@
+# $JBOSS_HOME/bin/jboss-cli.sh --file=log-level-dev.cli
+connect
+batch
+#
+# Endrer root-log-level
+#
+/subsystem=logging/root-logger=ROOT:change-root-log-level(level=WARN)
+#
+# Execute and reload
+#
+run-batch
+:reload

@@ -6,7 +6,7 @@ INSERT INTO VIRKSOMHET (ORGANISASJONSNUMMER, NAVN) VALUES ('100', 'Testorganisas
 -- AVTALE
 --
 INSERT INTO AVTALE (AVTALEIDENTIFIKATOR, AVTALEBESKRIVELSE, AVTALEDATO, VIRKSOMHET_ORGANISASJONSNUMMER) VALUES ('Avtale1', 'Første avtale', '2015-01-23 17:39:41.281', '100');
-insert into Avtale (avtalebeskrivelse, avtaledato, avtaleidentifikator) values ('Avtale for testing', '2014-09-30 19:30:00', 'A1234');
+insert into Avtale (avtalebeskrivelse, avtaledato, avtaleidentifikator,virksomhet_organisasjonsnummer) values ('Avtale for testing', '2014-09-30 19:30:00', 'A1234','100');
 
 --
 -- AVLEVERING

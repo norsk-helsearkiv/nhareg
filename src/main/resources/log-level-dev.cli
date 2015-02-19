@@ -1,0 +1,16 @@
+# $JBOSS_HOME/bin/jboss-cli.sh --file=log-level-dev.cli
+connect
+batch
+#
+# Endrer root-log-level
+#
+/subsystem=logging/root-logger=ROOT:change-root-log-level(level=DEBUG)
+#
+# Endrer log-level for våre klasser.
+#
+/subsystem=logging/logger=no.arkivverket.helsearkiv:write-attribute(name=level,value=DEBUG)
+#
+# Execute and reload
+#
+run-batch
+:reload

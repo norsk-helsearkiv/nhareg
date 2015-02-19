@@ -69,7 +69,27 @@ public class DiagnosekodeTjenesteTest {
     public void getAllMedCode() {
         String code = "Code0";
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add("code", code);
+        queryParameters.add(DiagnosekodeTjeneste.CODE_QUERY_PARAMETER, code);
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+        assertNotNull(diagnosekoder);
+        assertEquals(1, diagnosekoder.size());
+    }
+    
+    @Test
+    public void getAllDisplayNameLike() {
+        String displayNameLike = "ode";
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
+        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+        assertNotNull(diagnosekoder);
+        assertEquals(1, diagnosekoder.size());
+    }
+    
+    @Test
+    public void getAllDisplayNameLikeIgnoreCase() {
+        String displayNameLike = "oDe";
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
         List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
         assertNotNull(diagnosekoder);
         assertEquals(1, diagnosekoder.size());

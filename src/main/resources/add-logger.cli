@@ -1,0 +1,12 @@
+# $JBOSS_HOME/bin/jboss-cli.sh --file=add-logger.cli
+connect
+batch
+#
+# Legger til logger for våre klasser.
+#
+/subsystem=logging/logger=no.arkivverket.helsearkiv:add(level=DEBUG)
+#
+# Execute and reload
+#
+run-batch
+:reload
