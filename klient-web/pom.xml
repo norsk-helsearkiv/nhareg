@@ -46,7 +46,7 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${project.basedir}/src/main/dist</directory>
+                            <directory>${project.basedir}/src/main/distr</directory>
                             <targetPath>.</targetPath>
                         </resource>
                     </webResources>
