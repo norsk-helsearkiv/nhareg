@@ -89,7 +89,8 @@ module.exports = function ( grunt ) {
      */
     clean: {
         dist:{
-            src: ['<%= build_dir %>/*', '!<%= build_dir %>/WEB-INF/**']
+           // src: ['<%= build_dir %>/*', '!<%= build_dir %>/WEB-INF/**']
+           src: ['<%= build_dir %>', '<%= compile_dir %>']
         }
     },
 

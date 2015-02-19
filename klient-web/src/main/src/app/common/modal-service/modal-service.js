@@ -14,7 +14,6 @@ function modalService($modal, httpService, errorService) {
 
     /*
         Sletter et element
-
         elementType: Typen av elementet som skal slettes
         id: iden til elementet
         okFunction: overskrevet metoden for å kunne validere på OK knappen

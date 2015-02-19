@@ -29,7 +29,7 @@
                         <configuration>
                             <schemaFiles>Avleveringsdokumentasjon.xsd</schemaFiles>
                             <packageName>no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon</packageName>
-                            <clearOutputDir>true</clearOutputDir>
+                            <!--<clearOutputDir>true</clearOutputDir>-->
                         </configuration>
                     </execution>
                     <execution>
