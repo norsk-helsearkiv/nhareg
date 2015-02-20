@@ -21,7 +21,7 @@ angular.module( 'nha.registrering', [
 .controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService) {
   //Util
   $scope.navHome = function() {
-    $location.path('/');
+    history.back();
   };
   $scope.loggUt = function() {
     $location.path('/login');
