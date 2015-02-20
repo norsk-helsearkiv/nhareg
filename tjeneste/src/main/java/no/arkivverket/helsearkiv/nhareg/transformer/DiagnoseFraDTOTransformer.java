@@ -11,6 +11,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -29,6 +30,12 @@ public class DiagnoseFraDTOTransformer implements Transformer<DiagnoseDTO, Diagn
             diagnose = new Diagnose();
             diagnose.setUuid(input.getUuid());
             diagnose.setDiagnosetekst(input.getDiagnosetekst());
+
+            /*
+            if (StringUtils.isEmpty(input.getDiagnosekode())){
+                input.setDiagnosekode(null);
+            }*/
+
             MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
             if (input.getDiagnosekode() != null) {
                 queryParameters.add("code", input.getDiagnosekode());

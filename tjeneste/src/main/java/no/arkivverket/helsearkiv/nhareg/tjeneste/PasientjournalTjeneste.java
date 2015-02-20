@@ -281,7 +281,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         diagnoseTjeneste.create(diagnose);
         pasientjournal.getDiagnose().add(diagnose);
         pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
-        return Response.ok().build();
+        return Response.ok(diagnose).build();
     }
 
     /**

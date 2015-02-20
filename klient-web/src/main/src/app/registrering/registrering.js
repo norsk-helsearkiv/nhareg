@@ -499,12 +499,19 @@ gyldigFodselsnummer = function (fnr) {
   $scope.leggTilDiagnose = function() {
     $scope.error = {};
     $scope.feilmeldinger = [];
+    if (!$scope.formDiagnose.diagnosekode){
+        $scope.formDiagnose.diagnosekode=null;
+    }
+    if ($scope.formDiagnose.diagnosekode===''){
+        $scope.formDiagnose.diagnosekode=null;
+    }
 
     if($scope.pasientjournalDTO.diagnoser == null) {
       $scope.pasientjournalDTO.diagnoser = [];
     }
     httpService.ny("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
     .success(function(data, status, headers, config) {
+      $scope.formDiagnose.uuid=data.uuid;
       $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
       resetDiagnose();
     }).error(function(data, status, headers, config) {
@@ -539,6 +546,9 @@ gyldigFodselsnummer = function (fnr) {
 
   //Fjerner diagnose
   $scope.fjernDiagnose = function(diagnose) {
+  if (diagnose.diagnosekode===''){
+    delete diagnose.diagnosekode;
+  }
     httpService.slett("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", diagnose)
     .success(function(data, status, headers, config) {
       for(var i = 0; i < $scope.pasientjournalDTO.diagnoser.length; i++) {
