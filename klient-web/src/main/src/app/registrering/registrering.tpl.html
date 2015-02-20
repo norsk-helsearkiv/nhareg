@@ -2,13 +2,19 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="#">{{ 'common.APP_TITTEL' | translate }}</a>
     </div>
-    <div id="navbar" class="navbar-collapse collapse">
+    <!--<div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-      	<!--<li><a href="" data-ng-click="navHome()">{{ 'common.VIS_HURTIGTASTER' | translate }}</a></li>-->
         <li><a class="loggut" href="" data-ng-click="loggUt()">{{ 'login.LOGG_UT' | translate }}</a></li>
       </ul>
-  </div>
+  </div>-->
 </nav>
+
+<script type="text/ng-template" id="diagnosekodeTemplate.html">
+    <a>
+        <span bind-html-unsafe="match.label | typeaheadHighlight:query">{{match.model.code}}</span>
+    </a>
+</script>
+
 
 <div class="content">
 	<!-- Feilmeldinger -->
@@ -131,14 +137,20 @@
 						<label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
 							Diagnosekode
 						</label>
-						<input type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekt()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
+						<input type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
 					</div>
 					<div class="span span4">
 						<label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
 							Diagnosetekst
 						</label>
-						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()" data-ng-show="diagnosetekstErSatt" disabled>
-						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()" data-ng-show="!diagnosetekstErSatt">
+						<input type="text" class="form-control" placeholder="Diagnosetekst..."
+                               data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()"
+                               data-ng-show="diagnosetekstErSatt" disabled>
+						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()"
+                               typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)" typeahead-loading="Laster"
+                               data-ng-show="!diagnosetekstErSatt"
+                               typeahead-on-select='onSelectDiagnose($item, $model, $label)'>
+
 					</div>
 					<div class="span span4">
 						<label></label>

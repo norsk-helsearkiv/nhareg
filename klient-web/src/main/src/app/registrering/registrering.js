@@ -474,7 +474,7 @@ gyldigFodselsnummer = function (fnr) {
   };
 
   //Setter diagnoseteksten når koden er endret
-  $scope.setDiagnoseTekt = function() {
+  $scope.setDiagnoseTekst = function() {
     if($scope.formDiagnose.diagnosekode === diagnosekode) {
       return;
     }
@@ -515,6 +515,27 @@ gyldigFodselsnummer = function (fnr) {
       }
     });
   };
+
+
+  $scope.sokDiagnoseDisplayNameLike =function(displayName){
+      var results = [];
+      return httpService.hentAlle("diagnosekoder?displayNameLike="+displayName, false)
+      .then(function(resp){
+        return resp.data.map(function(item){
+            var res = [];
+            res.code = item.code;
+            res.displayName = item.displayName;
+            return res;
+        });
+      });
+  };
+
+  $scope.onSelectDiagnose = function($item, $model, $label){
+        $scope.formDiagnose.diagnosekode= $item.code;
+        $scope.formDiagnose.diagnosetekst=null;
+        $scope.setDiagnoseTekst();
+  };
+
 
   //Fjerner diagnose
   $scope.fjernDiagnose = function(diagnose) {
