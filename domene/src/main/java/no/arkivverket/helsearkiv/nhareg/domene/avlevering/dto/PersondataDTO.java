@@ -6,8 +6,10 @@ import java.io.Serializable;
  *
  * @author robing
  */
+
 public class PersondataDTO implements Serializable {
-    
+
+
     private String[] lagringsenheter;
     private String journalnummer;
     private String lopenummer;

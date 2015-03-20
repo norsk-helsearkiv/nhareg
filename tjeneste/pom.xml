@@ -112,8 +112,8 @@
             <artifactId>jta</artifactId>
             <scope>test</scope>
         </dependency>
- 
-        
+
+
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>

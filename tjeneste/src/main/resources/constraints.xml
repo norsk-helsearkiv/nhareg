@@ -3,19 +3,23 @@
     xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd"
     xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
     <default-package>no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto</default-package>
-    
+
+
     <!--
         <valid /> 
         Sørger for at objektet blir validert når forelder blir validert
     
     -->
-    <bean class="PersondataDTO" ignore-annotations="true">
+    <bean class="PersondataDTO" ignore-annotations="false">
+
+
         <field name="lagringsenheter">
             <constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">
                 <element name="min">1</element>
             </constraint>
         </field>
+        <!-- flyttet til kode pga avhengigheter mellom dem.
         <field name="journalnummer">
             <constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">
@@ -34,6 +38,7 @@
                 <element name="min">1</element>
             </constraint>
         </field>
+        -->
         <field name="navn">
             <constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">
@@ -77,7 +82,7 @@
         </field>
         -->
     </bean>
-    
+
     <bean class="DiagnoseDTO" ignore-annotations="true">
         <field name="diagnosetekst">
             <constraint annotation="javax.validation.constraints.NotNull" />
@@ -101,5 +106,4 @@
             -->
         </field>
     </bean>
-    
 </constraint-mappings>

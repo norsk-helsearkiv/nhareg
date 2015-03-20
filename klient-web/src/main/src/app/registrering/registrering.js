@@ -74,6 +74,10 @@ angular.module( 'nha.registrering', [
       function() { return $filter('translate')('feltfeil.FodtEtterDodt'); },
       function(newval) { $scope.feilTekster['FodtEtterDodt'] = newval; }
     );
+        $scope.$watch(
+            function() { return $filter('translate')('feltfeil.EnObligatorisk'); },
+            function(newval) { $scope.feilTekster['EnObligatorisk'] = newval; }
+        );
     $scope.$watch(
       function() { return $filter('translate')('feltfeil.fKontaktForFodt'); },
       function(newval) { $scope.feilTekster['fKontaktForFodt'] = newval; }
