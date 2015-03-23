@@ -151,11 +151,12 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
                 = new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
 
         valideringsfeil.addAll(DatoValiderer.valider(person));
-        if (!new ValidatePersondataDTOExt().isValid(person)){
+
+        /*if (!new ValidatePersondataDTOExt().isValid(person)){
             valideringsfeil.add(new Valideringsfeil("journalnummer", "EnObligatorisk"));
             valideringsfeil.add(new Valideringsfeil("lopenummer", "EnObligatorisk"));
             valideringsfeil.add(new Valideringsfeil("fodselsnummer", "EnObligatorisk"));
-        }
+        }*/
 
         if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);

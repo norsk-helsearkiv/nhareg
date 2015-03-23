@@ -107,6 +107,7 @@ angular.module( 'nha.registrering', [
   $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
 
   //Setter verdier fra registrering-service
+        //TODO skal denne være ===?????
   if($scope.avlevering !== undefined) {
     //Ny pasientjouranl
     $scope.state = 0;

@@ -10,7 +10,7 @@
         Sørger for at objektet blir validert når forelder blir validert
     
     -->
-    <bean class="PersondataDTO" ignore-annotations="false">
+    <bean class="PersondataDTO" ignore-annotations="true">
 
 
         <field name="lagringsenheter">

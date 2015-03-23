@@ -114,7 +114,7 @@
               
     <xs:complexType name="Grunnopplysninger">
         <xs:sequence>
-            <xs:element name="identifikator" type="Identifikator">
+            <xs:element name="identifikator" type="Identifikator" minOccurs="0" maxOccurs="1">
                 <xs:annotation>
                     <xs:documentation>Pasientidentifiserende opplysninger; fødselsnummer eller annet entydig identifikasjonsnummer, eventuelle virksomhetsinterne pasientnummer eller hjelpenummer mv.</xs:documentation>
                 </xs:annotation>
