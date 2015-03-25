@@ -74,7 +74,7 @@ angular.module( 'nha.home', [
       function(newval) { $scope.text.tooltip.deleteElement = newval; }
     );
 
-  httpService.hentAlle("avtaler", true)
+  httpService.hentAlle("avtaler", false)
   .success(function(data, status, headers, config) {
     $scope.avtaler = data;
     $scope.setValgtAvtale(data[0]); 
@@ -85,6 +85,7 @@ angular.module( 'nha.home', [
   $scope.actionSok = function(sokestring) {
     var txt = $scope.text.sokeresultat;
     var viser = $scope.text.viser;
+      registreringService.setAvlevering(undefined);
     listService.setSok($scope.sokInput);
     httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
     .success(function(data, status, headers, config) {
@@ -196,6 +197,7 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionVisAvlevering = function(avlevering) {
+      registreringService.setAvlevering(undefined);
     httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + "&avlevering=" + avlevering.avleveringsidentifikator)
     .success(function(data, status, headers, config) {
     
