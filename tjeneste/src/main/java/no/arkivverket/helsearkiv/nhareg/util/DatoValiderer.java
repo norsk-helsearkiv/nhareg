@@ -20,9 +20,13 @@ public class DatoValiderer {
         if(person == null) {
             return feil;
         }
-        
+        if (sjekkMors(person.getFodt())){
+            feil.add(new Valideringsfeil("fodt", "DagEllerAar"));
+        }
         //Regler basert på født
         if(sjekk(person.getFodt())) {
+
+
             Date fodt = getDate(person.getFodt());
             
             if(sjekk(person.getDod())) {
@@ -100,4 +104,11 @@ public class DatoValiderer {
         
         return getDate(s) != null;
     }
+    private static boolean sjekkMors(String s){
+        if(s == null || s.isEmpty()) {
+            return false;
+        }
+        return (s.toLowerCase().equals("mors"));
+    }
+
 }

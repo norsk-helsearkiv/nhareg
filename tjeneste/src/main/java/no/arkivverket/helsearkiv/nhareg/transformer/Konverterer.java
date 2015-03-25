@@ -141,6 +141,9 @@ public class Konverterer {
             if (grn.getDød() != null) {
                 person.setDod(tilString(pasientjournal.getGrunnopplysninger().getDød()));
             }
+            if (grn.isDødsdatoUkjent()){
+                person.setDod("mors");
+            }
 
             if (grn.getKontakt() != null) {
                 if (grn.getKontakt().getFoerste() != null) {

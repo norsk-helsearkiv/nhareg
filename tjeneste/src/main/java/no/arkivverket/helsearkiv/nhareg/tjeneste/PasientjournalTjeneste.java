@@ -209,7 +209,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (pasientjournal == null) {
             throw new NoResultException(id);
         }
-
+        //TODO dodsdato ukjent må med til klienten som mors?
         PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
         //
         // Legger til diagnoser.

@@ -10,3 +10,5 @@ select * from Diagnose;
 show tables;
 SELECT  * from Diagnosekode;
 select * from Avtale;
+
+select * from Pasientjournal;
