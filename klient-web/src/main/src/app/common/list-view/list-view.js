@@ -51,11 +51,12 @@ angular.module( 'nha.common.list-view', [
   }  
 
   var setTittel = function(data) {
-    if(data.antall > data.total) {
-      $scope.tittel.underTittel = " " + data.total + " / " + data.total + " ";
-    } else {
-      $scope.tittel.underTittel = " " + data.antall + " / " + data.total + " ";
-    }
+      var max = (data.side*data.antall);
+      if (max>data.total){
+          max = data.total;
+      }
+      var undertittel = ((data.side-1)*data.antall)+1 +"..."+ max;
+      $scope.tittel.underTittel = undertittel;
   };
 
   $scope.tittel = listService.getTittel();
@@ -67,8 +68,8 @@ angular.module( 'nha.common.list-view', [
     if($scope.data.total <= $scope.data.antall) {
       return new Array(1);
     }
-    sider = Math.round($scope.data.total / $scope.data.antall);
-    return new Array(Math.round(sider)); 
+    sider = Math.ceil($scope.data.total / $scope.data.antall);
+    return new Array(Math.ceil(sider));
   };
 
   $scope.actionSok = function() {
