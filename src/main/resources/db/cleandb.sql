@@ -12,6 +12,9 @@ SELECT  * from Diagnosekode;
 select * from Avtale;
 
 select * from Pasientjournal;
-select * from Avlevering_Pasientjournal;
+select * from Avlevering_Pasientjournal where Avlevering_avleveringsidentifikator='avlevering';
+select * from Pasientjournal where uuid in (select pasientjournal_uuid from Avlevering_Pasientjournal where Avlevering_avleveringsidentifikator='avlevering');
 
+select * from Avlevering where avleveringsidentifikator='avlevering';
 select * from Avlevering;
+
