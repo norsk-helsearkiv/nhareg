@@ -55,7 +55,7 @@ angular.module( 'nha.common.list-view', [
       if (max>data.total){
           max = data.total;
       }
-      var undertittel = ((data.side-1)*data.antall)+1 +"..."+ max+ "/"+data.total;
+      var undertittel = ((data.side-1)*data.antall)+1 +"..."+ max+ " / "+data.total;
       $scope.tittel.underTittel = undertittel;
   };
 
