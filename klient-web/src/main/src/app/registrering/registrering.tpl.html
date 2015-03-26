@@ -180,8 +180,14 @@
 				</table>
 			</div>
 
-			<button type="submit" class="btn btn-primary right" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
+
+            <button type="submit" class="btn btn-primary right" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
+            <label></label>
+            <button class="right icon-padding-right btn btn-success" data-ng-click="nyJournal()" data-ng-show="state !== 0">
+                    {{ 'common.LEGG_TIL' | translate }}
+            </button>
 			<button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
+
 		</div>
 	</div>
 </div>

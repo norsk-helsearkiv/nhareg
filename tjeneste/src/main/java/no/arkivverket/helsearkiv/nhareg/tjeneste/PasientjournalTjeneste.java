@@ -209,16 +209,22 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (pasientjournal == null) {
             throw new NoResultException(id);
         }
-        //TODO dodsdato ukjent må med til klienten som mors?
+
+
+        return tilPasientjournalDTO(pasientjournal);
+    }
+
+    private final PasientjournalDTO tilPasientjournalDTO(Pasientjournal pasientjournal){
         PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
+        pasientjournalDTO.setAvleveringsidentifikator(avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid()));
         //
         // Legger til diagnoser.
         //
         Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
         pasientjournalDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
-
         return pasientjournalDTO;
     }
+
 
     //får ikke brukt super sin update, for det er DTO som valideres, ikke Pasientjournal
     @PUT
@@ -249,7 +255,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         Pasientjournal persistert = update(pasientjournal);
-        return Response.ok(persistert).build();
+
+        return Response.ok(tilPasientjournalDTO(persistert)).build();
     }
 
     @DELETE

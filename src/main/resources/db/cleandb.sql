@@ -12,3 +12,6 @@ SELECT  * from Diagnosekode;
 select * from Avtale;
 
 select * from Pasientjournal;
+select * from Avlevering_Pasientjournal;
+
+select * from Avlevering;

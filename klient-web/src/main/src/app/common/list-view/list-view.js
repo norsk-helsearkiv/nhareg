@@ -132,6 +132,7 @@ angular.module( 'nha.common.list-view', [
     httpService.hent("pasientjournaler/" + pasientjournal)
     .success(function(data, status, headers, config) {
         registreringService.setPasientjournalDTO(data);
+            registreringService.setAvleveringsidentifikator(data.avleveringsidentifikator);
         $location.path('/registrer');
       }).error(function(data, status, headers, config) {
         errorService.errorCode(status);

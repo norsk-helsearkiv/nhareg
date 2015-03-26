@@ -5,6 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -67,6 +68,12 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         super(Avlevering.class, String.class, "avleveringsidentifikator");
     }
 
+    public final String getAvleveringsidentifikator(String pasientjournalId){
+        Query query = getEntityManager().createNativeQuery("select Avlevering_avleveringsidentifikator from Avlevering_Pasientjournal where pasientjournal_uuid=?");
+        query.setParameter(1, pasientjournalId);
+        Object result = query.getSingleResult();
+        return String.valueOf(result);
+    }
     @POST
     @Override
     public Avlevering create(Avlevering entity) {
@@ -180,7 +187,9 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         // Sporing.
         //
         avlevering.setOppdateringsinfo(konstruerOppdateringsinfo());
-        return Response.ok().entity(Konverterer.tilPasientjournalDTO(pasientjournal)).build();
+        PasientjournalDTO dto = Konverterer.tilPasientjournalDTO(pasientjournal);
+        dto.setAvleveringsidentifikator(getAvleveringsidentifikator(pasientjournal.getUuid()));
+        return Response.ok().entity(dto).build();
     }
 
     @GET

@@ -12,6 +12,17 @@ public class PasientjournalDTO implements Serializable {
     private PersondataDTO persondata;
     private List<DiagnoseDTO> diagnoser;
 
+    public String getAvleveringsidentifikator() {
+        return avleveringsidentifikator;
+    }
+
+    public void setAvleveringsidentifikator(String avleveringsidentifikator) {
+        this.avleveringsidentifikator = avleveringsidentifikator;
+    }
+
+    private String avleveringsidentifikator;
+
+
     public PersondataDTO getPersondata() {
         return persondata;
     }

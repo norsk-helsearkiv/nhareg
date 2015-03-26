@@ -105,9 +105,9 @@ angular.module( 'nha.registrering', [
   $scope.formDiagnose = {};
   $scope.avlevering = registreringService.getAvlevering();
   $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
+        $scope.avleveringsidentifikator = registreringService.getAvleveringsidentifikator();
 
   //Setter verdier fra registrering-service
-        //TODO skal denne være ===?????
   if($scope.avlevering !== undefined) {
     //Ny pasientjouranl
     $scope.state = 0;
@@ -423,6 +423,12 @@ gyldigFodselsnummer = function (fnr) {
     });
     $scope.feilmeldinger.sort(compare);
   };
+        //setter state til endre(2) og kjører en oppdatering
+    $scope.nyJournal = function(){
+        $scope.state = 2;
+        $scope.nyEllerOppdater();
+
+    };
 
   $scope.nyEllerOppdater = function() {
     $scope.error = {};
@@ -439,7 +445,7 @@ gyldigFodselsnummer = function (fnr) {
 
     //NY
     if($scope.state === 0) {
-      httpService.ny("avleveringer/" + $scope.avlevering.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
+      httpService.ny("avleveringer/" + $scope.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
       .success(function(data, status, headers, config) {
         $scope.formData.kjonn = kjonn;
         $scope.pasientjournalDTO = data;
