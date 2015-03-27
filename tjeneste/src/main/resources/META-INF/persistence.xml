@@ -12,12 +12,18 @@
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+       <exclude-unlisted-classes>true</exclude-unlisted-classes>
+       <shared-cache-mode>ALL</shared-cache-mode>
+
         
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
+            <property name="hibernate.cache.infinispan.statistics" value="true"/>
         </properties>
    </persistence-unit>
 </persistence>

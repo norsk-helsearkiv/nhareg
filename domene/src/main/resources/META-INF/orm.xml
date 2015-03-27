@@ -25,7 +25,7 @@
             <id name="avleveringsidentifikator"/>
             
             <many-to-one name="avtale"/>
-            <one-to-many name="pasientjournal" fetch="EAGER"/>
+            <one-to-many name="pasientjournal"/>
             
             <embedded name="oppdateringsinfo"/>
         </attributes>
