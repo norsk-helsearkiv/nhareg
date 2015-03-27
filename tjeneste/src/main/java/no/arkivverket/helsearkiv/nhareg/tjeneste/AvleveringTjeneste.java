@@ -11,7 +11,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.validation.ValidatePersondataDTOExt;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import org.apache.commons.collections4.CollectionUtils;

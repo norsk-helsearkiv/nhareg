@@ -4,8 +4,8 @@ var mod = angular.module('nha.common.http-service', [
 mod.factory('httpService', ['$http', httpService]);
 
 function httpService($http) {
-	//var url = "../api/";
-	var url = "https://localhost:8443/api/";
+	var url = "../api/";
+	//var url = "https://localhost:8443/api/";
 
 	//CREATE
 	function ny(relativUrl, data) {

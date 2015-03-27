@@ -28,3 +28,6 @@ select * from Pasientjournal_Diagnose;
 select * from Pasientjournal where uuid ='a0791f90-16bd-49e6-9510-b52b2e922d08';
 
 select count(*) from Avlevering_Pasientjournal pasientjou0_ inner join Pasientjournal pasientjou1_ on pasientjou0_.pasientjournal_uuid=pasientjou1_.uuid left outer join Kjonn kjønn2_ on pasientjou1_.kjonn=kjønn2_.code where pasientjou0_.Avlevering_avleveringsidentifikator='avlevering';
+
+
+desc Pasientjournal;

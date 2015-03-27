@@ -2,11 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 
 import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;

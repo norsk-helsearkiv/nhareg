@@ -17,6 +17,7 @@
     </properties>
     <build>
         <plugins>
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
@@ -29,7 +30,7 @@
                         <configuration>
                             <schemaFiles>Avleveringsdokumentasjon.xsd</schemaFiles>
                             <packageName>no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon</packageName>
-                            <!--<clearOutputDir>true</clearOutputDir>-->
+
                         </configuration>
                     </execution>
                     <execution>
@@ -41,7 +42,7 @@
                             <schemaFiles>Avlevering.xsd</schemaFiles>
                             <packageName>no.arkivverket.helsearkiv.nhareg.domene.avlevering</packageName>
                             <clearOutputDir>false</clearOutputDir>
-                            
+
                             <extension>true</extension>
                             <arguments>-no-header -Xxew -Xxew:instantiate lazy</arguments>                        
                         </configuration>
@@ -54,7 +55,7 @@
                         <version>1.4</version>
                     </dependency>
                 </dependencies>
-            </plugin>    
+            </plugin>-->
         </plugins>
     </build>
     <dependencies>

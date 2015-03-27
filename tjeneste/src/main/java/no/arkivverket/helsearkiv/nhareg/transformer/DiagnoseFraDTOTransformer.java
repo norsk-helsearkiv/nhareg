@@ -11,7 +11,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
 import org.apache.commons.collections4.Transformer;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  *

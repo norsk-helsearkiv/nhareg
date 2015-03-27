@@ -2,9 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.util;
 
 
 import javax.ejb.EJB;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import org.apache.commons.collections4.Predicate;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
