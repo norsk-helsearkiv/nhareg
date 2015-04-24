@@ -18,7 +18,7 @@ angular.module( 'nha.registrering', [
   });
 })
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService) {
+.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, keyboardManager) {
   //Util
   $scope.navHome = function() {
     history.back();
@@ -26,7 +26,14 @@ angular.module( 'nha.registrering', [
   $scope.loggUt = function() {
     $location.path('/login');
   };
-
+        //shortcut for å lagre
+        keyboardManager.bind('ctrl-s', function(){
+            $scope.nyEllerOppdater();
+        });
+        //shortcut for ny journal
+        keyboardManager.bind('ctrl-n', function(){
+            $scope.nyJournal();
+        });
   //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
   $scope.feilmeldinger = [];
   $scope.error = [];
