@@ -30,7 +30,6 @@ public class UserServiceBean implements UserService{
             md.update(userPass.getBytes());
             byte byteData[] = md.digest();
             String pass = DatatypeConverter.printBase64Binary(byteData);
-            //String pass =  new String(Base64.getEncoder().encode(byteData));
             return pass;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

@@ -40,6 +40,11 @@ public class AuthSecurityInterceptor implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         Principal p = requestContext.getSecurityContext().getUserPrincipal();
+        if (p==null) {
+            requestContext.abortWith(ACCESS_UNAUTHORIZED);
+            return;
+        }
+
         String name = p.getName();
 
         // Get method invoked.

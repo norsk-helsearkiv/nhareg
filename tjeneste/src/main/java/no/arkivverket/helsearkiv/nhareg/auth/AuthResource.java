@@ -2,11 +2,9 @@ package no.arkivverket.helsearkiv.nhareg.auth;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -22,10 +20,22 @@ public class AuthResource {
     @EJB
     private AuthService authService;
 
-    @POST
+    @GET
     @Path("logout")
     @PermitAll
     public void logout(@Context HttpServletRequest request) {
 
+        if (request.getSession(false) != null) {
+            request.getSession(false).invalidate();// remove session.
+        }
+
+      if (request.getSession() != null) {
+          request.getSession().invalidate();// remove session.
+      }/*
+        try {
+            request.logout();
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }*/
     }
 }
