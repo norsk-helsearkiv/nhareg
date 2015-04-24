@@ -57,8 +57,16 @@ function errorService($modal, $location) {
             return $modal.open(template);
         },
 
-        unauthorizedError: function() {
-            $location.path('/login');
+        unauthorizedError: function(message) {
+            template.templateUrl = 'common/http-service/error-modal-401.tpl.html';
+            template.controller = function ($scope, $modalInstance) {
+                $scope.message = message;
+                $scope.ok = function () {
+                    $modalInstance.close();
+                };
+            };
+            template.controller.$inject = ['$scope', '$modalInstance'];
+            return $modal.open(template);
         },
 
         errorCode: function (status) {

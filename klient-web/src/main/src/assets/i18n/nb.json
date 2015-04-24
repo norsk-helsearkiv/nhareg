@@ -65,10 +65,12 @@
         "SERVER_ERROR_STATUS_CODE":     "500 Intern server feil",
         "SERVER_ERROR":                 "Det har oppstått en problem på serveren. Vennligst prøv igjen senere",
         "CONFIRM_DELETE":               "Er du sikker på at du vil slette: ",
-        "NOT_FOUND":                    "Resursjen på serveren finnes ikke på angitt plassering.",
+        "NOT_FOUND":                    "Ressursen på serveren finnes ikke på angitt plassering.",
         "NOT_FOUND_STATUS_CODE":        "404 Ressursen finnes ikke",
         "RESOURCE_CONFLICT_CODE":		"409 Konsistensfeil",
-        "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først"
+        "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først",
+        "UNAUTHORIZED_STATUS_CODE":     "Brukeren har ikke tilgang til ressursen.",
+        "UNAUTHORIZED_STATUS_CODE_TITLE":"Mangler tilgang for funksjon"
     },
     "feltfeil" : {
     	"DagEllerAar" : "Feil datoformat, eksempel på format (31.1.1990)",

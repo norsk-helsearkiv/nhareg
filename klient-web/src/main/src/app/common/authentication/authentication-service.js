@@ -5,8 +5,21 @@ var mod = angular.module('nha.common.authentication-service', [
 
 mod.factory('authenticationService', ['$http', '$cookieStore', '$rootScope', 'httpService', authenticationService]);
 
+/*mod.factory('authFactory', ['$rootScope', '$http', function ($rootScope, $http) {
+
+    var authFactory = {
+        authData: undefined
+    };
+
+    authFactory.login = function (user) {
+        return $http.post('http://localhost/api/auth/', user);
+    };
+
+    return authFactory;
+}]);*/
 function authenticationService($http, $cookieStore, $rootScope, httpService) {
     var service = {};
+    /*
     var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
     var encode = function(input) {
         var output = "";
@@ -82,16 +95,42 @@ function authenticationService($http, $cookieStore, $rootScope, httpService) {
 
         return output;
     };
-
-    service.login = function (login) {
-        var authdata = encode(login.brukernavn + ':' + login.passord);
-        httpService.setCredentials(authdata);
-        return httpService.ny('login');
+*/
+    var authFactory = {
+        authData: undefined
     };
 
-    service.clearCredentials = function () {
-        httpService.setCredentials('');
+    authFactory.login = function (user) {
+        return httpService.login(user);
+        //return $http.post('http://localhost/api/auth/', user);
+    };
+    authFactory.setAuthData = function (authData) {
+        this.authData = {
+            authId: authData.authId,
+            authToken: authData.authToken,
+            authPermission: authData.authPermission
+        };
+        $rootScope.$broadcast('authChanged');
     };
 
-    return service;
+    authFactory.getAuthData = function () {
+        return this.authData;
+    };
+
+    authFactory.isAuthenticated = function () {
+        return !angular.isUndefined(this.getAuthData());
+    };
+
+    /*
+        service.login = function (login) {
+            var authdata = encode(login.brukernavn + ':' + login.passord);
+            httpService.setCredentials(authdata);
+            return httpService.ny('login');
+        };
+
+        service.clearCredentials = function () {
+            httpService.setCredentials('');
+        };*/
+
+    return authFactory;
 }

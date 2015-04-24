@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+    <security-domain>secureDomain</security-domain>
+    <valve>
+        <class-name>org.apache.catalina.authenticator.SingleSignOn</class-name>
+    </valve>
+</jboss-web>

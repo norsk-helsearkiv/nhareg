@@ -10,7 +10,7 @@ angular.module( 'nha', [
   'nha.common.list-view',
   'nha.common.diagnose-service',
   'nha.home',
-  'nha.login',
+  //'nha.login',
   'nha.registrering',
   'nha.registrering.registrering-service'
 ])

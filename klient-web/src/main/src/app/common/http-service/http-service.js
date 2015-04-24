@@ -6,6 +6,14 @@ mod.factory('httpService', ['$http', httpService]);
 function httpService($http) {
 	var url = "../api/";
 	//var url = "https://localhost:8443/api/";
+    function login(data){
+        return $http({
+           accept: "application/json",
+            method: "POST",
+            url: url+"auth/login",
+            data:data
+        });
+    }
 
 	//CREATE
 	function ny(relativUrl, data) {
@@ -92,6 +100,7 @@ function httpService($http) {
 	}
 
 	return {
+        login: login,
 		ny: ny,
 		hentAlle: hentAlle,
 		hent: hent,
