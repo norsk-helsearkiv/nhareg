@@ -1,10 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
@@ -24,6 +21,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.*;
@@ -82,6 +80,11 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         //
         // Sporing.
         //
+        Avlevering other = getEntityManager().find(Avlevering.class, entity.getAvleveringsidentifikator());
+        if (other!=null){
+            throw new EntityExistsException("Avlevering med samme Id eksisterer");
+        }
+
         entity.setOppdateringsinfo(konstruerOppdateringsinfo());
         return super.create(entity);
     }

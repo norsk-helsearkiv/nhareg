@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.persistence.EntityExistsException;
 import javax.persistence.Query;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -69,6 +70,11 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
                 .getResultList();
         //Setter virksomhet
         avtale.setVirksomhet(virksomheter.get(0));
+
+        Avtale other = getEntityManager().find(Avtale.class, avtale.getAvtaleidentifikator());
+        if (other!=null){
+            throw new EntityExistsException("Avtale med samme Id eksisterer");
+        }
         //Oppretter avtale
         return super.create(avtale);
     }

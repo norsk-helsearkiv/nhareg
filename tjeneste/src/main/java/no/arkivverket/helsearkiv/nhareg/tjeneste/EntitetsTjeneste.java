@@ -236,7 +236,9 @@ public abstract class EntitetsTjeneste<T, K> {
         //
         // Oppretter.
         //
+
         getEntityManager().persist(entity);
+
         return entity;
     }
 
