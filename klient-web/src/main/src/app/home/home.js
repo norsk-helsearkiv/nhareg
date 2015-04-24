@@ -20,11 +20,14 @@ angular.module( 'nha.home', [
   });
 })
 
-.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, $modal) {
+.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, $modal, $window, keyboardManager) {
   var antall = 15;
   //Henter ned diagnosene, dette tar litt tid så gjøres ved oppstart, en gang.
   diagnoseService.getDiagnoser();
-
+        //shortcut for ny journal
+        keyboardManager.bind('ctrl-n', function(){
+            $scope.nyJournal();
+        });
   //Tekster i vinduet lastet fra kontroller
     $scope.text = {
       "tooltip" : {}
@@ -221,7 +224,11 @@ angular.module( 'nha.home', [
   //Util
   $scope.loggUt = function() {
     console.log("TODO: logg ut");
-    $location.path('/login');
+      httpService.logout()
+          .success(function(status, headers, config){
+              $window.location.reload();
+          });
+
   };
 
   $scope.actionLeggTilPasientjournald = function(avlevering) {
