@@ -68,6 +68,17 @@ function errorService($modal, $location) {
             template.controller.$inject = ['$scope', '$modalInstance'];
             return $modal.open(template);
         },
+        expectationFailed: function (message) {
+            template.templateUrl = 'common/http-service/error-modal-417.tpl.html';
+            template.controller = function ($scope, $modalInstance) {
+                $scope.message = message;
+                $scope.ok = function () {
+                    $modalInstance.close();
+                };
+            };
+            template.controller.$inject = ['$scope', '$modalInstance'];
+            return $modal.open(template);
+        },
 
         errorCode: function (status) {
             switch(status){
@@ -81,6 +92,8 @@ function errorService($modal, $location) {
                     return this.unauthorizedError();
                 case 409:
                     return this.resourceConflict();
+                case 417:
+                    return this.expectationFailed();
                 default:
                     return this.serverError();
             }

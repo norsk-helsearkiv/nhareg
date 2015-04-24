@@ -70,7 +70,9 @@
         "RESOURCE_CONFLICT_CODE":		"409 Konsistensfeil",
         "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først",
         "UNAUTHORIZED_STATUS_CODE":     "Brukeren har ikke tilgang til ressursen.",
-        "UNAUTHORIZED_STATUS_CODE_TITLE":"Mangler tilgang for funksjon"
+        "UNAUTHORIZED_STATUS_CODE_TITLE":"Mangler tilgang for funksjon",
+        "EXPECTATION_FAILED_STATUS_CODE":"Entiteten finnes fra før",
+        "EXPECTATION_FAILED":           "Det finnes en entitet med samme Id"
     },
     "feltfeil" : {
     	"DagEllerAar" : "Feil datoformat, eksempel på format (31.1.1990)",
