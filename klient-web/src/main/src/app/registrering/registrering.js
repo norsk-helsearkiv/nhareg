@@ -425,7 +425,7 @@ gyldigFodselsnummer = function (fnr) {
   };
         //setter state til endre(2) og kjører en oppdatering
     $scope.nyJournal = function(){
-        $scope.state = 2;
+        $scope.state = 3;
         $scope.nyEllerOppdater();
 
     };
@@ -447,9 +447,10 @@ gyldigFodselsnummer = function (fnr) {
     if($scope.state === 0) {
       httpService.ny("avleveringer/" + $scope.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
       .success(function(data, status, headers, config) {
-        $scope.formData.kjonn = kjonn;
         $scope.pasientjournalDTO = data;
-        $scope.state = 1;
+        $scope.formData = data.persondata;
+        $scope.formData.kjonn = kjonn;
+        $scope.state = 2;
       }).error(function(data, status, headers, config) {
         $scope.formData.kjonn = kjonn;
         setFeilmeldinger(data, status);  
@@ -461,16 +462,32 @@ gyldigFodselsnummer = function (fnr) {
       httpService.oppdater("pasientjournaler/", $scope.pasientjournalDTO)
       .success(function(data, status, headers, config) {
         var lagringsenheter = $scope.formData.lagringsenheter;
-        $scope.formData = {
-          lagringsenheter : lagringsenheter
-        };
-        $scope.state = 0;
+        $scope.pasientjournalDTO = data;
+        $scope.formData = data.persondata;
+        $scope.formData.kjonn = kjonn;
+        $scope.formData.lagringsenheter = lagringsenheter;
+        $scope.state = 2;
         setFocus();
       }).error(function(data, status, headers, config) {
         $scope.formData.kjonn = kjonn;
         setFeilmeldinger(data, status); 
       });
     }
+      //start en ny journal
+      if($scope.state === 3) {
+          httpService.oppdater("pasientjournaler/", $scope.pasientjournalDTO)
+              .success(function(data, status, headers, config) {
+                  var lagringsenheter = $scope.formData.lagringsenheter;
+                  $scope.state = 0;
+                  $scope.formData = {
+                   lagringsenheter : lagringsenheter
+                   };
+                  setFocus();
+              }).error(function(data, status, headers, config) {
+                  $scope.formData.kjonn = kjonn;
+                  setFeilmeldinger(data, status);
+              });
+      }
     
   };
 
