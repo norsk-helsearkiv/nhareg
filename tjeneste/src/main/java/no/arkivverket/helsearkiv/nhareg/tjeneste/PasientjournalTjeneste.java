@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -14,6 +15,7 @@ import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
 
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -41,6 +43,7 @@ import java.util.*;
  * </p>
  */
 @Stateless
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, String> {
 
     public static final String SOKESTRING_QUERY_PARAMETER = "sokestring";
@@ -73,7 +76,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Override
     public Pasientjournal hent(String id) {
         Pasientjournal pasientjournal = super.hent(id);
-
         //
         // Lagt inn denne for å simulere EAGER-loading,
         // uten å havne i en Hibernate-BUG rundt cartesisk produkt ved EAGER-loading
@@ -93,6 +95,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
     public ListeObjekt hentAlle(@Context UriInfo uriInfo) {
         //Underliggende pasientjouranler for avlevering
         MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
@@ -168,7 +171,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             String jpql = "SELECT distinct a FROM Avlevering a inner join a.pasientjournal p WHERE p.uuid = :id";
             Query q = getEntityManager().createQuery(jpql);
             q.setParameter("id", obj.getUuid());
-            Avlevering a = (Avlevering) q.getSingleResult();
+            Avlevering a=null;
+            try {
+                 a = (Avlevering) q.getSingleResult();
+            } catch (NoResultException e){
+                e.printStackTrace();
+            }
             if (a != null) {
                 obj.setAvlevering(a.getAvleveringsbeskrivelse());
                 obj.setAvtale(a.getAvtale().getAvtalebeskrivelse());

@@ -1,7 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ws.rs.Path;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 
 /**
@@ -19,6 +22,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
  * </p>
  */
 @Stateless
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class KjønnTjeneste extends EntitetsTjeneste<Kjønn, String> {
 
     public KjønnTjeneste() {

@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.ws.rs.DELETE;
@@ -10,6 +11,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
@@ -26,6 +29,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
  */
 @Path("/avtaler")
 @Stateless
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
 
     public AvtaleTjeneste() {

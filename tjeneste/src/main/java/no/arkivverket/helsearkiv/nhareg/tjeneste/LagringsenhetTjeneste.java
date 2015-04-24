@@ -3,11 +3,14 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.ws.rs.Path;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
@@ -28,6 +31,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
  * </p>
  */
 @Stateless
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, String> {
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -10,6 +11,8 @@ import javax.persistence.metamodel.EntityType;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.CV;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 
@@ -28,6 +31,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
  * </p>
  */
 @Stateless
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class DiagnosekodeTjeneste extends EntitetsTjeneste<Diagnosekode, String> {
 
     public static final String DISPLAY_NAME_LIKE_QUERY_PARAMETER = "displayNameLike";

@@ -3,11 +3,14 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.util.Calendar;
 import java.util.UUID;
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.Path;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 
@@ -26,6 +29,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
  * </p>
  */
 @Stateless
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
 
     @Resource

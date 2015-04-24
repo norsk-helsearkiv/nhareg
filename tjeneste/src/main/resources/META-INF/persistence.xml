@@ -12,6 +12,8 @@
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle</class>
        <exclude-unlisted-classes>true</exclude-unlisted-classes>
        <shared-cache-mode>ALL</shared-cache-mode>
 
