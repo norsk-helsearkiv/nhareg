@@ -20,14 +20,11 @@ angular.module( 'nha.home', [
   });
 })
 
-.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, $modal, $window, keyboardManager) {
+.controller( 'HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, $modal, $window) {
   var antall = 15;
   //Henter ned diagnosene, dette tar litt tid så gjøres ved oppstart, en gang.
   diagnoseService.getDiagnoser();
-        //shortcut for ny journal
-        keyboardManager.bind('ctrl-n', function(){
-            $scope.nyJournal();
-        });
+
   //Tekster i vinduet lastet fra kontroller
     $scope.text = {
       "tooltip" : {}

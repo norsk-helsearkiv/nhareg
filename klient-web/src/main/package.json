@@ -11,7 +11,9 @@
     "type": "git",
     "url": "git@github.com/arkivverket/NHAREG.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "angular-hotkeys": "~1.4.5"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-less": "~0.11.0",
@@ -34,6 +36,5 @@
     "karma": "^0.12.9",
     "karma-phantomjs-launcher": "0.1.4",
     "karma-coverage": "0.2.4"
-
   }
 }

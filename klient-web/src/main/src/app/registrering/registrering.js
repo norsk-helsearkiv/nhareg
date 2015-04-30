@@ -18,7 +18,7 @@ angular.module( 'nha.registrering', [
   });
 })
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, keyboardManager) {
+.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, hotkeys) {
   //Util
   $scope.navHome = function() {
     history.back();
@@ -26,19 +26,35 @@ angular.module( 'nha.registrering', [
   $scope.loggUt = function() {
     $location.path('/login');
   };
-        //shortcut for å lagre
-        keyboardManager.bind('ctrl-s', function(){
-            $scope.nyEllerOppdater();
+        hotkeys.add({
+            combo:'ctrl+s',
+            description:'Lagre',
+            callback: function(){
+                $scope.nyEllerOppdater();
+            }
         });
-        //shortcut for ny journal
-        keyboardManager.bind('ctrl-n', function(){
-            $scope.nyJournal();
+        hotkeys.add({
+            combo:'ctrl+n',
+            description:'ny journal',
+            callback: function(){
+                $scope.nyJournal();
+            }
         });
+
+        /* //shortcut for å lagre
+         keyboardManager.bind('ctrl+s', function(){
+             $scope.nyEllerOppdater();
+         });
+         //shortcut for ny journal
+         keyboardManager.bind('ctrl+n', function(){
+             $scope.nyJournal();
+         });*/
   //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
   $scope.feilmeldinger = [];
   $scope.error = [];
   $scope.kjonn = [{kode: "M", tekst : ""}, {kode: "K", tekst : ""}, {kode: "U", tekst : ""}, {kode: "I", tekst : ""}];
   $scope.state = 0; //0 = ny, 1 = legg til diagnoser, 2 = endre
+        $scope.prevState = 0;
   var hoppOver = false;
 
     //Tekster fra i18n
@@ -432,6 +448,7 @@ gyldigFodselsnummer = function (fnr) {
   };
         //setter state til endre(2) og kjører en oppdatering
     $scope.nyJournal = function(){
+        $scope.prevState = $scope.state;
         $scope.state = 3;
         $scope.nyEllerOppdater();
 
@@ -482,6 +499,10 @@ gyldigFodselsnummer = function (fnr) {
     }
       //start en ny journal
       if($scope.state === 3) {
+          $scope.state = $scope.prevState;
+          if (!$scope.pasientjournalDTO){
+              return;
+          }
           httpService.oppdater("pasientjournaler/", $scope.pasientjournalDTO)
               .success(function(data, status, headers, config) {
                   var lagringsenheter = $scope.formData.lagringsenheter;
