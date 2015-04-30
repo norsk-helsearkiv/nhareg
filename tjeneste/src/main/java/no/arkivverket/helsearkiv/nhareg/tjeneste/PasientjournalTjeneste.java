@@ -164,24 +164,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 totalAktive++;
             }
         }
-/*
-        //Setter Avtale og Avlevering på resultatobjektene - begrenset liste
-        for (PasientjournalSokeresultatDTO obj : resultatListe) {
-            //Finner avleveringen
-            String jpql = "SELECT distinct a FROM Avlevering a inner join a.pasientjournal p WHERE p.uuid = :id";
-            Query q = getEntityManager().createQuery(jpql);
-            q.setParameter("id", obj.getUuid());
-            Avlevering a=null;
-            try {
-                 a = (Avlevering) q.getSingleResult();
-            } catch (NoResultException e){
-                e.printStackTrace();
-            }
-            if (a != null) {
-                obj.setAvlevering(a.getAvleveringsbeskrivelse());
-                obj.setAvtale(a.getAvtale().getAvtalebeskrivelse());
-            }
-        }*/
         return new ListeObjekt(resultatListe, totalAktive, side, antall);
     }
 
