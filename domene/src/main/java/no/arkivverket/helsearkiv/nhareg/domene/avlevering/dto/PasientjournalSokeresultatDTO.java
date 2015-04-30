@@ -14,9 +14,6 @@ public class PasientjournalSokeresultatDTO {
     private String daar;
     private String oppdatertAv;
 
-    /*private String avtale;
-    private String avlevering;
-*/
     private String uuid;
 
     public String getLagringsenhet() {
@@ -67,24 +64,6 @@ public class PasientjournalSokeresultatDTO {
         this.oppdatertAv = oppdatertAv;
     }
 
-
-
-    /*public String getAvtale() {
-        return avtale;
-    }
-
-    public void setAvtale(String avtale) {
-        this.avtale = avtale;
-    }
-
-    public String getAvlevering() {
-        return avlevering;
-    }
-
-    public void setAvlevering(String avlevering) {
-        this.avlevering = avlevering;
-    }
-*/
     public String getFodselsnummer() {
         return fodselsnummer;
     }
