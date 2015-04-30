@@ -12,7 +12,8 @@
 			"NAVN" : "Navn",
 			"DATO" : "Dato"
 		},
-		"PASIENTJOURNAL" : "Pasientjournal"
+		"PASIENTJOURNAL" : "Pasientjournal",
+        "OPPDATERT_AV": "Oppdatert av"
 	},
 	"home" : {
 		"AVTALE" : "Avtale",
@@ -27,10 +28,10 @@
       "LAGRINGSENHET" : "Lagringsenhet",
       "JNR" : "Journalnummer",
       "LNR" : "Løpenummer",
-      "FNR" : "Fnr",
+      "FNR" : "Fnum",
       "FAAR": "Født",
       "DAAR": "Død",
-      "OPPDATERT_AV": "Oppdatert av",
+
 		"tooltip" : {
 			"LIST" : "Vis pasientjournaler i avleveringen",
 			"ADD" : "Legg til pasientjournal i avleveringen",
@@ -46,7 +47,11 @@
 			"IKKE_KJENT" : "Ikke kjent",
 			"IKKE_SPESIFISERT" : "Ikke spesifisert"
 		},
-		"NAVN" : "Navn"
+		"NAVN" : "Navn",
+        "DIAG_AAR" :"År/dato",
+        "DIAGNOSEKODEVERK" :"Diagnosekodeverk",
+        "DIAGNOSEKODE" : "Diagnosekode",
+        "DIAGNOSETEKST": "Diagnosetekst"
 	},
 	"login" : {
 		"TITTEL" : "Logg inn",

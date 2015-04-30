@@ -9,9 +9,27 @@ import java.io.Serializable;
 public class DiagnoseDTO implements Serializable {
     
     private String uuid;
-    private String diagnosetekst;
     private String diagnosedato;
+    private String diagnosekodeverk;
     private String diagnosekode;
+    private String diagnosetekst;
+    private String oppdatertAv;
+
+    public String getOppdatertAv() {
+        return oppdatertAv;
+    }
+
+    public void setOppdatertAv(String oppdatertAv) {
+        this.oppdatertAv = oppdatertAv;
+    }
+
+    public String getDiagnosekodeverk() {
+        return diagnosekodeverk;
+    }
+
+    public void setDiagnosekodeverk(String diagnosekodeverk) {
+        this.diagnosekodeverk = diagnosekodeverk;
+    }
 
     public String getUuid() {
         return uuid;

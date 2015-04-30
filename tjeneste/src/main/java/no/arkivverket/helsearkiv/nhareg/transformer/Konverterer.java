@@ -178,11 +178,15 @@ public class Konverterer {
             person.setLopenummer(pasientjournal.getJournalidentifikator().getLøpenummer());
             person.setJournalnummer(pasientjournal.getJournalidentifikator().getJournalnummer());
         }
-
+/*
         List<DiagnoseDTO> diagnoser = new ArrayList<DiagnoseDTO>();
+        DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
         for (Diagnose d : pasientjournal.getDiagnose()) {
             DiagnoseDTO diagnoseDTO = new DiagnoseDTO();
-            diagnoseDTO.setDiagnosedato(d.getDiagdato().toString());
+
+            diagnoseDTO.setDiagnosedato(trans.transform(d.getDiagdato()));
+            diagnoseDTO.setDiagnosekodeverk("");
+
             if (d.getDiagnosekode() != null) {
                 diagnoseDTO.setDiagnosekode(d.getDiagnosekode().getCode());
             }
@@ -190,7 +194,7 @@ public class Konverterer {
             diagnoseDTO.setUuid(d.getUuid());
             diagnoser.add(diagnoseDTO);
         }
-        dto.setDiagnoser(diagnoser);
+        dto.setDiagnoser(diagnoser);*/
 
         dto.setPersondata(person);
         return dto;

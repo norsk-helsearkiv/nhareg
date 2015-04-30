@@ -21,6 +21,10 @@ public class DiagnoseTilDTOTransformer implements Transformer<Diagnose, Diagnose
             dto.setDiagnosedato(datoEllerAarTilStringTransformer.transform(input.getDiagdato()));
             if (input.getDiagnosekode() != null) {
                 dto.setDiagnosekode(input.getDiagnosekode().getCode());
+                dto.setDiagnosekodeverk(input.getDiagnosekode().getCodeSystemVersion());
+            }
+            if (input.getOppdateringsinfo()!=null) {
+                dto.setOppdatertAv(input.getOppdateringsinfo().getOppdatertAv());
             }
 
         }

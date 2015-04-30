@@ -151,9 +151,11 @@
 					<thead>
 						<tr>
 							<th></th>
-							<th ts-criteria="diagnosedato">Diagnosedato</th>
-							<th ts-criteria="diagnosekode">Diagnosekode</th>
-							<th ts-criteria="diagnosetekst">Diagnosetekst</th>
+							<th ts-criteria="diagnosedato">{{ 'registrer.DIAG_AAR' | translate }}</th>
+							<th ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE' | translate }}</th>
+                            <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK' | translate }}</th>
+							<th ts-criteria="diagnosetekst">{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
+                            <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -162,8 +164,10 @@
 								<button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)" tooltip="{{text.tooltip.deleteElement}}"></button>
 							</td>
 							<td>{{diagnose.diagnosedato}}</td>
+                            <td>{{diagnose.diagnosekodeverk}}</td>
 							<td>{{diagnose.diagnosekode}}</td>
 							<td>{{diagnose.diagnosetekst}}</td>
+                            <td>{{diagnose.oppdatertAv}}</td>
 						</tr>
 					</tbody>
 				</table>
