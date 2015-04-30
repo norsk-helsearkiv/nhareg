@@ -164,7 +164,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 totalAktive++;
             }
         }
-
+/*
         //Setter Avtale og Avlevering på resultatobjektene - begrenset liste
         for (PasientjournalSokeresultatDTO obj : resultatListe) {
             //Finner avleveringen
@@ -181,7 +181,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 obj.setAvlevering(a.getAvleveringsbeskrivelse());
                 obj.setAvtale(a.getAvtale().getAvtalebeskrivelse());
             }
-        }
+        }*/
         return new ListeObjekt(resultatListe, totalAktive, side, antall);
     }
 

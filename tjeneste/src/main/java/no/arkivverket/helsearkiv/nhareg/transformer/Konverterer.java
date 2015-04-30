@@ -104,6 +104,26 @@ public class Konverterer {
             if (pasientjournal.getGrunnopplysninger().getIdentifikator() != null) {
                 resultat.setFodselsnummer(pasientjournal.getGrunnopplysninger().getIdentifikator().getPID());
             }
+            DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
+            DatoEllerAar fodt = pasientjournal.getGrunnopplysninger().getFødt();
+            if(fodt!=null){
+                resultat.setFaar(trans.transform(fodt));
+            }
+            DatoEllerAar dod = pasientjournal.getGrunnopplysninger().getDød();
+            if (dod!=null){
+                resultat.setDaar(trans.transform(dod));
+            }
+        }
+        if (pasientjournal.getJournalidentifikator()!=null) {
+            resultat.setJnr(pasientjournal.getJournalidentifikator().getJournalnummer());
+            resultat.setLnr(pasientjournal.getJournalidentifikator().getLøpenummer());
+        }
+        if (pasientjournal.getLagringsenhet()!=null&&pasientjournal.getLagringsenhet().size()>0){
+            resultat.setLagringsenhet(pasientjournal.getLagringsenhet().get(0).getIdentifikator());
+        }
+
+        if (pasientjournal.getOppdateringsinfo()!=null) {
+            resultat.setOppdatertAv(pasientjournal.getOppdateringsinfo().getOppdatertAv());
         }
 
         resultat.setUuid(pasientjournal.getUuid());

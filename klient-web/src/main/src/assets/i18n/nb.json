@@ -24,6 +24,13 @@
 		"SOK" : "Søk",
 		"SOKERESULTAT" : "Søkeresultat",
 		"VISER" : "viser",
+      "LAGRINGSENHET" : "Lagringsenhet",
+      "JNR" : "Journalnummer",
+      "LNR" : "Løpenummer",
+      "FNR" : "Fnr",
+      "FAAR": "Født",
+      "DAAR": "Død",
+      "OPPDATERT_AV": "Oppdatert av",
 		"tooltip" : {
 			"LIST" : "Vis pasientjournaler i avleveringen",
 			"ADD" : "Legg til pasientjournal i avleveringen",
