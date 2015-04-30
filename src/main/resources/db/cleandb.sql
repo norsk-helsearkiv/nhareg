@@ -31,3 +31,46 @@ select count(*) from Avlevering_Pasientjournal pasientjou0_ inner join Pasientjo
 
 
 desc Pasientjournal;
+
+-- opprette brukertabeller og roller
+
+CREATE TABLE BrukerRolle(
+  id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  brukernavn VARCHAR(255) NOT NULL,
+  rolle VARCHAR(255) NOT NULL,
+  CONSTRAINT fk_rolle_navn FOREIGN KEY (rolle) REFERENCES Rolle(navn),
+  CONSTRAINT fk_bruker_brukernavn FOREIGN KEY (brukernavn) REFERENCES Bruker(brukernavn)
+);
+
+DROP TABLE BrukerRolle;
+DROP TABLE Bruker;
+DROP TABLE Rolle;
+
+CREATE TABLE Rolle(
+  navn VARCHAR(255) NOT NULL PRIMARY KEY
+);
+
+select rolle, 'Roles' from BrukerRolle where brukernavn='nhabruker1';
+
+CREATE TABLE Bruker(
+  brukernavn VARCHAR(255) NOT NULL PRIMARY KEY ,
+  passord VARCHAR(255) NOT NULL,
+  rollenavn VARCHAR(255) NOT NULL,
+  authtoken VARCHAR(255),
+  CONSTRAINT fk_rolle_navn FOREIGN KEY (rollenavn) REFERENCES Rolle(navn)
+);
+
+INSERT INTO nhareg.Rolle(navn) values('admin');
+INSERT INTO nhareg_test.Bruker(brukernavn, passord, rollenavn) VALUES ('nhabruker1', 'jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=', 'admin');
+
+INSERT INTO nhareg.BrukerRolle(brukernavn, rolle) values('nhabruker1', 'admin');
+select * from BrukerRolle;
+
+select passord as 'Password' from Bruker where brukernavn='nhabruker1';
+
+select passwd from Users where username;
+select rolle, 'Roles' from BrukerRolle where brukernavn='nhabruker1';
+select rolle as 'role', 'Roles' from BrukerRolle where brukernavn='nhabruker1';
+
+select * from Rolle;
+select * from avtale;
