@@ -3,6 +3,7 @@ angular.module( 'nha', [
   'templates-common',
   'ui.router',
     'cfp.hotkeys',
+    'tableSort',
   'pascalprecht.translate',
   'nha.common.error-service',
   'nha.common.http-service',

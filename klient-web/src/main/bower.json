@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "underscore": "~1.7.0",
-    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5"
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
+    "angular-tablesort": "~1.0.6"
   }
 }

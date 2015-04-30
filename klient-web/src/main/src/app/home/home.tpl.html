@@ -48,17 +48,17 @@
         </button>
       </h2>
       <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped" ts-wrapper>
           <thead>
             <tr>
-              <th>{{ 'common.table.ID' | translate }}</th>
-              <th>{{ 'common.table.ARKIVSKAPER' | translate }}</th>
-              <th>{{ 'common.table.BESKRIVELSE' | translate }}</th>
+              <th ts-criteria="avleveringsidentifikator">{{ 'common.table.ID' | translate }}</th>
+              <th ts-criteria="arkivskaper">{{ 'common.table.ARKIVSKAPER' | translate }}</th>
+              <th ts-criteria="avleveringsbeskrivelse">{{ 'common.table.BESKRIVELSE' | translate }}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr data-ng-repeat="avlevering in avleveringer">
+            <tr data-ng-repeat="avlevering in avleveringer" ts-repeat>
               <td>{{ avlevering.avleveringsidentifikator }}</td>
               <td>{{ avlevering.arkivskaper }}</td>
               <td>{{ avlevering.avleveringsbeskrivelse }}</td>

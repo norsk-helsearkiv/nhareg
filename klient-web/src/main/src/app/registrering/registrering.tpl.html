@@ -147,17 +147,17 @@
 					</div>
 				</div>
 
-				<table class="table">
+				<table class="table" ts-wrapper>
 					<thead>
 						<tr>
 							<th></th>
-							<th>Diagnosedato</th>
-							<th>Diagnosekode</th>
-							<th>Diagnosetekst</th>
+							<th ts-criteria="diagnosedato">Diagnosedato</th>
+							<th ts-criteria="diagnosekode">Diagnosekode</th>
+							<th ts-criteria="diagnosetekst">Diagnosetekst</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr data-ng-repeat="diagnose in pasientjournalDTO.diagnoser">
+						<tr data-ng-repeat="diagnose in pasientjournalDTO.diagnoser" ts-repeat>
 							<td>
 								<button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)" tooltip="{{text.tooltip.deleteElement}}"></button>
 							</td>

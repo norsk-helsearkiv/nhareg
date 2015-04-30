@@ -73,7 +73,8 @@ module.exports = {
       'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'vendor/angular-cookies/angular-cookies.js',
       'vendor/underscore/underscore-min.js',
-        'vendor/angular-hotkeys/build/hotkeys.js'
+        'vendor/angular-hotkeys/build/hotkeys.js',
+        'vendor/angular-tablesort/js/angular-tablesort.js'
 
     ],
     css: [
