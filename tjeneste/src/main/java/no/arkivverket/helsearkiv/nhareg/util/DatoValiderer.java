@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 /**
  * Validerer konsistens på datofeltene til PersondataDTO
@@ -80,22 +83,10 @@ public class DatoValiderer {
         }
         return feil;
     }
-    
     private static Date getDate(String dato){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.mm.yyyy");
-        SimpleDateFormat aar = new SimpleDateFormat("yyyy");
-        
-        try {
-            if(dato.length() == 4) {
-                return aar.parse(dato);
-            } else {
-                return sdf.parse(dato);
-            }    
-        } catch(ParseException pe) {
-            return null;
-        }
-        
+        return GyldigeDatoformater.getDate(dato);
     }
+
     
     private static boolean sjekk(String s) {
         if(s == null || s.isEmpty() || s.toLowerCase().equals("mors")) {

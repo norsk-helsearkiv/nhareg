@@ -2,10 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
@@ -19,6 +17,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 /**
  * Implementeres som Transformer
@@ -198,9 +197,10 @@ public class Konverterer {
             dea.setAar(Integer.parseInt(tid));
             return dea;
         }
+        Date dato = GyldigeDatoformater.getDate(tid);
 
         Calendar cal = Calendar.getInstance();
-        cal.setTime(format.parse(tid));
+        cal.setTime(dato);
 
         dea.setDato(cal);
         return dea;

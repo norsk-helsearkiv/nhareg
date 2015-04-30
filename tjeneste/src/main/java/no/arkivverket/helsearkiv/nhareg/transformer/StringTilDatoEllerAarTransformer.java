@@ -3,7 +3,10 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import org.apache.commons.collections4.Transformer;
 
 /**
@@ -24,13 +27,11 @@ public class StringTilDatoEllerAarTransformer implements Transformer<String, Dat
         }
 
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        try {
-            cal.setTime(sdf.parse(tid));
-        } catch (ParseException ex) {
+        Date dato = GyldigeDatoformater.getDate(tid);
+        if (dato == null) {
             throw new IllegalArgumentException(tid);
         }
-
+        cal.setTime(dato);
         dea.setDato(cal);
         return dea;
 
