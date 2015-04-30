@@ -30,10 +30,6 @@
                         <th ts-criteria="oppdatertAv">{{'home.OPPDATERT_AV'| translate}}</th>
                         <th></th>
 
-                        <!--<th ts-criteria="avtale">{{ 'home.AVTALE' | translate }}</th>
-                        <th ts-criteria="avlevering">{{ 'home.AVLEVERING' | translate }}</th>
-                        <th ts-criteria="fodselsnummer">{{ 'common.table.ID' | translate }}</th>
-                        <th ts-criteria="navn">{{ 'common.table.NAVN' | translate }}</th>-->
                         <th></th>
                     </tr>
                 </thead>
@@ -47,11 +43,6 @@
                         <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.faar }}</td>
                         <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.daar }}</td>
                         <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.oppdatertAv }}</td>
-                        <!--
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.avtale }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.avlevering }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.fodselsnummer }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.navn }}</td>-->
                         <td>
                             <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernPasientjournal(pasient)" tooltip="{{tekster.tooltip.deleteElement}}"></button>
                         </td>
