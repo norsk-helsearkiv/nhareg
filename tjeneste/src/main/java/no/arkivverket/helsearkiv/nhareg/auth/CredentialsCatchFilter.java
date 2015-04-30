@@ -24,6 +24,7 @@ public class CredentialsCatchFilter implements Filter {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
             if (httpServletRequest.getSession().getAttribute("principal") == null
                     && httpServletRequest.getUserPrincipal() != null) {
+                Object p = httpServletRequest.getUserPrincipal();
                 httpServletRequest.getSession().setAttribute("principal", httpServletRequest.getUserPrincipal());
             }
         }

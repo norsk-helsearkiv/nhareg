@@ -25,8 +25,9 @@ public class FlushCredentialsListener implements HttpSessionListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
         Principal principal = (Principal) httpSessionEvent.getSession().getAttribute("principal");
+
+        authenticationManager.flushCache();
         if (principal != null)
             authenticationManager.flushCache(principal);
     }
-
 }
