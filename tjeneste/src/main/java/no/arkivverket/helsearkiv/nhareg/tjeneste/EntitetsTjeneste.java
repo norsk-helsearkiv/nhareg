@@ -95,6 +95,7 @@ public abstract class EntitetsTjeneste<T, K> {
     private Class<T> entityClass;
     private Class<K> idClass;
     private String idName;
+    private String orderByName;
     private Validator validator;
 
     public EntitetsTjeneste() {
@@ -104,9 +105,11 @@ public abstract class EntitetsTjeneste<T, K> {
         this.entityClass = entityClass;
         this.idClass = keyClass;
         this.idName = idName;
-
     }
 
+    protected void setOrderByName(String orderByName){
+        this.orderByName = orderByName;
+    }
     public EntityManager getEntityManager() {
         return entityManager;
     }
@@ -139,7 +142,9 @@ public abstract class EntitetsTjeneste<T, K> {
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get(idName)));
+        if (orderByName!=null&&!"".equals(orderByName)) {
+            criteriaQuery.orderBy(criteriaBuilder.desc(root.get(orderByName)));
+        }
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
         if (queryParameters.containsKey(SIDE)
                 && queryParameters.containsKey(ANTALL)) {

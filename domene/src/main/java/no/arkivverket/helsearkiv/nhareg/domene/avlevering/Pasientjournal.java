@@ -2,15 +2,9 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import java.util.*;
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -68,6 +62,11 @@ public class Pasientjournal implements Serializable
     protected Oppdateringsinfo oppdateringsinfo;
     @XmlAttribute(name = "uuid")
     protected String uuid;
+
+    @XmlElement(name = "opprettet_dato", required = true, type = String.class)
+    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlSchemaType(name = "dateTime")
+    protected Calendar opprettetDato;
 
     @Override
     public boolean equals(Object o) {
@@ -293,4 +292,11 @@ public class Pasientjournal implements Serializable
         this.uuid = value;
     }
 
+    public Calendar getOpprettetDato() {
+        return opprettetDato;
+    }
+
+    public void setOpprettetDato(Calendar opprettetDato) {
+        this.opprettetDato = opprettetDato;
+    }
 }

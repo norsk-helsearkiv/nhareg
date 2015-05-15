@@ -29,8 +29,7 @@
                         <th ts-criteria="daar">{{'home.DAAR' | translate}}</th>
                         <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
                         <th></th>
-
-                        <th></th>
+                        <th data-ng-show="false" ts-criteria="opprettetDato|parseFloat" ts-default="descending">tt</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +45,7 @@
                         <td>
                             <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernPasientjournal(pasient)" tooltip="{{tekster.tooltip.deleteElement}}"></button>
                         </td>
+                        <td data-ng-show="false">{{pasient.opprettetDato}}</td>
                     </tr>
                 </tbody>
             </table>

@@ -32,10 +32,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -142,6 +139,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Produces(MediaType.APPLICATION_JSON)
     public ListeObjekt getPasientjournaler(@PathParam("id") String avleveringsidentifikator, @Context UriInfo uriInfo) {
         Avlevering avlevering = getSingleInstance(avleveringsidentifikator);
+
         return pasientjournalTjeneste.getActiveWithPaging(avlevering.getPasientjournal(), uriInfo);
     }
 

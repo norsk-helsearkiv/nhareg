@@ -13,6 +13,8 @@ public class PasientjournalSokeresultatDTO {
     private String faar;
     private String daar;
     private String oppdatertAv;
+    private Long opprettetDato;
+
 
     private String uuid;
 
@@ -87,6 +89,13 @@ public class PasientjournalSokeresultatDTO {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-    
-    
+
+    public Long getOpprettetDato() {
+        return opprettetDato;
+    }
+
+    public void setOpprettetDato(Long opprettetDato) {
+        this.opprettetDato = opprettetDato;
+    }
+
 }

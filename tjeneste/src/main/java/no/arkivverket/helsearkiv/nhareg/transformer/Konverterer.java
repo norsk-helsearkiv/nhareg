@@ -17,6 +17,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.DatatypeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 /**
@@ -124,6 +125,14 @@ public class Konverterer {
 
         if (pasientjournal.getOppdateringsinfo()!=null) {
             resultat.setOppdatertAv(pasientjournal.getOppdateringsinfo().getOppdatertAv());
+        }
+
+        if (pasientjournal.getOpprettetDato()!=null) {
+            try {
+                resultat.setOpprettetDato(pasientjournal.getOpprettetDato().getTimeInMillis());
+            }catch(Throwable t){}
+        }else{
+            resultat.setOpprettetDato(0L);
         }
 
         resultat.setUuid(pasientjournal.getUuid());

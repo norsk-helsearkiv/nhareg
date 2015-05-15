@@ -9,6 +9,7 @@ import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.PasientjournalSokestringPredicate;
+import no.arkivverket.helsearkiv.nhareg.util.SortPasientjournaler;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
@@ -21,6 +22,11 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.File;
@@ -99,6 +105,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public ListeObjekt hentAlle(@Context UriInfo uriInfo) {
         //Underliggende pasientjouranler for avlevering
         MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
+    //    setOrderByName("opprettetDato");
         if (queryParameter.containsKey("avlevering")) {
             ListeObjekt lstObj = avleveringTjeneste
                     .getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
@@ -106,9 +113,31 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
+        //setOrderByName(null);
         return getActiveWithPaging(pasientjournaler, uriInfo);
     }
+    /*
+    @Override
+    public List<Pasientjournal> getAll(MultivaluedMap<String, String> queryParameters) {
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        final CriteriaQuery<Pasientjournal> criteriaQuery = criteriaBuilder.createQuery(Pasientjournal.class);
+        Root<Pasientjournal> root = criteriaQuery.from(Pasientjournal.class);
+        Join<Pasientjournal, Oppdateringsinfo> opd = root.join("oppdateringsinfo");
+        javax.persistence.criteria.Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
+        criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
+        criteriaQuery.orderBy(criteriaBuilder.asc(opd.get("sistOppdatert")));
+        TypedQuery<Pasientjournal> query = getEntityManager().createQuery(criteriaQuery);
+        if (queryParameters.containsKey(SIDE)
+                && queryParameters.containsKey(ANTALL)) {
+            Integer side = Integer.parseInt(queryParameters.getFirst(SIDE));
+            Integer antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
 
+            query.setFirstResult((side - 1) * antall);
+            query.setMaxResults(antall);
+        }
+        return query.getResultList();
+    }
+*/
     /**
      * Pasientjournal has soft delete, this methods removes the inactive and
      * returns the number of active pasientjournals.
@@ -130,6 +159,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
             pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
         }
+        SortPasientjournaler.sort(pasientjournaler);
         //
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
@@ -164,7 +194,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 totalAktive++;
             }
         }
-        return new ListeObjekt(resultatListe, totalAktive, side, antall);
+        ListeObjekt list =  new ListeObjekt(resultatListe, totalAktive, side, antall);
+        return list;
     }
 
     @GET
@@ -350,7 +381,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         entity.getLagringsenhet().clear();
         entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
         entity.setOppdateringsinfo(konstruerOppdateringsinfo());
-
+        entity.setOpprettetDato(Calendar.getInstance());
         return super.create(entity);
     }
 
