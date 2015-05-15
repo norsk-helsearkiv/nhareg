@@ -31,7 +31,32 @@ public class PersonnummerValiderer {
         }
 
     }
+    public static final boolean isDnummer(final String nr){
+        if (nr==null||"".equals(nr)){
+            return false;
+        }
+        String first = nr.substring(0,1);
+        Integer i = Integer.parseInt(first);
 
+        return i>3;
+    }
+
+    public static final boolean isHnummer(final String nr){
+        if (nr==null||"".equals(nr)){
+            return false;
+        }
+        String mnd = nr.substring(2,3);
+        Integer i = Integer.parseInt(mnd);
+
+        return i>3;
+    }
+
+    public static final boolean isFnummer(final String nr){
+        if (nr==null||"".equals(nr)){
+            return false;
+        }
+        return !isDnummer(nr)&&!isHnummer(nr);
+    }
     /**
      * Sjekker om fødselsnummeret har riktig format.
      *

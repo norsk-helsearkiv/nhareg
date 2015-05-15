@@ -19,6 +19,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSoke
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.DatatypeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
 /**
  * Implementeres som Transformer
@@ -61,12 +62,22 @@ public class Konverterer {
         pasientjournal.setJournalidentifikator(journalId);
 
         Grunnopplysninger grunnopplysninger = new Grunnopplysninger();
-        if (person.getFodselsnummer() != null) {
+        String fnr = person.getFodselsnummer();
+        if (fnr != null) {
             Identifikator identifikator = new Identifikator();
-            identifikator.setPID(person.getFodselsnummer());
-            identifikator.setTypePID("fødelsnummer");
+            identifikator.setPID(fnr);
+            if (PersonnummerValiderer.isHnummer(fnr)){
+                identifikator.setTypePID("H");
+            }
+            else if (PersonnummerValiderer.isDnummer(fnr)){
+                identifikator.setTypePID("D");
+            }
+            else if(PersonnummerValiderer.isFnummer(fnr)){
+                identifikator.setTypePID("F");
+            }
             grunnopplysninger.setIdentifikator(identifikator);
         }
+        
         if (person.getNavn() != null) {
             grunnopplysninger.setPnavn(person.getNavn());
         }
