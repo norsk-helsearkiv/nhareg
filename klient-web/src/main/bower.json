@@ -11,8 +11,8 @@
     "angular-cookies": "~1.2.0"
   },
   "dependencies": {
-    "underscore": "~1.7.0",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
-    "angular-tablesort": "~1.0.6"
+    "angular-tablesort": "~1.0.6",
+    "angular-underscore-module": "~1.0.1"
   }
 }

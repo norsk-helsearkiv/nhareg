@@ -1,5 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 /**
  * Created by haraldk on 27.03.15.
  */
@@ -10,38 +16,26 @@ public class PersonnummerValiderer {
     /** Lengden på gyldig fødselsnummer. */
     public static final int LEN_FNR= 11;
 
-    /**
-     * Sjekker om organisasjonsnummeret har gyldig format.
-     *
-     * @param kundenr Kundenummer
-     * @return boolean <code>true</code> hvis ikke tomt og gyldig format
-     */
-    public static boolean gyldigOrgnr(final String kundenr) {
-        if (kundenr == null
-                || kundenr.trim().length() != LEN_ORGNR) {
+    public static Valideringsfeil valider(PersondataDTO dto){
 
-            return false;
+
+        String fnr = dto.getFodselsnummer();
+        if (fnr!=null&&!"".equals(fnr)){
+            if (gyldigFnr(fnr)){
+                return null;
+            }
+            Valideringsfeil feil = new Valideringsfeil("fodselsnummer", "FeilFodselsnummer");
+            return feil;
+        }else{
+            return null;
         }
 
-        final String knr= kundenr.trim();
-        int i= 0;
-        int resultat= 0;
-        final int[] vekttall= new int[] { 3, 2, 7, 6, 5, 4, 3, 2 };
-        while (i < knr.length() - 1) {
-            final int intverdi= Character.digit(knr.charAt(i), 16);
-            resultat= resultat + intverdi * vekttall[i];
-            i++;
-        }
-        final int testverdi= Character.digit(knr.charAt(i), 10);
-        resultat= 11 - (resultat % 11);
-        if ( resultat==11 ) resultat= 0;
-        return resultat == testverdi;
     }
 
     /**
      * Sjekker om fødselsnummeret har riktig format.
      *
-     * @param  Fødselsnummer
+     * @param  fnrOrg
      * @return <code>true</code> hvis gyldig format
      */
     public static boolean gyldigFnr(final String fnrOrg) {
@@ -75,7 +69,8 @@ public class PersonnummerValiderer {
         return ((intmod2 == intverdi2) || (intmod2 == 11 && intverdi2 == 0));
     }
 
+
     public static void main(String... args){
-        System.out.println(gyldigFnr("63088138996"));
-    }
+        System.out.println(gyldigFnr("19410542709"));
+     }
 }

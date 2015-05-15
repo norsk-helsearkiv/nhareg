@@ -41,14 +41,7 @@ angular.module( 'nha.registrering', [
             }
         });
 
-        /* //shortcut for å lagre
-         keyboardManager.bind('ctrl+s', function(){
-             $scope.nyEllerOppdater();
-         });
-         //shortcut for ny journal
-         keyboardManager.bind('ctrl+n', function(){
-             $scope.nyJournal();
-         });*/
+
   //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
   $scope.feilmeldinger = [];
   $scope.error = [];
@@ -97,6 +90,10 @@ angular.module( 'nha.registrering', [
       function() { return $filter('translate')('feltfeil.FodtEtterDodt'); },
       function(newval) { $scope.feilTekster['FodtEtterDodt'] = newval; }
     );
+        $scope.$watch(
+            function() { return $filter('translate')('feltfeil.FeilFodselsnummer'); },
+            function(newval) { $scope.feilTekster['FeilFodselsnummer'] = newval; }
+        );
         $scope.$watch(
             function() { return $filter('translate')('feltfeil.EnObligatorisk'); },
             function(newval) { $scope.feilTekster['EnObligatorisk'] = newval; }
@@ -214,14 +211,38 @@ angular.module( 'nha.registrering', [
   var fodselsnummer;
   $scope.setFnr = function() {
     if($scope.formData && $scope.formData.fodselsnummer) {
-      fodselsnummer = $scope.formData.fodselsnummer;  
+      fodselsnummer = $scope.formData.fodselsnummer;
     }
   };
 
   var getAarhundreFromFnr = function(fnr) {
+      var individ = Number(fnr.substring(6,9));
+      var aar = Number(fnr.substring(5,6));
+
+      //var i18551899 =
+      if ((individ >= 500 && individ <= 749) && aar > 54){
+          //1800
+          return 18;
+      }
+      if (individ >= 0 && individ <= 499){
+          //1900
+          return 19;
+      }
+      if ((individ >= 900 && individ <= 999) && aar > 39){
+          //1900
+          return 19;
+      }
+      if ((individ >= 500 && individ <= 999) && aar < 40){
+          //2000
+          return 20;
+      }
+      
+
+/*
     var personnr = fnr.substring(6,9);
     var i = Number(personnr.substring(0,1));
     var nr = Number(personnr.substring(1,3));
+
 
     if(i === 0) {
       if(nr <= 39) {
@@ -249,7 +270,7 @@ angular.module( 'nha.registrering', [
       } else {
         return 19;
       }
-    }
+    }*/
   };
 
 kjonnFromFodselsnummer = function(fnr){
@@ -258,30 +279,6 @@ kjonnFromFodselsnummer = function(fnr){
     return kjonn%2===0?$scope.kjonn[1]:$scope.kjonn[0];
 };
 
-gyldigFodselsnummer = function (fnr) {
-  var faktor1 = [3, 7, 6, 1, 8, 9, 4, 5, 2];
-  var faktor2 = [5, 4, 3, 2, 7, 6, 5, 4, 3];
-  var nestSisteFnrSiffer = fnr.charAt(9);
-  var sisteFnrSiffer = fnr.charAt(10);
- 
-  var summerSjekksum = function (sum, verdi, index) {
-    var ettSiffer = fnr.charAt(index);
-    return sum + verdi * ettSiffer;
-  };
- 
-  var finnKontrollSiffer = function(sjekksum) {
-    var kontrollSiffer = 11 - (sjekksum % 11);
-    return kontrollSiffer == 11 ? 0 : kontrollSiffer;
-  };
- 
-  var forsteSjekksum = _.reduce(faktor1, summerSjekksum, 0);
-  var forsteKontrollsiffer = finnKontrollSiffer(forsteSjekksum);
- 
-  var andreSjekksum = _.reduce(faktor2, summerSjekksum, forsteKontrollsiffer*2);
-  var andreKontrollsiffer = finnKontrollSiffer(andreSjekksum);
- 
-  return forsteKontrollsiffer == nestSisteFnrSiffer && andreKontrollsiffer == sisteFnrSiffer;
-};
 
   $scope.populerFelt = function() {
     if($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) {
@@ -295,33 +292,40 @@ gyldigFodselsnummer = function (fnr) {
     }
 
     var kjonnValidert = false, datoValidert = false;
-    if (gyldigFodselsnummer($scope.formData.fodselsnummer)){
-    //if($scope.formData.fodselsnummer.length == 11) {
-    var kjonn = kjonnFromFodselsnummer($scope.formData.fodselsnummer);
-    if (kjonn){
-        $scope.formData.kjonn = kjonn;
-        kjonnValidert = true;
+    if($scope.formData.fodselsnummer.length == 11) {
+
+        var kjonn = kjonnFromFodselsnummer($scope.formData.fodselsnummer);
+        if (kjonn) {
+            $scope.formData.kjonn = kjonn;
+            kjonnValidert = true;
+        }
     }
-    /*
-      if(($scope.formData.fodselsnummer % 2) === 0) {
-        $scope.formData.kjonn = $scope.kjonn[0];
-        kjonnValidert = true;
-      } else {
-        $scope.formData.kjonn = $scope.kjonn[1];
-        kjonnValidert = true;
-      }
-*/
+
       //Valider dato
       var fdato = $scope.formData.fodselsnummer.substring(0, 6);
-      var dag = Number(fdato.substring(0,2));
-      var mnd = Number(fdato.substring(2,4));
-      var aar = Number(fdato.substring(4,6));
+
+        var d1 = Number(fdato.substring(0,1));//for d-nummersjekk
+        var d2 = Number(fdato.substring(1,2));
+        var m1 = Number(fdato.substring(2,3));//for h-nummersjekk
+        var m2 = Number(fdato.substring(3, 4));
+        var y1 = Number(fdato.substring(4,5));
+        var y2 = Number(fdato.substring(5,6));
+        var dag, mnd, aar;
+        if (d1>3){ //indikerer d-nummer
+            dag = (d1-4)+""+d2;
+            mnd = m1+""+m2;
+        }
+        if (m1>3){ //indikerer h-nummer
+            mnd = (m1-4)+""+m2;
+            dag = d1+""+d2;
+        }
+        aar = y1+""+y2;
 
       if(dag > 0 && dag < 32 && mnd > 0 && mnd < 13 && aar > 0) {
         datoValidert = true;
-        $scope.formData.fodt = fdato.substring(0,2) + "." + fdato.substring(2,4) + "." + aarhundre + fdato.substring(4,6); 
+        $scope.formData.fodt = dag + "." + mnd + "." + aarhundre + aar;
       }
-    }
+
 
     hoppOver = kjonnValidert && datoValidert;
   };

@@ -11,6 +11,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfei
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.logging.Log;
@@ -161,12 +162,10 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
                 = new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
 
         valideringsfeil.addAll(DatoValiderer.valider(person));
-
-        /*if (!new ValidatePersondataDTOExt().isValid(person)){
-            valideringsfeil.add(new Valideringsfeil("journalnummer", "EnObligatorisk"));
-            valideringsfeil.add(new Valideringsfeil("lopenummer", "EnObligatorisk"));
-            valideringsfeil.add(new Valideringsfeil("fodselsnummer", "EnObligatorisk"));
-        }*/
+        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(person);
+        if (fnrfeil!=null){
+            valideringsfeil.add(fnrfeil);
+        }
 
         if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);

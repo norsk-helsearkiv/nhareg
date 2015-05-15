@@ -4,6 +4,7 @@ angular.module( 'nha', [
   'ui.router',
     'cfp.hotkeys',
     'tableSort',
+    'underscore',
   'pascalprecht.translate',
   'nha.common.error-service',
   'nha.common.http-service',

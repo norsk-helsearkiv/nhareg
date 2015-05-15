@@ -5,10 +5,12 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.PasientjournalSokestringPredicate;
+import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.SortPasientjournaler;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
@@ -232,7 +234,10 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 = new Validator<PersondataDTO>(PersondataDTO.class, pasientjournalDTO.getPersondata()).valider();
         //Validerer forholdet mellom dataoer
         valideringsfeil.addAll(DatoValiderer.valider(pasientjournalDTO.getPersondata()));
-
+        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(pasientjournalDTO.getPersondata());
+        if (fnrfeil!=null){
+            valideringsfeil.add(fnrfeil);
+        }
         // VALIDERING - Diagnoser
         //Coming soon (tm)
         if (!valideringsfeil.isEmpty()) {
@@ -341,10 +346,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return Response.noContent().build();
     }
 
-    /*
-     Dette endepunktet blir ikke brukt her,
-     POST avleveringer/{id}/pasientjournaler
-     */
+
     @Override
     public Pasientjournal create(Pasientjournal entity) {
         entity.setUuid(UUID.randomUUID().toString());

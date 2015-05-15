@@ -93,6 +93,7 @@
         "EnObligatorisk" : "Ett av feltene må fylles inn (*)",
     	"NotUnique" : "Lagringsenhet finnes i annen avlevering",
     	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
+      "FeilFodselsnummer" : "Fødselsnummer er feil (kan også være D/H-nummer)",
     	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
     	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
     	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
