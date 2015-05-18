@@ -77,7 +77,7 @@ public class Konverterer {
             }
             grunnopplysninger.setIdentifikator(identifikator);
         }
-        
+
         if (person.getNavn() != null) {
             grunnopplysninger.setPnavn(person.getNavn());
         }
