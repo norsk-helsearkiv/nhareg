@@ -32,17 +32,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="clickable" data-ng-repeat="pasient in data.liste" ts-repeat>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.lagringsenhet }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.fodselsnummer }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.jnr }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.lnr }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.navn }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.faar }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.daar }}</td>
-                        <td data-ng-click="actionVisJournal(pasient.uuid)">{{ pasient.oppdatertAv }}</td>
+                    <tr data-ng-repeat="pasient in data.liste" ts-repeat>
+                        <td>{{ pasient.lagringsenhet }}</td>
+                        <td>{{ pasient.fodselsnummer }}</td>
+                        <td>{{ pasient.jnr }}</td>
+                        <td>{{ pasient.lnr }}</td>
+                        <td>{{ pasient.navn }}</td>
+                        <td>{{ pasient.faar }}</td>
+                        <td>{{ pasient.daar }}</td>
+                        <td>{{ pasient.oppdatertAv }}</td>
                         <td>
                             <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernPasientjournal(pasient)" tooltip="{{tekster.tooltip.deleteElement}}"></button>
+                        </td>
+                        <td>
+                            <button class="icon icon-edit" data-ng-click="actionVisJournal(pasient.uuid)" tooltip="{{text.tooltip.endr}}"></button>
                         </td>
                         <td data-ng-show="false">{{pasient.opprettetDato}}</td>
                     </tr>
