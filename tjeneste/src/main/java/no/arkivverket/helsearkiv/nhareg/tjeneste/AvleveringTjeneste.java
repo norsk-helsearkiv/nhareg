@@ -72,6 +72,18 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         Object result = query.getSingleResult();
         return String.valueOf(result);
     }
+    public final String getAvleveringBeskrivelse(String pasientjournalId){
+        Query query = getEntityManager().createNativeQuery("select a.avleveringsbeskrivelse from avlevering a JOIN avlevering_pasientjournal ap on ap.Avlevering_avleveringsidentifikator=a.avleveringsidentifikator and ap.pasientjournal_uuid=?");
+        query.setParameter(1, pasientjournalId);
+        Object result = query.getSingleResult();
+        return String.valueOf(result);
+    }
+    public final Avlevering getAvlevering(String avleveringsidentifikator){
+        Query query = getEntityManager().createQuery("SELECT a FROM Avlevering  a where a.avleveringsidentifikator=:identifikator");
+        query.setParameter("identifikator", avleveringsidentifikator);
+        return (Avlevering) query.getSingleResult();
+    }
+
     @POST
     @Override
     public Avlevering create(Avlevering entity) {

@@ -60,7 +60,16 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         
         return Response.ok(dtoListe).build();
     }
-        
+    @GET
+    @Path("/virksomhet")
+    public Virksomhet getVirksomhet(){
+        List<Virksomhet> virksomheter = getEntityManager()
+                .createQuery("SELECT v FROM Virksomhet v")
+                .getResultList();
+        //Setter virksomhet
+        return virksomheter.get(0);
+    }
+
     @POST
     @Override
     public Avtale create(Avtale avtale) {

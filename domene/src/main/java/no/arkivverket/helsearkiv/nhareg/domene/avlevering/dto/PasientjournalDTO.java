@@ -11,6 +11,33 @@ public class PasientjournalDTO implements Serializable {
     
     private PersondataDTO persondata;
     private List<DiagnoseDTO> diagnoser;
+    private String virksomhet;
+    private String avtaleBeskrivelse;
+    private String avleveringBeskrivelse;
+
+    public String getVirksomhet() {
+        return virksomhet;
+    }
+
+    public void setVirksomhet(String virksomhet) {
+        this.virksomhet = virksomhet;
+    }
+
+    public String getAvtaleBeskrivelse() {
+        return avtaleBeskrivelse;
+    }
+
+    public void setAvtaleBeskrivelse(String avtaleBeskrivelse) {
+        this.avtaleBeskrivelse = avtaleBeskrivelse;
+    }
+
+    public String getAvleveringBeskrivelse() {
+        return avleveringBeskrivelse;
+    }
+
+    public void setAvleveringBeskrivelse(String avleveringBeskrivelse) {
+        this.avleveringBeskrivelse = avleveringBeskrivelse;
+    }
 
     public String getAvleveringsidentifikator() {
         return avleveringsidentifikator;

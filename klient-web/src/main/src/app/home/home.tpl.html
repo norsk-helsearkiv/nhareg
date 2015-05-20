@@ -10,10 +10,12 @@
 
     <!-- Avtaleliste -->
     <div class="col-sm-3 col-md-2 sidebar">
-      <h4>
+        <small> {{ 'home.VIRKSOMHET' | translate }} {{ virksomhet.foretaksnavn}}</small>
+        <h4>
         {{ 'home.AVTALER' | translate }}
         <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()">{{ 'common.LEGG_TIL' | translate }}</button>
       </h4>
+
       <ul class="nav nav-sidebar">
         <li data-ng-repeat="avtale in avtaler"
             data-ng-click="setValgtAvtale(avtale)"
@@ -42,7 +44,7 @@
       
       <h2 class="sub-header">
         {{ 'home.AVLEVERINGER' | translate }}
-        <small> {{ 'home.FOR' | translate }} {{ valgtAvtale.avtalebeskrivelse }}</small>
+        <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn}} &#x2F {{ valgtAvtale.avtalebeskrivelse }}</small>
         <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale">
           {{ 'common.LEGG_TIL' | translate }}
         </button>

@@ -81,6 +81,12 @@ angular.module( 'nha.home', [
   }).error(function(data, status, headers, config) {
     errorService.errorCode(status);
   });
+        httpService.hent("avtaler/virksomhet", false)
+            .success(function (data, status, headers, config){
+                $scope.virksomhet = data;
+            }).error(function(data, status, headers, config){
+                errorService.errorCode(status);
+            });
 
   $scope.actionSok = function(sokestring) {
     var txt = $scope.text.sokeresultat;

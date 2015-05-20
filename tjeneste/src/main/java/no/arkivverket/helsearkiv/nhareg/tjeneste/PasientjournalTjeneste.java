@@ -64,6 +64,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     DiagnoseTjeneste diagnoseTjeneste;
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
+    @EJB
+    private AvtaleTjeneste avtaleTjeneste;
 
     //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
     @EJB(name = "DiagnoseFraDTOTransformer")
@@ -208,7 +210,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             throw new NoResultException(id);
         }
 
-
         return tilPasientjournalDTO(pasientjournal);
     }
 
@@ -220,6 +221,15 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //
         Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
         pasientjournalDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
+
+        //TODO legger til headerinfo
+        Virksomhet virksomhet = avtaleTjeneste.getVirksomhet();
+
+        Avlevering avlevering = avleveringTjeneste.getAvlevering(pasientjournalDTO.getAvleveringsidentifikator());
+        pasientjournalDTO.setAvleveringBeskrivelse(avlevering.getAvleveringsbeskrivelse());
+        pasientjournalDTO.setAvtaleBeskrivelse(avlevering.getAvtale().getAvtalebeskrivelse());
+        pasientjournalDTO.setVirksomhet(virksomhet.getForetaksnavn());
+        //pasientjournal -> avlevering -> virksomhet
         return pasientjournalDTO;
     }
 

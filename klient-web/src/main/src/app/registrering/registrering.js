@@ -127,6 +127,7 @@ angular.module( 'nha.registrering', [
   $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
         $scope.avleveringsidentifikator = registreringService.getAvleveringsidentifikator();
 
+
   //Setter verdier fra registrering-service
   if($scope.avlevering !== undefined) {
     //Ny pasientjouranl
