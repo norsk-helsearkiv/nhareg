@@ -588,16 +588,18 @@ kjonnFromFodselsnummer = function(fnr){
 
 
   $scope.sokDiagnoseDisplayNameLike =function(displayName){
-      var results = [];
-      return httpService.hentAlle("diagnosekoder?displayNameLike="+displayName, false)
-      .then(function(resp){
-        return resp.data.map(function(item){
-            var res = [];
-            res.code = item.code;
-            res.displayName = item.displayName;
-            return res;
-        });
-      });
+      if (displayName.length > 2) {
+          var results = [];
+          return httpService.hentAlle("diagnosekoder?displayNameLike=" + displayName, false)
+              .then(function (resp) {
+                  return resp.data.map(function (item) {
+                      var res = [];
+                      res.code = item.code;
+                      res.displayName = item.codeSystemVersion+" | "+ item.displayName;
+                      return res;
+                  });
+              });
+      }
   };
 
   $scope.onSelectDiagnose = function($item, $model, $label){
