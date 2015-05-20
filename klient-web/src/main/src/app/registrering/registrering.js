@@ -119,6 +119,7 @@ angular.module( 'nha.registrering', [
       function(newval) { $scope.feilTekster['fKontaktEttersKontakt'] = newval; }
     );
 
+
   $scope.formData = {
     lagringsenheter : []
   };
@@ -539,6 +540,7 @@ kjonnFromFodselsnummer = function(fnr){
     if($scope.formDiagnose.diagnosekode === diagnosekode) {
       return;
     }
+      $scope.formDiagnose.diagnosekode = $scope.formDiagnose.diagnosekode.toUpperCase();
     var diagnosekoder = diagnoseService.getDiagnoser();
     $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode];
     if($scope.formDiagnose.diagnosetekst) {
