@@ -49,7 +49,6 @@ public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
         return super.create(entity);
     }
     
-    
 
     /**
      * NB! Det er tvilsomt/feil at denne skal brukes i noen sammenhenger.

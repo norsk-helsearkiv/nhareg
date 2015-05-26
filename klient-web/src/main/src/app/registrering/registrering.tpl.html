@@ -151,7 +151,7 @@
 					<thead>
 						<tr>
 							<th></th>
-							<th ts-criteria="diagnosedato">{{ 'registrer.DIAG_AAR' | translate }}</th>
+							<th id="diagnosedato_table" ts-criteria="diagnosedato">{{ 'registrer.DIAG_AAR' | translate }}</th>
 							<th ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE' | translate }}</th>
                             <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK' | translate }}</th>
 							<th ts-criteria="diagnosetekst">{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
@@ -163,11 +163,26 @@
 							<td>
 								<button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)" tooltip="{{text.tooltip.deleteElement}}"></button>
 							</td>
-							<td>{{diagnose.diagnosedato}}</td>
-                            <td>{{diagnose.diagnosekodeverk}}</td>
-							<td>{{diagnose.diagnosekode}}</td>
-							<td>{{diagnose.diagnosetekst}}</td>
+							<td>
+                                <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosedato}}</div>
+                                <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosedato"/></div>
+                            </td>
+                            <td>
+                                <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosekode}}</div>
+                                <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-blur="editDiagnosekode(diagnose)" data-ng-model="diagnose.diagnosekode"/></div>
+                            </td>
+							<td>
+                                {{diagnose.diagnosekodeverk}}
+                            </td>
+							<td>
+                                <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosetekst}}</div>
+                                <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosetekst"/></div>
+                            </td>
                             <td>{{diagnose.oppdatertAv}}</td>
+                            <td>
+                                <button class="icon icon-edit" ng-click="modify(diagnose)"/>
+                                <button class="btn btn-primary right" ng-show="editingData[diagnose.uuid]" ng-click="update(diagnose)">Lagre</button>
+                            </td>
 						</tr>
 					</tbody>
 				</table>

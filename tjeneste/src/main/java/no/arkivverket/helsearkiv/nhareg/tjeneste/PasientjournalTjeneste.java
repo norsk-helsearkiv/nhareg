@@ -6,6 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
@@ -299,6 +300,33 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         diagnoseTjeneste.create(diagnose);
         pasientjournal.getDiagnose().add(diagnose);
         pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
+        return Response.ok(diagnose).build();
+    }
+
+    @PUT
+    @Path("/{id}/diagnoser")
+    public Response oppdaterDiagnose(@PathParam("id") String id, DiagnoseDTO diagnoseDTO){
+        Pasientjournal pasientjournal = hent(id);
+        if (pasientjournal == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        ArrayList<Valideringsfeil> valideringsfeil = new Validator<DiagnoseDTO>(DiagnoseDTO.class).valider(diagnoseDTO);
+/*        DatoEllerAar dod = pasientjournal.getGrunnopplysninger().getDød();
+        DatoEllerAar fodt = pasientjournal.getGrunnopplysninger().getFødt();
+*/
+
+        if (valideringsfeil.size()!=0){
+            Valideringsfeil feil = valideringsfeil.get(0);
+            if (feil.getAttributt().equals("diagnosedato")){
+                feil.setAttributt("diagnosedatotab");
+            }
+            throw new ValideringsfeilException(valideringsfeil);
+        }
+        Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
+        diagnose.setOppdateringsinfo(konstruerOppdateringsinfo());
+        diagnoseTjeneste.update(diagnose);
+
         return Response.ok(diagnose).build();
     }
 

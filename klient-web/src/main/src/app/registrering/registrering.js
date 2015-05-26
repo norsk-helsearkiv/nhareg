@@ -433,6 +433,10 @@ kjonnFromFodselsnummer = function(fnr){
         index = 10;
         felt = document.getElementById('diagnosedato').innerHTML;
       }
+        if(element.attributt === 'diagnosedatotab') {
+            index = 10;
+            felt = document.getElementById('diagnosedato_table').innerHTML;
+        }
       if(element.attributt === 'diagnosekode') {
         index = 11;
         felt = document.getElementById('diagnosekode').innerHTML;
@@ -556,6 +560,7 @@ kjonnFromFodselsnummer = function(fnr){
     $scope.formDiagnose = {};
     $scope.diagnosetekstErSatt = false;
     document.getElementById("diagnoseDato").focus();
+
   };
 
   //Legger til diagnose i skjema
@@ -627,5 +632,40 @@ kjonnFromFodselsnummer = function(fnr){
     });
 
   };
+
+
+    $scope.editingData = [];
+
+    $scope.editDiagnose = function(){
+        for (var i = 0, length = $scope.pasientjournalDTO.diagnoser.length; i < length; i++) {
+            $scope.editingData[$scope.pasientjournalDTO.diagnoser[i].id] = false;
+        }
+    };
+    $scope.modify = function(diagnose){
+        if ($scope.editingData.length===0){
+            $scope.editDiagnose();
+        }
+        $scope.editingData[diagnose.uuid] = true;
+    };
+    $scope.editDiagnosekode = function(diagnose){
+        diagnose.diagnosekode = diagnose.diagnosekode.toUpperCase();
+        var diagnosekoder = diagnoseService.getDiagnoser();
+        diagnose.diagnosetekst = diagnosekoder[diagnose.diagnosekode];
+    };
+
+    $scope.update = function(diagnose){
+        $scope.feilmeldinger = [];
+        httpService.oppdater("pasientjournaler/"+$scope.pasientjournalDTO.persondata.uuid+"/diagnoser", diagnose)
+            .success(function(data, status, headers, config){
+                $scope.editingData[diagnose.uuid] = false;
+            })
+            .error(function(data, status, headers, config){
+                if(status === 400) {
+                    setFeilmeldinger(data, status);
+                } else {
+                    errorService.errorCode(status);
+                }
+            });
+    };
 
 });

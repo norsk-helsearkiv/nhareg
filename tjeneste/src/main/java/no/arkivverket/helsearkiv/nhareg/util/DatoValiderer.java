@@ -83,7 +83,7 @@ public class DatoValiderer {
         }
         return feil;
     }
-    private static Date getDate(String dato){
+    public static Date getDate(String dato){
         return GyldigeDatoformater.getDate(dato);
     }
 
