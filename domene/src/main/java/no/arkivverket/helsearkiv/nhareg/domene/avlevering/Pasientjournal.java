@@ -62,10 +62,8 @@ public class Pasientjournal implements Serializable
     protected Oppdateringsinfo oppdateringsinfo;
     @XmlAttribute(name = "uuid")
     protected String uuid;
-
-    @XmlElement(name = "opprettet_dato", required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
-    @XmlSchemaType(name = "dateTime")
+    
+    @XmlTransient
     protected Calendar opprettetDato;
 
     @Override
@@ -291,7 +289,7 @@ public class Pasientjournal implements Serializable
     public void setUuid(String value) {
         this.uuid = value;
     }
-
+    @XmlTransient
     public Calendar getOpprettetDato() {
         return opprettetDato;
     }
