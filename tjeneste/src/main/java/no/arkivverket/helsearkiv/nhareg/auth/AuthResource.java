@@ -36,6 +36,15 @@ public class AuthResource {
       if (request.getSession() != null) {
           request.getSession().invalidate();// remove session.
       }
+      /*  Cookie[] cookies = request.getCookies();
+        if (cookies != null)
+            for (int i = 0; i < cookies.length; i++) {
+                cookies[i].setValue("");
+                cookies[i].setPath("/");
+                cookies[i].setMaxAge(0);
+                response.addCookie(cookies[i]);
+            }
+      */
       /*
         try {
             request.logout();

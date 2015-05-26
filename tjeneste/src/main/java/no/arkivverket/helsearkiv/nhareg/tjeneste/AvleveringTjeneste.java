@@ -100,6 +100,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     }
 
     @GET
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<AvleveringDTO> getAvleveringDTO(@Context UriInfo uriInfo) {
         List<Avlevering> list = getAll(uriInfo.getQueryParameters());
@@ -223,6 +224,27 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
         return response.build();
 
+    }
+
+    @POST
+    @Path("/{id}/laas")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response laasAvlevering(@PathParam("id") String avleveringsidentifikator){
+        Avlevering avlevering = hent(avleveringsidentifikator);
+        avlevering.setLaast(true);
+        avlevering = update(avlevering);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Path("/{id}/laasOpp")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    public Response laasOppAvlevering(@PathParam("id") String avleveringsidentifikator){
+        Avlevering avlevering = hent(avleveringsidentifikator);
+        avlevering.setLaast(false);
+        avlevering = update(avlevering);
+        return Response.ok().build();
     }
 
     @DELETE

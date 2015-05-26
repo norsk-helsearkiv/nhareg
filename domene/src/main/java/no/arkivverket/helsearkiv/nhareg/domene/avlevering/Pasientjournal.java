@@ -62,7 +62,7 @@ public class Pasientjournal implements Serializable
     protected Oppdateringsinfo oppdateringsinfo;
     @XmlAttribute(name = "uuid")
     protected String uuid;
-    
+
     @XmlTransient
     protected Calendar opprettetDato;
 

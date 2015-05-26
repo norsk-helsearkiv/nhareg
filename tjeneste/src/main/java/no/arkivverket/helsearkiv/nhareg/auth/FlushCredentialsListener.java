@@ -7,6 +7,8 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.security.Principal;
+import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * Created by haraldk on 24.04.15.
@@ -25,9 +27,10 @@ public class FlushCredentialsListener implements HttpSessionListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
         Principal principal = (Principal) httpSessionEvent.getSession().getAttribute("principal");
-
         authenticationManager.flushCache();
+
         if (principal != null)
             authenticationManager.flushCache(principal);
     }
+
 }

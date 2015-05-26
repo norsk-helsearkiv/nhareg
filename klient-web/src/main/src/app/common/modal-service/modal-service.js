@@ -73,6 +73,35 @@ function modalService($modal, httpService, errorService) {
         return $modal.open(template);
     }
 
+    function warningModal(tpl, relativeUrl, msg, title, desc, okFunction){
+        template.templateUrl = tpl;
+        template.controller = function ($scope, $modalInstance) {
+            $scope.formData = {
+                "error" : {}
+            };
+            $scope.melding = msg;
+            $scope.tittel = title;
+            $scope.beskrivelse = desc;
+
+            $scope.ok = function() {
+                httpService.ny(relativeUrl, $scope.formData)
+                    .success(function(data, status, headers, config) {
+                        $modalInstance.close();
+                        okFunction();
+                    }).error(function(data, status, headers, config) {
+                        errorService.errorCode(status);
+                    });
+
+            };
+
+            $scope.avbryt = function() {
+                $modalInstance.close();
+            };
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+
     function endreModal(tpl, list, relativUrl, valideringFunction, entitet) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
@@ -101,7 +130,8 @@ function modalService($modal, httpService, errorService) {
     return {
         deleteModal : deleteModal,
         nyModal : nyModal,
-        endreModal : endreModal
+        endreModal : endreModal,
+        warningModal : warningModal
     };
 
 }

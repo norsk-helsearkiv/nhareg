@@ -23,7 +23,7 @@ public class UserServiceBean implements UserService{
         return em.find(Bruker.class, username);
     }
 
-    private String plainToHash(String userPass){
+    private static String plainToHash(String userPass){
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-256");
@@ -36,7 +36,10 @@ public class UserServiceBean implements UserService{
         }
         return null;
     }
-
+    public static void main (String... arg){
+       System.out.println(plainToHash("admin"));
+        //http://approsto.com/sha-generator/
+    }
     @Override
     public void saveUser(Bruker user) {
         //TODO

@@ -60,8 +60,8 @@ CREATE TABLE Bruker(
   CONSTRAINT fk_rolle_navn FOREIGN KEY (rollenavn) REFERENCES Rolle(navn)
 );
 
-INSERT INTO nhareg.Rolle(navn) values('admin');
-INSERT INTO nhareg_test.Bruker(brukernavn, passord, rollenavn) VALUES ('nhabruker1', 'jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=', 'admin');
+INSERT INTO nhareg.Rolle(navn) values('bruker');
+INSERT INTO nhareg.Bruker(brukernavn, passord, rollenavn) VALUES ('nhabruker2', 'BgWGA+ADDzl11fikSWj2FYtZl4xNNfm5cln0oUWC49w=', 'bruker');
 
 INSERT INTO nhareg.BrukerRolle(brukernavn, rolle) values('nhabruker1', 'admin');
 select * from BrukerRolle;

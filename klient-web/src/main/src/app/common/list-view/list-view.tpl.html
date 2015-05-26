@@ -42,10 +42,10 @@
                         <td>{{ pasient.daar }}</td>
                         <td>{{ pasient.oppdatertAv }}</td>
                         <td>
-                            <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernPasientjournal(pasient)" tooltip="{{tekster.tooltip.deleteElement}}"></button>
+                            <button class="icon icon-edit" data-ng-click="actionVisJournal(pasient.uuid)" tooltip="{{text.tooltip.endr}}"></button>
                         </td>
                         <td>
-                            <button class="icon icon-edit" data-ng-click="actionVisJournal(pasient.uuid)" tooltip="{{text.tooltip.endr}}"></button>
+                            <button class="icon icon-padding-left icon-delete" ng-hide="pasient.avleveringLaast" data-ng-click="actionFjernPasientjournal(pasient)" tooltip="{{tekster.tooltip.deleteElement}}"></button>
                         </td>
                         <td data-ng-show="false">{{pasient.opprettetDato}}</td>
                     </tr>

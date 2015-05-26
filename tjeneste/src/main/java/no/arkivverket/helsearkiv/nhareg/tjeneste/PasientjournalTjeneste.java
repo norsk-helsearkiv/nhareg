@@ -110,7 +110,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public ListeObjekt hentAlle(@Context UriInfo uriInfo) {
         //Underliggende pasientjouranler for avlevering
         MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
-    //    setOrderByName("opprettetDato");
         if (queryParameter.containsKey("avlevering")) {
             ListeObjekt lstObj = avleveringTjeneste
                     .getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
@@ -118,31 +117,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
-        //setOrderByName(null);
         return getActiveWithPaging(pasientjournaler, uriInfo);
     }
-    /*
-    @Override
-    public List<Pasientjournal> getAll(MultivaluedMap<String, String> queryParameters) {
-        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        final CriteriaQuery<Pasientjournal> criteriaQuery = criteriaBuilder.createQuery(Pasientjournal.class);
-        Root<Pasientjournal> root = criteriaQuery.from(Pasientjournal.class);
-        Join<Pasientjournal, Oppdateringsinfo> opd = root.join("oppdateringsinfo");
-        javax.persistence.criteria.Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
-        criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-        criteriaQuery.orderBy(criteriaBuilder.asc(opd.get("sistOppdatert")));
-        TypedQuery<Pasientjournal> query = getEntityManager().createQuery(criteriaQuery);
-        if (queryParameters.containsKey(SIDE)
-                && queryParameters.containsKey(ANTALL)) {
-            Integer side = Integer.parseInt(queryParameters.getFirst(SIDE));
-            Integer antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
-
-            query.setFirstResult((side - 1) * antall);
-            query.setMaxResults(antall);
-        }
-        return query.getResultList();
-    }
-*/
     /**
      * Pasientjournal has soft delete, this methods removes the inactive and
      * returns the number of active pasientjournals.
@@ -186,14 +162,23 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         List<PasientjournalSokeresultatDTO> resultatListe = new ArrayList<PasientjournalSokeresultatDTO>();
         int totalAktive = 0;
         int antallIListe = 0;
+        Map<String, Avlevering> avleveringMap = new HashMap<String, Avlevering>();
 
         for (int i = 0; i < total; i++) {
             //Aktiv
-            if (pasientjournaler.get(i).isSlettet() == null
-                    || !pasientjournaler.get(i).isSlettet()) {
+            Pasientjournal pj = pasientjournaler.get(i);
+            if (pj.isSlettet() == null || !pj.isSlettet()) {
 
                 if (antallIListe < antall && i >= forste) {
-                    resultatListe.add(Konverterer.tilPasientjournalSokeresultatDTO(pasientjournaler.get(i)));
+                    PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
+                    String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pj.getUuid());
+                    Avlevering a = avleveringMap.get(avleveringsId);
+                    if (a==null){
+                        a = avleveringTjeneste.getAvlevering(avleveringsId);
+                        avleveringMap.put(avleveringsId, a);
+                    }
+                    sokres.setAvleveringLaast(a.isLaast());
+                    resultatListe.add(sokres);
                     antallIListe++;
                 }
                 totalAktive++;
@@ -230,6 +215,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         pasientjournalDTO.setAvleveringBeskrivelse(avlevering.getAvleveringsbeskrivelse());
         pasientjournalDTO.setAvtaleBeskrivelse(avlevering.getAvtale().getAvtalebeskrivelse());
         pasientjournalDTO.setVirksomhet(virksomhet.getForetaksnavn());
+        pasientjournalDTO.setAvleveringLaast(avlevering.isLaast());
         //pasientjournal -> avlevering -> virksomhet
         return pasientjournalDTO;
     }

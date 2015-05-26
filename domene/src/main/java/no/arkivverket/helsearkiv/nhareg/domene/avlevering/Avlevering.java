@@ -3,10 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import java.io.Serializable;
 import java.util.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -59,6 +56,9 @@ public class Avlevering implements Serializable
     @XmlElement(required = true)
     protected Set<Pasientjournal> pasientjournal;
     protected Oppdateringsinfo oppdateringsinfo;
+
+    @XmlTransient
+    private boolean laast = false;
 
     /**
      * Gets the value of the avleveringsidentifikator property.
@@ -209,4 +209,11 @@ public class Avlevering implements Serializable
         this.oppdateringsinfo = value;
     }
 
+    public void setLaast(boolean laast){
+        this.laast = laast;
+    }
+
+    public boolean isLaast(){
+        return this.laast;
+    }
 }

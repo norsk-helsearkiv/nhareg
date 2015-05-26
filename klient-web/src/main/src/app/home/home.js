@@ -73,7 +73,14 @@ angular.module( 'nha.home', [
       function() { return $filter('translate')('home.tooltip.DELETE'); },
       function(newval) { $scope.text.tooltip.deleteElement = newval; }
     );
-
+    $scope.$watch(
+        function() { return $filter('translate')('home.tooltip.LAAS'); },
+        function(newval) { $scope.text.tooltip.laas = newval; }
+    );
+        $scope.$watch(
+            function() { return $filter('translate')('home.tooltip.LAAST'); },
+            function(newval) { $scope.text.tooltip.laast = newval; }
+        );
   httpService.hentAlle("avtaler", false)
   .success(function(data, status, headers, config) {
     $scope.avtaler = data;
@@ -226,12 +233,13 @@ angular.module( 'nha.home', [
 
   //Util
   $scope.loggUt = function() {
-    console.log("TODO: logg ut");
       httpService.logout()
           .success(function(status, headers, config){
               $window.location.reload();
-          });
 
+          }).error(function(){
+              $window.location.reload();
+          });
   };
 
   $scope.actionLeggTilPasientjournald = function(avlevering) {
@@ -239,7 +247,25 @@ angular.module( 'nha.home', [
       registreringService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
     $location.path('/registrer');
   };
-
+        $scope.actionLaasAvlevering = function(avlevering){
+            var tpl = 'common/modal-service/warning-modal.tpl.html';
+            var url = "avleveringer/" + avlevering.avleveringsidentifikator+"/laas";
+            var id = avlevering.avleveringsidentifikator;
+            var tittel = $filter('translate')('modal.warning_laas.TITTEL');
+            var beskrivelse = $filter('translate')('modal.warning_laas.BESKRIVELSE');
+            modalService.warningModal(tpl, url, id, tittel, beskrivelse, function(){
+                $scope.setValgtAvtale($scope.valgtAvtale);
+            });
+        };
+        $scope.actionLaasOppAvlevering = function(avlevering){
+            var tpl = 'common/modal-service/warning-modal.tpl.html';
+            var url = "avleveringer/" + avlevering.avleveringsidentifikator+"/laasOpp";
+            var id = avlevering.avleveringsidentifikator;
+            var tittel = $filter('translate')('modal.warning_laas_opp.TITTEL');
+            modalService.warningModal(tpl, url, id, tittel, null, function(){
+                $scope.setValgtAvtale($scope.valgtAvtale);
+            });
+        };
   //Hjelpe metode for å fjerne fra liste
   var fjern = function(list, element) {
     for(var i = 0; i < list.length; i++) {

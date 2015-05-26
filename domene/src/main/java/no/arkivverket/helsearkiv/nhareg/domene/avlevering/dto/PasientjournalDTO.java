@@ -15,6 +15,16 @@ public class PasientjournalDTO implements Serializable {
     private String avtaleBeskrivelse;
     private String avleveringBeskrivelse;
 
+    public boolean isAvleveringLaast() {
+        return avleveringLaast;
+    }
+
+    public void setAvleveringLaast(boolean avleveringLaast) {
+        this.avleveringLaast = avleveringLaast;
+    }
+
+    private boolean avleveringLaast;
+
     public String getVirksomhet() {
         return virksomhet;
     }

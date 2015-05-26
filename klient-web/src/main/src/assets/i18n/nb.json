@@ -38,7 +38,9 @@
 			"ADD" : "Legg til pasientjournal i avleveringen",
 			"FOLDER" : "Generer leveranse",
 			"ENDRE" : "Endre",
-			"DELETE" : "Slett"
+			"DELETE" : "Slett",
+          "LAAS" : "Lås avlevering",
+          "LAAST" : "Avleveringen er låst, kan kun åpnes av administrator"
 		}
 	},
 	"registrer" : {
@@ -70,7 +72,15 @@
 		},
 		"legg_til" : {
 			"TITTEL" : "Opprett ny"
-		}
+		},
+        "warning_laas" :{
+          "TITTEL" : "Er du siker på at du vil låse avlevering?",
+          "BESKRIVELSE" : "Du vil ikke kunne legge til eller endre pasientjournalene i avleveringen i etterkant."
+        },
+      "warning_laas_opp" :{
+        "TITTEL" : "Er du siker på at du vil låse opp avleveringen?"
+      }
+
 	},
 	"error" :  {
         "BAD_REQUEST_STATUS_CODE":      "400 Skjema feil",

@@ -14,7 +14,15 @@ public class PasientjournalSokeresultatDTO {
     private String daar;
     private String oppdatertAv;
     private Long opprettetDato;
+    private boolean avleveringLaast;
 
+    public boolean isAvleveringLaast() {
+        return avleveringLaast;
+    }
+
+    public void setAvleveringLaast(boolean avleveringLaast) {
+        this.avleveringLaast = avleveringLaast;
+    }
 
     private String uuid;
 

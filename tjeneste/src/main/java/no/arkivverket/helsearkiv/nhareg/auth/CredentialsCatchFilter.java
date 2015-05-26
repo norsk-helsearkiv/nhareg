@@ -9,7 +9,7 @@ import java.io.IOException;
  * Created by haraldk on 24.04.15.
  * WFLY-3221
  */
-@WebFilter(urlPatterns = "*")
+//@WebFilter(urlPatterns = "*")
 public class CredentialsCatchFilter implements Filter {
 
     @Override
@@ -25,7 +25,7 @@ public class CredentialsCatchFilter implements Filter {
             if (httpServletRequest.getSession().getAttribute("principal") == null
                     && httpServletRequest.getUserPrincipal() != null) {
                 Object p = httpServletRequest.getUserPrincipal();
-                httpServletRequest.getSession().setAttribute("principal", httpServletRequest.getUserPrincipal());
+               // httpServletRequest.getSession().setAttribute("principal", httpServletRequest.getUserPrincipal());
             }
         }
         next.doFilter(request, response);
