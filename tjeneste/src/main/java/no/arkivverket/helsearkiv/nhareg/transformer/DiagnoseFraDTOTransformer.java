@@ -41,7 +41,16 @@ public class DiagnoseFraDTOTransformer implements Transformer<DiagnoseDTO, Diagn
                 List<Diagnosekode> list = tjeneste.getAll(queryParameters);
                 if (list.size() == 1) {
                     diagnose.setDiagnosekode(list.get(0));
-                } else {
+                } else if (list.size()>1){
+                    for (Diagnosekode k:list){
+                        if (k.getCodeSystemVersion().equals(input.getDiagnosekodeverk())){
+                            diagnose.setDiagnosekode(k);
+                        }
+                    }
+                    if (diagnose.getDiagnosekode()==null){
+                        throw new IllegalArgumentException(input.getDiagnosekode());
+                    }
+                } else{
                     throw new IllegalArgumentException(input.getDiagnosekode());
                 }
             }

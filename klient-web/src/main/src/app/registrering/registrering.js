@@ -312,7 +312,8 @@ kjonnFromFodselsnummer = function(fnr){
         var m2 = Number(fdato.substring(3, 4));
         var y1 = Number(fdato.substring(4,5));
         var y2 = Number(fdato.substring(5,6));
-        var dag, mnd, aar;
+        var dag=d1+""+d2, mnd=m1+""+m2, aar;
+
         if (d1>3){ //indikerer d-nummer
             dag = (d1-4)+""+d2;
             mnd = m1+""+m2;
@@ -546,9 +547,10 @@ kjonnFromFodselsnummer = function(fnr){
     }
       $scope.formDiagnose.diagnosekode = $scope.formDiagnose.diagnosekode.toUpperCase();
     var diagnosekoder = diagnoseService.getDiagnoser();
-    $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode];
+    $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode].displayName;
+      $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode].codeSystemVersion;
     if($scope.formDiagnose.diagnosetekst) {
-      $scope.diagnosetekstErSatt = true;
+
       document.getElementById("btn-diagnose").focus();
     } else {
       $scope.diagnosetekstErSatt = false;
@@ -650,7 +652,7 @@ kjonnFromFodselsnummer = function(fnr){
     $scope.editDiagnosekode = function(diagnose){
         diagnose.diagnosekode = diagnose.diagnosekode.toUpperCase();
         var diagnosekoder = diagnoseService.getDiagnoser();
-        diagnose.diagnosetekst = diagnosekoder[diagnose.diagnosekode];
+        diagnose.diagnosetekst = diagnosekoder[diagnose.diagnosekode].displayName;
     };
 
     $scope.update = function(diagnose){
