@@ -71,7 +71,35 @@ angular.module( 'nha.common.list-view', [
     sider = Math.ceil($scope.data.total / $scope.data.antall);
     return new Array(Math.ceil(sider));
   };
+        $scope.lagringsenhetAsc = false;
+        $scope.fodselsnummerAsc = false;
+        $scope.jnrAsc = false;
+        $scope.lnrAsc = false;
+        $scope.navnAsc = false;
+        $scope.faarAsc = false;
+        $scope.daarAsc = false;
+        $scope.oppdatertAvAsc = false;
 
+
+        $scope.sortDirection=null;
+        $scope.sortColumn=null;
+
+        $scope.actionSort = function(column, sortDirection){
+          console.log("sorting by:"+column+" dir:"+sortDirection);
+            var direction = sortDirection?"asc":"desc";
+            $scope.sortDirection = direction;
+            $scope.sortColumn = column;
+
+            httpService.hentAlle("pasientjournaler?side=" + $scope.aktivSide + "&antall=" + antall + listService.getQuery() +"&orderBy="+$scope.sortColumn+"&sortDirection="+$scope.sortDirection)
+                .success(function(data, status, headers, config) {
+
+                    setTittel(data);
+                    $scope.data = data;
+
+                }).error(function(data, status, headers, config) {
+                    errorService.errorCode(status);
+                });
+        };
   $scope.actionSok = function() {
     var txt = $scope.tekster.sokeresultat;
     var viser = $scope.tekster.viser;
@@ -92,7 +120,15 @@ angular.module( 'nha.common.list-view', [
   };
 
   $scope.navPage = function(index) {
-    httpService.hentAlle("pasientjournaler?side=" + index + "&antall=" + antall + listService.getQuery())
+      var ordering = "";
+      if ($scope.sortColumn){
+          ordering +="&orderBy="+$scope.sortColumn;
+      }
+      if ($scope.sortDirection){
+          ordering +="&sortDirection="+$scope.sortDirection;
+      }
+
+    httpService.hentAlle("pasientjournaler?side=" + index + "&antall=" + antall + listService.getQuery()+ordering)
     .success(function(data, status, headers, config) {
 
       setTittel(data);

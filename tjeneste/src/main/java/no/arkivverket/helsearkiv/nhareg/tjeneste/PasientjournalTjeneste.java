@@ -140,7 +140,17 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             Predicate<Pasientjournal> p = new PasientjournalSokestringPredicate(queryParameters.get(SOKESTRING_QUERY_PARAMETER));
             pasientjournaler = new ArrayList<Pasientjournal>(CollectionUtils.select(pasientjournaler, p));
         }
-        SortPasientjournaler.sort(pasientjournaler);
+        List<String> orders = queryParameters.get("orderBy");
+        String order = null;
+        if (orders!=null&&orders.size()>0){
+            order = orders.get(0);
+        }
+        List<String> directions = queryParameters.get("sortDirection");
+        String direction = null;
+        if (directions!=null&&directions.size()>0){
+            direction = directions.get(0);
+        }
+        SortPasientjournaler.sort(pasientjournaler, order, direction);
         //
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
@@ -251,7 +261,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                             .getKjonn());
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
-
+        pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
         Pasientjournal persistert = update(pasientjournal);
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();

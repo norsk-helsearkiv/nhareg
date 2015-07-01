@@ -140,14 +140,16 @@ public class Konverterer {
         if (pasientjournal.getOppdateringsinfo()!=null) {
             resultat.setOppdatertAv(pasientjournal.getOppdateringsinfo().getOppdatertAv());
         }
-
-        if (pasientjournal.getOpprettetDato()!=null) {
-            try {
-                resultat.setOpprettetDato(pasientjournal.getOpprettetDato().getTimeInMillis());
-            }catch(Throwable t){}
-        }else{
-            resultat.setOpprettetDato(0L);
+        if (pasientjournal.getOppdateringsinfo()!=null){
+            if (pasientjournal.getOppdateringsinfo().getSistOppdatert()!=null){
+                try {
+                    resultat.setOpprettetDato(pasientjournal.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
+                }catch(Throwable t){}
+            }else{
+                resultat.setOpprettetDato(0L);
+            }
         }
+
 
         resultat.setUuid(pasientjournal.getUuid());
         return resultat;
@@ -218,7 +220,7 @@ public class Konverterer {
     }
 
     public static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
-        if (tid.toLowerCase().equals("mors")) {
+        if (tid.toLowerCase().equals("mors")||"".equals(tid)) {
             return null;
         }
 
