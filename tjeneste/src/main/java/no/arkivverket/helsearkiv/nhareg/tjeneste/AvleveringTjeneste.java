@@ -211,7 +211,6 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Path("/{id}/leveranse")
     @Produces(MediaType.APPLICATION_XML)
     public Response getLeveranse(@PathParam("id") String avleveringsidentifikator) throws FileNotFoundException {
-
         Avlevering avlevering = hent(avleveringsidentifikator);
 
         //EAGER LOADING ALL
