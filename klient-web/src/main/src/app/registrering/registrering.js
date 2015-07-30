@@ -20,7 +20,7 @@ angular.module( 'nha.registrering', [
   });
 })
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, hotkeys, modalService) {
+.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, hotkeys, modalService, $window) {
   //Util
   $scope.navHome = function() {
     history.back();
@@ -29,20 +29,37 @@ angular.module( 'nha.registrering', [
     $location.path('/login');
   };
 
+  //Hotkeylistener for ctrl+n og ctrl+s
+  $window.onkeydown = function(event) {
+    var keycode = event.charCode || event.keyCode;
+    if(!event.ctrlKey) {
+      return;
+    }
+
+    if (keycode === 80) { //p for pasientjournal (ny)
+      event.preventDefault(); 
+      $scope.nyJournal();
+    }
+    if (keycode === 83) { //s
+      event.preventDefault(); 
+      $scope.nyEllerOppdater();
+    }
+  };
+
 /*
   hotkeys.bindTo($scope)
   .add({
-  combo:'ctrl+s',
+  combo:'alt+s',
   description:'Lagre',
-  callback: function(){
+  callback: function(){ 
     $scope.nyEllerOppdater();
   }
   })
   .add({
-  combo:'ctrl+n',
+  combo:'alt+n',
   description:'ny journal',
   callback: function(){
-      $scope.nyJournal();
+    $scope.nyJournal();
   }
   });
 */
