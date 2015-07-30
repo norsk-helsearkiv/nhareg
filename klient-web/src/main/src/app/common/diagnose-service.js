@@ -18,11 +18,18 @@ function diagnoseService(httpService, errorService) {
         httpService.hentAlle("diagnosekoder", false)
         .success(function(data, status, headers, config) {
           for(var i = 0; i < data.length; i++) {
-              var diag = {
-                  displayName:data[i].displayName,
-                  codeSystemVersion:data[i].codeSystemVersion
-              };
-              diagnoser[data[i].code]= diag;
+            if(!diagnoser[data[i].code]) {
+              diagnoser[data[i].code] = [];
+            }
+
+            var diag = {
+                selected : false,
+                displayName:data[i].displayName,
+                codeSystem:data[i].codeSystem,
+                codeSystemVersion:data[i].codeSystemVersion
+            };
+
+              diagnoser[data[i].code].push(diag);
           }
         }).error(function(data, status, headers, config) {
           errorService.errorCode(status);

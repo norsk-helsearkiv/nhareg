@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{'modal.velg.TITTEL' | translate}}</h3>
+</div>
+
+<div class="modal-body" ng-enter="ok()" autofocus>
+	<table class="table table-striped">
+      <thead>
+        <tr>
+       	  <th></th>
+          <th>{{ 'registrer.DIAGNOSEKODEVERK' | translate }}</th>
+          <th>{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-repeat="element in modalListe">
+          <td><input type="checkbox" ng-checked="element.selected" ng-click="oppdaterValg(element)"></td>
+          <td>{{ element.codeSystemVersion }}</td>
+          <td>{{ element.displayName }}</td>
+        </tr>
+      </tbody>
+	</table>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="ok()">{{'common.OK' | translate}}</button>
+    <button class="btn btn-default btn-danger" ng-click="avbryt()">{{'common.AVBRYT' | translate}}</button>
+</div>

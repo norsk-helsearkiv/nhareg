@@ -10,7 +10,9 @@
 			"BESKRIVELSE" : "Beskrivelse",
 			"ID" : "ID",
 			"NAVN" : "Navn",
-			"DATO" : "Dato"
+			"DATO" : "Dato",
+			"VERSJON" : "Versjon",
+			"KODE_SYSTEM" : "Kodesett"
 		},
 		"PASIENTJOURNAL" : "Pasientjournal",
         "OPPDATERT_AV": "Oppdatert av"
@@ -79,6 +81,9 @@
         },
       "warning_laas_opp" :{
         "TITTEL" : "Er du siker på at du vil låse opp avleveringen?"
+      },
+      "velg" : {
+      	"TITTEL" : "Velg en diagnose"
       }
 
 	},

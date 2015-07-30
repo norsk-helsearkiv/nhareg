@@ -1,12 +1,13 @@
 var mod = angular.module('nha.common.modal-service', [
     'ui.bootstrap',
     'nha.common.http-service',
-    'nha.common.error-service'
+    'nha.common.error-service',
+    'cfp.hotkeys'
 ]);
 
-mod.factory('modalService', ['$modal', 'httpService', 'errorService', modalService]);
+mod.factory('modalService', ['$modal', 'httpService', 'errorService', 'hotkeys', modalService]);
 
-function modalService($modal, httpService, errorService) {
+function modalService($modal, httpService, errorService, hotkeys) {
     var template = {
         backdrop: 'static',
         windowClass: "modal-center"
@@ -127,11 +128,79 @@ function modalService($modal, httpService, errorService) {
         return $modal.open(template);
     }
 
+    function velgModal(tpl, list, formDiagnose) {
+        template.templateUrl = tpl;
+        template.controller = function($scope, $modalInstance) {
+
+            hotkeys.bindTo($scope)
+            .add({
+                combo: 'down',
+                callback: function() {
+                    if(valgtIndex === $scope.modalListe.length - 1) {
+                        $scope.oppdaterValg($scope.modalListe[valgtIndex]);
+                        return;
+                    }
+                    $scope.oppdaterValg($scope.modalListe[++valgtIndex]);
+                }
+            })
+            .add({
+                combo: 'up',
+                callback: function() {
+                    if(valgtIndex === 0) {
+                        $scope.oppdaterValg($scope.modalListe[valgtIndex]);
+                        return;
+                    }
+                    $scope.oppdaterValg($scope.modalListe[--valgtIndex]);
+                }
+            })
+            .add({
+                combo: 'enter',
+                callback: function() {
+                    $scope.ok();
+                }
+            });
+
+            $scope.modalListe = list;
+            var valgtIndex = 0;
+
+            var resetValg = function() {
+                angular.forEach($scope.modalListe, function(e) {
+                    e.selected = false;
+                });
+            };
+
+            $scope.oppdaterValg = function(element) {
+                resetValg();
+
+                for(var i = 0; i < $scope.modalListe.length; i++) {
+                    if(element === $scope.modalListe[i]) {
+                        $scope.modalListe[i].selected = true;
+                        valgtIndex = i;
+                    }
+                }
+            };
+            $scope.oppdaterValg($scope.modalListe[0]);
+
+            $scope.ok = function() {
+                formDiagnose.diagnosetekst = $scope.modalListe[valgtIndex].displayName;
+                formDiagnose.diagnosekodeverk = $scope.modalListe[valgtIndex].codeSystemVersion;
+                $modalInstance.close();
+            };
+
+            $scope.avbryt = function() {
+                $modalInstance.dismiss('cancel');
+            }; 
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+
     return {
         deleteModal : deleteModal,
         nyModal : nyModal,
         endreModal : endreModal,
-        warningModal : warningModal
+        warningModal : warningModal,
+        velgModal : velgModal
     };
 
 }

@@ -126,18 +126,21 @@
 						<label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
 							Diagnosekode
 						</label>
-						<input type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
+						<input id="diagnosekode-input" type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
 					</div>
 					<div class="span span2">
 						<label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
 							Diagnosetekst
 						</label>
-						<input type="text" class="form-control" placeholder="Diagnosetekst..."
-                               data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()"
+						<input id="diagnosetekst-satt" type="text" class="form-control" placeholder="Diagnosetekst..."
+                               data-ng-model="formDiagnose.diagnosetekst"
                                data-ng-show="diagnosetekstErSatt" disabled>
-						<input type="text" class="form-control" placeholder="Diagnosetekst..." data-ng-model="formDiagnose.diagnosetekst" data-ng-enter="leggTilDiagnose()"
-                               typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)" typeahead-loading="Laster"
+						<input id="diagnosetekst-isatt" type="text" class="form-control" placeholder="Diagnosetekst..." 
+							   data-ng-model="formDiagnose.diagnosetekst"
                                data-ng-show="!diagnosetekstErSatt"
+                               data-ng-enter="leggTilDiagnose()"
+                               typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)" 
+                               typeahead-loading="Laster"
                                typeahead-on-select='onSelectDiagnose($item, $model, $label)'>
 
 					</div>

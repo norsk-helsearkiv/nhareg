@@ -3,7 +3,9 @@ angular.module( 'nha.registrering', [
   'nha.common.http-service',
   'nha.common.error-service',
   'nha.registrering.registrering-service',
-  'nha.common.diagnose-service'
+  'nha.common.diagnose-service',
+  'nha.common.modal-service',
+  'cfp.hotkeys'
 ])
 
 .config(function config( $stateProvider ) {
@@ -18,7 +20,7 @@ angular.module( 'nha.registrering', [
   });
 })
 
-.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, hotkeys) {
+.controller( 'RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, hotkeys, modalService) {
   //Util
   $scope.navHome = function() {
     history.back();
@@ -26,21 +28,24 @@ angular.module( 'nha.registrering', [
   $scope.loggUt = function() {
     $location.path('/login');
   };
-        hotkeys.add({
-            combo:'ctrl+s',
-            description:'Lagre',
-            callback: function(){
-                $scope.nyEllerOppdater();
-            }
-        });
-        hotkeys.add({
-            combo:'ctrl+n',
-            description:'ny journal',
-            callback: function(){
-                $scope.nyJournal();
-            }
-        });
 
+/*
+  hotkeys.bindTo($scope)
+  .add({
+  combo:'ctrl+s',
+  description:'Lagre',
+  callback: function(){
+    $scope.nyEllerOppdater();
+  }
+  })
+  .add({
+  combo:'ctrl+n',
+  description:'ny journal',
+  callback: function(){
+      $scope.nyJournal();
+  }
+  });
+*/
 
   //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
   $scope.feilmeldinger = [];
@@ -90,14 +95,14 @@ angular.module( 'nha.registrering', [
       function() { return $filter('translate')('feltfeil.FodtEtterDodt'); },
       function(newval) { $scope.feilTekster['FodtEtterDodt'] = newval; }
     );
-        $scope.$watch(
-            function() { return $filter('translate')('feltfeil.FeilFodselsnummer'); },
-            function(newval) { $scope.feilTekster['FeilFodselsnummer'] = newval; }
-        );
-        $scope.$watch(
-            function() { return $filter('translate')('feltfeil.EnObligatorisk'); },
-            function(newval) { $scope.feilTekster['EnObligatorisk'] = newval; }
-        );
+    $scope.$watch(
+        function() { return $filter('translate')('feltfeil.FeilFodselsnummer'); },
+        function(newval) { $scope.feilTekster['FeilFodselsnummer'] = newval; }
+    );
+    $scope.$watch(
+        function() { return $filter('translate')('feltfeil.EnObligatorisk'); },
+        function(newval) { $scope.feilTekster['EnObligatorisk'] = newval; }
+    );
     $scope.$watch(
       function() { return $filter('translate')('feltfeil.fKontaktForFodt'); },
       function(newval) { $scope.feilTekster['fKontaktForFodt'] = newval; }
@@ -119,15 +124,13 @@ angular.module( 'nha.registrering', [
       function(newval) { $scope.feilTekster['fKontaktEttersKontakt'] = newval; }
     );
 
-
   $scope.formData = {
     lagringsenheter : []
   };
   $scope.formDiagnose = {};
   $scope.avlevering = registreringService.getAvlevering();
   $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
-        $scope.avleveringsidentifikator = registreringService.getAvleveringsidentifikator();
-
+  $scope.avleveringsidentifikator = registreringService.getAvleveringsidentifikator();
 
   //Setter verdier fra registrering-service
   if($scope.avlevering !== undefined) {
@@ -275,12 +278,11 @@ angular.module( 'nha.registrering', [
     }*/
   };
 
-kjonnFromFodselsnummer = function(fnr){
-    var individsifre = fnr.substring(6,9);
-    var kjonn = Number(individsifre.substring(2,3));
-    return kjonn%2===0?$scope.kjonn[1]:$scope.kjonn[0];
-};
-
+  kjonnFromFodselsnummer = function(fnr){
+      var individsifre = fnr.substring(6,9);
+      var kjonn = Number(individsifre.substring(2,3));
+      return kjonn%2===0?$scope.kjonn[1]:$scope.kjonn[0];
+  };
 
   $scope.populerFelt = function() {
     if($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) {
@@ -457,13 +459,13 @@ kjonnFromFodselsnummer = function(fnr){
     });
     $scope.feilmeldinger.sort(compare);
   };
-        //setter state til endre(2) og kjører en oppdatering
-    $scope.nyJournal = function(){
-        $scope.prevState = $scope.state;
-        $scope.state = 3;
-        $scope.nyEllerOppdater();
-
-    };
+    
+  //setter state til endre(2) og kjører en oppdatering
+  $scope.nyJournal = function(){
+    $scope.prevState = $scope.state;
+    $scope.state = 3;
+    $scope.nyEllerOppdater();
+  };
 
   $scope.nyEllerOppdater = function() {
     $scope.error = {};
@@ -527,7 +529,6 @@ kjonnFromFodselsnummer = function(fnr){
                   setFeilmeldinger(data, status);
               });
       }
-    
   };
 
   var diagnosekode = "";
@@ -542,17 +543,47 @@ kjonnFromFodselsnummer = function(fnr){
 
   //Setter diagnoseteksten når koden er endret
   $scope.setDiagnoseTekst = function() {
-    if($scope.formDiagnose.diagnosekode === diagnosekode) {
+    //Hvis koden ikke er endret
+    if(diagnosekode === $scope.formDiagnose.diagnosekode) {
       return;
     }
-      $scope.formDiagnose.diagnosekode = $scope.formDiagnose.diagnosekode.toUpperCase();
+    diagnosekode = $scope.formDiagnose.diagnosekode;
+    
+    //Setter koden til upper case
+    if($scope.formDiagnose.diagnosekode) {
+      $scope.formDiagnose.diagnosekode = $scope.formDiagnose.diagnosekode.toUpperCase();  
+    }
+    
+    //Henter alle diagnoser fra tjenesten
     var diagnosekoder = diagnoseService.getDiagnoser();
-    $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode].displayName;
-      $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode].codeSystemVersion;
-    if($scope.formDiagnose.diagnosetekst) {
 
+    //Hvis vi har flere matcher på samme id (fra flere kodeverk)
+    if(diagnosekoder[$scope.formDiagnose.diagnosekode] && diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
+      //Viser en modal med en liste over valgene
+      var modal = modalService.velgModal('common/modal-service/liste-modal.tpl.html', 
+          diagnosekoder[$scope.formDiagnose.diagnosekode], 
+          $scope.formDiagnose);
+      modal.result.then(function() {
+        //Dersom teksten er satt, settes fokus på legg til diagnose    
+        if($scope.formDiagnose.diagnosetekst) {
+          $scope.diagnosetekstErSatt = true;
+          document.getElementById("btn-diagnose").focus();
+        } else {
+          $scope.diagnosetekstErSatt = false;
+          document.getElementById("diagnosekode-input").focus();
+        }
+      }, function() {
+        document.getElementById("diagnosekode-input").focus();
+      });
+    } else if(diagnosekoder[$scope.formDiagnose.diagnosekode]) {
+      //En diagnose med gitt verdi
+      $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
+      $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
+
+      $scope.diagnosetekstErSatt = true;
       document.getElementById("btn-diagnose").focus();
     } else {
+      //Ingen resultat på gitt kode
       $scope.diagnosetekstErSatt = false;
     }
   };
@@ -561,6 +592,7 @@ kjonnFromFodselsnummer = function(fnr){
   var resetDiagnose = function() {
     $scope.formDiagnose = {};
     $scope.diagnosetekstErSatt = false;
+    diagnosekode = "";
     document.getElementById("diagnoseDato").focus();
 
   };
@@ -579,6 +611,7 @@ kjonnFromFodselsnummer = function(fnr){
     if($scope.pasientjournalDTO.diagnoser == null) {
       $scope.pasientjournalDTO.diagnoser = [];
     }
+
     httpService.ny("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
     .success(function(data, status, headers, config) {
       $scope.formDiagnose.uuid=data.uuid;

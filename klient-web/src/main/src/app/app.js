@@ -41,6 +41,7 @@ angular.module( 'nha', [
     });
   };
 })
+
 .controller( 'AppCtrl', function AppCtrl ($http, $scope, $location, diagnoseService ) {
 });
 
