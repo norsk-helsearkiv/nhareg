@@ -74,3 +74,15 @@ select rolle as 'role', 'Roles' from BrukerRolle where brukernavn='nhabruker1';
 
 select * from Rolle;
 select * from avtale;
+
+-- opprette konfigtabell
+
+CREATE TABLE Konfigparam (
+  navn        VARCHAR(255) NOT NULL PRIMARY KEY,
+  verdi       VARCHAR(255) NOT NULL,
+  beskrivelse VARCHAR(255)
+);
+
+INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('LowLim', '01.01.1800', 'Tidligste tillatte dato i systemet');
+INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('MaxAge', '110', 'Høyeste tillatte alder for en pasient som skal legges inn i systemet');
+INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('WaitLim', '10', 'Antall år en pasient må være død før journalen kan legges inn i systemet');
