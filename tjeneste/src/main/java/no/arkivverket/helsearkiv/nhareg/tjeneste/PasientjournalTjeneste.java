@@ -248,12 +248,40 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         // VALIDERING - Diagnoser
         //TODO
         //Coming soon (tm)
-        if (!valideringsfeil.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
-        }
+
+
 
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
+
+        //TODO valider lagringsenhetene
+        String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid());
+        valideringsfeil.addAll(avleveringTjeneste.validerLagringsenheter(avleveringsId, pasientjournal.getLagringsenhet()));
+
+        if (!valideringsfeil.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
+        //
+        // Oppretter lagringsenheter som ikke finnes fra før.
+        //
+        CollectionUtils.forAllDo(pasientjournal.getLagringsenhet(), new Closure<Lagringsenhet>() {
+
+            public void execute(Lagringsenhet input) {
+                if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
+                    lagringsenhetTjeneste.create(input);
+                }
+            }
+        });
+        //TODO knytt til eksisterende lagringsenheter.
+        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(pasientjournal.getLagringsenhet(), new Transformer<Lagringsenhet, Lagringsenhet>() {
+            public Lagringsenhet transform(Lagringsenhet input) {
+                return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
+            }
+        });
+        pasientjournal.getLagringsenhet().clear();
+        pasientjournal.getLagringsenhet().addAll(eksisterendeLagringsenheter);
+
+
         Pasientjournal orig = super.hent(pasientjournal.getUuid());
         if (orig!=null){
             pasientjournal.getDiagnose().addAll(orig.getDiagnose());
@@ -267,14 +295,52 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
         pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
-        Pasientjournal existing = getSingleInstance(pasientjournal.getUuid());
 
-        pasientjournal.setOpprettetDato(existing.getOpprettetDato());
+        pasientjournal.setOpprettetDato(orig.getOpprettetDato());
         Pasientjournal persistert = update(pasientjournal);
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();
     }
 
+    @Override
+    public Pasientjournal create(Pasientjournal entity) {
+        entity.setUuid(UUID.randomUUID().toString());
+        //
+        if (entity.getGrunnopplysninger() != null) {
+            Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
+            if (grunnopplysninger.getKjønn() != null) {
+                Kjønn kjønn = grunnopplysninger.getKjønn();
+                kjønn = kjønnTjeneste.hent(kjønn.getCode());
+                grunnopplysninger.setKjønn(kjønn);
+            }
+        }
+
+        //
+        // Oppretter lagringsenheter som ikke finnes fra før.
+        //
+        CollectionUtils.forAllDo(entity.getLagringsenhet(), new Closure<Lagringsenhet>() {
+
+            public void execute(Lagringsenhet input) {
+                if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
+                    lagringsenhetTjeneste.create(input);
+                }
+            }
+        });
+
+        //
+        // Attach lagringsenheter
+        //
+        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(entity.getLagringsenhet(), new Transformer<Lagringsenhet, Lagringsenhet>() {
+            public Lagringsenhet transform(Lagringsenhet input) {
+                return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
+            }
+        });
+        entity.getLagringsenhet().clear();
+        entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
+        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
+        entity.setOpprettetDato(Calendar.getInstance());
+        return super.create(entity);
+    }
     @DELETE
     @Path("/{id}")
     @Override
@@ -390,45 +456,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     }
 
 
-    @Override
-    public Pasientjournal create(Pasientjournal entity) {
-        entity.setUuid(UUID.randomUUID().toString());
-        //
-        if (entity.getGrunnopplysninger() != null) {
-            Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
-            if (grunnopplysninger.getKjønn() != null) {
-                Kjønn kjønn = grunnopplysninger.getKjønn();
-                kjønn = kjønnTjeneste.hent(kjønn.getCode());
-                grunnopplysninger.setKjønn(kjønn);
-            }
-        }
 
-        //
-        // Oppretter lagringsenheter som ikke finnes fra før.
-        //
-        CollectionUtils.forAllDo(entity.getLagringsenhet(), new Closure<Lagringsenhet>() {
-
-            public void execute(Lagringsenhet input) {
-                if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
-                    lagringsenhetTjeneste.create(input);
-                }
-            }
-        });
-
-        //
-        // Attach lagringsenheter
-        //
-        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(entity.getLagringsenhet(), new Transformer<Lagringsenhet, Lagringsenhet>() {
-            public Lagringsenhet transform(Lagringsenhet input) {
-                return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
-            }
-        });
-        entity.getLagringsenhet().clear();
-        entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
-        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
-        entity.setOpprettetDato(Calendar.getInstance());
-        return super.create(entity);
-    }
 
     private Oppdateringsinfo konstruerOppdateringsinfo() {
         Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
