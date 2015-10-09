@@ -210,6 +210,7 @@ angular.module( 'nha.home', [
   };
 
   $scope.actionVisAvlevering = function(avlevering) {
+      registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
       registreringService.setAvlevering(undefined);
     httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + "&avlevering=" + avlevering.avleveringsidentifikator)
     .success(function(data, status, headers, config) {
@@ -247,7 +248,7 @@ angular.module( 'nha.home', [
       registreringService.setVirksomhet($scope.virksomhet);
       registreringService.setValgtAvtale($scope.valgtAvtale);
       registreringService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-
+      registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
     $location.path('/registrer');
   };
         $scope.actionLaasAvlevering = function(avlevering){

@@ -10,6 +10,7 @@ function registreringService() {
     var avleveringsidentifikator;
     var valgtAvtale;
     var virksomhet;
+    var avleveringsbeskrivelse;
 
     function setPasientjournalDTO(data) {
         pasientjournalDTO = data;
@@ -45,6 +46,13 @@ function registreringService() {
     function getVirksomhet(){
         return virksomhet;
     }
+    function setAvleveringsbeskrivelse(beskrivelse){
+        avleveringsbeskrivelse = beskrivelse;
+    }
+
+    function getAvleveringsbeskrivelse(){
+        return avleveringsbeskrivelse;
+    }
 
     return {
         setAvlevering: setAvlevering,
@@ -60,7 +68,11 @@ function registreringService() {
         setValgtAvtale : setValgtAvtale,
 
         getVirksomhet : getVirksomhet,
-        setVirksomhet : setVirksomhet
-    };
+        setVirksomhet : setVirksomhet,
+
+        setAvleveringsbeskrivelse : setAvleveringsbeskrivelse,
+        getAvleveringsbeskrivelse : getAvleveringsbeskrivelse
+
+};
 
 }
