@@ -4,10 +4,9 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by haraldk on 07.05.15.
@@ -87,14 +86,14 @@ public class SortPasientjournaler {
                     return p1.getGrunnopplysninger()==null?1:-1;
                 case faar:
                     if (p1.getGrunnopplysninger()!=null&&p2.getGrunnopplysninger()!=null){
-                        return comp(trans.transform(p1.getGrunnopplysninger().getFødt()), trans.transform(p2.getGrunnopplysninger().getFødt()));
+                        return compDate(trans.transform(p1.getGrunnopplysninger().getFødt()), trans.transform(p2.getGrunnopplysninger().getFødt()));
                     }
                     return p1.getGrunnopplysninger()==null?1:-1;
                 case daar:
                     if (p1.getGrunnopplysninger()!=null&&p2.getGrunnopplysninger()!=null){
                         String p1Dod = trans.transform(p1.getGrunnopplysninger().getDød());
                         String p2Dod = trans.transform(p2.getGrunnopplysninger().getDød());
-                        return comp(p1Dod!=null?p1Dod:"mors", p2Dod!=null?p2Dod:"mors");
+                        return compDate(p1Dod, p2Dod);
                     }
                     return p1.getGrunnopplysninger()==null?1:-1;
                 case oppdatertAv:
@@ -116,6 +115,33 @@ public class SortPasientjournaler {
             }
             return (s1 == null) ? 1 : -1;
 
+        }
+        private int compDate(String s1, String s2){
+            Date d1 = createDate(s1);
+            Date d2 = createDate(s2);
+            if (d1!=null && d2!=null){
+                return d1.compareTo(d2);
+            }
+            if (d1==null&&d2==null){
+                return 0;
+            }
+            return (d1 == null) ? 1 : -1;
+        }
+
+        private Date createDate(String dateIn){
+            if (dateIn==null)
+                dateIn = "01.01.0001";
+            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+            try {
+                String dateToConvert = dateIn;
+                if (dateIn!=null&&dateIn.length()==4) {//year
+                    dateToConvert = "01.01."+dateIn;
+                }
+                return format.parse(dateToConvert);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

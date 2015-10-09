@@ -125,7 +125,7 @@ public class Konverterer {
             if (dod!=null){
                 resultat.setDaar(trans.transform(dod));
             }
-            if (pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()==null||pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()){
+            if (pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()!=null&&pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()){
                 resultat.setDaar("mors");
             }
         }
@@ -185,7 +185,7 @@ public class Konverterer {
             if (grn.getDød() != null) {
                 person.setDod(tilString(pasientjournal.getGrunnopplysninger().getDød()));
             }
-            if (grn.isDødsdatoUkjent()==null||grn.isDødsdatoUkjent()){
+            if (grn.isDødsdatoUkjent()!=null&&grn.isDødsdatoUkjent()){
                 person.setDod("mors");
             }
 
