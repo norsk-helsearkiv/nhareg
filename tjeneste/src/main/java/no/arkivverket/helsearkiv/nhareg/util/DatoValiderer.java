@@ -19,13 +19,19 @@ public class DatoValiderer {
     //Hjelpemetoder for validering
     public static ArrayList<Valideringsfeil> valider(PersondataDTO person) throws ParseException {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
-        
+        //TODO legge på sjekker for hvilke datoer (perioder) som faktisk er lovlig å legge inn i systemet
+
         if(person == null) {
             return feil;
         }
         if (sjekkMors(person.getFodt())){
             feil.add(new Valideringsfeil("fodt", "DagEllerAar"));
         }
+
+        if (feil.size()>0){
+            return feil;
+        }
+
         //Regler basert på født
         if(sjekk(person.getFodt())) {
 
@@ -83,6 +89,7 @@ public class DatoValiderer {
         }
         return feil;
     }
+
     public static Date getDate(String dato){
         return GyldigeDatoformater.getDate(dato);
     }

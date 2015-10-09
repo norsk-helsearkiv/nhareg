@@ -237,7 +237,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public Response oppdaterPasientjournal(PasientjournalDTO pasientjournalDTO) throws ParseException {
         log.error(pasientjournalDTO.getPersondata().getKjonn());
         // VALIDERING - Persondata
-
         List<Valideringsfeil> valideringsfeil = validerGrunnopplysningerPasientjournal(pasientjournalDTO.getPersondata());
         // VALIDERING - Diagnoser
         //TODO
