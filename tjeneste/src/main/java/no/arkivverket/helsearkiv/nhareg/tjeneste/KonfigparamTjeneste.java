@@ -15,6 +15,11 @@ import java.util.Date;
 @Stateless
 public class KonfigparamTjeneste {
 
+    public static final String KONFIG_LOWLIM = "LowLim";
+    public static final String KONFIG_MAXAGE = "MaxAge";
+    public static final String KONFIG_WAITLIM = "WaitLim";
+
+
     @PersistenceContext(name = "primary")
     private EntityManager em;
 

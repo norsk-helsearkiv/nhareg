@@ -7,6 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
 import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
@@ -79,6 +80,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
     @EJB
     private LagringsenhetTjeneste lagringsenhetTjeneste;
+    @EJB
+    private KonfigparamTjeneste konfigparam;
 
     public PasientjournalTjeneste() {
         super(Pasientjournal.class, String.class, "uuid");
@@ -278,7 +281,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         // VALIDERING - Persondata
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondata).valider();
         //Validerer forholdet mellom dataoer
-        valideringsfeil.addAll(DatoValiderer.valider(persondata));
+        valideringsfeil.addAll(DatoValiderer.valider(persondata, konfigparam));
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondata);
         if (fnrfeil!=null){
             valideringsfeil.add(fnrfeil);

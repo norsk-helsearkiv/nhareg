@@ -93,6 +93,7 @@ public class Konverterer {
             grunnopplysninger.setDød(tilDatoEllerAar(person.getDod()));
         }
         grunnopplysninger.setDødsdatoUkjent(grunnopplysninger.getDød() == null);
+        grunnopplysninger.setFodtdatoUkjent(grunnopplysninger.getFødt() == null);
 
         Kontakt kontakt = new Kontakt();
         if (person.getfKontakt() != null) {
@@ -120,6 +121,9 @@ public class Konverterer {
             DatoEllerAar fodt = pasientjournal.getGrunnopplysninger().getFødt();
             if(fodt!=null){
                 resultat.setFaar(trans.transform(fodt));
+            }
+            if (pasientjournal.getGrunnopplysninger().isFodtdatoUkjent()!=null&&pasientjournal.getGrunnopplysninger().isFodtdatoUkjent()){
+                resultat.setFaar("ukjent");
             }
             DatoEllerAar dod = pasientjournal.getGrunnopplysninger().getDød();
             if (dod!=null){
@@ -188,7 +192,9 @@ public class Konverterer {
             if (grn.isDødsdatoUkjent()!=null&&grn.isDødsdatoUkjent()){
                 person.setDod("mors");
             }
-
+            if (grn.isFodtdatoUkjent()!=null&&grn.isFodtdatoUkjent()){
+                person.setFodt("ukjent");
+            }
             if (grn.getKontakt() != null) {
                 if (grn.getKontakt().getFoerste() != null) {
                     person.setfKontakt(tilString(grn.getKontakt().getFoerste()));
@@ -220,7 +226,7 @@ public class Konverterer {
     }
 
     public static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
-        if (tid.toLowerCase().equals("mors")||"".equals(tid)) {
+        if (tid.toLowerCase().equals("mors")||"".equals(tid)||"ukjent".equals(tid)) {
             return null;
         }
 

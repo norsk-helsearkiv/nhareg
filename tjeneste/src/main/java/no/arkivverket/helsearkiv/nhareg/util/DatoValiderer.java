@@ -3,12 +3,16 @@ package no.arkivverket.helsearkiv.nhareg.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
+
+import javax.persistence.EntityManager;
 
 /**
  * Validerer konsistens på datofeltene til PersondataDTO
@@ -17,7 +21,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
  */
 public class DatoValiderer {
     //Hjelpemetoder for validering
-    public static ArrayList<Valideringsfeil> valider(PersondataDTO person) throws ParseException {
+    public static ArrayList<Valideringsfeil> valider(PersondataDTO person, KonfigparamTjeneste konfig) throws ParseException {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         //TODO legge på sjekker for hvilke datoer (perioder) som faktisk er lovlig å legge inn i systemet
 
@@ -31,13 +35,18 @@ public class DatoValiderer {
         if (feil.size()>0){
             return feil;
         }
+        Date lowLim = konfig.getDate(KonfigparamTjeneste.KONFIG_LOWLIM);
 
         //Regler basert på født
         if(sjekk(person.getFodt())) {
 
 
             Date fodt = getDate(person.getFodt());
-            
+            if (fodt.before(lowLim)){
+                feil.add(new Valideringsfeil("fodt", "UtenforGyldigPeriode"));
+
+            }
+
             if(sjekk(person.getDod())) {
                 Date dod = getDate(person.getDod());
                 if(fodt.after(dod)) {
@@ -96,7 +105,7 @@ public class DatoValiderer {
 
     
     private static boolean sjekk(String s) {
-        if(s == null || s.isEmpty() || s.toLowerCase().equals("mors")) {
+        if(s == null || s.isEmpty() || s.toLowerCase().equals("mors") || s.toLowerCase().equals("ukjent")) {
             return false;
         }
         

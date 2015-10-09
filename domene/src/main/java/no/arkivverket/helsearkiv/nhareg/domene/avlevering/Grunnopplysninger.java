@@ -52,6 +52,7 @@ public class Grunnopplysninger implements Serializable
     @XmlElement(required = true)
     protected DatoEllerAar født;
     protected Boolean dødsdatoUkjent;
+    protected Boolean fodtdatoUkjent;
     protected DatoEllerAar død;
     protected Kontakt kontakt;
     @XmlElement(required = true)
@@ -151,6 +152,15 @@ public class Grunnopplysninger implements Serializable
      */
     public void setDødsdatoUkjent(Boolean value) {
         this.dødsdatoUkjent = value;
+    }
+
+    public Boolean isFodtdatoUkjent() {
+        return fodtdatoUkjent;
+    }
+
+
+    public void setFodtdatoUkjent(Boolean fodtdatoUkjent) {
+        this.fodtdatoUkjent = fodtdatoUkjent;
     }
 
     /**
