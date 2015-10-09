@@ -632,7 +632,9 @@ angular.module( 'nha.registrering', [
     httpService.ny("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
     .success(function(data, status, headers, config) {
       $scope.formDiagnose.uuid=data.uuid;
+      $scope.formDiagnose.oppdatertAv = data.oppdatertAv;
       $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
+
       resetDiagnose();
     }).error(function(data, status, headers, config) {
       if(status === 400) {

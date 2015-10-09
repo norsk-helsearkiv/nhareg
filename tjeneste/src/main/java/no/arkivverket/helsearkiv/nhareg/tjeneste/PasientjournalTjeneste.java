@@ -246,6 +246,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             valideringsfeil.add(fnrfeil);
         }
         // VALIDERING - Diagnoser
+        //TODO
         //Coming soon (tm)
         if (!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
@@ -253,7 +254,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
-        pasientjournal.getDiagnose().addAll(CollectionUtils.collect(pasientjournalDTO.getDiagnoser(), diagnoseFraDTOTransformer));
+        Pasientjournal orig = super.hent(pasientjournal.getUuid());
+        if (orig!=null){
+            pasientjournal.getDiagnose().addAll(orig.getDiagnose());
+        }
+        //pasientjournal.getDiagnose().addAll(CollectionUtils.collect(pasientjournalDTO.getDiagnoser(), diagnoseFraDTOTransformer));
         //Setter verdier
         if (pasientjournalDTO.getPersondata().getKjonn() != null) {
             Kjønn k = kjønnTjeneste
@@ -262,6 +267,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             pasientjournal.getGrunnopplysninger().setKjønn(k);
         }
         pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
+        Pasientjournal existing = getSingleInstance(pasientjournal.getUuid());
+
+        pasientjournal.setOpprettetDato(existing.getOpprettetDato());
         Pasientjournal persistert = update(pasientjournal);
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();
@@ -292,11 +300,15 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         new Validator<DiagnoseDTO>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
+        Oppdateringsinfo oppdateringsinfo = konstruerOppdateringsinfo();
+        diagnoseDTO.setOppdatertAv(oppdateringsinfo.getOppdatertAv());
+
         Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
         diagnoseTjeneste.create(diagnose);
+        diagnose.setOppdateringsinfo(oppdateringsinfo);
         pasientjournal.getDiagnose().add(diagnose);
-        pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
-        return Response.ok(diagnose).build();
+        pasientjournal.setOppdateringsinfo(oppdateringsinfo);
+        return Response.ok(diagnoseDTO).build();
     }
 
     @PUT
@@ -308,9 +320,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<DiagnoseDTO>(DiagnoseDTO.class).valider(diagnoseDTO);
-/*        DatoEllerAar dod = pasientjournal.getGrunnopplysninger().getDød();
-        DatoEllerAar fodt = pasientjournal.getGrunnopplysninger().getFødt();
-*/
 
         if (valideringsfeil.size()!=0){
             Valideringsfeil feil = valideringsfeil.get(0);
