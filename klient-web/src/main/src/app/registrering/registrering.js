@@ -148,6 +148,8 @@ angular.module( 'nha.registrering', [
   $scope.avlevering = registreringService.getAvlevering();
   $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
   $scope.avleveringsidentifikator = registreringService.getAvleveringsidentifikator();
+  $scope.virksomhet = registreringService.getVirksomhet();
+  $scope.valgtAvtale = registreringService.getValgtAvtale();
 
   //Setter verdier fra registrering-service
   if($scope.avlevering !== undefined) {

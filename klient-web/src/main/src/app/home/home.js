@@ -244,7 +244,10 @@ angular.module( 'nha.home', [
 
   $scope.actionLeggTilPasientjournald = function(avlevering) {
     registreringService.setAvlevering(avlevering);
+      registreringService.setVirksomhet($scope.virksomhet);
+      registreringService.setValgtAvtale($scope.valgtAvtale);
       registreringService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
+
     $location.path('/registrer');
   };
         $scope.actionLaasAvlevering = function(avlevering){

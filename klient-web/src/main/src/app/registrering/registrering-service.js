@@ -8,6 +8,8 @@ function registreringService() {
     var avlevering;
     var pasientjournalDTO;
     var avleveringsidentifikator;
+    var valgtAvtale;
+    var virksomhet;
 
     function setPasientjournalDTO(data) {
         pasientjournalDTO = data;
@@ -31,6 +33,18 @@ function registreringService() {
     function setAvleveringsidentifikator(ident){
         avleveringsidentifikator = ident;
     }
+    function setValgtAvtale(avtale){
+        valgtAvtale = avtale;
+    }
+    function getValgtAvtale(){
+        return valgtAvtale;
+    }
+    function setVirksomhet(v){
+        virksomhet = v;
+    }
+    function getVirksomhet(){
+        return virksomhet;
+    }
 
     return {
         setAvlevering: setAvlevering,
@@ -40,7 +54,13 @@ function registreringService() {
         getPasientjournalDTO: getPasientjournalDTO,
 
         setAvleveringsidentifikator : setAvleveringsidentifikator,
-        getAvleveringsidentifikator : getAvleveringsidentifikator
+        getAvleveringsidentifikator : getAvleveringsidentifikator,
+
+        getValgtAvtale : getValgtAvtale,
+        setValgtAvtale : setValgtAvtale,
+
+        getVirksomhet : getVirksomhet,
+        setVirksomhet : setVirksomhet
     };
 
 }
