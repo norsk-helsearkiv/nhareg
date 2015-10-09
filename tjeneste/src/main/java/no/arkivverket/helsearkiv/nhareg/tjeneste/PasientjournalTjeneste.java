@@ -237,19 +237,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public Response oppdaterPasientjournal(PasientjournalDTO pasientjournalDTO) throws ParseException {
         log.error(pasientjournalDTO.getPersondata().getKjonn());
         // VALIDERING - Persondata
-        ArrayList<Valideringsfeil> valideringsfeil
-                = new Validator<PersondataDTO>(PersondataDTO.class, pasientjournalDTO.getPersondata()).valider();
-        //Validerer forholdet mellom dataoer
-        valideringsfeil.addAll(DatoValiderer.valider(pasientjournalDTO.getPersondata()));
-        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(pasientjournalDTO.getPersondata());
-        if (fnrfeil!=null){
-            valideringsfeil.add(fnrfeil);
-        }
+
+        List<Valideringsfeil> valideringsfeil = validerGrunnopplysningerPasientjournal(pasientjournalDTO.getPersondata());
         // VALIDERING - Diagnoser
         //TODO
         //Coming soon (tm)
-
-
 
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
@@ -261,25 +253,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
-        //
-        // Oppretter lagringsenheter som ikke finnes fra før.
-        //
-        CollectionUtils.forAllDo(pasientjournal.getLagringsenhet(), new Closure<Lagringsenhet>() {
-
-            public void execute(Lagringsenhet input) {
-                if (!eksisterendeLagringsenhetPredicate.evaluate(input)) {
-                    lagringsenhetTjeneste.create(input);
-                }
-            }
-        });
-        //TODO knytt til eksisterende lagringsenheter.
-        Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.collect(pasientjournal.getLagringsenhet(), new Transformer<Lagringsenhet, Lagringsenhet>() {
-            public Lagringsenhet transform(Lagringsenhet input) {
-                return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(input.getIdentifikator());
-            }
-        });
-        pasientjournal.getLagringsenhet().clear();
-        pasientjournal.getLagringsenhet().addAll(eksisterendeLagringsenheter);
+        opprettOgKnyttLagringsenheter(pasientjournal);
 
 
         Pasientjournal orig = super.hent(pasientjournal.getUuid());
@@ -301,6 +275,17 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();
     }
+    public List<Valideringsfeil> validerGrunnopplysningerPasientjournal(PersondataDTO persondata) throws ParseException {
+        // VALIDERING - Persondata
+        ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondata).valider();
+        //Validerer forholdet mellom dataoer
+        valideringsfeil.addAll(DatoValiderer.valider(persondata));
+        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondata);
+        if (fnrfeil!=null){
+            valideringsfeil.add(fnrfeil);
+        }
+        return valideringsfeil;
+    }
 
     @Override
     public Pasientjournal create(Pasientjournal entity) {
@@ -315,6 +300,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             }
         }
 
+        opprettOgKnyttLagringsenheter(entity);
+
+        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
+        entity.setOpprettetDato(Calendar.getInstance());
+        return super.create(entity);
+    }
+
+    private void opprettOgKnyttLagringsenheter(Pasientjournal entity){
         //
         // Oppretter lagringsenheter som ikke finnes fra før.
         //
@@ -326,7 +319,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 }
             }
         });
-
         //
         // Attach lagringsenheter
         //
@@ -337,9 +329,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         });
         entity.getLagringsenhet().clear();
         entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
-        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
-        entity.setOpprettetDato(Calendar.getInstance());
-        return super.create(entity);
     }
     @DELETE
     @Path("/{id}")

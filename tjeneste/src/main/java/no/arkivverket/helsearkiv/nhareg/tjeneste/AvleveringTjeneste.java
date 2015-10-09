@@ -170,16 +170,8 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response nyPasientjournal(@PathParam("id") String avleveringid, PersondataDTO person) throws ParseException {
-        // VALIDERING - kun grunnopplysninger
-        ArrayList<Valideringsfeil> valideringsfeil
-                = new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
 
-        valideringsfeil.addAll(DatoValiderer.valider(person));
-        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(person);
-        if (fnrfeil!=null){
-            valideringsfeil.add(fnrfeil);
-        }
-
+        List<Valideringsfeil> valideringsfeil = pasientjournalTjeneste.validerGrunnopplysningerPasientjournal(person);
         if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);
         }
