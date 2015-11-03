@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.felles;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -28,5 +29,21 @@ public class GyldigeDatoformater {
             return d;
         }
         return null;
+    }
+
+    /**
+     * Returnerer en dato som er rullet med days-antall dager
+     *
+     * negative tall fører til rulling bakover
+     * positive tall fører til rulling forover
+     * @param date
+     * @param days
+     * @return
+     */
+    public static Date getDateRoll(Date date, int days){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.roll(Calendar.YEAR, days);
+        return c.getTime();
     }
 }

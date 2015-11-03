@@ -140,7 +140,10 @@ angular.module( 'nha.registrering', [
       function() { return $filter('translate')('feltfeil.fKontaktEttersKontakt'); },
       function(newval) { $scope.feilTekster['fKontaktEttersKontakt'] = newval; }
     );
-
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.UtenforGyldigPeriode'); },
+      function(newval) { $scope.feilTekster['UtenforGyldigPeriode'] = newval; }
+    );
   $scope.formData = {
     lagringsenheter : []
   };
