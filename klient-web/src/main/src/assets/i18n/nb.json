@@ -110,6 +110,7 @@
     	"NotUnique" : "Lagringsenhet finnes i annen avlevering",
     	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
         "UtenforGyldigPeriode" : "Dato/år utenfor gyldighetsområde",
+        "UkjentDiagnosekode" : "Ukjent diagnosekode",
       "FeilFodselsnummer" : "Fødselsnummer er feil (kan også være D/H-nummer)",
     	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
     	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",

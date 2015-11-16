@@ -68,6 +68,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     private AvleveringTjeneste avleveringTjeneste;
     @EJB
     private AvtaleTjeneste avtaleTjeneste;
+    @EJB
+    private DiagnosekodeTjeneste diagnosekodeTjeneste;
 
     //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
     @EJB(name = "DiagnoseFraDTOTransformer")
@@ -363,12 +365,22 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         Oppdateringsinfo oppdateringsinfo = konstruerOppdateringsinfo();
         diagnoseDTO.setOppdatertAv(oppdateringsinfo.getOppdatertAv());
 
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        queryParameters.add("code", diagnoseDTO.getDiagnosekode());
+        List<Diagnosekode> list  = diagnosekodeTjeneste.getAll(queryParameters);
+        if (list.size()==0){//Diagnosekoden finnes ikke..
+            ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+            valideringsfeil.add(new Valideringsfeil("diagnosekode", "UkjentDiagnosekode"));
+            throw new ValideringsfeilException(valideringsfeil);
+        }
+
         Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
         diagnoseTjeneste.create(diagnose);
         diagnose.setOppdateringsinfo(oppdateringsinfo);
         pasientjournal.getDiagnose().add(diagnose);
         pasientjournal.setOppdateringsinfo(oppdateringsinfo);
         return Response.ok(diagnoseDTO).build();
+
     }
 
     @PUT

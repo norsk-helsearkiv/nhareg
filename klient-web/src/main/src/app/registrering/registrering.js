@@ -145,8 +145,12 @@ angular.module( 'nha.registrering', [
       function(newval) { $scope.feilTekster['UtenforGyldigPeriode'] = newval; }
     );
     $scope.$watch(
-        function() { return $filter('translate')('feltfeil.manglermors'); },
-        function(newval) { $scope.feilTekster['manglermors'] = newval; }
+        function() { return $filter('translate')('feltfeil.UkjentDiagnosekode'); },
+        function(newval) { $scope.feilTekster['UkjentDiagnosekode'] = newval; }
+    );
+    $scope.$watch(
+      function() { return $filter('translate')('feltfeil.manglermors'); },
+      function(newval) { $scope.feilTekster['manglermors'] = newval; }
     );
     $scope.$watch(
         function() { return $filter('translate')('feltfeil.sKontaktNotNull'); },
