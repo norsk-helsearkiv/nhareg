@@ -19,10 +19,9 @@ public class GyldigeDatoformater {
             ParsePosition pos = new ParsePosition(0);
             df.setLenient(false);
             d = df.parse(dato, pos);
-
             if (d == null) {
                 continue;
-            } else if (pos.getIndex() != dato.length()) {
+            } else if ( (pos.getIndex()!=format.length())||(pos.getIndex()!=dato.length()) ) {
                 d = null;
                 continue;
             }
@@ -37,13 +36,14 @@ public class GyldigeDatoformater {
      * negative tall fører til rulling bakover
      * positive tall fører til rulling forover
      * @param date
-     * @param days
+     * @param years
      * @return
      */
-    public static Date getDateRoll(Date date, int days){
+    public static Date getDateRoll(Date date, int years){
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        c.roll(Calendar.YEAR, days);
+        c.roll(Calendar.YEAR, years);
         return c.getTime();
     }
+
 }

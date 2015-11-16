@@ -241,6 +241,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         log.error(pasientjournalDTO.getPersondata().getKjonn());
         // VALIDERING - Persondata
         List<Valideringsfeil> valideringsfeil = validerGrunnopplysningerPasientjournal(pasientjournalDTO.getPersondata());
+        if (!valideringsfeil.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
+        }
         // VALIDERING - Diagnoser
         //TODO
         //Coming soon (tm)

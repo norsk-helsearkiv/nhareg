@@ -65,22 +65,21 @@
             </constraint>
             <constraint annotation="no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar" />
         </field>
-        <!--
+
         <field name="fKontakt">
-            <constraint annotation="javax.validation.constraints.NotNull" />
+        <!--    <constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">
                 <element name="min">1</element>
-            </constraint>
+            </constraint>-->
             <constraint annotation="no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar" />
         </field>
         <field name="sKontakt">
-            <constraint annotation="javax.validation.constraints.NotNull" />
+            <!--<constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">
                 <element name="min">1</element>
-            </constraint>
+            </constraint>-->
             <constraint annotation="no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar" />
         </field>
-        -->
     </bean>
 
     <bean class="DiagnoseDTO" ignore-annotations="true">

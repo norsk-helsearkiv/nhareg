@@ -103,19 +103,22 @@
         "EXPECTATION_FAILED":           "Det finnes en entitet med samme Id"
     },
     "feltfeil" : {
-    	"DagEllerAar" : "Feil datoformat, eksempel på format (31.1.1990)",
+    	"DagEllerAar" : "Feil datoformat, eksempel på format (01.01.1990)",
     	"NotNull" : "Kan ikke være tom",
     	"Size" : "Kan ikke være tom",
         "EnObligatorisk" : "Ett av feltene må fylles inn (*)",
     	"NotUnique" : "Lagringsenhet finnes i annen avlevering",
     	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
-        "UtenforGyldigPeriode" : "Født dato/år utenfor gyldighetsområde",
+        "UtenforGyldigPeriode" : "Dato/år utenfor gyldighetsområde",
       "FeilFodselsnummer" : "Fødselsnummer er feil (kan også være D/H-nummer)",
     	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
     	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
     	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
     	"sKontaktEtterDod" : "Siste kontakt kan ikke være etter død",
-    	"fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt"
+    	"fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt",
+        "manglermors" : "Sikker mors eller morsdato må angis",
+        "sKontaktNotNull" : "Siste kontakt kan ikke være tom når Født er ukjent"
+
     },
     "konfig" : {
     	"ANTALL" : "15"
