@@ -362,17 +362,25 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         new Validator<DiagnoseDTO>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
+        List<Valideringsfeil> feil = DatoValiderer.validerDiagnose(diagnoseDTO, pasientjournal, konfigparam);
+        if (feil.size()>0){
+            throw new ValideringsfeilException(feil);
+        }
+
         Oppdateringsinfo oppdateringsinfo = konstruerOppdateringsinfo();
         diagnoseDTO.setOppdatertAv(oppdateringsinfo.getOppdatertAv());
 
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add("code", diagnoseDTO.getDiagnosekode());
-        List<Diagnosekode> list  = diagnosekodeTjeneste.getAll(queryParameters);
-        if (list.size()==0){//Diagnosekoden finnes ikke..
-            ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
-            valideringsfeil.add(new Valideringsfeil("diagnosekode", "UkjentDiagnosekode"));
-            throw new ValideringsfeilException(valideringsfeil);
+        if (diagnoseDTO.getDiagnosekode()!=null&& !diagnoseDTO.getDiagnosekode().equals("")){
+            MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+            queryParameters.add("code", diagnoseDTO.getDiagnosekode());
+            List<Diagnosekode> list  = diagnosekodeTjeneste.getAll(queryParameters);
+            if (list.size()==0){//Diagnosekoden finnes ikke..
+                ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+                valideringsfeil.add(new Valideringsfeil("diagnosekode", "UkjentDiagnosekode"));
+                throw new ValideringsfeilException(valideringsfeil);
+            }
         }
+
 
         Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
         diagnoseTjeneste.create(diagnose);
@@ -392,11 +400,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<DiagnoseDTO>(DiagnoseDTO.class).valider(diagnoseDTO);
-
+        List<Valideringsfeil> diagfeil = DatoValiderer.validerDiagnose(diagnoseDTO, pasientjournal, konfigparam);
         if (valideringsfeil.size()!=0){
             Valideringsfeil feil = valideringsfeil.get(0);
             if (feil.getAttributt().equals("diagnosedato")){
                 feil.setAttributt("diagnosedatotab");
+            }
+            if (diagfeil.size()>0){
+                valideringsfeil.addAll(diagfeil);
             }
             throw new ValideringsfeilException(valideringsfeil);
         }

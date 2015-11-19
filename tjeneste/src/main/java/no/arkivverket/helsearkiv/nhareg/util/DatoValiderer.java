@@ -5,10 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
+import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 
 import javax.persistence.EntityManager;
@@ -19,6 +23,58 @@ import javax.persistence.EntityManager;
  * @author robing
  */
 public class DatoValiderer {
+    /**
+     * Diagnosedato/år valideres med javax.validation
+     *
+     * @param diagnose
+     * @param pasientjournal
+     * @param konfig
+     * @return
+     */
+    public static List<Valideringsfeil> validerDiagnose(DiagnoseDTO diagnose, Pasientjournal pasientjournal, KonfigparamTjeneste konfig){
+        List<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+        Grunnopplysninger gr = pasientjournal.getGrunnopplysninger();
+
+        //ta diagnosedato som god fisk ettersom både mors og født er ukjent...
+        if (gr.isFodtdatoUkjent()!=null&&gr.isFodtdatoUkjent() && gr.isDødsdatoUkjent()!=null&&gr.isDødsdatoUkjent()){
+            return feil;
+        }
+
+
+        DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
+        String diag = diagnose.getDiagnosedato();
+        Date diagDato = getDate(diag);
+
+        //fødtdatoår kjent
+        if (gr.isFodtdatoUkjent()!=null&& !gr.isFodtdatoUkjent()){
+            DatoEllerAar fodt = gr.getFødt();
+            String fodtString  =trans.transform(fodt);
+
+            Date fodtDato = getDate(fodtString);
+
+
+            if (fodtDato.after(diagDato)){
+                feil.add(new Valideringsfeil("diagnosedato", "DiagForFodt"));
+            }
+
+
+        }
+        if (gr.isDødsdatoUkjent()!=null&&!gr.isDødsdatoUkjent()){
+            DatoEllerAar dod = gr.getDød();
+            String dodString = trans.transform(dod);
+            Date dodDato = getDate(dodString);
+
+            if (diagDato.after(dodDato)){
+                feil.add(new Valideringsfeil("diagnosedato", "DiagEtterDod"));
+            }
+        }
+
+
+
+
+        return feil;
+    }
+
     //Hjelpemetoder for validering
     public static ArrayList<Valideringsfeil> valider(PersondataDTO person, KonfigparamTjeneste konfig) throws ParseException {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();

@@ -153,6 +153,14 @@ angular.module( 'nha.registrering', [
       function(newval) { $scope.feilTekster['manglermors'] = newval; }
     );
     $scope.$watch(
+        function() { return $filter('translate')('feltfeil.DiagEtterDod'); },
+        function(newval) { $scope.feilTekster['DiagEtterDod'] = newval; }
+    );
+    $scope.$watch(
+        function() { return $filter('translate')('feltfeil.DiagForFodt'); },
+        function(newval) { $scope.feilTekster['DiagForFodt'] = newval; }
+    );
+    $scope.$watch(
         function() { return $filter('translate')('feltfeil.sKontaktNotNull'); },
         function(newval) { $scope.feilTekster['sKontaktNotNull'] = newval; }
     );

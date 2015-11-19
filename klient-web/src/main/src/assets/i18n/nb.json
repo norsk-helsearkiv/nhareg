@@ -118,7 +118,9 @@
     	"sKontaktEtterDod" : "Siste kontakt kan ikke være etter død",
     	"fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt",
         "manglermors" : "Sikker mors eller morsdato må angis",
-        "sKontaktNotNull" : "Siste kontakt kan ikke være tom når Født er ukjent"
+        "sKontaktNotNull" : "Siste kontakt kan ikke være tom når Født er ukjent",
+        "DiagEtterDod" : "Diagnosedato kan ikke være etter død",
+        "DiagForFodt" : "Diagnosedato kan ikke være før fødsel"
 
     },
     "konfig" : {
