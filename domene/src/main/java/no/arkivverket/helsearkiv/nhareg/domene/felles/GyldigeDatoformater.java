@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class GyldigeDatoformater {
     public static Date getDate(String dato) {
-        String[] formater = {"dd.MM.yyyy", "dd,MM,yyyy", "dd-MM-yyyy", "ddMMyyyy", "yyyy"};
+        String[] formater = {"d.M.yyyy", "dd.MM.yyyy", "d,M,yyyy", "dd,MM,yyyy", "dd-MM-yyyy", "ddMMyyyy", "yyyy"};
         Date d = null;
         for (String format : formater) {
 

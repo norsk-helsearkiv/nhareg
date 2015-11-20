@@ -40,13 +40,12 @@ public class DatoValiderer {
             return feil;
         }
 
-
         DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
         String diag = diagnose.getDiagnosedato();
         Date diagDato = getDate(diag);
 
         //fødtdatoår kjent
-        if (gr.isFodtdatoUkjent()!=null&& !gr.isFodtdatoUkjent()){
+        if (gr.isFodtdatoUkjent()==null || !gr.isFodtdatoUkjent()){
             DatoEllerAar fodt = gr.getFødt();
             String fodtString  =trans.transform(fodt);
 
@@ -56,29 +55,22 @@ public class DatoValiderer {
             if (fodtDato.after(diagDato)){
                 feil.add(new Valideringsfeil("diagnosedato", "DiagForFodt"));
             }
-
-
         }
-        if (gr.isDødsdatoUkjent()!=null&&!gr.isDødsdatoUkjent()){
+        if (gr.isDødsdatoUkjent()==null || !gr.isDødsdatoUkjent()){
             DatoEllerAar dod = gr.getDød();
             String dodString = trans.transform(dod);
             Date dodDato = getDate(dodString);
 
-            if (diagDato.after(dodDato)){
+            if (dodDato.before(diagDato)){
                 feil.add(new Valideringsfeil("diagnosedato", "DiagEtterDod"));
             }
         }
-
-
-
-
         return feil;
     }
 
     //Hjelpemetoder for validering
     public static ArrayList<Valideringsfeil> valider(PersondataDTO person, KonfigparamTjeneste konfig) throws ParseException {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
-        //TODO legge på sjekker for hvilke datoer (perioder) som faktisk er lovlig å legge inn i systemet
 
         if(person == null) {
             return feil;
@@ -124,87 +116,6 @@ public class DatoValiderer {
             List<Valideringsfeil> pdatofeild = pasientjournaldatokjentfodtogmors(person, lowLim, maxLim);
             leggTilFeil(feil, pdatofeild);
         }
-        /*
-
-        //Regler basert på født
-        if(sjekk(person.getFodt())) {
-
-            Date fodt = getDate(person.getFodt());
-
-
-            if (fodt.before(lowLim)||fodt.after(maxLim)){
-                feil.add(new Valideringsfeil("fodt", "UtenforGyldigPeriode"));
-            }
-
-
-            if(sjekk(person.getDod())) {
-                Date dod = getDate(person.getDod());
-                if(fodt.after(dod)) {
-                    feil.add(new Valideringsfeil("fodt", "FodtEtterDodt"));
-                }
-            }
-            
-            if(sjekk(person.getfKontakt())) {
-                Date fKontakt = getDate(person.getfKontakt());
-                if(fodt.after(fKontakt)) {
-                    feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
-                }
-            }
-            
-            if(sjekk(person.getsKontakt())) {
-                Date sKontakt = getDate(person.getsKontakt());
-                if(fodt.after(sKontakt)) {
-                    feil.add(new Valideringsfeil("sKontakt", "sKontaktForFodt"));
-                }
-            }
-        }
-        */
-        //Regler basert på død (ikke mors)
-       /* if(sjekk(person.getDod())) {
-            Date dod = getDate(person.getDod());
-            if (dod.before(lowLim)||dod.after(maxLim)){
-                feil.add(new Valideringsfeil("dod", "UtenforGyldigPeriode"));
-            }
-            //første og siste kontaktdato registrert
-            if (sjekk(person.getfKontakt())&&sjekk(person.getsKontakt())){
-                Date fKontakt = getDate(person.getfKontakt());
-                Date sKontakt = getDate(person.getsKontakt());
-                if(fKontakt.after(sKontakt)) {
-                    feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
-                }
-                if(sKontakt.after(dod)) {
-                    feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
-                }
-            }
-            //bare siste kontaktdato registrert
-            else if (sjekk(person.getsKontakt())){
-                Date sKontakt = getDate(person.getsKontakt());
-                if(sKontakt.after(dod)) {
-                    feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
-                }
-            }
-            //bare første kontaktdato registrert
-            else if (sjekk(person.getfKontakt())){
-                Date fKontakt = getDate(person.getfKontakt());
-                if (fKontakt.after(dod)){
-                    feil.add(new Valideringsfeil("fKontakt", "fKontaktEtterDod"));
-                }
-            }
-        }else{ //MORS
-            if (sjekk(person.getsKontakt())){
-
-            }
-            if(sjekk(person.getfKontakt()) && sjekk(person.getsKontakt())) {
-                Date fKontakt = getDate(person.getfKontakt());
-                Date sKontakt = getDate(person.getsKontakt());
-
-                if(fKontakt.after(sKontakt)) {
-                    feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
-                }
-            }
-
-        }*/
-
 
         return feil;
     }
@@ -279,7 +190,8 @@ public class DatoValiderer {
                 }
             }
         }
-        else */if ("mors".equals(person.getDod())){
+        else */
+        if ("mors".equals(person.getDod())){
 
             if (sjekk(person.getsKontakt()) && sjekk(person.getfKontakt())){
                 Date sKontakt = getDate(person.getsKontakt());
@@ -293,7 +205,7 @@ public class DatoValiderer {
                     feil.add(new Valideringsfeil("sKontakt", "UtenforGyldigPeriode"));
                 }
             }
-        }else{
+        }else if (!sjekk(person.getDod()) ){
             feil.add(new Valideringsfeil("dod", "manglermors"));
         }
 

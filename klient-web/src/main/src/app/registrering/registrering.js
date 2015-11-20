@@ -484,12 +484,16 @@ angular.module( 'nha.registrering', [
             index = 10;
             felt = document.getElementById('diagnosedato_table').innerHTML;
         }
+        if(element.attributt === 'diagnosekodetab') {
+            index = 12;
+            felt = document.getElementById('diagnosekode_table').innerHTML;
+        }
       if(element.attributt === 'diagnosekode') {
-        index = 11;
+        index = 13;
         felt = document.getElementById('diagnosekode').innerHTML;
       }    
       if(element.attributt === 'diagnosetekst') {
-        index = 12;
+        index = 14;
         felt = document.getElementById('diagnosetekst').innerHTML;
       }         
                          
