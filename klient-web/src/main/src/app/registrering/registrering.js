@@ -266,8 +266,50 @@ angular.module( 'nha.registrering', [
 
   var getAarhundreFromFnr = function(fnr) {
       var individ = Number(fnr.substring(6,9));
-      var aar = Number(fnr.substring(5,6));
+      var aar = Number(fnr.substring(4,6));
 
+      var d1 = Number(fnr.substring(0,1));//for d-nummersjekk
+      var m1 = Number(fnr.substring(2,3));//for h-nummersjekk
+      var dnummer = d1>3;
+      var hnummer = m1>3;
+
+      if (dnummer){
+          if (individ >= 0 && individ <= 499){
+              return 19;
+          }
+          if (individ >= 500 && individ <= 999){
+              return 20;
+          }
+      }
+      if (hnummer){
+          if ((individ >= 0 && individ <= 499) && (aar >= 0 && aar <=99)){
+              return 19;
+          }
+          if ((individ >= 500 && individ <= 749) && (aar >=55 && aar <99)){
+              return 18;
+          }
+          if ((individ >= 500 && individ <=999) && (aar >= 0 && aar <=39)){
+              return 20;
+          }
+
+      }else{
+          if ((individ >= 0 && individ <=99) && (aar >=0 && aar <= 39)){
+              return 20;
+          }
+          if ((individ >= 0 && individ <=499) && (aar >= 0 && aar <=99)){
+              return 19;
+          }
+          if ((individ >= 500 && individ <= 749) && (aar >= 55 && aar <=99)){
+              return 18;
+          }
+          if ((individ >= 500 && individ <= 999) && (aar>=0 && aar <=39)){
+              return 20;
+          }
+          if ((individ >= 900 && individ <=999) && (aar >= 40 && aar <=99)){
+              return 19;
+          }
+      }
+           /*
       //var i18551899 =
       if ((individ >= 500 && individ <= 749) && aar > 54){
           //1800
@@ -285,7 +327,7 @@ angular.module( 'nha.registrering', [
           //2000
           return 20;
       }
-      
+             */
 
 /*
     var personnr = fnr.substring(6,9);
