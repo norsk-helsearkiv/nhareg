@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
     "pnavn",
     "f\u00f8dt",
     "d\u00f8dsdatoUkjent",
+    "fodtdatoUkjent",
     "d\u00f8d",
     "kontakt",
     "kj\u00f8nn"
