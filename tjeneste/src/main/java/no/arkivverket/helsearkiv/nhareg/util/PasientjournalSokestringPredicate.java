@@ -4,6 +4,7 @@ package no.arkivverket.helsearkiv.nhareg.util;
 import java.util.List;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Identifikator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -38,6 +39,16 @@ public class PasientjournalSokestringPredicate implements Predicate<Pasientjourn
                     String pid = identifikator.getPID();
                     for (String sokestring : sokestrings) {
                         if (StringUtils.containsIgnoreCase(pid, sokestring)) {
+                            evaluate = true;
+                        }
+                    }
+                }
+            }
+            if (!evaluate){
+                for (Lagringsenhet e:pasientjournal.getLagringsenhet()){
+                    String id = e.getIdentifikator();
+                    for (String sokestring : sokestrings){
+                        if (StringUtils.containsIgnoreCase(id, sokestring)){
                             evaluate = true;
                         }
                     }
