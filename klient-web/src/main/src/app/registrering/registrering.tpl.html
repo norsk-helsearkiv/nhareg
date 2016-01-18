@@ -53,18 +53,23 @@
 			</div>
 			
 			<div class="row">
+                <!-- Journalnummer -->
+                <div class="span span4">
+                    <label id="fanearkid" data-ng-class="{error: error['fanearkid'] !== undefined }">Fanearkid</label>
+                    <input type="text" id="fanearkidInput" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()">
+                </div>
 				<!-- Journalnummer -->
-				<div class="span span3">
+				<div class="span span4">
 					<label id="journalnummer" data-ng-class="{error: error['journalnummer'] !== undefined }">Journalnummer</label>
 					<input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()">
 				</div>
 				<!-- Løpenummer -->
-				<div class="span span3">
+				<div class="span span4">
 					<label id="lopenummer" data-ng-class="{error: error['lopenummer'] !== undefined }">Løpenummer</label>
 					<input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()">
 				</div>
 				<!-- Fødelsnummer -->
-				<div class="span span3">
+				<div class="span span4">
 					<label id="fodselsnummer" data-ng-class="{error: error['fodselsnummer'] !== undefined }">Fødselsnummer</label>
 					<input type="text" class="form-control" placeholder="Fødselsnummer..." data-ng-model="formData.fodselsnummer" data-ng-focus="setFnr()" data-ng-blur="populerFelt()"  data-ng-enter="nyEllerOppdater()">
 				</div>

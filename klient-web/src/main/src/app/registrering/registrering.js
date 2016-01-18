@@ -214,7 +214,8 @@ angular.module( 'nha.registrering', [
     //Ny
     if($scope.state === 0) {
       if($scope.formData.lagringsenheter.length !== 0) {
-        document.getElementById("journalnummerInput").focus();
+        //document.getElementById("journalnummerInput").focus();
+          document.getElementById("fanearkidInput").focus();
       } else {
         document.getElementById("lagringsenhet").focus();
       }  

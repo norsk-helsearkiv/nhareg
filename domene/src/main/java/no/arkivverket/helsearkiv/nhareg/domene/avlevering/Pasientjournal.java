@@ -63,6 +63,7 @@ public class Pasientjournal implements Serializable
     @XmlAttribute(name = "uuid")
     protected String uuid;
 
+
     @XmlTransient
     protected Calendar opprettetDato;
 
@@ -289,6 +290,7 @@ public class Pasientjournal implements Serializable
     public void setUuid(String value) {
         this.uuid = value;
     }
+
     @XmlTransient
     public Calendar getOpprettetDato() {
         return opprettetDato;
@@ -297,4 +299,5 @@ public class Pasientjournal implements Serializable
     public void setOpprettetDato(Calendar opprettetDato) {
         this.opprettetDato = opprettetDato;
     }
+
 }

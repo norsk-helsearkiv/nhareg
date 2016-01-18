@@ -59,6 +59,9 @@ public class Konverterer {
         if (person.getLopenummer() != null) {
             journalId.setLøpenummer(person.getLopenummer());
         }
+        if (person.getFanearkid()!=null){
+            journalId.setFanearkid(person.getFanearkid());
+        }
         pasientjournal.setJournalidentifikator(journalId);
 
         Grunnopplysninger grunnopplysninger = new Grunnopplysninger();
@@ -136,6 +139,8 @@ public class Konverterer {
         if (pasientjournal.getJournalidentifikator()!=null) {
             resultat.setJnr(pasientjournal.getJournalidentifikator().getJournalnummer());
             resultat.setLnr(pasientjournal.getJournalidentifikator().getLøpenummer());
+            resultat.setFanearkid(pasientjournal.getJournalidentifikator().getFanearkid());
+
         }
         if (pasientjournal.getLagringsenhet()!=null&&pasientjournal.getLagringsenhet().size()>0){
             resultat.setLagringsenhet(pasientjournal.getLagringsenhet().get(0).getIdentifikator());
@@ -208,6 +213,7 @@ public class Konverterer {
         if (pasientjournal.getJournalidentifikator() != null) {
             person.setLopenummer(pasientjournal.getJournalidentifikator().getLøpenummer());
             person.setJournalnummer(pasientjournal.getJournalidentifikator().getJournalnummer());
+            person.setFanearkid(pasientjournal.getJournalidentifikator().getFanearkid());
         }
 
         dto.setPersondata(person);

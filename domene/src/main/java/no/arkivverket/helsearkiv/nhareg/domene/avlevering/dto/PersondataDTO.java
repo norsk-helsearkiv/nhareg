@@ -11,6 +11,7 @@ public class PersondataDTO implements Serializable {
 
 
     private String[] lagringsenheter;
+    private String fanearkid;
     private String journalnummer;
     private String lopenummer;
     private String fodselsnummer;
@@ -30,6 +31,12 @@ public class PersondataDTO implements Serializable {
     public PersondataDTO() {
     }
 
+    public String getFanearkid(){
+        return fanearkid;
+    }
+    public void setFanearkid(String fanearkid){
+        this.fanearkid = fanearkid;
+    }
     public String[] getLagringsenheter() {
         return lagringsenheter;
     }

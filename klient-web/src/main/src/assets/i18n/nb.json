@@ -1,6 +1,6 @@
 {
 	"common" : {
-		"APP_TITTEL": "Registreringskofferten",
+		"APP_TITTEL": "Registreringstøtte for pasientjournaler",
 		"OK": "Ok",
 		"AVBRYT": "Avbryt",
 		"LEGG_TIL" : "Ny",
@@ -29,6 +29,7 @@
 		"VISER" : "viser",
       "VIRKSOMHET" : "Virksomhet :",
       "LAGRINGSENHET" : "Lagringsenhet",
+      "FANEARKID" : "Fanearkid",
       "JNR" : "Journalnummer",
       "LNR" : "Løpenummer",
       "FNR" : "Fnum",
@@ -73,7 +74,9 @@
 			"MED_ID" : ", "
 		},
 		"legg_til" : {
-			"TITTEL" : "Opprett ny"
+			"TITTEL" : "Opprett ny",
+            "TITTEL_AVLEVERING": "Avlevering",
+            "TITTEL_AVTALE":"Avtale"
 		},
         "warning_laas" :{
           "TITTEL" : "Er du siker på at du vil låse avlevering?",

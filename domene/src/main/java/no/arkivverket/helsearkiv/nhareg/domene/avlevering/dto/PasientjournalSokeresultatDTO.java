@@ -7,6 +7,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 public class PasientjournalSokeresultatDTO {
     private String lagringsenhet;
     private String fodselsnummer;
+    private String fanearkid;
     private String jnr;
     private String lnr;
     private String navn;
@@ -16,6 +17,12 @@ public class PasientjournalSokeresultatDTO {
     private Long opprettetDato;
     private boolean avleveringLaast;
     private String avleveringsidentifikator;
+
+    public String getFanearkid() {return this.fanearkid;}
+
+    public void setFanearkid(String fanearkid){
+        this.fanearkid = fanearkid;
+    }
 
     public boolean isAvleveringLaast() {
         return avleveringLaast;

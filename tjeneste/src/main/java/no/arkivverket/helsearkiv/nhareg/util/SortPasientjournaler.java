@@ -50,7 +50,7 @@ public class SortPasientjournaler {
         });
     }
 
-    public enum Order {lagringsenhet, fodselsnummer, jnr, lnr, navn, faar, daar, oppdatertAv}
+    public enum Order {lagringsenhet, fodselsnummer, jnr, lnr, fanearkid, navn, faar, daar, oppdatertAv}
     static class FlexibleComparator implements Comparator<Pasientjournal> {
         private Order sortingBy = Order.lagringsenhet;
         private DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
@@ -71,6 +71,11 @@ public class SortPasientjournaler {
                 case jnr:
                     if (p1.getJournalidentifikator()!=null&&p2.getJournalidentifikator()!=null){
                         return comp(p1.getJournalidentifikator().getJournalnummer(), p2.getJournalidentifikator().getJournalnummer());
+                    }
+                    return p1.getJournalidentifikator()==null?1:-1;
+                case fanearkid:
+                    if (p1.getJournalidentifikator()!=null&&p2.getJournalidentifikator()!=null){
+                        return comp(p1.getJournalidentifikator().getFanearkid(), p2.getJournalidentifikator().getFanearkid());
                     }
                     return p1.getJournalidentifikator()==null?1:-1;
                 case lnr:

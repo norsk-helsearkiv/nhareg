@@ -24,6 +24,7 @@
                     <tr>
                         <th><a href="" data-ng-click="lagringsenhetAsc=!lagringsenhetAsc; actionSort('lagringsenhet', lagringsenhetAsc);">{{'home.LAGRINGSENHET' | translate}}</a></th>
                         <th><a href="" data-ng-click="fodselsnummerAsc=!fodselsnummerAsc; actionSort('fodselsnummer', fodselsnummerAsc);">{{'home.FNR' | translate}}</a></th>
+                        <th><a href="" data-ng-click="fanearkidAsc=!fanearkidAsc; actionSort('fanearkid', fanearkidAsc);">{{'home.FANEARKID' | translate}}</a></th>
                         <th><a href="" data-ng-click="jnrAsc=!jnrAsc; actionSort('jnr', jnrAsc);">{{'home.JNR' | translate}}</a></th>
                         <th><a href="" data-ng-click="lnrAsc=!lnrAsc; actionSort('lnr', lnrAsc);">{{'home.LNR' | translate}}</a></th>
                         <th><a href="" data-ng-click="navnAsc=!navnAsc; actionSort('navn', navnAsc);">{{'common.table.NAVN' | translate}}</a></th>
@@ -37,6 +38,7 @@
                     <tr data-ng-repeat="pasient in data.liste">
                         <td>{{ pasient.lagringsenhet }}</td>
                         <td>{{ pasient.fodselsnummer }}</td>
+                        <td>{{ pasient.fanearkid }}</td>
                         <td>{{ pasient.jnr }}</td>
                         <td>{{ pasient.lnr }}</td>
                         <td>{{ pasient.navn }}</td>

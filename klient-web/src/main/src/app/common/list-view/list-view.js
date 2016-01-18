@@ -73,6 +73,7 @@ angular.module( 'nha.common.list-view', [
   };
         $scope.lagringsenhetAsc = false;
         $scope.fodselsnummerAsc = false;
+        $scope.fanearkidAsc = false;
         $scope.jnrAsc = false;
         $scope.lnrAsc = false;
         $scope.navnAsc = false;

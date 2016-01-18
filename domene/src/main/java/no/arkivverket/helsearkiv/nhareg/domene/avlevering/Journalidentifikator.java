@@ -4,6 +4,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -30,14 +31,21 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Journalidentifikator", propOrder = {
     "journalnummer",
-    "l\u00f8penummer"
+    "l\u00f8penummer",
+        "fanearkid"
 })
 public class Journalidentifikator implements Serializable
 {
 
     protected String journalnummer;
     protected String løpenummer;
+    protected String fanearkid;
 
+    public String getFanearkid() {return this.fanearkid;}
+
+    public void setFanearkid(String fanearkid){
+        this.fanearkid = fanearkid;
+    }
     /**
      * Gets the value of the journalnummer property.
      * 
