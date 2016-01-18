@@ -163,6 +163,44 @@ angular.module( 'nha.common.list-view', [
       });
     });
   };
+  $scope.actionLeggTilPasientjournal = function(){
+      httpService.hent("avtaler/virksomhet", false)
+          .success(function (data, status, headers, config){
+              var foretaksnavn = data.foretaksnavn;
+              registreringService.setVirksomhet(foretaksnavn);
+              //TODO må også ha med følgende data
+              /*registreringService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
+              registreringService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
+              registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
+*/
+              var first = $scope.data.liste[0];
+              registreringService.setAvleveringsidentifikator(first.avleveringsidentifikator);
+              //TODO hente resten av dataene....
+
+              httpService.hent("pasientjournaler/" + first.uuid)
+                  .success(function(data, status, headers, config) {
+                      registreringService.setAvlevering(data.avleveringsidentifikator);
+                      registreringService.setVirksomhet(data.virksomhet);
+                      registreringService.setValgtAvtale(data.avtaleBeskrivelse);
+                      registreringService.setAvleveringsidentifikator(data.avleveringsidentifikator);
+                      registreringService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);
+                      $location.path('/registrer');
+                  }).error(function(data, status, headers, config) {
+                      errorService.errorCode(status);
+                  });
+
+          }).error(function(data, status, headers, config){
+              errorService.errorCode(status);
+          });
+  };
+
+    $scope.allEqualAvleveringid = function(){
+        var first = $scope.data.liste[0];
+        return $scope.data.liste.every(function(element){
+            return element.avleveringsidentifikator === first.avleveringsidentifikator;
+        });
+};
+
 
   $scope.actionVisJournal = function(pasientjournal) {
     httpService.hent("pasientjournaler/" + pasientjournal)

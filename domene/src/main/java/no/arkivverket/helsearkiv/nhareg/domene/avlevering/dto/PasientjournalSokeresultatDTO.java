@@ -15,6 +15,7 @@ public class PasientjournalSokeresultatDTO {
     private String oppdatertAv;
     private Long opprettetDato;
     private boolean avleveringLaast;
+    private String avleveringsidentifikator;
 
     public boolean isAvleveringLaast() {
         return avleveringLaast;
@@ -105,5 +106,7 @@ public class PasientjournalSokeresultatDTO {
     public void setOpprettetDato(Long opprettetDato) {
         this.opprettetDato = opprettetDato;
     }
+    public String getAvleveringsidentifikator(){ return this.avleveringsidentifikator;}
+    public void setAvleveringsidentifikator(String avleveringsidentifikator){ this.avleveringsidentifikator = avleveringsidentifikator;}
 
 }

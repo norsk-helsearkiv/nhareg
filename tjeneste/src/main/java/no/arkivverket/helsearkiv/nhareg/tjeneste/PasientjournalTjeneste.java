@@ -193,6 +193,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                         avleveringMap.put(avleveringsId, a);
                     }
                     sokres.setAvleveringLaast(a.isLaast());
+                    sokres.setAvleveringsidentifikator(a.getAvleveringsidentifikator()  );
                     resultatListe.add(sokres);
                     antallIListe++;
                 }
