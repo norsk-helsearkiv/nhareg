@@ -74,8 +74,8 @@ public class SortPasientjournaler {
                     }
                     return p1.getJournalidentifikator()==null?1:-1;
                 case fanearkid:
-                    if (p1.getJournalidentifikator()!=null&&p2.getJournalidentifikator()!=null){
-                        return comp(p1.getJournalidentifikator().getFanearkid(), p2.getJournalidentifikator().getFanearkid());
+                    if (p1!=null&&p2!=null){
+                        return comp(p1.getFanearkid(), p2.getFanearkid());
                     }
                     return p1.getJournalidentifikator()==null?1:-1;
                 case lnr:

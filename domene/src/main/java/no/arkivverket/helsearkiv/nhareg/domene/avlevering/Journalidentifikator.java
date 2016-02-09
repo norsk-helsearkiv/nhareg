@@ -31,22 +31,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Journalidentifikator", propOrder = {
     "journalnummer",
-    "l\u00f8penummer",
-        "fanearkid"
+    "l\u00f8penummer"
 })
 public class Journalidentifikator implements Serializable
 {
 
     protected String journalnummer;
     protected String løpenummer;
-    protected String fanearkid;
 
-    public String getFanearkid() {return this.fanearkid;}
 
-    public void setFanearkid(String fanearkid){
-        this.fanearkid = fanearkid;
-    }
-    /**
+        /**
      * Gets the value of the journalnummer property.
      * 
      * @return

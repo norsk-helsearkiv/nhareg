@@ -121,19 +121,19 @@
 			<div class="well" data-ng-show="state !== 0">
 				<div class="row">
 					<!-- Diagnosedato -->
-					<div class="span span5">
+					<div class="span span4">
 						<label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
 							Diagnosedato
 						</label>
 						<input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-enter="leggTilDiagnose()">
 					</div>
-					<div class="span span5">
+					<div class="span span4">
 						<label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
 							Diagnosekode
 						</label>
 						<input id="diagnosekode-input" type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
 					</div>
-					<div class="span span2">
+					<div class="span span4">
 						<label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
 							Diagnosetekst
 						</label>
@@ -150,7 +150,6 @@
 
 					</div>
 					<div class="span span4">
-						<label></label>
 						<button id="btn-diagnose" class="btn btn-diagnose" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose</button>
 					</div>
 				</div>

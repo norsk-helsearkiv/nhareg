@@ -44,7 +44,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "supplerendeopplysninger",
     "lagringsenhet",
     "slettet",
-    "oppdateringsinfo"
+    "oppdateringsinfo",
+        "fanearkid"
 })
 public class Pasientjournal implements Serializable
 {
@@ -62,10 +63,17 @@ public class Pasientjournal implements Serializable
     protected Oppdateringsinfo oppdateringsinfo;
     @XmlAttribute(name = "uuid")
     protected String uuid;
-
+    protected String fanearkid;
 
     @XmlTransient
     protected Calendar opprettetDato;
+
+    public String getFanearkid() {return this.fanearkid;}
+
+    public void setFanearkid(String fanearkid){
+        this.fanearkid = fanearkid;
+    }
+
 
     @Override
     public boolean equals(Object o) {

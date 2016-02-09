@@ -64,6 +64,11 @@
     
     <xs:complexType name="Pasientjournal">
         <xs:sequence>
+            <xs:element name="fanearkid" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Fanearkid</xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="journalidentifikator" type="Journalidentifikator">
                 <xs:annotation>
                     <xs:documentation>Identifikator som er påført journalen</xs:documentation>
@@ -102,6 +107,7 @@
                 <xs:documentation>Universel unik identifikator som benyttes for entydig å identifisere en pasientjournal</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+
     </xs:complexType>
 
     <xs:complexType name="Journalidentifikator">
@@ -138,7 +144,14 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
-                                        
+            <xs:element name="fodtdatoUkjent" type="xs:boolean" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>
+                        Angir om fødselsdato/år er ukjent.
+                        Verdi "true" uttrykker sant (ja, avkrysset boks etc.) mens verdi "false" uttrykker usant (verdi nei, ikke avkrysset boks etc.).
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="død" type="DatoEllerAar" minOccurs="0" >
                 <xs:annotation>
                     <xs:documentation>Pasientens dødsdato eller år dersom dette er kjent</xs:documentation>
