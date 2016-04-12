@@ -213,8 +213,8 @@ public class Konverterer {
         if (pasientjournal.getJournalidentifikator() != null) {
             person.setLopenummer(pasientjournal.getJournalidentifikator().getLøpenummer());
             person.setJournalnummer(pasientjournal.getJournalidentifikator().getJournalnummer());
-            person.setFanearkid(pasientjournal.getFanearkid());
         }
+        person.setFanearkid(pasientjournal.getFanearkid());
 
         dto.setPersondata(person);
         return dto;

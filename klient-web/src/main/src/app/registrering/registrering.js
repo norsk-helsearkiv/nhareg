@@ -372,7 +372,7 @@ angular.module( 'nha.registrering', [
   };
 
   $scope.populerFelt = function() {
-    if($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) {
+    if(($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) && $scope.formData.fodt!=='') {
       return;
     }
 
@@ -413,7 +413,7 @@ angular.module( 'nha.registrering', [
         }
         aar = y1+""+y2;
 
-      if(dag > 0 && dag < 32 && mnd > 0 && mnd < 13 && aar > 0) {
+      if(dag > 0 && dag < 32 && mnd > 0 && mnd < 13 && aar >= 0) {
         datoValidert = true;
         $scope.formData.fodt = dag + "." + mnd + "." + aarhundre + aar;
       }

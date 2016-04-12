@@ -500,4 +500,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return oppdateringsinfo;
     }
 
+    public static void main(String arg){
+        System.out.println();
+    }
+
 }
