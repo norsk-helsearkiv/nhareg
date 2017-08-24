@@ -15,7 +15,6 @@
     <entity class="Avtale" access="FIELD">
         <attributes>
             <id name="avtaleidentifikator"/>
-            
             <many-to-one name="virksomhet"/>
         </attributes>
     </entity>
@@ -98,7 +97,8 @@
             </basic>
         </attributes>
     </embeddable>
-    <embeddable class="Identifikator"/>
+    <embeddable class="Identifikator">
+    </embeddable>
 
     <embeddable class="Kontakt">
         <attributes>

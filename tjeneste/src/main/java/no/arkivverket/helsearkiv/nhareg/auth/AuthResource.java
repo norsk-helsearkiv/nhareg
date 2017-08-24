@@ -27,29 +27,22 @@ public class AuthResource {
     @PermitAll
     public void logout(@Context HttpServletRequest request, @Context HttpServletResponse response) {
 
-        Object o = request.getHeaderNames();
-        Object c = request.getHeader("Cookie");
+        response.setHeader("Cache-Control", "no-cache, no-store");
+
+        response.setHeader("Pragma", "no-cache");
+
+        response.setHeader("Expires", new java.util.Date().toString());
         if (request.getSession(false) != null) {
+
             request.getSession(false).invalidate();// remove session.
+
         }
 
-      if (request.getSession() != null) {
-          request.getSession().invalidate();// remove session.
-      }
-      /*  Cookie[] cookies = request.getCookies();
-        if (cookies != null)
-            for (int i = 0; i < cookies.length; i++) {
-                cookies[i].setValue("");
-                cookies[i].setPath("/");
-                cookies[i].setMaxAge(0);
-                response.addCookie(cookies[i]);
-            }
-      */
-      /*
         try {
             request.logout();
-        } catch (ServletException e) {
+            response.sendRedirect(request.getContextPath());
+        }catch(Exception e){
             e.printStackTrace();
-        }*/
+        }
     }
 }

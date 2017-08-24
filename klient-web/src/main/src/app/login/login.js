@@ -16,17 +16,6 @@ angular.module( 'nha.login', [
     }
   });
 })
-    /*
-    .controller('LoginCtrl', ['$scope', 'authFactory', function LoginCtrl($scope, authFactory) {
-        $scope.login = function (user) {
-            authFactory.login(user).success(function (data) {
-                authFactory.setAuthData(data);
-                // Redirect etc.
-            }).error(function () {
-                // Error handling
-            });
-        })*/
-
 
 .controller( 'LoginCtrl', function HomeController($scope, $location, $filter, authenticationService, errorService) {
   $scope.formLogin = {};
@@ -45,8 +34,6 @@ angular.module( 'nha.login', [
   $scope.submit = function() {
     $scope.feilmeldinger = false;
 
-    //authenticationService.clearCredentials();
-    
     authenticationService.login($scope.formLogin)
     .success(function(data, status, headers, config) {
       authenticationService.setAuthData(data);

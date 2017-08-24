@@ -6,14 +6,9 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
 import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.PasientjournalSokestringPredicate;
-import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.SortPasientjournaler;
+import no.arkivverket.helsearkiv.nhareg.util.*;
 import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
@@ -25,11 +20,7 @@ import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -43,7 +34,6 @@ import java.util.*;
  * JAX-RS endepunkt for håndtering av {@link Pasientjournal}r. Arver metodene
  * fra {@link EntitetsTjeneste}i tillegg til egne metoder.
  * </p>
- *
  */
 @Path("/pasientjournaler")
 /**
@@ -121,17 +111,33 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             return lstObj;
         }
 
-        List<Pasientjournal> pasientjournaler = getAll(new MultivaluedHashMap<String, String>());
+        MultivaluedMap<String, String> qp = new MultivaluedHashMap<String, String>();
+        qp.add("fanearkid", queryParameter.getFirst("sokFanearkId"));
+        qp.add("lagringsenhet", queryParameter.getFirst("sokLagringsenhet"));
+        qp.add("fodselsnummer", queryParameter.getFirst("sokFodselsnummer"));
+        qp.add("navn", queryParameter.getFirst("sokNavn"));
+        qp.add("fodt", queryParameter.getFirst("sokFodt"));
+        qp.add("oppdatertAv", queryParameter.getFirst("sokOppdatertAv"));
+        qp.add("sistOppdatert", queryParameter.getFirst("sokSistOppdatert"));
+
+
+        List<Pasientjournal> pasientjournaler = getAll(qp);
         return getActiveWithPaging(pasientjournaler, uriInfo);
     }
-    /**
-     * Pasientjournal has soft delete, this methods removes the inactive and
-     * returns the number of active pasientjournals.
-     *
-     * @param pasientjournalerInput
-     * @param uriInfo
-     * @return ListeObjekt
-     */
+
+    protected javax.persistence.criteria.Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<Pasientjournal> root) {
+        return new PasientjournalExtractPredicates().extractPredicates(queryParameters, criteriaBuilder, root);
+    }
+
+        /**
+         * Pasientjournal has soft delete, this methods removes the inactive and
+         * returns the number of active pasientjournals.
+         *
+         * @param pasientjournalerInput
+         * @param uriInfo
+         * @return ListeObjekt
+         */
+
     public ListeObjekt getActiveWithPaging(Collection<Pasientjournal> pasientjournalerInput, UriInfo uriInfo) {
         //
         // Kopierer for ikke å manipulere på input-collection.
@@ -147,12 +153,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
         List<String> orders = queryParameters.get("orderBy");
         String order = null;
-        if (orders!=null&&orders.size()>0){
+        if (orders != null && orders.size() > 0) {
             order = orders.get(0);
         }
         List<String> directions = queryParameters.get("sortDirection");
         String direction = null;
-        if (directions!=null&&directions.size()>0){
+        if (directions != null && directions.size() > 0) {
             direction = directions.get(0);
         }
         SortPasientjournaler.sort(pasientjournaler, order, direction);
@@ -188,19 +194,19 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                     PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
                     String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pj.getUuid());
                     Avlevering a = avleveringMap.get(avleveringsId);
-                    if (a==null){
+                    if (a == null) {
                         a = avleveringTjeneste.getAvlevering(avleveringsId);
                         avleveringMap.put(avleveringsId, a);
                     }
                     sokres.setAvleveringLaast(a.isLaast());
-                    sokres.setAvleveringsidentifikator(a.getAvleveringsidentifikator()  );
+                    sokres.setAvleveringsidentifikator(a.getAvleveringsidentifikator());
                     resultatListe.add(sokres);
                     antallIListe++;
                 }
                 totalAktive++;
             }
         }
-        ListeObjekt list =  new ListeObjekt(resultatListe, totalAktive, side, antall);
+        ListeObjekt list = new ListeObjekt(resultatListe, totalAktive, side, antall);
         return list;
     }
 
@@ -215,7 +221,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return tilPasientjournalDTO(pasientjournal);
     }
 
-    private final PasientjournalDTO tilPasientjournalDTO(Pasientjournal pasientjournal){
+    private final PasientjournalDTO tilPasientjournalDTO(Pasientjournal pasientjournal) {
         PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
         pasientjournalDTO.setAvleveringsidentifikator(avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid()));
         //
@@ -265,7 +271,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
 
         Pasientjournal orig = super.hent(pasientjournal.getUuid());
-        if (orig!=null){
+        if (orig != null) {
             pasientjournal.getDiagnose().addAll(orig.getDiagnose());
         }
         //pasientjournal.getDiagnose().addAll(CollectionUtils.collect(pasientjournalDTO.getDiagnoser(), diagnoseFraDTOTransformer));
@@ -283,13 +289,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();
     }
+
     public List<Valideringsfeil> validerGrunnopplysningerPasientjournal(PersondataDTO persondata) throws ParseException {
         // VALIDERING - Persondata
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondata).valider();
         //Validerer forholdet mellom dataoer
         valideringsfeil.addAll(DatoValiderer.valider(persondata, konfigparam));
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondata);
-        if (fnrfeil!=null){
+        if (fnrfeil != null) {
             valideringsfeil.add(fnrfeil);
         }
         return valideringsfeil;
@@ -315,7 +322,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return super.create(entity);
     }
 
-    private void opprettOgKnyttLagringsenheter(Pasientjournal entity){
+    private void opprettOgKnyttLagringsenheter(Pasientjournal entity) {
         //
         // Oppretter lagringsenheter som ikke finnes fra før.
         //
@@ -338,6 +345,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         entity.getLagringsenhet().clear();
         entity.getLagringsenhet().addAll(eksisterendeLagringsenheter);
     }
+
     @DELETE
     @Path("/{id}")
     @Override
@@ -351,7 +359,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     /**
      * Legger til diagnose for pasientjournal
      *
-     * @param id på pasientjournalen
+     * @param id          på pasientjournalen
      * @param diagnoseDTO
      * @return 200 OK
      */
@@ -365,11 +373,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         new Validator<DiagnoseDTO>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
         List<Valideringsfeil> feil = DatoValiderer.validerDiagnose(diagnoseDTO, pasientjournal, konfigparam);
         ArrayList<Valideringsfeil> kodefeil = validerDiagnosekode(diagnoseDTO);
-        if (kodefeil!=null){
+        if (kodefeil != null) {
             feil.addAll(kodefeil);
         }
 
-        if (feil.size()>0){
+        if (feil.size() > 0) {
             throw new ValideringsfeilException(feil);
         }
 
@@ -388,12 +396,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
     }
 
-    private ArrayList<Valideringsfeil> validerDiagnosekode(DiagnoseDTO diagnoseDTO){
-        if (diagnoseDTO.getDiagnosekode()!=null&& !diagnoseDTO.getDiagnosekode().equals("")){
+    private ArrayList<Valideringsfeil> validerDiagnosekode(DiagnoseDTO diagnoseDTO) {
+        if (diagnoseDTO.getDiagnosekode() != null && !diagnoseDTO.getDiagnosekode().equals("")) {
             MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
             queryParameters.add("code", diagnoseDTO.getDiagnosekode());
-            List<Diagnosekode> list  = diagnosekodeTjeneste.getAll(queryParameters);
-            if (list.size()==0){//Diagnosekoden finnes ikke..
+            List<Diagnosekode> list = diagnosekodeTjeneste.getAll(queryParameters);
+            if (list.size() == 0) {//Diagnosekoden finnes ikke..
                 ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
                 valideringsfeil.add(new Valideringsfeil("diagnosekode", "UkjentDiagnosekode"));
                 return valideringsfeil;
@@ -401,9 +409,10 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
         return null;
     }
+
     @PUT
     @Path("/{id}/diagnoser")
-    public Response oppdaterDiagnose(@PathParam("id") String id, DiagnoseDTO diagnoseDTO){
+    public Response oppdaterDiagnose(@PathParam("id") String id, DiagnoseDTO diagnoseDTO) {
         Pasientjournal pasientjournal = hent(id);
         if (pasientjournal == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -411,14 +420,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<DiagnoseDTO>(DiagnoseDTO.class).valider(diagnoseDTO);
         List<Valideringsfeil> diagfeil = DatoValiderer.validerDiagnose(diagnoseDTO, pasientjournal, konfigparam);
-        if (diagfeil.size()>0) {
+        if (diagfeil.size() > 0) {
             valideringsfeil.addAll(diagfeil);
         }
         ArrayList<Valideringsfeil> kodefeil = validerDiagnosekode(diagnoseDTO);
-        if (kodefeil!=null){
+        if (kodefeil != null) {
             valideringsfeil.addAll(kodefeil);
         }
-        if (valideringsfeil.size()!=0){
+        if (valideringsfeil.size() != 0) {
             for (Valideringsfeil f : valideringsfeil) {
                 if (f.getAttributt().equals("diagnosedato")) {
                     f.setAttributt("diagnosedatotab");
@@ -439,7 +448,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     /**
      * Fjerner diagnose fra pasientjournal
      *
-     * @param id på pasientjournalen
+     * @param id          på pasientjournalen
      * @param diagnoseDTO som skal fjernes
      * @return 200 OK
      */
@@ -465,7 +474,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     /**
      * Legger til vedlegg til pasientjournalen
      *
-     * @param id på pasientjournalen
+     * @param id  på pasientjournalen
      * @param fil som skal legges til
      * @return vedleggsid
      */
@@ -480,7 +489,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * Sletter vedlegg fra JCR og fjerner vedlegget fra pasientjournalen
      *
      * @param pasientjournalId id på pasientjournalen
-     * @param vedleggId id på vedlegget
+     * @param vedleggId        id på vedlegget
      * @return 200 OK
      */
     @DELETE
@@ -491,8 +500,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     }
 
 
-
-
     private Oppdateringsinfo konstruerOppdateringsinfo() {
         Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
         oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
@@ -500,7 +507,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return oppdateringsinfo;
     }
 
-    public static void main(String arg){
+    public static void main(String arg) {
         System.out.println();
     }
 

@@ -1,85 +1,142 @@
 <nav class="navbar navbar-fixed-top">
     <div class="navbar-header">
-      <a class="navbar-brand" href="" data-ng-click="navHome()">{{ 'common.APP_TITTEL' | translate }}</a>
+        <a class="navbar-brand" href="" data-ng-click="navHome()">{{ 'common.APP_TITTEL' | translate }}</a>
     </div>
 </nav>
 
 <div class="content">
-<div class="container-fluid">
-  <div class="row">
+    <div class="container-fluid">
+        <div class="row">
 
-    <!-- Avtaleliste -->
-    <div class="col-sm-3 col-md-2 sidebar">
-        <small> {{ 'home.VIRKSOMHET' | translate }} {{ virksomhet.foretaksnavn}}</small>
-        <h4>
-        {{ 'home.AVTALER' | translate }}
-        <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()">{{ 'common.LEGG_TIL' | translate }}</button>
-      </h4>
+            <!-- Avtaleliste -->
+            <div class="col-sm-3 col-md-2 sidebar">
+                <small> {{ 'home.VIRKSOMHET' | translate }} {{ virksomhet.foretaksnavn}}</small>
+                <h4>
+                    {{ 'home.AVTALER' | translate }}
+                    <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()">{{
+                        'common.LEGG_TIL' | translate }}
+                    </button>
+                </h4>
 
-      <ul class="nav nav-sidebar">
-        <li data-ng-repeat="avtale in avtaler"
-            data-ng-click="setValgtAvtale(avtale)"
-            data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
-            <a href="">
-              <button class="icon icon-edit" data-ng-click="actionEndreAvtale(avtale)" tooltip="{{text.tooltip.endr}}"></button>
-              <button class="icon icon-delete icon-padding-right" data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)" tooltip="{{text.tooltip.deleteElement}}" data-ng-show="valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0">
-              </button>
-              {{ avtale.avtalebeskrivelse }}
-            </a>
-        </li>
-      </ul>
-        <button class="btn btn-default" data-ng-click="loggUt()">Logg ut</button>
+                <ul class="nav nav-sidebar">
+                    <li data-ng-repeat="avtale in avtaler"
+                        data-ng-click="setValgtAvtale(avtale)"
+                        data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
+                        <a href="">
+                            <button class="icon icon-edit" data-ng-click="actionEndreAvtale(avtale)"
+                                    tooltip="{{text.tooltip.endr}}"></button>
+                            <button class="icon icon-delete icon-padding-right"
+                                    data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)"
+                                    tooltip="{{text.tooltip.deleteElement}}"
+                                    data-ng-show="valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0">
+                            </button>
+                            {{ avtale.avtalebeskrivelse }}
+                        </a>
+                    </li>
+                </ul>
+                <button class="btn btn-default" data-ng-click="loggUt()">Logg ut</button>
+            </div>
+
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <h2>{{ text.pasientsok }}</h2>
+
+
+                <form class="input-group">
+                    <div class="well">
+                        <div class="row">
+                            <div class="span span4 padding-bottom">
+                                <label>Lagringsenhet</label>
+                                <input type="text" data-ng-model="sok.lagringsenhet" class="form-control" placeholder="Lagringsenhet"><!--{{text.pasientsok}}...-->
+                            </div>
+                            <div class="span span4 padding-bottom">
+                                <label>Fanearkid</label>
+                                <input type="text" data-ng-model="sok.fanearkId" class="form-control" placeholder="Fanearkid">
+                            </div>
+                            <div class="span span4 padding-bottom">
+                                <label>Fødselsnummer</label>
+                                <input type="text" data-ng-model="sok.fodselsnummer" class="form-control" placeholder="Fødselsnummer">
+                            </div>
+                            <div class="span span4 padding-bottom">
+                                <label>Navn</label>
+                                <input type="text" data-ng-model="sok.navn" class="form-control" placeholder="Navn">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="span span4">
+                                <label>Født</label>
+                                <input type="text" data-ng-model="sok.fodt" class="form-control" placeholder="Født">
+                            </div>
+                            <div class="span span4">
+                                <label>Oppdatert av</label>
+                                <input type="text" data-ng-model="sok.oppdatertAv" class="form-control" placeholder="Oppdatert av">
+                            </div>
+                            <div class="span span4">
+                                <label>Sist oppdatert</label>
+                                <input type="text" data-ng-model="sok.sistOppdatert" class="form-control" placeholder="dd.mm.åååå">
+                            </div>
+                            <div class="span span4">
+                                <label>&nbsp;</label>
+                                <button class="form-control btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+
+                <h2 class="sub-header">
+                    {{ 'home.AVLEVERINGER' | translate }}
+                    <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn}} &#x2F {{valgtAvtale.avtalebeskrivelse }}</small>
+                    <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale">
+                        {{ 'common.LEGG_TIL' | translate }}
+                    </button>
+                </h2>
+
+                <div class="table-responsive">
+                    <table class="table table-striped" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th ts-criteria="avleveringsidentifikator">{{ 'common.table.ID' | translate }}</th>
+                            <th ts-criteria="arkivskaper">{{ 'common.table.ARKIVSKAPER' | translate }}</th>
+                            <th ts-criteria="avleveringsbeskrivelse">{{ 'common.table.BESKRIVELSE' | translate }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="avlevering in avleveringer" ts-repeat>
+                            <td>{{ avlevering.avleveringsidentifikator }}</td>
+                            <td>{{ avlevering.arkivskaper }}</td>
+                            <td>{{ avlevering.avleveringsbeskrivelse }}</td>
+                            <td>
+                                <button class="icon icon-list" data-ng-click="actionVisAvlevering(avlevering)"
+                                        tooltip="{{text.tooltip.list}}"></button>
+                                <button class="icon icon-padding-left icon-add-journal" ng-hide="avlevering.laast"
+                                        data-ng-click="actionLeggTilPasientjournald(avlevering)"
+                                        tooltip="{{text.tooltip.add}}"></button>
+                                <button class="icon icon-padding-left icon-folder"
+                                        data-ng-click="actionAvleveringLeveranse(avlevering)"
+                                        tooltip="{{text.tooltip.folder}}"></button>
+                                <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast"
+                                        data-ng-click="actionEndreAvlevering(avlevering)"
+                                        tooltip="{{text.tooltip.endre}}"></button>
+                                <button class="icon icon-padding-left icon-delete"
+                                        data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)"
+                                        tooltip="{{text.tooltip.deleteElement}}"
+                                        data-ng-show="avlevering.antallPasientjournaler === 0"></button>
+
+                                <button ng-hide="avlevering.laast" class="icon icon-padding-left icon-unlock"
+                                        data-ng-click="actionLaasAvlevering(avlevering)"
+                                        tooltip="{{text.tooltip.laas}}"></button>
+                                <button ng-hide="!avlevering.laast" class="icon icon-padding-left icon-lock"
+                                        data-ng-click="actionLaasOppAvlevering(avlevering)"
+                                        tooltip="{{text.tooltip.laast}}"></button>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-      <h2>{{ text.pasientsok }}</h2>
-      <div class="row placeholders">
-        <form class="input-group">
-          <input type="text" data-ng-model="sokInput" class="form-control" placeholder="{{text.pasientsok}}...">
-          <span class="input-group-btn">
-            <button class="btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.OK' | translate }}</button>
-          </span>
-        </form>
-      </div>
-      
-      <h2 class="sub-header">
-        {{ 'home.AVLEVERINGER' | translate }}
-        <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn}} &#x2F {{ valgtAvtale.avtalebeskrivelse }}</small>
-        <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale">
-          {{ 'common.LEGG_TIL' | translate }}
-        </button>
-      </h2>
-      <div class="table-responsive">
-        <table class="table table-striped" ts-wrapper>
-          <thead>
-            <tr>
-              <th ts-criteria="avleveringsidentifikator">{{ 'common.table.ID' | translate }}</th>
-              <th ts-criteria="arkivskaper">{{ 'common.table.ARKIVSKAPER' | translate }}</th>
-              <th ts-criteria="avleveringsbeskrivelse">{{ 'common.table.BESKRIVELSE' | translate }}</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr data-ng-repeat="avlevering in avleveringer" ts-repeat>
-              <td>{{ avlevering.avleveringsidentifikator }}</td>
-              <td>{{ avlevering.arkivskaper }}</td>
-              <td>{{ avlevering.avleveringsbeskrivelse }}</td>
-              <td>
-                <button class="icon icon-list" data-ng-click="actionVisAvlevering(avlevering)" tooltip="{{text.tooltip.list}}"></button>
-                <button class="icon icon-padding-left icon-add-journal" ng-hide="avlevering.laast" data-ng-click="actionLeggTilPasientjournald(avlevering)" tooltip="{{text.tooltip.add}}"></button>
-                <button class="icon icon-padding-left icon-folder" data-ng-click="actionAvleveringLeveranse(avlevering)" tooltip="{{text.tooltip.folder}}"></button>
-                <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast" data-ng-click="actionEndreAvlevering(avlevering)" tooltip="{{text.tooltip.endre}}"></button>
-                <button class="icon icon-padding-left icon-delete" data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)" tooltip="{{text.tooltip.deleteElement}}" data-ng-show="avlevering.antallPasientjournaler === 0"></button>
-
-                  <button ng-hide="avlevering.laast" class="icon icon-padding-left icon-unlock" data-ng-click="actionLaasAvlevering(avlevering)" tooltip="{{text.tooltip.laas}}"></button>
-                  <button ng-hide="!avlevering.laast" class="icon icon-padding-left icon-lock" data-ng-click="actionLaasOppAvlevering(avlevering)" tooltip="{{text.tooltip.laast}}"></button>
-
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
 </div>

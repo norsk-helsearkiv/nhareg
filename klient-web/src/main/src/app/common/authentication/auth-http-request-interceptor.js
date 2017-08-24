@@ -2,6 +2,7 @@ var mod = angular.module('nha.common.auth-http-request-interceptor', [
     'ngCookies',
     'nha.common.http-service'
 ]);
+
 mod.factory('authHttpRequestInterceptor', ['$rootScope', '$injector', function ($rootScope, $injector) {
     var authHttpRequestInterceptor = {
         request: function ($request) {
@@ -16,6 +17,7 @@ mod.factory('authHttpRequestInterceptor', ['$rootScope', '$injector', function (
 
     return authHttpRequestInterceptor;
 }]);
+
 mod.config(function ($httpProvider) {
     $httpProvider.interceptors.push('authHttpRequestInterceptor');
 });

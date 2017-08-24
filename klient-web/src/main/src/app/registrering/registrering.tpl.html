@@ -1,6 +1,6 @@
 <nav class="navbar navbar-fixed-top">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">{{ 'common.APP_TITTEL' | translate }}</a>
+        <a class="navbar-brand" href="#">{{ 'common.APP_TITTEL' | translate }}</a>
     </div>
     <!--<div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
@@ -17,195 +17,197 @@
 
 
 <div class="content">
-	<!-- Feilmeldinger -->
-	<div class="col-sm-3 col-md-2 sidebar">
-		<h4>Valideringsfeil</h4>
-		<ul class="nav nav-sidebar">
-			<li data-ng-repeat="feil in feilmeldinger">
-				<span class="error error-tittel">{{feil.felt}}</span><br />
-				<span class="error-beskrivelse">{{feil.feilmelding}}</span>
-			</li>
-		</ul>
-  </div>
-  <!-- Legg til Diagnoser -->
-  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-		<h1>
-			Registrering
+    <!-- Feilmeldinger -->
+    <div class="col-sm-3 col-md-2 sidebar">
+        <h4>Valideringsfeil</h4>
+        <ul class="nav nav-sidebar">
+            <li data-ng-repeat="feil in feilmeldinger">
+                <span class="error error-tittel">{{feil.felt}}</span><br/>
+                <span class="error-beskrivelse">{{feil.feilmelding}}</span>
+            </li>
+        </ul>
+    </div>
+    <!-- Legg til Diagnoser -->
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1>
+            Registrering
             <small> {{ virksomhet}} &#x2F {{ valgtAvtale }} &#x2F {{avleveringsbeskrivelse}}</small>
-		</h1>
-		
-		<div class="well">
-			<!-- Lagringsenhet -->
-			<div>
-				<label id="labelLagringsenhet" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
-					Lagringsenheter 
-				</label>
-				<p data-ng-show="state === 1">
-					<span data-ng-repeat="enhet in formData.lagringsenheter">{{enhet}} </span>
-				</p>
-				<input type="text" id="lagringsenhet" class="form-control" placeholder="Lagringsenhet..." data-ng-model="lagringsenhet" ng-enter="keyAddLagringsenhet()" data-ng-show="state !== 1">
-				<ul id="lagringsenhet-liste">
-					<li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">
-						<button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
-						{{ enhet }}
-					</li>
-				</ul>
-			</div>
-			
-			<div class="row">
+        </h1>
+
+        <div class="well">
+            <!-- Lagringsenhet -->
+            <div>
+                <label id="labelLagringsenhet" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
+                    Lagringsenheter
+                </label>
+                <p data-ng-show="state === 1">
+                    <span data-ng-repeat="enhet in formData.lagringsenheter">{{enhet}} </span>
+                </p>
+                <input type="text" id="lagringsenhet" class="form-control" placeholder="Lagringsenhet..." data-ng-model="lagringsenhet" ng-enter="keyAddLagringsenhet()" data-ng-show="state !== 1">
+                <ul id="lagringsenhet-liste">
+                    <li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">
+                        <button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
+                        {{ enhet }}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row">
                 <!-- Journalnummer -->
                 <div class="span span4">
                     <label id="fanearkid" data-ng-class="{error: error['fanearkid'] !== undefined }">Fanearkid</label>
                     <input type="text" id="fanearkidInput" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()">
                 </div>
-				<!-- Journalnummer -->
-				<div class="span span4">
-					<label id="journalnummer" data-ng-class="{error: error['journalnummer'] !== undefined }">Journalnummer</label>
-					<input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()">
-				</div>
-				<!-- Løpenummer -->
-				<div class="span span4">
-					<label id="lopenummer" data-ng-class="{error: error['lopenummer'] !== undefined }">Løpenummer</label>
-					<input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()">
-				</div>
-				<!-- Fødelsnummer -->
-				<div class="span span4">
-					<label id="fodselsnummer" data-ng-class="{error: error['fodselsnummer'] !== undefined }">Fødselsnummer</label>
-					<input type="text" class="form-control" placeholder="Fødselsnummer..." data-ng-model="formData.fodselsnummer" data-ng-focus="setFnr()" data-ng-blur="populerFelt()"  data-ng-enter="nyEllerOppdater()">
-				</div>
-			</div>
-			<hr />
-			<div class="row">
-				<!-- Navn -->
-				<div class="span span43 padding-bottom">
-					<label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'registrer.NAVN' | translate }}</label>
-					<input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
-				</div>
-				<div class="span span4">
-					<!-- Kjønn -->
-					<label id="kjonn" data-ng-class="{error: error['kjonn'] !== undefined }">Kjønn</label>
-					<select  class="form-control" data-ng-model="formData.kjonn" ng-options="item as item.tekst for item in kjonn">
-						<option value="" disabled selected>Kjønn...</option>
-					</select>
-				</div>
-			</div>
-			<hr />
-				<div class="row">
-					<!-- Født dato -->
-					<div class="span span4">
-						<label id="fodt" data-ng-class="{error: error['fodt'] !== undefined }">Født</label>
-					 	<input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fodt" data-ng-enter="nyEllerOppdater()">
-					</div>
-					<!-- Død dato -->
-					<div class="span span4">
-						<label id="dod"  data-ng-class="{error: error['dod'] !== undefined }">Død</label>
-						<input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()">
-					</div>
-					<!-- første kontakt dato -->
-					<div class="span span4">
-						<label id="fKontakt"  data-ng-class="{error: error['fKontakt'] !== undefined }">Første kontakt</label>
-						<input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()">
-					</div>
-					<!-- Siste kontakt dato -->
-					<div class="span span4">
-						<label id="sKontakt"  data-ng-class="{error: error['sKontakt'] !== undefined }">Siste kontakt</label>
-						<input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()">
-					</div>
-				</div>
-			</div>
+                <!-- Journalnummer -->
+                <div class="span span4">
+                    <label id="journalnummer" data-ng-class="{error: error['journalnummer'] !== undefined }">Journalnummer</label>
+                    <input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()">
+                </div>
+                <!-- Løpenummer -->
+                <div class="span span4">
+                    <label id="lopenummer" data-ng-class="{error: error['lopenummer'] !== undefined }">Løpenummer</label>
+                    <input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()">
+                </div>
+                <!-- Fødelsnummer -->
+                <div class="span span4">
+                    <label id="fodselsnummer" data-ng-class="{error: error['fodselsnummer'] !== undefined }">Fødselsnummer</label>
+                    <input type="text" class="form-control" placeholder="Fødselsnummer..." data-ng-model="formData.fodselsnummer" data-ng-focus="setFnr()" data-ng-blur="populerFelt()" data-ng-enter="nyEllerOppdater()">
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <!-- Navn -->
+                <div class="span span43 padding-bottom">
+                    <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'registrer.NAVN' | translate }}</label>
+                    <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
+                </div>
+                <div class="span span4">
+                    <!-- Kjønn -->
+                    <label id="kjonn" data-ng-class="{error: error['kjonn'] !== undefined }">Kjønn</label>
+                    <select class="form-control" data-ng-model="formData.kjonn" ng-options="item as item.tekst for item in kjonn">
+                        <option value="" disabled selected>Kjønn...</option>
+                    </select>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <!-- Født dato -->
+                <div class="span span4">
+                    <label id="fodt" data-ng-class="{error: error['fodt'] !== undefined }">Født</label>
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fodt" data-ng-enter="nyEllerOppdater()">
+                </div>
+                <!-- Død dato -->
+                <div class="span span4">
+                    <label id="dod" data-ng-class="{error: error['dod'] !== undefined }">Død</label>
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()">
+                </div>
+                <!-- første kontakt dato -->
+                <div class="span span4">
+                    <label id="fKontakt" data-ng-class="{error: error['fKontakt'] !== undefined }">Første kontakt</label>
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()">
+                </div>
+                <!-- Siste kontakt dato -->
+                <div class="span span4">
+                    <label id="sKontakt" data-ng-class="{error: error['sKontakt'] !== undefined }">Siste kontakt</label>
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()">
+                </div>
+            </div>
+        </div>
 
-			<!-- Diagnoser -->
-			<div class="well" data-ng-show="state === 0">
-				<label>Diagnoser</label>
-			</div>
-			<div class="well" data-ng-show="state !== 0">
-				<div class="row">
-					<!-- Diagnosedato -->
-					<div class="span span4">
-						<label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
-							Diagnosedato
-						</label>
-						<input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-enter="leggTilDiagnose()">
-					</div>
-					<div class="span span4">
-						<label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
-							Diagnosekode
-						</label>
-						<input id="diagnosekode-input" type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()" data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
-					</div>
-					<div class="span span4">
-						<label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
-							Diagnosetekst
-						</label>
-						<input id="diagnosetekst-satt" type="text" class="form-control" placeholder="Diagnosetekst..."
-                               data-ng-model="formDiagnose.diagnosetekst"
-                               data-ng-show="diagnosetekstErSatt" disabled>
-						<input id="diagnosetekst-isatt" type="text" class="form-control" placeholder="Diagnosetekst..." 
-							   data-ng-model="formDiagnose.diagnosetekst"
-                               data-ng-show="!diagnosetekstErSatt"
-                               data-ng-enter="leggTilDiagnose()"
-                               typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)" 
-                               typeahead-loading="Laster"
-                               typeahead-on-select='onSelectDiagnose($item, $model, $label)'>
+        <!-- Diagnoser -->
+        <div class="well" data-ng-show="state === 0">
+            <label>Diagnoser</label>
+        </div>
+        <div class="well" data-ng-show="state !== 0">
+            <div class="row">
+                <!-- Diagnosedato -->
+                <div class="span span4">
+                    <label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
+                        Diagnosedato
+                    </label>
+                    <input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-enter="leggTilDiagnose()">
+                </div>
+                <div class="span span4">
+                    <label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
+                        Diagnosekode
+                    </label>
+                    <input id="diagnosekode-input" type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()"
+                           data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
+                </div>
+                <div class="span span4">
+                    <label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
+                        Diagnosetekst
+                    </label>
+                    <input id="diagnosetekst-satt" type="text" class="form-control" placeholder="Diagnosetekst..."
+                           data-ng-model="formDiagnose.diagnosetekst"
+                           data-ng-show="diagnosetekstErSatt" disabled>
+                    <input id="diagnosetekst-isatt" type="text" class="form-control" placeholder="Diagnosetekst..."
+                           data-ng-model="formDiagnose.diagnosetekst"
+                           data-ng-show="!diagnosetekstErSatt"
+                           data-ng-enter="leggTilDiagnose()"
+                           typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)"
+                           typeahead-loading="Laster"
+                           typeahead-on-select='onSelectDiagnose($item, $model, $label)'>
 
-					</div>
-					<div class="span span4">
-						<button id="btn-diagnose" class="btn btn-diagnose" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose</button>
-					</div>
-				</div>
+                </div>
+                <div class="span span4">
+                    <button id="btn-diagnose" class="btn btn-diagnose" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose
+                    </button>
+                </div>
+            </div>
 
-				<table class="table" ts-wrapper>
-					<thead>
-						<tr>
-							<th></th>
-							<th id="diagnosedato_table" ts-criteria="diagnosedato">{{ 'registrer.DIAG_AAR' | translate }}</th>
-							<th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE' | translate }}</th>
-                            <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK' | translate }}</th>
-							<th ts-criteria="diagnosetekst">{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
-                            <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr data-ng-repeat="diagnose in pasientjournalDTO.diagnoser" ts-repeat>
-							<td>
-								<button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)" tooltip="{{text.tooltip.deleteElement}}"></button>
-							</td>
-							<td>
-                                <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosedato}}</div>
-                                <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosedato"/></div>
-                            </td>
-                            <td>
-                                {{diagnose.diagnosekode}}
-                                <!--
-                                <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosekode}}</div>
-                                <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-blur="editDiagnosekode(diagnose)" data-ng-model="diagnose.diagnosekode"/></div>
-                                -->
-                            </td>
-							<td>
-                                {{diagnose.diagnosekodeverk}}
-                            </td>
-							<td>
-                                <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosetekst}}</div>
-                                <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosetekst"/></div>
-                            </td>
-                            <td>{{diagnose.oppdatertAv}}</td>
-                            <td>
-                                <button class="icon icon-edit" ng-hide="pasientjournalDTO.avleveringLaast" ng-click="modify(diagnose)"/>
-                                <button class="btn btn-primary right" ng-show="editingData[diagnose.uuid]" ng-click="update(diagnose)">Lagre</button>
-                            </td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+            <table class="table" ts-wrapper>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th id="diagnosedato_table" ts-criteria="diagnosedato">{{ 'registrer.DIAG_AAR' | translate }}</th>
+                    <th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE' | translate }}</th>
+                    <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK' | translate }}</th>
+                    <th ts-criteria="diagnosetekst">{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
+                    <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="diagnose in pasientjournalDTO.diagnoser" ts-repeat>
+                    <td>
+                        <button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)" tooltip="{{text.tooltip.deleteElement}}"></button>
+                    </td>
+                    <td>
+                        <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosedato}}</div>
+                        <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosedato"/></div>
+                    </td>
+                    <td>
+                        {{diagnose.diagnosekode}}
+                        <!--
+                        <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosekode}}</div>
+                        <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-blur="editDiagnosekode(diagnose)" data-ng-model="diagnose.diagnosekode"/></div>
+                        -->
+                    </td>
+                    <td>
+                        {{diagnose.diagnosekodeverk}}
+                    </td>
+                    <td>
+                        <div ng-hide="editingData[diagnose.uuid]">{{diagnose.diagnosetekst}}</div>
+                        <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosetekst"/></div>
+                    </td>
+                    <td>{{diagnose.oppdatertAv}}</td>
+                    <td>
+                        <button class="icon icon-edit" ng-hide="pasientjournalDTO.avleveringLaast" ng-click="modify(diagnose)"/>
+                        <button class="btn btn-primary right" ng-show="editingData[diagnose.uuid]" ng-click="update(diagnose)">Lagre</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
 
-            <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
-            <label></label>
-            <button class="right icon-padding-right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
-                    {{ 'common.LEGG_TIL' | translate }}
-            </button>
-			<button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
+        <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
+        <label></label>
+        <button class="right icon-padding-right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
+            {{ 'common.LEGG_TIL' | translate }}
+        </button>
+        <button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
 
-		</div>
-	</div>
+    </div>
+</div>
 </div>

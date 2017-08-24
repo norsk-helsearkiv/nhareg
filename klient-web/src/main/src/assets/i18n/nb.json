@@ -2,6 +2,7 @@
 	"common" : {
 		"APP_TITTEL": "Registreringstøtte for pasientjournaler",
 		"OK": "Ok",
+		"SEARCH": "Søk",
 		"AVBRYT": "Avbryt",
 		"LEGG_TIL" : "Ny",
 		"VIS_HURTIGTASTER" : "Vis hurtigtaster",
