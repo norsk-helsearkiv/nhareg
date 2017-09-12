@@ -7,7 +7,7 @@
    <persistence-unit name="primary">
        <jta-data-source>java:jboss/datasources/NharegDS</jta-data-source>
         <mapping-file>META-INF/orm.xml</mapping-file>
-        <jar-file>domene.jar</jar-file>
+        <jar-file>domene-1.0-SNAPSHOT.jar</jar-file>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
@@ -26,7 +26,7 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true"/>
             <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
-            <property name="hibernate.cache.infinispan.statistics" value="true"/>
+            <!--<property name="hibernate.cache.infinispan.statistics" value="true"/>-->
         </properties>
    </persistence-unit>
 </persistence>
