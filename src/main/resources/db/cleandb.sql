@@ -86,3 +86,22 @@ CREATE TABLE Konfigparam (
 INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('LowLim', '01.01.1800', 'Tidligste tillatte dato i systemet');
 INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('MaxAge', '110', 'Høyeste tillatte alder for en pasient som skal legges inn i systemet');
 INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('WaitLim', '10', 'Antall år en pasient må være død før journalen kan legges inn i systemet');
+
+-- NHA-021 legge inn gyldighetsperioder for diagnosekodeverk
+CREATE TABLE Diagnosekodeverk(
+  kodeverkversjon VARCHAR(255) PRIMARY KEY,
+  gyldig_fra_dato DATE,
+  gyldig_til_dato DATE
+);
+
+INSERT INTO Diagnosekodeverk VALUES
+  ('ICD6', '1800-01-01', '1899-12-31'),
+  ('ICD7', '1900-01-01', '1968-12-31'),
+  ('ICD8', '1969-01-01', '1987-12-31'),
+  ('ICD9', '1988-01-01', '1998-12-31'),
+  ('ICD10', '1999-01-01', '2099-12-31');
+
+ALTER TABLE Diagnosekode
+  ADD CONSTRAINT FK_kodeverkversjon
+FOREIGN KEY (codeSystemVersion) REFERENCES Diagnosekodeverk (kodeverkversjon);
+-- NHA-021 end..

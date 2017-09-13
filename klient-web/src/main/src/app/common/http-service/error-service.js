@@ -94,6 +94,9 @@ function errorService($modal, $location) {
                     return this.resourceConflict();
                 case 417:
                     return this.expectationFailed();
+                case 403:
+                    $location.url('/');
+                    return;
                 default:
                     return this.serverError();
             }
