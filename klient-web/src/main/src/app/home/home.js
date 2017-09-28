@@ -311,6 +311,9 @@ angular.module('nha.home', [
                 $window.location.reload();
             });
         };
+        $scope.editLagringsenhet = function(){
+
+        };
 
         $scope.actionLeggTilPasientjournald = function (avlevering) {
             registreringService.setAvlevering(avlevering);

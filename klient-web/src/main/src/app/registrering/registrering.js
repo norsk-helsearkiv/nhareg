@@ -815,7 +815,7 @@ angular.module('nha.registrering', [
                         return resp.data.map(function (item) {
                             var res = [];
                             res.code = item.code;
-                            res.displayName = item.codeSystemVersion + " | " + item.displayName;
+                            res.displayName = item.codeSystemVersion + " | " +item.code+" | "+ item.displayName;
                             return res;
                         });
                     });
