@@ -34,6 +34,17 @@ public class GyldigeDatoformater {
         return null;
     }
 
+    public static Date getDateFromYear(Integer year){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.MONTH, Calendar.JANUARY);
+        c.set(Calendar.YEAR, year);
+        return c.getTime();
+    }
+
     /**
      * Returnerer en dato som er rullet med days-antall dager
      *

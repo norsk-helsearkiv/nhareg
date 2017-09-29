@@ -19,7 +19,7 @@ angular.module('nha.registrering', [
             }
         });
     })
-
+    
     .controller('RegistrerCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registreringService, diagnoseService, hotkeys, modalService, $window) {
         //Util
         $scope.navHome = function () {
@@ -711,6 +711,7 @@ angular.module('nha.registrering', [
 
         var diagnosekode = "";
         $scope.diagnosetekstErSatt = false;
+        $scope.diagnoseDatoErSatt = false;
         //Tar vare på verdi ved fokus, for å sammenligne etterpå, for å ikke endre teksten
         $scope.setDiagnoseKode = function () {
             if ($scope.formDiagnose === null || $scope.formDiagnose.diagnosekode === null) {
@@ -718,6 +719,17 @@ angular.module('nha.registrering', [
             }
             diagnose = $scope.formDiagnose.diagnosekode;
         };
+
+        $scope.setDiagnoseDato = function(){
+            var dato = $scope.formDiagnose.diagnosedato;
+            if (dato){
+                $scope.diagnoseDatoErSatt = true;
+                document.getElementById("diagnosekode-input").focus();
+            }else{
+                $scope.diagnoseDatoErSatt = false;
+            }
+        };
+
 
         //Setter diagnoseteksten når koden er endret
         $scope.setDiagnoseTekst = function () {
@@ -770,6 +782,7 @@ angular.module('nha.registrering', [
         var resetDiagnose = function () {
             $scope.formDiagnose = {};
             $scope.diagnosetekstErSatt = false;
+            $scope.diagnoseDatoErSatt = false;
             diagnosekode = "";
             document.getElementById("diagnoseDato").focus();
 
@@ -810,7 +823,9 @@ angular.module('nha.registrering', [
         $scope.sokDiagnoseDisplayNameLike = function (displayName) {
             if (displayName.length > 2) {
                 var results = [];
-                return httpService.hentAlle("diagnosekoder?displayNameLike=" + displayName, false)
+                var diagnoseDate = $scope.formDiagnose.diagnosedato===undefined?"": $scope.formDiagnose.diagnosedato;
+
+                return httpService.hentAlle("diagnosekoder?displayNameLike=" + displayName+"&diagnoseDate="+diagnoseDate, false)
                     .then(function (resp) {
                         return resp.data.map(function (item) {
                             var res = [];

@@ -79,6 +79,25 @@ angular.module('nha', [
         };
     })
 
+    .directive('focusToMe', function($timeout) {
+        return {
+            restrict: 'A',
+            compile: function() {
+                var directiveName = this.name;
+
+                return function(scope, elem, attrs) {
+                    scope.$watch(attrs[directiveName], function(newVal, oldVal) {
+                        if (newVal) {
+                            $timeout(function() {
+                                elem[0].focus();
+                            }, 0);
+                        }
+                    });
+                };
+            }
+        };
+    })
+
     .controller('AppCtrl', function AppCtrl($http, $scope, $location, diagnoseService) {
     });
 

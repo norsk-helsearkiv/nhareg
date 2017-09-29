@@ -122,16 +122,20 @@
             <div class="row">
                 <!-- Diagnosedato -->
                 <div class="span span4">
-                    <label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
+                    <label id="diagnosedatoLbl" data-ng-class="{error: error['diagnosedato'] !== undefined }">
                         Diagnosedato
                     </label>
-                    <input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-enter="leggTilDiagnose()">
+                    <input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-enter="leggTilDiagnose()">
                 </div>
                 <div class="span span4">
                     <label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
                         Diagnosekode
                     </label>
-                    <input id="diagnosekode-input" type="text" class="form-control" placeholder="Diagnosekode..." data-ng-model="formDiagnose.diagnosekode" data-ng-blur="setDiagnoseTekst()"
+                    <input id="diagnosekode-input" type="text" class="form-control" placeholder="Diagnosekode..."
+                           data-ng-model="formDiagnose.diagnosekode"
+                           data-ng-blur="setDiagnoseTekst()"
+                           focus-to-me="diagnoseDatoErSatt"
+                           data-ng-disabled="!diagnoseDatoErSatt"
                            data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
                 </div>
                 <div class="span span4">
@@ -144,6 +148,7 @@
                     <input id="diagnosetekst-isatt" type="text" class="form-control" placeholder="Diagnosetekst..."
                            data-ng-model="formDiagnose.diagnosetekst"
                            data-ng-show="!diagnosetekstErSatt"
+                           data-ng-disabled="!diagnoseDatoErSatt"
                            data-ng-enter="leggTilDiagnose()"
                            typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)"
                            typeahead-loading="Laster"

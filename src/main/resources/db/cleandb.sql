@@ -105,3 +105,7 @@ ALTER TABLE Diagnosekode
   ADD CONSTRAINT FK_kodeverkversjon
 FOREIGN KEY (codeSystemVersion) REFERENCES Diagnosekodeverk (kodeverkversjon);
 -- NHA-021 end..
+
+-- NHA-038
+
+-- NHA-038 end...

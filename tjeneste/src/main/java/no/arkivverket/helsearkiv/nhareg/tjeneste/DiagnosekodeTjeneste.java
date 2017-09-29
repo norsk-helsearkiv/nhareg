@@ -1,10 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
@@ -14,7 +17,12 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.CV;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * <p>
@@ -35,6 +43,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 public class DiagnosekodeTjeneste extends EntitetsTjeneste<Diagnosekode, String> {
 
     public static final String DISPLAY_NAME_LIKE_QUERY_PARAMETER = "displayNameLike";
+    public static final String DIAGNOSE_DATE_QUERY_PARAMETER = "diagnoseDate";
     public static final String CODE_QUERY_PARAMETER = "code";
 
     public DiagnosekodeTjeneste() {
@@ -58,6 +67,37 @@ public class DiagnosekodeTjeneste extends EntitetsTjeneste<Diagnosekode, String>
             String code = queryParameters.getFirst(CODE_QUERY_PARAMETER);
             Predicate p = criteriaBuilder.equal(root.get("code"), code);
             predicates.add(p);
+        }
+
+        if (queryParameters.containsKey(DIAGNOSE_DATE_QUERY_PARAMETER) &&
+                !StringUtils.isEmpty(queryParameters.getFirst(DIAGNOSE_DATE_QUERY_PARAMETER))){
+
+            String diagnoseDateString = queryParameters.getFirst(DIAGNOSE_DATE_QUERY_PARAMETER);
+            //datostreng kan bestå av kun år eller full dato.
+            Date d = null;
+            try {
+
+                DatoEllerAar dea = Konverterer.tilDatoEllerAar(diagnoseDateString);
+                if (dea.getAar()!=null){
+                    d = GyldigeDatoformater.getDateFromYear(dea.getAar());
+                }else{
+                    d = dea.getDato().getTime();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (d!=null){
+                List<String> kodeverksversjoner = getEntityManager().createNativeQuery("select kodeverkversjon from Diagnosekodeverk where gyldig_til_dato >=?1 and gyldig_fra_dato <= ?1")
+                        .setParameter(1, new java.sql.Date(d.getTime()))
+                        .getResultList();
+                kodeverksversjoner.size();
+                //kan være flere kodeverk som overlapper her...
+                EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
+                Expression<String> expression = root.get(type.getDeclaredSingularAttribute("codeSystemVersion", String.class));
+                Predicate p = expression.in(kodeverksversjoner);
+                predicates.add(p);
+
+            }
         }
         if (queryParameters.containsKey(DISPLAY_NAME_LIKE_QUERY_PARAMETER)) {
             EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
