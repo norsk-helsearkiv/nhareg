@@ -38,18 +38,19 @@
             <!-- Lagringsenhet -->
             <div>
                 <label id="labelLagringsenhet" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
-                    Lagringsenheter
+                    Lagringsenheter (klikk for å endre)
                 </label>
                 <p data-ng-show="state === 1">
                     <span data-ng-repeat="enhet in formData.lagringsenheter">{{enhet}} </span>
                 </p>
-                <input type="text" id="lagringsenhet" class="form-control" placeholder="Lagringsenhet..." data-ng-model="lagringsenhet" ng-enter="keyAddLagringsenhet()" data-ng-show="state !== 1">
+                <label id="lagringsenhet" class="form-control" data-ng-click="velgLagringsenhet()">{{formData.lagringsenheter.join(', ')}}</label>
+                <!--<input type="text" id="lagringsenhet1" class="form-control" placeholder="Lagringsenhet..." data-ng-model="lagringseneheterModel" ng-enter="keyAddLagringsenhet()" data-ng-show="state !== 1">
                 <ul id="lagringsenhet-liste">
                     <li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">
                         <button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
                         {{ enhet }}
                     </li>
-                </ul>
+                </ul>-->
             </div>
 
             <div class="row">

@@ -81,6 +81,14 @@ function httpService($http) {
 		});
 	}
 
+	function sistBrukteLagringsenhet(){
+		return $http({
+			accept: "application/xml",
+			method: "GET",
+			url: url + "lagringsenheter/sistBrukte"
+		});
+	}
+
 	function getSokeresultat(sokestring) {
 		return $http({
 			accept: "application/json",
@@ -106,6 +114,7 @@ function httpService($http) {
 		deleteElement: deleteElement,
 		slett: slett,
 
+		sistBrukteLagringsenhet: sistBrukteLagringsenhet,
 		genererAvlevering: genererAvlevering,
 		getSokeresultat: getSokeresultat,
 

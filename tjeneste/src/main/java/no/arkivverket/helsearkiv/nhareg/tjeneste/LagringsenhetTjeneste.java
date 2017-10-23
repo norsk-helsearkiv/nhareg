@@ -3,14 +3,21 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
@@ -23,7 +30,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
  * </p>
  *
  */
-@Path("/lagringsenheter")
+    @Path("/lagringsenheter")
 /**
  * <p>
  * Dette er en stateless service, vi deklarer den som EJB for å få
@@ -36,11 +43,26 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final javax.validation.Validator validator = factory.getValidator();
+    @Resource
+    private SessionContext sessionContext;
+    @EJB
+    private UserService userTjeneste;
 
     public LagringsenhetTjeneste() {
         super(Lagringsenhet.class, String.class, "uuid");
 
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/sistBrukte")
+    public String getSistBrukteLagringsenhet(){
+        final String username = sessionContext.getCallerPrincipal().getName();
+        final String lagringsenhet = userTjeneste.getLagringsenhet(username);
+        return lagringsenhet;
+    }
+
 
     @Override
     public Lagringsenhet create(Lagringsenhet entity) {

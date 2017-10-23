@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{'modal.lagringsenhet.TITTEL' | translate}}</h3>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+            <label data-ng-class="{error: feilFormat !== undefined }">{{ 'common.table.LAGRINGSENHET' | translate }} {{txtMaske}} {{feilFormat}}</label>
+            <input type="text" class="form-control" ng-model="formData.lagringsenhet" ng-enter="nyLagringsenhet()">
+            <label class="label-error" data-ng-show="formData.error.lagringsenhet">{{formData.error.lagringsenhet}}</label>
+            <ul id="lagringsenhet-liste">
+                <li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">
+                    <button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
+                    {{ enhet }}
+                </li>
+            </ul>
+        </div>
+    </form>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="nyLagringsenhet()" tooltip="{{'common.tooltip.NY_LAGRINGSENHET' | translate}}">{{'common.NY_LAGRINGSENHET' | translate}}</button>
+    <button class="btn btn-default btn-primary" ng-click="lagre()" tooltip="{{'common.tooltip.LAGRE' | translate}}">{{'common.LAGRE' | translate}}</button>
+    <button class="btn btn-default btn-primary" ng-click="utskrift()" tooltip="{{'common.tooltip.UTSKRIFT_OG_LAGRE' | translate}}">{{'common.UTSKRIFT_OG_LAGRE' | translate}}</button>
+    <button class="btn btn-default btn-danger" ng-click="avbryt()" tooltip="{{'common.tooltip.AVBRYT' | translate}}">{{'common.AVBRYT' | translate}}</button>
+</div>

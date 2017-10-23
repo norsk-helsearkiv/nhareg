@@ -46,6 +46,7 @@ function modalService($modal, httpService, errorService, hotkeys) {
         valideringFunction: overskrevet metode for validering, returnerer boolean om det
             gikk bra.
     */
+
     function nyModal(tpl, list, relativUrl, valideringFunction) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
@@ -195,12 +196,76 @@ function modalService($modal, httpService, errorService, hotkeys) {
         return $modal.open(template);
     }
 
+    function velgLagringsenhet(tpl, callback, lagringsenhetmaske, lagringsenheter){
+        template.templateUrl = tpl;
+        template.controller = function( $scope, $modalInstance){
+            $scope.txtMaske = lagringsenhetmaske;
+
+            $scope.formData = {
+                "error" : {},
+                "lagringsenheter": lagringsenheter
+            };
+            $scope.lagre = function(){
+                //LAGRE LAGRINGSENHET i callback.
+                //TODO valider basert på maske her?!?!?!
+                if ($scope.nyLagringsenhet()){
+                    callback($scope.formData);
+                    $modalInstance.close();
+                }
+
+            };
+            $scope.actionFjernLagringsenhet = function(enhet){
+                for (var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
+                    if (enhet === $scope.formData.lagringsenheter[i]) {
+                        $scope.formData.lagringsenheter.splice(i, 1);
+                        document.getElementById("lagringsenhet").focus();
+                    }
+                }
+            };
+
+            $scope.nyLagringsenhet = function() { //legger til en ny lagringsenhet i listen..
+                $scope.feilFormat = undefined;
+                if ($scope.formData.lagringsenhet === undefined || $scope.formData.lagringsenhet === '') {
+                    return true;
+                }
+                if (lagringsenhetmaske !== undefined || lagringsenhetmaske !== "") {
+                    var regexp = new RegExp("(" + lagringsenhetmaske + ")$");
+                    if (!regexp.test($scope.formData.lagringsenhet)) {
+                        $scope.feilFormat = "(Feil format i lagringsenhet)";
+                        return false;
+                    }
+                }
+                for (var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
+                    if ($scope.formData.lagringsenhet === $scope.formData.lagringsenheter[i]) {
+                        $scope.formData.lagringsenhet = "";
+                        return true;
+                    }
+                }
+                $scope.formData.lagringsenheter.push($scope.formData.lagringsenhet);
+                $scope.formData.lagringsenhet = "";
+                return true;
+            };
+            $scope.utskrift = function(){
+                $modalInstance.close();
+            };
+
+            $scope.avbryt = function(){
+                $modalInstance.close();
+            };
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+
+
     return {
         deleteModal : deleteModal,
         nyModal : nyModal,
         endreModal : endreModal,
         warningModal : warningModal,
-        velgModal : velgModal
+        velgModal : velgModal,
+        velgLagringsenhet : velgLagringsenhet
+
     };
 
 }

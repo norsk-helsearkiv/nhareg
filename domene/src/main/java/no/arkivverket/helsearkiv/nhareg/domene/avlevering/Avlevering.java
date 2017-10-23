@@ -54,6 +54,9 @@ public class Avlevering implements Serializable
     @XmlElement(required = true)
     protected String arkivskaper;
     @XmlElement(required = true)
+    protected String lagringsenhetformat;
+
+    @XmlElement(required = true)
     protected Set<Pasientjournal> pasientjournal;
     protected Oppdateringsinfo oppdateringsinfo;
 
@@ -215,5 +218,12 @@ public class Avlevering implements Serializable
 
     public boolean isLaast(){
         return this.laast;
+    }
+
+    public void setLagringsenhetformat(final String lagringsenhetformat){
+        this.lagringsenhetformat = lagringsenhetformat;
+    }
+    public String getLagringsenhetformat(){
+        return this.lagringsenhetformat;
     }
 }

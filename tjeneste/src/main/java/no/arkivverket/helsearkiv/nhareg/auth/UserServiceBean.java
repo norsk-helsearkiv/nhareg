@@ -18,12 +18,12 @@ public class UserServiceBean implements UserService{
     @PersistenceContext(name = "primary")
     private EntityManager em;
 
-    @Override
-    public Bruker findByUsername(String username) {
+
+    public Bruker findByUsername(final String username) {
         return em.find(Bruker.class, username);
     }
 
-    private static String plainToHash(String userPass){
+    private static String plainToHash(final String userPass){
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-256");
@@ -36,12 +36,18 @@ public class UserServiceBean implements UserService{
         }
         return null;
     }
-    public static void main (String... arg){
-       System.out.println(plainToHash("admin"));
-        //http://approsto.com/sha-generator/
+
+
+    public void updateLagringsenhet(final String username, final String lagringsenhet){
+        Bruker b = findByUsername(username);
+        b.setLagringsenhet(lagringsenhet);
+        em.persist(b);
     }
-    @Override
-    public void saveUser(Bruker user) {
+
+    public String getLagringsenhet(final String username){
+        return findByUsername(username).getLagringsenhet();
+    }
+    public void saveUser(final Bruker user) {
         //TODO
     }
 }

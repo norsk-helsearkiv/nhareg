@@ -15,6 +15,16 @@ public class PasientjournalDTO implements Serializable {
     private String avtaleBeskrivelse;
     private String avleveringBeskrivelse;
 
+    public String getLagringsenhetformat() {
+        return lagringsenhetformat;
+    }
+
+    public void setLagringsenhetformat(String lagringsenhetformat) {
+        this.lagringsenhetformat = lagringsenhetformat;
+    }
+
+    private String lagringsenhetformat;
+
     public boolean isAvleveringLaast() {
         return avleveringLaast;
     }

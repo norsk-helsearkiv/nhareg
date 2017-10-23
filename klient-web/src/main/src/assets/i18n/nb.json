@@ -5,6 +5,17 @@
 		"SEARCH": "Søk",
 		"AVBRYT": "Avbryt",
 		"LEGG_TIL" : "Ny",
+        "NY_LAGRINGSENHET": "Ny lagringsenhet",
+        "LAGRE": "Lagre og lukk",
+        "UTSKRIFT_OG_LAGRE" :"Utskrift og lagre",
+        "tooltip" :{
+          "NY_LAGRINGSENHET" : "Legger til inntastet lagringsenhet i registreringen",
+          "LAGRE" :"Lagrer valgte lagringsenhet(er) på registreringen",
+          "UTSKRIFT_OG_LAGRE" : "Skriver ut etikett til boksen og lagrer",
+          "AVBRYT" : "Avbryter registreringen"
+        },
+
+
 		"VIS_HURTIGTASTER" : "Vis hurtigtaster",
 		"table" : {
 			"ARKIVSKAPER" : "Arkivskaper",
@@ -13,7 +24,9 @@
 			"NAVN" : "Navn",
 			"DATO" : "Dato",
 			"VERSJON" : "Versjon",
-			"KODE_SYSTEM" : "Kodesett"
+			"KODE_SYSTEM" : "Kodesett",
+			"LAGRINGSENHET_FORMAT" : "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
+            "LAGRINGSENHET": "Lagringsenhet, format: "
 		},
 		"PASIENTJOURNAL" : "Pasientjournal",
         "OPPDATERT_AV": "Oppdatert av"
@@ -74,6 +87,9 @@
 			"SIKKER" : "Er du sikker på at du vil slette",
 			"MED_ID" : ", "
 		},
+        "lagringsenhet" : {
+            "TITTEL" : "Lagringsenhet"
+        },
 		"legg_til" : {
 			"TITTEL" : "Opprett ny",
             "TITTEL_AVLEVERING": "Avlevering",

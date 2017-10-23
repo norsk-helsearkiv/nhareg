@@ -3,25 +3,30 @@
 </div>
 
 <div class="modal-body">
-	<form>
-		<div class="form-group">
-			<label>{{ 'common.table.ID' | translate }}</label>
-			<input type="text" class="form-control" ng-model="formData.avleveringsidentifikator" data-ng-show="!erEndring">
-			<p data-ng-show="erEndring">{{formData.avleveringsidentifikator}}</p>
-			<label class="label-error" data-ng-show="formData.error.avleveringsidentifikator">{{formData.error.avleveringsidentifikator}}</label>
-		</div>
-		<div class="form-group">
-			<label>{{ 'common.table.ARKIVSKAPER' | translate }}</label>
-			<input type="text" class="form-control" ng-model="formData.arkivskaper">
-			<label class="label-error" data-ng-show="formData.error.arkivskaper">{{formData.error.arkivskaper}}</label>
-		</div>
-		<div class="form-group">
-			<label>{{ 'common.table.BESKRIVELSE' | translate }}</label>
-			<input type="text" class="form-control" ng-model="formData.avleveringsbeskrivelse">
-			<label class="label-error" data-ng-show="formData.error.avleveringsbeskrivelse">{{formData.error.avleveringsbeskrivelse}}</label>
-		</div>
-		<button type="submit" data-ng-show="false" data-ng-click="ok()"></div>
-	</form>
+    <form>
+        <div class="form-group">
+            <label>{{ 'common.table.ID' | translate }}</label>
+            <input type="text" class="form-control" ng-model="formData.avleveringsidentifikator" data-ng-show="!erEndring">
+            <p data-ng-show="erEndring">{{formData.avleveringsidentifikator}}</p>
+            <label class="label-error" data-ng-show="formData.error.avleveringsidentifikator">{{formData.error.avleveringsidentifikator}}</label>
+        </div>
+        <div class="form-group">
+            <label>{{ 'common.table.ARKIVSKAPER' | translate }}</label>
+            <input type="text" class="form-control" ng-model="formData.arkivskaper">
+            <label class="label-error" data-ng-show="formData.error.arkivskaper">{{formData.error.arkivskaper}}</label>
+        </div>
+        <div class="form-group">
+            <label>{{ 'common.table.BESKRIVELSE' | translate }}</label>
+            <input type="text" class="form-control" ng-model="formData.avleveringsbeskrivelse">
+            <label class="label-error" data-ng-show="formData.error.avleveringsbeskrivelse">{{formData.error.avleveringsbeskrivelse}}</label>
+        </div>
+        <div class="form-group">
+            <label>{{ 'common.table.LAGRINGSENHET_FORMAT' | translate }}</label>
+            <input type="text" class="form-control" ng-model="formData.lagringsenhetformat">
+            <label class="label-error" data-ng-show="formData.error.lagringsenhetformat">{{formData.error.lagringsenhetformat}}</label>
+        </div>
+        <button type="submit" data-ng-show="false" data-ng-click="ok()"/>
+    </form>
 </div>
 
 <div class="modal-footer">

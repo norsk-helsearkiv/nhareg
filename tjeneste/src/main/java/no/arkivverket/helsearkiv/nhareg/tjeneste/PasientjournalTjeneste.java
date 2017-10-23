@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -60,6 +61,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     private AvtaleTjeneste avtaleTjeneste;
     @EJB
     private DiagnosekodeTjeneste diagnosekodeTjeneste;
+    @EJB
+    private UserService userService;
 
     //Log log = LogFactory.getLog(PasientjournalTjeneste.class);
     @EJB(name = "DiagnoseFraDTOTransformer")
@@ -238,7 +241,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         pasientjournalDTO.setAvtaleBeskrivelse(avlevering.getAvtale().getAvtalebeskrivelse());
         pasientjournalDTO.setVirksomhet(virksomhet.getForetaksnavn());
         pasientjournalDTO.setAvleveringLaast(avlevering.isLaast());
+        pasientjournalDTO.setLagringsenhetformat(avlevering.getLagringsenhetformat());
         //pasientjournal -> avlevering -> virksomhet
+
         return pasientjournalDTO;
     }
 
@@ -286,6 +291,10 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         pasientjournal.setOpprettetDato(orig.getOpprettetDato());
         Pasientjournal persistert = update(pasientjournal);
+
+        Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();
     }

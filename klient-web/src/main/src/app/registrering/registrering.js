@@ -46,24 +46,6 @@ angular.module('nha.registrering', [
             }
         };
 
-        /*
-         hotkeys.bindTo($scope)
-         .add({
-         combo:'alt+s',
-         description:'Lagre',
-         callback: function(){ 
-         $scope.nyEllerOppdater();
-         }
-         })
-         .add({
-         combo:'alt+n',
-         description:'ny journal',
-         callback: function(){
-         $scope.nyJournal();
-         }
-         });
-         */
-
         //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
         $scope.feilmeldinger = [];
         $scope.error = [];
@@ -256,6 +238,8 @@ angular.module('nha.registrering', [
         $scope.formData = {
             lagringsenheter: []
         };
+        $scope.lagringseneheterModel = $scope.formData.lagringsenheter.map(function(el){return el.name;}).join(",");
+
         $scope.formDiagnose = {};
         $scope.avlevering = registreringService.getAvlevering();
         $scope.pasientjournalDTO = registreringService.getPasientjournalDTO();
@@ -264,10 +248,48 @@ angular.module('nha.registrering', [
         $scope.valgtAvtale = registreringService.getValgtAvtale();
         $scope.avleveringsbeskrivelse = registreringService.getAvleveringsbeskrivelse();
 
+        $scope.velgLagringsenhet = function() {
+
+            var lagringsenhetmaske;
+            if ($scope.avlevering !== undefined) {
+                lagringsenhetmaske = $scope.avlevering.lagringsenhetformat;
+            } else if ($scope.pasientjournalDTO !== undefined) {
+                lagringsenhetmaske = $scope.pasientjournalDTO.lagringsenhetformat;
+            }
+
+            if ($scope.formData.lagringsenheter === undefined || $scope.formData.lagringsenheter === null) {
+                $scope.formData.lagringsenheter = [];
+            }
+
+            httpService.sistBrukteLagringsenhet()
+                .success(function (data, status, headers, config) {
+                    if ($scope.formData.lagringsenheter.length===0){
+                        $scope.formData.lagringsenheter.push(data);
+                    }
+
+                    var modal = modalService.velgLagringsenhet('common/modal-service/lagringsenhet-modal.tpl.html', 
+                        function(){
+                            console.log("TODO, callback for NHA-038");
+                            }, 
+                        lagringsenhetmaske, 
+                        $scope.formData.lagringsenheter);
+                    modal.result.then(function () {
+                        var formdata = $scope.formData;
+                        //TODO finish this!!
+                    });
+                    data = data;
+                }).error(function () {
+            });
+
+
+        };
+
         //Setter verdier fra registrering-service
         if ($scope.avlevering !== undefined) {
             //Ny pasientjouranl
             $scope.state = 0;
+            $scope.velgLagringsenhet();
+
         } else if ($scope.pasientjournalDTO !== undefined) {
             //Endre pasientjournal
             $scope.state = 2;
@@ -318,7 +340,7 @@ angular.module('nha.registrering', [
         };
         setFocus();
 
-        $scope.keyAddLagringsenhet = function () {
+        $scope.keyAddLagringsenhet = function () {//TODO FJERN NÅR NHA-038 er ferdig..
             if ($scope.lagringsenhet === undefined || $scope.lagringsenhet === '') {
                 return;
             }
@@ -336,7 +358,7 @@ angular.module('nha.registrering', [
             $scope.lagringsenhet = "";
         };
 
-        $scope.actionFjernLagringsenhet = function (enhet) {
+        $scope.actionFjernLagringsenhet = function (enhet) {//TODO fjernes når NHA-038 er ferdig...
             for (var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
                 if (enhet === $scope.formData.lagringsenheter[i]) {
                     $scope.formData.lagringsenheter.splice(i, 1);
@@ -397,59 +419,6 @@ angular.module('nha.registrering', [
                     return 19;
                 }
             }
-            /*
-             //var i18551899 =
-             if ((individ >= 500 && individ <= 749) && aar > 54){
-             //1800
-             return 18;
-             }
-             if (individ >= 0 && individ <= 499){
-             //1900
-             return 19;
-             }
-             if ((individ >= 900 && individ <= 999) && aar > 39){
-             //1900
-             return 19;
-             }
-             if ((individ >= 500 && individ <= 999) && aar < 40){
-             //2000
-             return 20;
-             }
-             */
-
-            /*
-             var personnr = fnr.substring(6,9);
-             var i = Number(personnr.substring(0,1));
-             var nr = Number(personnr.substring(1,3));
-
-
-             if(i === 0) {
-             if(nr <= 39) {
-             return 20;
-             } else {
-             return 19;
-             }
-             }
-             if(i >= 1 && i <= 4) {
-             return 19;
-             }
-             if(i >= 5 && i <= 7) {
-             if(nr <= 54) {
-             return 20;
-             } else {
-             return 18;
-             }
-             }
-             if(i === 8 && nr <= 54) {
-             return 20;
-             }
-             if(i === 9) {
-             if(nr <= 39) {
-             return 20;
-             } else {
-             return 19;
-             }
-             }*/
         };
 
         kjonnFromFodselsnummer = function (fnr) {
@@ -638,11 +607,12 @@ angular.module('nha.registrering', [
             $scope.feilmeldinger.sort(compare);
         };
 
-        //setter state til endre(2) og kjører en oppdatering
+
         $scope.nyJournal = function () {
             $scope.prevState = $scope.state;
             $scope.state = 3;
             $scope.nyEllerOppdater();
+            $scope.velgLagringsenhet();
         };
 
         $scope.nyEllerOppdater = function () {
@@ -660,6 +630,7 @@ angular.module('nha.registrering', [
 
             //NY
             if ($scope.state === 0) {
+                //TODO popup for å finne lagringsenhet..
                 httpService.ny("avleveringer/" + $scope.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
                     .success(function (data, status, headers, config) {
                         $scope.pasientjournalDTO = data;
@@ -729,7 +700,6 @@ angular.module('nha.registrering', [
                 $scope.diagnoseDatoErSatt = false;
             }
         };
-
 
         //Setter diagnoseteksten når koden er endret
         $scope.setDiagnoseTekst = function () {

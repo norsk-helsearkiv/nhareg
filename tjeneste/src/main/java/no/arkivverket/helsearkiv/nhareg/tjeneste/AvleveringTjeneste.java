@@ -1,6 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.auth.UserServiceBean;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -56,6 +58,9 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     private PasientjournalTjeneste pasientjournalTjeneste;
     @EJB
     private KjønnTjeneste kjønnTjeneste;
+    @EJB
+    private UserService userService;
+
 
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
@@ -128,6 +133,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         avlevering.setAvleveringsidentifikator(entity.getAvleveringsidentifikator());
         avlevering.setAvleveringsbeskrivelse(entity.getAvleveringsbeskrivelse());
         avlevering.setArkivskaper(entity.getArkivskaper());
+        avlevering.setLagringsenhetformat(entity.getLagringsenhetformat());
         //
         // Setter sporingsinformasjon.
         //
@@ -196,6 +202,13 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         avlevering.setOppdateringsinfo(konstruerOppdateringsinfo());
         PasientjournalDTO dto = Konverterer.tilPasientjournalDTO(pasientjournal);
         dto.setAvleveringsidentifikator(getAvleveringsidentifikator(pasientjournal.getUuid()));
+
+        //oppdater sist brukte lagringsenhet på brukeren
+
+        Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+
         return Response.ok().entity(dto).build();
     }
 

@@ -107,5 +107,9 @@ FOREIGN KEY (codeSystemVersion) REFERENCES Diagnosekodeverk (kodeverkversjon);
 -- NHA-021 end..
 
 -- NHA-038
+ALTER TABLE Avlevering
+    ADD COLUMN lagringsenhetformat VARCHAR(255);
+ALTER TABLE Bruker
+    ADD COLUMN lagringsenhet VARCHAR(255);
 
 -- NHA-038 end...

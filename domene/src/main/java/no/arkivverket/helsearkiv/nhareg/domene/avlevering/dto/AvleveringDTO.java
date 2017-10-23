@@ -14,6 +14,7 @@ public class AvleveringDTO implements Serializable{
     protected String avleveringsbeskrivelse;
     protected Avtale avtale;
     protected String arkivskaper;
+    protected String lagringsenhetformat;
     protected int antallPasientjournaler;
     private  boolean laast;
 
@@ -27,6 +28,7 @@ public class AvleveringDTO implements Serializable{
         this.arkivskaper = avlevering.getArkivskaper();
         this.antallPasientjournaler = avlevering.getPasientjournal().size();
         this.laast = avlevering.isLaast();
+        this.lagringsenhetformat = avlevering.getLagringsenhetformat();
     }
 
     public void setAntallPasientjournaler(int antallPasientjournaler) {
@@ -75,5 +77,12 @@ public class AvleveringDTO implements Serializable{
     public boolean isLaast (){
         return this.laast;
     }
-    
+    public String getLagringsenhetformat() {
+        return lagringsenhetformat;
+    }
+
+    public void setLagringsenhetformat(String lagringsenhetformat) {
+        this.lagringsenhetformat = lagringsenhetformat;
+    }
+
 }

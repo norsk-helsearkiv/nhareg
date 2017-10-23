@@ -16,6 +16,16 @@ public class Bruker {
     @JoinColumn(name="rollenavn")
     private Rolle rolle;
 
+    public String getLagringsenhet() {
+        return lagringsenhet;
+    }
+
+    public void setLagringsenhet(String lagringsenhet) {
+        this.lagringsenhet = lagringsenhet;
+    }
+
+    private String lagringsenhet;
+
     public String getBrukernavn() {
         return brukernavn;
     }

@@ -37,7 +37,6 @@ public class AuthSecurityInterceptor implements ContainerRequestFilter {
     @Context
     private ResourceInfo resourceInfo;
 
-    @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         Principal p = requestContext.getSecurityContext().getUserPrincipal();
         if (p==null) {

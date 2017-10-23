@@ -16,7 +16,6 @@ public class AuthServiceBean implements AuthService {
     @EJB
     UserService userService;
 
-    @Override
     public boolean isAuthorized(String name, Set<String> rolesAllowed){
         Bruker user = userService.findByUsername(name);
         return rolesAllowed.contains(user.getRolle().getNavn());
