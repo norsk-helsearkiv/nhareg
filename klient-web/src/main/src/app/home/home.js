@@ -18,9 +18,34 @@ angular.module('nha.home', [
                 }
             }
         });
+        $stateProvider.state('homeLagringsenheter', {
+            url: '/lagringsenheter',
+            views: {
+                "main": {
+                    controller: 'HomeCtrl',
+                    templateUrl: 'home/home.tpl.html'
+                }
+            }
+        });
+
     })
 
     .controller('HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, stateService, $modal, $window) {
+
+
+        $scope.$on('$stateChangeSuccess', function() {
+            $scope.sokVisible = false;
+            $scope.lagringsenheterVisible = false;
+            var path = $location.path();
+            console.log(path);
+
+            if(path === '/') {
+                $scope.sokVisible = true;
+            } else if(path === '/lagringsenheter') {
+                $scope.lagringsenheterVisible = true;
+            }
+        });
+
         var antall = 15;
         //Henter ned diagnosene, dette tar litt tid så gjøres ved oppstart, en gang.
         diagnoseService.getDiagnoser();
@@ -349,6 +374,17 @@ angular.module('nha.home', [
                     list.splice(i, 1);
                 }
             }
+        };
+
+        $scope.lagrActionSok = function(){
+
+        };
+        $scope.lagrActionHentPasientjournaler = function(){
+
+
+        };
+        $scope.lagrActionFlytt = function(){
+
         };
 
     });

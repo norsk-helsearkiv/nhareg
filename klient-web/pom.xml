@@ -51,7 +51,6 @@
                             <targetPath>.</targetPath>
                         </resource>
                     </webResources>
-
                 </configuration>
             </plugin>
             <plugin>

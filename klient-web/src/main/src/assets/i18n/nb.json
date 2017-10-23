@@ -26,7 +26,8 @@
 			"VERSJON" : "Versjon",
 			"KODE_SYSTEM" : "Kodesett",
 			"LAGRINGSENHET_FORMAT" : "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
-            "LAGRINGSENHET": "Lagringsenhet, format: "
+            "LAGRINGSENHET": "Lagringsenhet, format: ",
+            "UUID" : "UUID"
 		},
 		"PASIENTJOURNAL" : "Pasientjournal",
         "OPPDATERT_AV": "Oppdatert av"
@@ -38,9 +39,23 @@
 		"AVLEVERINGER" : "Avleveringer", 
 		"FOR" : "for",
 		"PASIENTSOK" : "Pasientsøk",
+        "LAGRINGSENHETER" : "Lagringsenheter",
 		"SOK" : "Søk",
 		"SOKERESULTAT" : "Søkeresultat",
 		"VISER" : "viser",
+        "ADM_LAGRINGSENHET" : "Administrasjon av lagringsenheter",
+        "TILBAKE" : "Tilbake",
+        "lagringsenheter" : {
+            "SOK_LAGRINGSENHET" : "Søk lagringsenhet",
+            "HENT_PASIENTJOURNAL" : "Hent pasientjournaler i valgt lagringsenhet",
+            "VELG" : "Velg alle/ingen",
+            "FLYTT_VALGTE" : "Flytt valgte til",
+            "VALGT" : "Valgt",
+            "FLYTT" : "Flytt",
+            "tooltip" : {
+                "ENDRE_LAGRINGSENHET" : "Endrer identifikator på lagringsenheten"
+            }
+        },
       "VIRKSOMHET" : "Virksomhet :",
       "LAGRINGSENHET" : "Lagringsenhet",
       "FANEARKID" : "Fanearkid",

@@ -1,0 +1,109 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <a href="#/" class="btn btn-default">{{'home.TILBAKE' | translate }}</a>
+    <h2>{{ 'home.ADM_LAGRINGSENHET' | translate }}</h2>
+    <br>
+    <br>
+    <form class="row input-group form-group">
+
+            <div class="span span4 padding-bottom">
+                <label>{{'home.lagringsenheter.SOK_LAGRINGSENHET' | translate}}</label>
+                <input type="text" data-ng-model="lagr.sok.lagringsenhet" class="form-control" placeholder="Lagringsenhet">
+
+            </div>
+            <div class="span span5 padding-bottom">
+                <label>&nbsp;</label>
+                <button class="form-control btn btn-primary" type="submit" data-ng-click="lagrActionSok()">{{ 'common.SEARCH' | translate }}</button>
+            </div>
+
+    </form>
+
+    <div class="row">
+        <div class="span span2 panel panel-default">
+            <div class="panel-heading">Søkeresultat</div>
+            <div class="panel-body">
+
+                <table class="table table-striped" ts-wrapper>
+                    <thead>
+                    <tr>
+                        <th ts-criteria="uuid">{{ 'common.table.UUID' | translate }}</th>
+                        <th ts-criteria="identifikator">{{ 'home.LAGRINGSENHET' | translate }}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="lagringsenhet in lagringsenheter" ts-repeat>
+                        <td>{{ lagringsenhet.uuid }}</td>
+                        <td>{{ lagringsenhet.identifikator }}</td>
+                        <td>
+                            <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast"
+                                    data-ng-click="lagrActionEndreLagringsenhet(avlevering)"
+                                    tooltip="{{home.lagringsenheter.tooltip.ENDRE_LAGRINGSENHET}}"></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary" type="submit" data-ng-click="lagrActionHentPasientjournaler()">{{ 'home.lagringsenheter.HENT_PASIENTJOURNAL' | translate }}</button>
+    </div>
+    <br>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">Pasientjournaler</div>
+            <div class="panel-body">
+                <label>
+                <input type="checkbox" data-ng-model="lagr.velgAlle">
+                    {{ 'home.lagringsenheter.VELG' | translate }}
+                </label>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th>{{'home.lagringsenheter.VALGT' | translate}}</th>
+                            <th ts-criteria="lagringsenhet">{{'home.LAGRINGSENHET' | translate}}</th>
+                            <th ts-criteria="fodselsnummer">{{'home.FNR' | translate}}</th>
+                            <th ts-criteria="fanearkid">{{'home.FANEARKID' | translate}}</th>
+                            <th ts-criteria="jnr">{{'home.JNR' | translate}}</th>
+                            <th ts-criteria="lnr">{{'home.LNR' | translate}}</th>
+                            <th ts-criteria="navn">{{'common.table.NAVN' | translate}}</th>
+                            <th ts-criteria="faar">{{'home.FAAR' | translate}}</th>
+                            <th ts-criteria="daar">{{'home.DAAR' | translate}}</th>
+                            <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="pasient in data.liste">
+                            <td>{{ pasient.lagringsenhet }}</td>
+                            <td>{{ pasient.fodselsnummer }}</td>
+                            <td>{{ pasient.fanearkid }}</td>
+                            <td>{{ pasient.jnr }}</td>
+                            <td>{{ pasient.lnr }}</td>
+                            <td>{{ pasient.navn }}</td>
+                            <td>{{ pasient.faar }}</td>
+                            <td>{{ pasient.daar }}</td>
+                            <td>{{ pasient.oppdatertAv }}</td>
+                            <td data-ng-show="false">{{pasient.opprettetDato}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="row input-group form-group">
+
+        <div class="span span4 padding-bottom">
+            <label>{{'home.lagringsenheter.FLYTT_VALGTE' | translate}}</label>
+            <input type="text" data-ng-model="lagr.flytt.lagringsenhet" class="form-control" placeholder="Lagringsenhet">
+
+        </div>
+        <div class="span span5 padding-bottom">
+            <label>&nbsp;</label>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="lagrActionFlytt()">{{ 'home.lagringsenheter.FLYTT' | translate }}</button>
+        </div>
+
+    </form>
+</div>

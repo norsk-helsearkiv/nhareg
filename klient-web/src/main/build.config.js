@@ -76,6 +76,7 @@ module.exports = {
         'vendor/angular-hotkeys/build/hotkeys.js',
         'vendor/angular-tablesort/js/angular-tablesort.js'
 
+
     ],
     css: [
     ],
