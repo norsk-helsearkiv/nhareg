@@ -374,6 +374,7 @@ angular.module('nha.home', [
         };
         $scope.lagringsenheter = [];
         $scope.lagrSok = {};
+        $scope.lagrPasientjournaler = [];
 
         $scope.lagrActionSok = function(){
 
@@ -403,10 +404,54 @@ angular.module('nha.home', [
             });
         };
         $scope.lagrActionHentPasientjournaler = function(){
-
-
+            if ($scope.selectedRow>-1){
+                var valgtLagringsenhet = $scope.lagringsenheter[$scope.selectedRow];
+                httpService.hentAlle("lagringsenheter/"+valgtLagringsenhet.identifikator+"/pasientjournaler", false)
+                    .success(function (data, status, headers, config) {
+                        $scope.lagrPasientjournaler = data;
+                    }).error(function (data, status, headers, config) {
+                        errorService.errorCode(status);
+                });
+            }
         };
+
+        $scope.lagrSelection = {
+            allSelected : false
+        };
+        $scope.lagrToggleAll = function() {
+            var toggleStatus = !$scope.lagrSelection.allSelected;
+            angular.forEach($scope.lagrPasientjournaler, function(itm){ itm.selected = toggleStatus; });
+        };
+        $scope.lagrOptionToggled = function(){
+            $scope.lagrSelection.allSelected = $scope.lagrPasientjournaler.every(function(itm){ return itm.selected; });
+        };
+
+
+        $scope.lagrFlytt = {
+            lagringsenhet : ""
+        };
+
         $scope.lagrActionFlytt = function(){
+            var selectedPasientjournaler = [];
+            angular.forEach($scope.lagrPasientjournaler,function(pasientjournal){
+                if (pasientjournal.selected){
+                    selectedPasientjournaler.push(pasientjournal.uuid);
+                }
+            });
+
+            //TODO warning
+            var tpl = 'common/modal-service/warning-modal.tpl.html';
+            var url = "lagringsenheter/flytt";
+            var identifikator = $scope.lagrFlytt.lagringsenhet;
+            var tittel = $filter('translate')('modal.warning_flytt.TITTEL');
+            var beskrivelse = $filter('translate')('modal.warning_flytt.BESKRIVELSE');
+            modalService.warningFlyttLagringsenheter(tpl, url, '', tittel, beskrivelse,
+                function (removedUuids) {
+                    $scope.lagrActionHentPasientjournaler();
+                },
+                selectedPasientjournaler,
+                identifikator
+            );
 
         };
 

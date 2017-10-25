@@ -20,7 +20,9 @@ import javax.ws.rs.core.*;
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
@@ -51,6 +53,9 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     private UserService userTjeneste;
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
+
+    @EJB
+    private PasientjournalTjeneste pasientjournalTjeneste;
 
     public LagringsenhetTjeneste() {
         super(Lagringsenhet.class, String.class, "uuid");
@@ -106,9 +111,43 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         return lagringsenhet;
     }
 
-    /**
-     * Søker etter lagringsenhet med identifikator.
-     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/{id}/pasientjournaler")
+    public List<PasientjournalSokeresultatDTO> getPasientjournaler(@PathParam("id") final String id){
+        List<PasientjournalSokeresultatDTO> list = pasientjournalTjeneste.hentPasientjournalerForLagringsenhet(id);
+
+        return list;
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/flytt")
+    public Response flyttPasientjournaler(final FlyttPasientjournalDTO lagringsenhet){
+        //TODO oppdater til kun admin-axx
+        Lagringsenhet enhet = hentLagringsenhetMedIdentifikator(lagringsenhet.getLagringsenhetIdentifikator());
+        if (enhet==null){
+            Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenheten finnes ikke");
+            return Response.status(Response.Status.BAD_REQUEST).entity(Arrays.asList(feil)).build();
+        }
+
+        int updated = oppdaterPasientjournalLagringsenhet(lagringsenhet.getPasientjournalUuids(), enhet);
+
+        return Response.ok(updated).build();
+    }
+
+    private int oppdaterPasientjournalLagringsenhet(List<String> uuids, Lagringsenhet enhet){
+        for (String uuid: uuids){
+            Pasientjournal p = getEntityManager().find(Pasientjournal.class, uuid);
+            p.getLagringsenhet().clear();
+            p.getLagringsenhet().add(enhet);
+        }
+
+        return 0;
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})

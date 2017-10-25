@@ -117,9 +117,14 @@
             "TITTEL_AVTALE":"Avtale"
 		},
         "warning_laas" :{
-          "TITTEL" : "Er du siker på at du vil låse avlevering?",
+          "TITTEL" : "Er du sikker på at du vil låse avlevering?",
           "BESKRIVELSE" : "Du vil ikke kunne legge til eller endre pasientjournalene i avleveringen i etterkant."
         },
+        "warning_flytt" :{
+          "TITTEL" : "Flytte journaler til ny lagringsenhet",
+          "BESKRIVELSE" : "Er du sikker på at du vil flytte valgte pasientjournaler til ny lagringsenhet?"
+        },
+
       "warning_laas_opp" :{
         "TITTEL" : "Er du siker på at du vil låse opp avleveringen?"
       },

@@ -21,6 +21,7 @@ import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 import javax.ws.rs.*;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -516,8 +518,26 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return oppdateringsinfo;
     }
 
-    public static void main(String arg) {
-        System.out.println();
-    }
+    /**
+     * Henter Avlevering for en lagringsenhet.
+     *
+     * @param identifikator
+     * @return
+     */
+    public List<PasientjournalSokeresultatDTO> hentPasientjournalerForLagringsenhet(String identifikator) {
+        String select = "SELECT p"
+                + "        FROM Pasientjournal p"
+                + "  INNER JOIN p.lagringsenhet l"
+                + "       WHERE l.identifikator = :identifikator";
+        final Query query = getEntityManager().createQuery(select);
+        query.setParameter("identifikator", identifikator);
 
+        List<Pasientjournal> res = query.getResultList();
+        List<PasientjournalSokeresultatDTO> finalList = new ArrayList<PasientjournalSokeresultatDTO>();
+        for (Pasientjournal pj:res) {
+            PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
+            finalList.add(sokres);
+        }
+        return finalList;
+    }
 }

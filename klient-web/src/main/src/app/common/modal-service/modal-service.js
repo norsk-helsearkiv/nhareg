@@ -239,7 +239,41 @@ function modalService($modal, httpService, errorService, hotkeys) {
         template.controller.$inject = ['$scope', '$modalInstance'];
         return $modal.open(template);
     }
-    
+
+    function warningFlyttLagringsenheter(tpl, relativeUrl, msg, title, desc, okFunction, uuids, identifikator){
+        template.templateUrl = tpl;
+        template.controller = function ($scope, $modalInstance) {
+            $scope.formData = {
+                "error" : {}
+            };
+            $scope.melding = msg;
+            $scope.tittel = title;
+            $scope.beskrivelse = desc;
+
+            $scope.ok = function() {
+                var data = {
+                    pasientjournalUuids : uuids,
+                    lagringsenhetIdentifikator : identifikator
+                };
+                httpService.ny(relativeUrl, data)
+                    .success(function(data, status, headers, config) {
+                        $modalInstance.close();
+                        okFunction();
+                    }).error(function(data, status, headers, config) {
+                    errorService.errorCode(status);
+                });
+
+            };
+
+            $scope.avbryt = function() {
+                $modalInstance.close();
+            };
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+
+
     function velgLagringsenhet(tpl, callback, lagringsenhetmaske, lagringsenheter){
         template.templateUrl = tpl;
         template.controller = function( $scope, $modalInstance){
@@ -307,6 +341,7 @@ function modalService($modal, httpService, errorService, hotkeys) {
         warningModal : warningModal,
         velgModal : velgModal,
         velgLagringsenhet : velgLagringsenhet,
+        warningFlyttLagringsenheter : warningFlyttLagringsenheter,
         endreLagringsenhet : endreLagringsenhet
 
     };
