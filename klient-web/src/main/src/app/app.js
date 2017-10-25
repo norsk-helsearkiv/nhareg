@@ -98,6 +98,23 @@ angular.module('nha', [
         };
     })
 
+    .directive('accessLevelAdmin', ['$rootScope', function($rootScope) {
+        return {
+            restrict: 'A',
+            link: function($scope, element, attrs) {
+                var prevDisp = element.css('display');
+                $rootScope.$watch('userrole', function(role) {
+                    if(role==="admin"){
+                        element.css('display', prevDisp);
+                    }
+                    else{
+                        element.css('display', 'none');
+                    }
+                });
+            }
+        };
+    }])
+
     .directive('fixedHeader', function fixedHeader($timeout) {
     return {
         restrict: 'A',

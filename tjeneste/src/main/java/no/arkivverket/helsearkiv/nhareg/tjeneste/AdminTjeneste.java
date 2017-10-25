@@ -1,8 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
@@ -11,7 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
@@ -20,7 +27,32 @@ import java.io.IOException;
  */
 @Path("/admin")
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@Stateless
 public class AdminTjeneste {
+
+    @EJB
+    private UserService userService;
+    @Resource
+    private SessionContext sessionContext;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/rolle")
+    public String getRolle(){
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return userService.getRolle(username);
+    }
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/sistBrukte")
+    public String getSistBrukteLagringsenhet(){
+        final String username = sessionContext.getCallerPrincipal().getName();
+        final String lagringsenhet = userService.getLagringsenhet(username);
+        return lagringsenhet;
+    }
+
 
     @GET
     @Path("/logout")

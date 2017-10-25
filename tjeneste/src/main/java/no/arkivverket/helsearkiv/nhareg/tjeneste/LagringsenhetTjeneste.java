@@ -63,6 +63,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     }
 
     @PUT
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response oppdaterPasientjournal(Lagringsenhet lagringsenhet) throws ParseException {
         String pasientjournalUuid = getPasientjournalUuid(lagringsenhet.getUuid());
@@ -123,10 +124,9 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Path("/flytt")
     public Response flyttPasientjournaler(final FlyttPasientjournalDTO lagringsenhet){
-        //TODO oppdater til kun admin-axx
         Lagringsenhet enhet = hentLagringsenhetMedIdentifikator(lagringsenhet.getLagringsenhetIdentifikator());
         if (enhet==null){
             Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenheten finnes ikke");

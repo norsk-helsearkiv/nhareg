@@ -89,6 +89,15 @@ function httpService($http) {
 		});
 	}
 
+	function brukerRolle(){
+		return $http({
+			cache : false,
+			accept: "application/json",
+			method: "GET",
+			url: url + "admin/rolle"
+		});
+	}
+
 	function getSokeresultat(sokestring) {
 		return $http({
 			accept: "application/json",
@@ -117,7 +126,7 @@ function httpService($http) {
 		sistBrukteLagringsenhet: sistBrukteLagringsenhet,
 		genererAvlevering: genererAvlevering,
 		getSokeresultat: getSokeresultat,
-
+		brukerRolle : brukerRolle,
 		getRoot: getRoot,
 		setCredentials: setCredentials
 

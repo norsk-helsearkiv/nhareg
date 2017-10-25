@@ -39,10 +39,10 @@
                 <div class="row padding-bottom">
                     <ul class="nav nav-sidebar">
 
-                        <li data-ng-class="{ active: sokVisible}">
+                        <li data-ng-class="{ active: sokVisible}" data-access-level-admin>
                             <a href="#/">{{'home.PASIENTSOK' | translate}}</a>
                         </li>
-                        <li data-ng-class="{ active: lagringsenheterVisible}">
+                        <li data-ng-class="{ active: lagringsenheterVisible}" data-access-level-admin>
                             <a href="#/lagringsenheter">{{'home.LAGRINGSENHETER' | translate }}</a>
                         </li>
                     </ul>
@@ -52,7 +52,7 @@
             </div>
 
             <div ng-include src="'home/home.pasientsok.tpl.html'" data-ng-show="sokVisible"></div>
-            <div ng-include src="'home/home.lagringsenheter.tpl.html'" data-ng-show="lagringsenheterVisible"></div>
+            <div ng-include src="'home/home.lagringsenheter.tpl.html'" data-ng-show="lagringsenheterVisible && userrole=== 'admin'"></div>
 
         </div>
     </div>

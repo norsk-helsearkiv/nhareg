@@ -19,6 +19,10 @@ public class UserServiceBean implements UserService{
     private EntityManager em;
 
 
+    public String getRolle(final String username){
+        return findByUsername(username).getRolle().getNavn();
+    }
+
     public Bruker findByUsername(final String username) {
         return em.find(Bruker.class, username);
     }

@@ -30,14 +30,13 @@ angular.module('nha.home', [
 
     })
 
-    .controller('HomeCtrl', function HomeController($scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, stateService, $modal, $window) {
+    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, stateService, $modal, $window) {
 
 
         $scope.$on('$stateChangeSuccess', function() {
             $scope.sokVisible = false;
             $scope.lagringsenheterVisible = false;
             var path = $location.path();
-            console.log(path);
 
             if(path === '/') {
                 $scope.sokVisible = true;
@@ -45,6 +44,16 @@ angular.module('nha.home', [
                 $scope.lagringsenheterVisible = true;
             }
         });
+
+
+        httpService.brukerRolle().success(function (data, status, headers, config) {
+            $rootScope.userrole = data;
+
+        }).error(function () {
+
+
+        });
+
 
         var antall = 15;
         //Henter ned diagnosene, dette tar litt tid så gjøres ved oppstart, en gang.
