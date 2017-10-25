@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{'modal.endre_lagringsenhet.TITTEL' | translate}}</h3>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+
+            <label>{{ 'modal.endre_lagringsenhet.IDENTIFIKATOR' | translate }}</label>
+            <label class="label-error" data-ng-show="formData.error.identifikator">{{formData.error.identifikator}}</label>
+            <input type="text" class="form-control" ng-model="formData.lagringsenhet.identifikator">
+            <label>{{ 'modal.endre_lagringsenhet.NY_IDENTIFIKATOR' | translate }}</label>
+            <input type="text" class="form-control" ng-model="formData.lagringsenhet.nyIdentifikator">
+
+        </div>
+    </form>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="lagre()" tooltip="{{'common.tooltip.LAGRE_LAGRINGSENHET' | translate}}">{{'common.LAGRE' | translate}}</button>
+    <button class="btn btn-default btn-danger" ng-click="avbryt()" tooltip="{{'common.tooltip.AVBRYT' | translate}}">{{'common.AVBRYT' | translate}}</button>
+</div>

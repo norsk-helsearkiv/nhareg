@@ -7,7 +7,7 @@
 
             <div class="span span4 padding-bottom">
                 <label>{{'home.lagringsenheter.SOK_LAGRINGSENHET' | translate}}</label>
-                <input type="text" data-ng-model="lagr.sok.lagringsenhet" class="form-control" placeholder="Lagringsenhet">
+                <input type="text" data-ng-model="lagrSok.lagringsenhet" class="form-control" placeholder="Lagringsenhet">
 
             </div>
             <div class="span span5 padding-bottom">
@@ -21,7 +21,7 @@
         <div class="span span2 panel panel-default">
             <div class="panel-heading">Søkeresultat</div>
             <div class="panel-body">
-
+                <div class="sokeresultat-wrapper">
                 <table class="table table-striped" ts-wrapper>
                     <thead>
                     <tr>
@@ -31,17 +31,18 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr data-ng-repeat="lagringsenhet in lagringsenheter" ts-repeat>
+                    <tr data-ng-repeat="lagringsenhet in lagringsenheter" ng-class="{'sokeresultat-selected':$index == selectedRow}" ng-click="setClickedRow($index)" ts-repeat>
                         <td>{{ lagringsenhet.uuid }}</td>
                         <td>{{ lagringsenhet.identifikator }}</td>
                         <td>
                             <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast"
-                                    data-ng-click="lagrActionEndreLagringsenhet(avlevering)"
-                                    tooltip="{{home.lagringsenheter.tooltip.ENDRE_LAGRINGSENHET}}"></button>
+                                    data-ng-click="lagrActionEndreLagringsenhet(lagringsenhet)"
+                                    tooltip="{{'home.lagringsenheter.tooltip.ENDRE_LAGRINGSENHET' | translate}}"></button>
                         </td>
                     </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

@@ -196,6 +196,50 @@ function modalService($modal, httpService, errorService, hotkeys) {
         return $modal.open(template);
     }
 
+    function endreLagringsenhet(tpl, relativUrl, lagringsenhet){
+        template.templateUrl = tpl;
+        template.controller = function( $scope, $modalInstance) {
+            $scope.formData = {
+                "error" : {},
+                "lagringsenhet": lagringsenhet
+            };
+            $scope.lagre = function(){
+                var lagr = $scope.formData.lagringsenhet;
+                if (lagr.nyIdentifikator === undefined || lagr.nyIdentifikator === '') {
+                    return;
+                }
+                var nyLagringsenhet = {
+                    uuid :lagr.uuid,
+                    identifikator : lagr.nyIdentifikator
+                };
+
+                httpService.oppdater(relativUrl, nyLagringsenhet)
+                    .success(function(data, status, headers, config) {
+                        $scope.formData.lagringsenhet.identifikator = nyLagringsenhet.identifikator;
+                        $scope.formData.lagringsenhet.nyIdentifikator = '';
+                        $modalInstance.close();
+                    }).error(function(data, status, headers, config) {
+                        if (status==400){
+                            if (data.length>0){
+                                var attr = data[0].attributt;
+                                if (attr === 'identifikator'){
+                                    $scope.formData.error.identifikator = data[0].constriant;
+                                }
+                            }
+                        }else{
+                            errorService.errorCode(status);
+                        }
+                    });
+            };
+
+            $scope.avbryt = function(){
+                $modalInstance.close();
+            };
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+    
     function velgLagringsenhet(tpl, callback, lagringsenhetmaske, lagringsenheter){
         template.templateUrl = tpl;
         template.controller = function( $scope, $modalInstance){
@@ -206,8 +250,6 @@ function modalService($modal, httpService, errorService, hotkeys) {
                 "lagringsenheter": lagringsenheter
             };
             $scope.lagre = function(){
-                //LAGRE LAGRINGSENHET i callback.
-                //TODO valider basert på maske her?!?!?!
                 if ($scope.nyLagringsenhet()){
                     callback($scope.formData);
                     $modalInstance.close();
@@ -264,7 +306,8 @@ function modalService($modal, httpService, errorService, hotkeys) {
         endreModal : endreModal,
         warningModal : warningModal,
         velgModal : velgModal,
-        velgLagringsenhet : velgLagringsenhet
+        velgLagringsenhet : velgLagringsenhet,
+        endreLagringsenhet : endreLagringsenhet
 
     };
 

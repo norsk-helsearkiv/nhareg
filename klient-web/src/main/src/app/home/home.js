@@ -336,9 +336,6 @@ angular.module('nha.home', [
                 $window.location.reload();
             });
         };
-        $scope.editLagringsenhet = function(){
-
-        };
 
         $scope.actionLeggTilPasientjournald = function (avlevering) {
             registreringService.setAvlevering(avlevering);
@@ -375,9 +372,35 @@ angular.module('nha.home', [
                 }
             }
         };
+        $scope.lagringsenheter = [];
+        $scope.lagrSok = {};
 
         $scope.lagrActionSok = function(){
 
+            httpService.hentAlle("lagringsenheter/sok?identifikatorSok="+$scope.lagrSok.lagringsenhet, false)
+                .success(function (data, status, headers, config) {
+                    $scope.lagringsenheter = data;
+                }).error(function (data, status, headers, config) {
+                    errorService.errorCode(status);
+            });
+        };
+
+        $scope.selectedRow = null;  // initialize our variable to null
+        $scope.setClickedRow = function(index){  //function that sets the value of selectedRow to current index
+            if (index === $scope.selectedRow){
+                $scope.selectedRow = null;
+            }else{
+                $scope.selectedRow = index;
+            }
+        };
+        
+        $scope.lagrActionEndreLagringsenhet = function(lagringsenhet){
+            var modal = modalService.endreLagringsenhet('common/modal-service/endre-lagringsenhet-modal.tpl.html',
+                'lagringsenheter/',
+                lagringsenhet);
+            modal.result.then(function () {
+                //TODO
+            });
         };
         $scope.lagrActionHentPasientjournaler = function(){
 

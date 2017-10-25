@@ -14,6 +14,10 @@
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
     "angular-tablesort": "~1.0.6",
     "angular-underscore-module": "~1.0.1",
-    "angular": "1.2"
+    "angular": "1.2",
+    "angular-scrollable-table": "~1.1.2"
+  },
+  "resolutions": {
+    "angular": "1.2.29-build.590+sha.e81b2f7"
   }
 }

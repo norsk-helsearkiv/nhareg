@@ -277,7 +277,6 @@ angular.module('nha.registrering', [
                         var formdata = $scope.formData;
                         //TODO finish this!!
                     });
-                    data = data;
                 }).error(function () {
             });
 

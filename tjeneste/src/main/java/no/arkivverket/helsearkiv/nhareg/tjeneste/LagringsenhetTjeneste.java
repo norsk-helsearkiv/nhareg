@@ -1,6 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
@@ -11,14 +14,13 @@ import javax.ejb.Stateless;
 import javax.persistence.Query;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
@@ -47,10 +49,51 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     private SessionContext sessionContext;
     @EJB
     private UserService userTjeneste;
+    @EJB
+    private AvleveringTjeneste avleveringTjeneste;
 
     public LagringsenhetTjeneste() {
         super(Lagringsenhet.class, String.class, "uuid");
 
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response oppdaterPasientjournal(Lagringsenhet lagringsenhet) throws ParseException {
+        String pasientjournalUuid = getPasientjournalUuid(lagringsenhet.getUuid());
+        String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pasientjournalUuid);
+
+        //sjekk om lagringsenhet finnes i en annen avlevering
+        List<Valideringsfeil> valideringsfeil = avleveringTjeneste.validerLagringsenheter(avleveringsId, Arrays.asList(lagringsenhet));
+        if (!valideringsfeil.isEmpty()) {
+            Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenhetens identifikator finnes i en annen avlevering, benytt en annen identifikator");
+
+            return Response.status(Response.Status.BAD_REQUEST).entity(Arrays.asList(feil)).build();
+        }
+
+        Integer count = getLagringsenhetCount(lagringsenhet.getIdentifikator());
+        if (count>0){
+            Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenhetens identifikator er ikke unik, benytt en annen identifikator");
+            return Response.status(Response.Status.BAD_REQUEST).entity(Arrays.asList(feil)).build();
+        }
+
+        Lagringsenhet updated = update(lagringsenhet);
+        return Response.ok(updated).build();
+    }
+
+    public final Integer getLagringsenhetCount(String lagringsenhetIdentifikator){
+        Query query = getEntityManager().createNativeQuery("select count(*) from Lagringsenhet where identifikator=?");
+        query.setParameter(1, lagringsenhetIdentifikator);
+
+        BigInteger result = (BigInteger) query.getSingleResult();
+        return Integer.valueOf(result.intValue());
+    }
+    public final String getPasientjournalUuid(String lagringsenhetUuid){
+        Query query = getEntityManager().createNativeQuery("select Pasientjournal_uuid from Pasientjournal_Lagringsenhet where lagringsenhet_uuid=?");
+        query.setParameter(1, lagringsenhetUuid);
+        query.setMaxResults(1);
+        Object result = query.getSingleResult();
+        return String.valueOf(result);
     }
 
     @GET
@@ -63,6 +106,27 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         return lagringsenhet;
     }
 
+    /**
+     * Søker etter lagringsenhet med identifikator.
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/sok")
+    public List<Lagringsenhet> sokLagringsenhetMedIdentifikator(@Context UriInfo uriInfo) {
+        MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
+        String identifikatorSok = queryParameters.getFirst("identifikatorSok");
+
+        String select = "select object(o)"
+                + "  from Lagringsenhet as o"
+                + " where o.identifikator LIKE :identifikator"
+                + "  order by o.uuid";
+        final Query query = getEntityManager().createQuery(select);
+        query.setParameter("identifikator", "%"+identifikatorSok+"%");
+        List<Lagringsenhet> lagringsenheter = query.getResultList();
+
+        return lagringsenheter;
+    }
 
     @Override
     public Lagringsenhet create(Lagringsenhet entity) {
