@@ -153,6 +153,7 @@
                            data-ng-enter="leggTilDiagnose()"
                            typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)"
                            typeahead-loading="Laster"
+                           typeahead-focus-first="false"
                            typeahead-on-select='onSelectDiagnose($item, $model, $label)'>
 
                 </div>
