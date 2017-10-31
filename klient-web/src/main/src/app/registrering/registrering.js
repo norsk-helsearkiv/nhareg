@@ -776,6 +776,7 @@ angular.module('nha.registrering', [
                 .success(function (data, status, headers, config) {
                     $scope.formDiagnose.uuid = data.uuid;
                     $scope.formDiagnose.oppdatertAv = data.oppdatertAv;
+                    $scope.formDiagnose.oppdatertDato = data.oppdatertDato;
                     $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
 
                     resetDiagnose();

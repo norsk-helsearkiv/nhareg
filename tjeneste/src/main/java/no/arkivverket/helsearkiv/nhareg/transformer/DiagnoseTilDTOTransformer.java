@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.DatatypeConverter;
 import org.apache.commons.collections4.Transformer;
 
 /**
@@ -25,8 +26,8 @@ public class DiagnoseTilDTOTransformer implements Transformer<Diagnose, Diagnose
             }
             if (input.getOppdateringsinfo()!=null) {
                 dto.setOppdatertAv(input.getOppdateringsinfo().getOppdatertAv());
+                dto.setOppdatertDato(DatatypeConverter.printDateLong(input.getOppdateringsinfo().getSistOppdatert()));
             }
-
         }
         return dto;
     }

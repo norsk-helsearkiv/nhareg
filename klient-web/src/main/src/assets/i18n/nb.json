@@ -31,7 +31,8 @@
             "UUID" : "UUID"
 		},
 		"PASIENTJOURNAL" : "Pasientjournal",
-        "OPPDATERT_AV": "Oppdatert av"
+        "OPPDATERT_AV": "Oppdatert av",
+        "OPPDATERT_DATO": "Registreringstidspunkt"
 	},
 	"home" : {
 		"AVTALE" : "Avtale",
@@ -87,6 +88,8 @@
         "DIAG_AAR" :"År/dato",
         "DIAGNOSEKODEVERK" :"Diagnosekodeverk",
         "DIAGNOSEKODE" : "Diagnosekode",
+        "DIAGNOSEKODEVERK_KORT" :"Kodeverk",
+        "DIAGNOSEKODE_KORT" : "Kode",
         "DIAGNOSETEKST": "Diagnosetekst"
 	},
 	"login" : {

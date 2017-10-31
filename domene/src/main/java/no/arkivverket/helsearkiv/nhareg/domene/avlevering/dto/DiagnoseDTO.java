@@ -14,6 +14,7 @@ public class DiagnoseDTO implements Serializable {
     private String diagnosekode;
     private String diagnosetekst;
     private String oppdatertAv;
+    private String oppdatertDato;
 
     public String getOppdatertAv() {
         return oppdatertAv;
@@ -61,5 +62,12 @@ public class DiagnoseDTO implements Serializable {
 
     public void setDiagnosekode(String diagnosekode) {
         this.diagnosekode = diagnosekode;
+    }
+
+    public void setOppdatertDato(String oppdatertDato) {
+        this.oppdatertDato = oppdatertDato;
+    }
+    public String getOppdatertDato(){
+        return this.oppdatertDato;
     }
 }

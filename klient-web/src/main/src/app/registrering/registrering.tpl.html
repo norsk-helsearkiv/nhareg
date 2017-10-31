@@ -168,10 +168,11 @@
                 <tr>
                     <th></th>
                     <th id="diagnosedato_table" ts-criteria="diagnosedato">{{ 'registrer.DIAG_AAR' | translate }}</th>
-                    <th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE' | translate }}</th>
-                    <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK' | translate }}</th>
+                    <th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE_KORT' | translate }}</th>
+                    <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK_KORT' | translate }}</th>
                     <th ts-criteria="diagnosetekst">{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
                     <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
+                    <th ts-criteria="oppdatertDato">{{'common.OPPDATERT_DATO'| translate}}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -198,6 +199,7 @@
                         <div ng-show="editingData[diagnose.uuid]"><input type="text" class="form-control" data-ng-model="diagnose.diagnosetekst"/></div>
                     </td>
                     <td>{{diagnose.oppdatertAv}}</td>
+                    <td>{{diagnose.oppdatertDato}}</td>
                     <td>
                         <button class="icon icon-edit" ng-hide="pasientjournalDTO.avleveringLaast" ng-click="modify(diagnose)"/>
                         <button class="btn btn-primary right" ng-show="editingData[diagnose.uuid]" ng-click="update(diagnose)">Lagre</button>
