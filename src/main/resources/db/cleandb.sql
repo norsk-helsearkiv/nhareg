@@ -120,3 +120,6 @@ ALTER TABLE Pasientjournal
 
 -- NHA-027 end...
 
+-- NHA-023
+INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('fanearkid', '12', 'Konfigurasjon for validering av feltlengde for fanearkid, kan være null');
+-- NHA-023 end...

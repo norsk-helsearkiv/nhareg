@@ -138,6 +138,23 @@ angular.module('nha.registrering', [
                 $scope.feilTekster['FeilFodselsnummer'] = newval;
             }
         );
+
+        $scope.$watch(
+            function () {
+                return $filter('translate')('feltfeil.FeilFanearkid');
+            },
+            function (newval) {
+                $scope.feilTekster['FeilFanearkid'] = newval;
+            }
+        );
+        $scope.$watch(
+            function () {
+                return $filter('translate')('feltfeil.FeilFanearkidNull');
+            },
+            function (newval) {
+                $scope.feilTekster['FeilFanearkidNull'] = newval;
+            }
+        );
         $scope.$watch(
             function () {
                 return $filter('translate')('feltfeil.EnObligatorisk');
@@ -594,8 +611,16 @@ angular.module('nha.registrering', [
                     index = 14;
                     felt = document.getElementById('diagnosetekst').innerHTML;
                 }
-
+                if (element.attributt === 'fanearkid') {
+                    index = 15;
+                    felt = document.getElementById('fanearkid').innerHTML;
+                }
                 if (felt !== undefined) {
+                    if (element.message !== undefined){ //sett inn variabler i feilmeldingen
+                        var predefined = 'feltfeil.'+element.constriant;
+                        var fm = $filter('translate')(predefined,element.message);
+                        $scope.feilTekster[element.constriant] = fm;
+                    }
                     $scope.feilmeldinger.push({
                         indeks: index,
                         felt: felt,

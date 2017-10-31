@@ -29,7 +29,6 @@ import javax.ws.rs.core.*;
 import java.io.File;
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -310,6 +309,11 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (fnrfeil != null) {
             valideringsfeil.add(fnrfeil);
         }
+        Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondata, konfigparam);
+        if (fanearkidFeil!=null){
+            valideringsfeil.add(fanearkidFeil);
+        }
+
         return valideringsfeil;
     }
 

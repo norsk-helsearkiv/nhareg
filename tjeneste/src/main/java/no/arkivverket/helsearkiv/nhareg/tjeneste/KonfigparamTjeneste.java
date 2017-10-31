@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -40,7 +41,7 @@ public class KonfigparamTjeneste {
     }
     public Integer getInt(String navn){
         String tall = getVerdi(navn);
-        return Integer.parseInt(tall);
+        return StringUtils.isEmpty(tall)?null:Integer.parseInt(tall);
     }
     public Double getDouble(String navn){
         String tall = getVerdi(navn);
