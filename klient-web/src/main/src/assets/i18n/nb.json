@@ -123,6 +123,11 @@
           "TITTEL" : "Er du sikker på at du vil låse avlevering?",
           "BESKRIVELSE" : "Du vil ikke kunne legge til eller endre pasientjournalene i avleveringen i etterkant."
         },
+        "warning_diagnose" :{
+          "TITTEL" : "Det finnes en ulagret diagnose",
+          "BESKRIVELSE" : "Klikk ok for å forkaste, eller avbryt for å gå tilbake og lagre diagnosen."
+
+        },
         "warning_flytt" :{
           "TITTEL" : "Flytte journaler til ny lagringsenhet",
           "BESKRIVELSE" : "Er du sikker på at du vil flytte valgte pasientjournaler til ny lagringsenhet?"

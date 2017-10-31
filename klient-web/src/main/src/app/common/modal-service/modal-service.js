@@ -86,14 +86,18 @@ function modalService($modal, httpService, errorService, hotkeys) {
             $scope.beskrivelse = desc;
 
             $scope.ok = function() {
-                httpService.ny(relativeUrl, $scope.formData)
-                    .success(function(data, status, headers, config) {
-                        $modalInstance.close();
-                        okFunction();
-                    }).error(function(data, status, headers, config) {
-                        errorService.errorCode(status);
-                    });
-
+                if (relativeUrl){
+                    httpService.ny(relativeUrl, $scope.formData)
+                        .success(function(data, status, headers, config) {
+                            $modalInstance.close();
+                            okFunction();
+                        }).error(function(data, status, headers, config) {
+                            errorService.errorCode(status);
+                        });
+                }else{
+                    $modalInstance.close();
+                    okFunction();
+                }
             };
 
             $scope.avbryt = function() {

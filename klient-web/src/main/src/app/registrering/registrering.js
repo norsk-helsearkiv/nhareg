@@ -606,15 +606,47 @@ angular.module('nha.registrering', [
             $scope.feilmeldinger.sort(compare);
         };
 
+        $scope.sjekkDiagnoseFeltTomt = function(caller){
 
-        $scope.nyJournal = function () {
+            if ($scope.formDiagnose.diagnosekode ||
+                $scope.formDiagnose.diagnosedato ||
+                $scope.formDiagnose.diagnosetekst){
+
+                var tpl = 'common/modal-service/warning-modal.tpl.html';
+                var tittel = $filter('translate')('modal.warning_diagnose.TITTEL');
+                var beskrivelse = $filter('translate')('modal.warning_diagnose.BESKRIVELSE');
+                    modalService.warningModal(tpl, null, '', tittel, beskrivelse, function () {
+                        $scope.formDiagnose.diagnosekode=null;
+                        $scope.formDiagnose.diagnosedato=null;
+                        $scope.formDiagnose.diagnosetekst=null;
+                        caller();
+                    });
+            }
+        };
+
+        $scope.nyJournal = function(){
+            $scope.sjekkDiagnoseFeltTomt($scope.nyJournalCallback);
+        };
+
+        $scope.nyJournalCallback = function () {
+            
             $scope.prevState = $scope.state;
             $scope.state = 3;
             $scope.nyEllerOppdater();
             $scope.velgLagringsenhet();
         };
 
-        $scope.nyEllerOppdater = function () {
+        $scope.nyEllerOppdater = function(){
+            $scope.sjekkDiagnoseFeltTomt($scope.nyEllerOppdaterCallback);
+        };
+
+        $scope.nyEllerOppdaterCallback = function () {
+
+            if (!$scope.sjekkDiagnoseFeltTomt){//ikke ny journal hvis ikke feltet er tomt..
+                return;
+            }
+
+
             $scope.error = {};
             $scope.feilmeldinger = [];
 
