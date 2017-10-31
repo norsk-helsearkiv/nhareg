@@ -609,7 +609,6 @@ angular.module('nha.registrering', [
         $scope.sjekkDiagnoseFeltTomt = function(caller){
 
             if ($scope.formDiagnose.diagnosekode ||
-                $scope.formDiagnose.diagnosedato ||
                 $scope.formDiagnose.diagnosetekst){
 
                 var tpl = 'common/modal-service/warning-modal.tpl.html';
@@ -780,12 +779,16 @@ angular.module('nha.registrering', [
         };
 
         //Nullstiller diagnose skjema
-        var resetDiagnose = function () {
+        var resetDiagnose = function (keepDate) {
+            var oldDiagnosedato = $scope.formDiagnose.diagnosedato;
             $scope.formDiagnose = {};
             $scope.diagnosetekstErSatt = false;
             $scope.diagnoseDatoErSatt = false;
             diagnosekode = "";
             document.getElementById("diagnoseDato").focus();
+            if (keepDate){
+                $scope.formDiagnose.diagnosedato = oldDiagnosedato;
+            }
 
         };
 
@@ -811,7 +814,7 @@ angular.module('nha.registrering', [
                     $scope.formDiagnose.oppdatertDato = data.oppdatertDato;
                     $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
 
-                    resetDiagnose();
+                    resetDiagnose(true);
                 }).error(function (data, status, headers, config) {
                 if (status === 400) {
                     setFeilmeldinger(data, status);
