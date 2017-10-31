@@ -53,7 +53,7 @@ public class Avlevering implements Serializable
     protected Avtale avtale;
     @XmlElement(required = true)
     protected String arkivskaper;
-    @XmlElement(required = true)
+    @XmlTransient
     protected String lagringsenhetformat;
 
     @XmlElement(required = true)

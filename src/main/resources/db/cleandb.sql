@@ -113,3 +113,10 @@ ALTER TABLE Bruker
     ADD COLUMN lagringsenhet VARCHAR(255);
 
 -- NHA-038 end...
+
+-- NHA-027
+ALTER TABLE Pasientjournal
+    ADD COLUMN merknad VARCHAR(255);
+
+-- NHA-027 end...
+

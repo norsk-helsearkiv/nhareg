@@ -184,6 +184,7 @@ angular.module('nha.home', [
             errorService.errorCode(status);
         });
 
+        $scope.sok = {};
         $scope.actionSok = function (sokestring) {
             var txt = $scope.text.sokeresultat;
             var viser = $scope.text.viser;

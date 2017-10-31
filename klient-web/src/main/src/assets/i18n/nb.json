@@ -90,7 +90,8 @@
         "DIAGNOSEKODE" : "Diagnosekode",
         "DIAGNOSEKODEVERK_KORT" :"Kodeverk",
         "DIAGNOSEKODE_KORT" : "Kode",
-        "DIAGNOSETEKST": "Diagnosetekst"
+        "DIAGNOSETEKST": "Diagnosetekst",
+        "MERKNAD": "Merknad"
 	},
 	"login" : {
 		"TITTEL" : "Logg inn",

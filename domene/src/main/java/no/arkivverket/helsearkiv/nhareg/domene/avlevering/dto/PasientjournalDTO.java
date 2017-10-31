@@ -13,6 +13,8 @@ public class PasientjournalDTO implements Serializable {
     private List<DiagnoseDTO> diagnoser;
     private String virksomhet;
     private String avtaleBeskrivelse;
+
+
     private String avleveringBeskrivelse;
 
     public String getLagringsenhetformat() {
@@ -85,6 +87,5 @@ public class PasientjournalDTO implements Serializable {
     public void setDiagnoser(List<DiagnoseDTO> diagnoser) {
         this.diagnoser = diagnoser;
     }
-    
-    
+
 }

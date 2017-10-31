@@ -52,7 +52,7 @@
                     </li>
                 </ul>-->
             </div>
-
+            <hr/>
             <div class="row">
                 <!-- Journalnummer -->
                 <div class="span span4">
@@ -111,6 +111,14 @@
                 <div class="span span4">
                     <label id="sKontakt" data-ng-class="{error: error['sKontakt'] !== undefined }">Siste kontakt</label>
                     <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()">
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <!-- Merknad -->
+                <div>
+                    <label id="merknad" data-ng-class="{error: error['merknad'] !== undefined }">{{ 'registrer.MERKNAD' | translate }}</label>
+                    <input type="text" class="form-control" placeholder="Merknad..." data-ng-model="formData.merknad" data-ng-enter="nyEllerOppdater()">
                 </div>
             </div>
         </div>

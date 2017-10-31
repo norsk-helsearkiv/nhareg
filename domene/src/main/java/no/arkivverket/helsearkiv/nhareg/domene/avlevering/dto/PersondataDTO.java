@@ -27,6 +27,8 @@ public class PersondataDTO implements Serializable {
     
     //For Oppdatering trenger vi iden
     private String uuid;
+
+    private String merknad;
     
     public PersondataDTO() {
     }
@@ -124,6 +126,12 @@ public class PersondataDTO implements Serializable {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
-    
+    public String getMerknad() {
+        return merknad;
+    }
+
+    public void setMerknad(String merknad) {
+        this.merknad = merknad;
+    }
     
 }

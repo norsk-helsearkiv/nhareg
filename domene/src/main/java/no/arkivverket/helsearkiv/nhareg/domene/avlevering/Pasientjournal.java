@@ -38,14 +38,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Pasientjournal", propOrder = {
-    "journalidentifikator",
-    "grunnopplysninger",
-    "diagnose",
-    "supplerendeopplysninger",
-    "lagringsenhet",
-    "slettet",
-    "oppdateringsinfo",
-        "fanearkid"
+        "journalidentifikator",
+        "grunnopplysninger",
+        "diagnose",
+        "supplerendeopplysninger",
+        "lagringsenhet",
+        "slettet",
+        "oppdateringsinfo",
+        "fanearkid",
+        "merknad"
 })
 public class Pasientjournal implements Serializable
 {
@@ -64,6 +65,8 @@ public class Pasientjournal implements Serializable
     @XmlAttribute(name = "uuid")
     protected String uuid;
     protected String fanearkid;
+    @XmlElement(name="merknad")
+    protected String merknad;
 
     @XmlTransient
     protected Calendar opprettetDato;
@@ -308,4 +311,11 @@ public class Pasientjournal implements Serializable
         this.opprettetDato = opprettetDato;
     }
 
+    public String getMerknad() {
+        return merknad;
+    }
+
+    public void setMerknad(String merknad) {
+        this.merknad = merknad;
+    }
 }

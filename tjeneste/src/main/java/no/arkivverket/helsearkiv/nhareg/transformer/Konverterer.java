@@ -31,6 +31,7 @@ public class Konverterer {
 
     public static Pasientjournal tilPasientjournal(PasientjournalDTO person) throws ParseException {
         Pasientjournal pasientjournal = tilPasientjournal(person.getPersondata());
+
         return pasientjournal;
     }
 
@@ -109,6 +110,8 @@ public class Konverterer {
         grunnopplysninger.setKontakt(kontakt);
 
         pasientjournal.setGrunnopplysninger(grunnopplysninger);
+
+        pasientjournal.setMerknad(person.getMerknad());
         return pasientjournal;
     }
 
@@ -168,7 +171,7 @@ public class Konverterer {
         PasientjournalDTO dto = new PasientjournalDTO();
         PersondataDTO person = new PersondataDTO();
         person.setUuid(pasientjournal.getUuid());
-
+        person.setMerknad(pasientjournal.getMerknad());
         if (pasientjournal.getLagringsenhet() != null && !pasientjournal.getLagringsenhet().isEmpty()) {
             String[] enheter = new String[pasientjournal.getLagringsenhet().size()];
             for (int i = 0; i < pasientjournal.getLagringsenhet().size(); i++) {

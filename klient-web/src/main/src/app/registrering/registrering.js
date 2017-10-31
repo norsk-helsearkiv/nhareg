@@ -620,6 +620,8 @@ angular.module('nha.registrering', [
                         $scope.formDiagnose.diagnosetekst=null;
                         caller();
                     });
+            }else{
+                caller();
             }
         };
 
