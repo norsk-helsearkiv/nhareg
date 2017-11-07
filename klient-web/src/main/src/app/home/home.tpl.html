@@ -45,6 +45,9 @@
                         <li data-ng-class="{ active: lagringsenheterVisible}" data-access-level-admin>
                             <a href="#/lagringsenheter">{{'home.LAGRINGSENHETER' | translate }}</a>
                         </li>
+                        <li data-ng-class="{ active: brukereVisible}" data-access-level-admin>
+                            <a href="#/brukere">{{'home.BRUKERADMIN' | translate }}</a>
+                        </li>
                     </ul>
                 </div>
 
@@ -52,7 +55,8 @@
             </div>
 
             <div ng-include src="'home/home.pasientsok.tpl.html'" data-ng-show="sokVisible"></div>
-            <div ng-include src="'home/home.lagringsenheter.tpl.html'" data-ng-show="lagringsenheterVisible && userrole=== 'admin'"></div>
+            <div ng-include src="'home/home.lagringsenheter.tpl.html'" data-ng-show="lagringsenheterVisible && userrole === 'admin'"></div>
+            <div ng-include src="'home/home.brukeradmin.tpl.html'" data-ng-show="brukereVisible && userrole === 'admin'"></div>
 
         </div>
     </div>

@@ -44,6 +44,7 @@
 		"FOR" : "for",
 		"PASIENTSOK" : "Pasientsøk",
         "LAGRINGSENHETER" : "Lagringsenheter",
+        "BRUKERADMIN": "Brukeradministrasjon",
 		"SOK" : "Søk",
 		"SOKERESULTAT" : "Søkeresultat",
 		"VISER" : "viser",
@@ -62,9 +63,15 @@
             }
         },
         "brukere" : {
-            "tooltip" : {
+          "EPOST" : "E-post",
+          "ROLLE" : "Rolle",
+          "PASSORD" : "Passord",
+          "NYTTPASSORD" : "Sett nytt passord ved neste pålogging",
+          "HENT" : "Hent",
+          "LAGRE" : "Lagre",
+          "tooltip" : {
                 "ENDRE_BRUKER" : "Klikk for å gjøre endringer på brukeren"
-            }
+          }
         },
       "VIRKSOMHET" : "Virksomhet :",
       "LAGRINGSENHET" : "Lagringsenhet",

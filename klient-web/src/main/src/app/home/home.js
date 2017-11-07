@@ -27,6 +27,15 @@ angular.module('nha.home', [
                 }
             }
         });
+        $stateProvider.state('homeBrukere', {
+            url: '/brukere',
+            views: {
+                "main": {
+                    controller: 'HomeCtrl',
+                    templateUrl: 'home/home.tpl.html'
+                }
+            }
+        });
 
     })
 
@@ -36,12 +45,16 @@ angular.module('nha.home', [
         $scope.$on('$stateChangeSuccess', function() {
             $scope.sokVisible = false;
             $scope.lagringsenheterVisible = false;
+            $scope.brukereVisible = false;
             var path = $location.path();
 
             if(path === '/') {
                 $scope.sokVisible = true;
             } else if(path === '/lagringsenheter') {
                 $scope.lagringsenheterVisible = true;
+                
+            } else if (path === '/brukere'){
+                $scope.brukereVisible = true;
             }
         });
 
@@ -463,8 +476,18 @@ angular.module('nha.home', [
             );
         };
 
+        $scope.bruker  = {};
+        $scope.brukere = [];
+
         $scope.velgBruker = function(bruker){
             //TODO
-        }
+        };
 
+        $scope.hentBrukere = function(){
+            //TODO
+        };
+
+        $scope.oppdaterBruker = function(){
+            //TODO
+        };
     });
