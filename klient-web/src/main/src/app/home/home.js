@@ -449,7 +449,6 @@ angular.module('nha.home', [
                 }
             });
 
-            //TODO warning
             var tpl = 'common/modal-service/warning-modal.tpl.html';
             var url = "lagringsenheter/flytt";
             var identifikator = $scope.lagrFlytt.lagringsenhet;
@@ -462,7 +461,10 @@ angular.module('nha.home', [
                 selectedPasientjournaler,
                 identifikator
             );
-
         };
+
+        $scope.velgBruker = function(bruker){
+            //TODO
+        }
 
     });

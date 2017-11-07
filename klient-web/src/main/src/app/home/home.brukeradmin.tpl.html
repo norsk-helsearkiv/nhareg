@@ -1,0 +1,37 @@
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <a href="#/" class="btn btn-default">{{'home.TILBAKE' | translate }}</a>
+    <h2>{{ 'home.ADM_BRUKERE' | translate }}</h2>
+    <br>
+    <br>
+
+    <div class="row">
+        <div class="span span2 panel panel-default">
+            <div class="panel-heading">Brukere</div>
+            <div class="panel-body">
+                <div class="sokeresultat-wrapper">
+                    <table class="table" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th ts-criteria="brukernavn">{{ 'common.table.BRUKERNAVN' | translate }}</th>
+                            <th ts-criteria="rollenavn">{{ 'common.table.ROLLENAVN' | translate }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedRow}" ng-click="setClickedRow($index)" ts-repeat>
+                            <td>{{ bruker.brukernavn }}</td>
+                            <td>{{ bruker.rollenavn }}</td>
+                            <td>
+                                <button class="icon icon-padding-left icon-edit"
+                                        data-ng-click="velgBruker(bruker)"
+                                        tooltip="{{'home.brukere.tooltip.ENDRE_BRUKER' | translate}}"></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -28,7 +28,9 @@
 			"KODE_SYSTEM" : "Kodesett",
 			"LAGRINGSENHET_FORMAT" : "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
             "LAGRINGSENHET": "Lagringsenhet, format: ",
-            "UUID" : "UUID"
+            "UUID" : "UUID",
+            "BRUKERNAVN" : "Brukernavn",
+            "ROLLENAVN" : "Rolle"
 		},
 		"PASIENTJOURNAL" : "Pasientjournal",
         "OPPDATERT_AV": "Oppdatert av",
@@ -46,6 +48,7 @@
 		"SOKERESULTAT" : "Søkeresultat",
 		"VISER" : "viser",
         "ADM_LAGRINGSENHET" : "Administrasjon av lagringsenheter",
+        "ADM_BRUKERE": "Administrasjon av brukere",
         "TILBAKE" : "Tilbake",
         "lagringsenheter" : {
             "SOK_LAGRINGSENHET" : "Søk lagringsenhet",
@@ -56,6 +59,11 @@
             "FLYTT" : "Flytt",
             "tooltip" : {
                 "ENDRE_LAGRINGSENHET" : "Klikk for å endre identifikator på lagringsenheten"
+            }
+        },
+        "brukere" : {
+            "tooltip" : {
+                "ENDRE_BRUKER" : "Klikk for å gjøre endringer på brukeren"
             }
         },
       "VIRKSOMHET" : "Virksomhet :",
