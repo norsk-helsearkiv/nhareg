@@ -1,13 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.auth;
 
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 
 /**
@@ -25,6 +28,24 @@ public class UserServiceBean implements UserService{
 
     public Bruker findByUsername(final String username) {
         return em.find(Bruker.class, username);
+    }
+
+    public List<Bruker> getAllBrukere() {
+        String select = "SELECT b"
+                + "        FROM Bruker b";
+        final Query query = em.createQuery(select);
+        return query.getResultList();
+    }
+
+    public Bruker createBruker(Bruker bruker){
+        Bruker b = em.merge(bruker);
+        return b;
+    }
+    public List<Rolle> getRoller(){
+        String select = "SELECT b"
+                + "        FROM Rolle b";
+        final Query query = em.createQuery(select);
+        return query.getResultList();
     }
 
     private static String plainToHash(final String userPass){

@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{'modal.endre_passord.TITTEL' | translate}}</h3>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+
+            <label>{{ 'home.brukere.NYTT_PASSORD' | translate }}</label>
+            <label class="label-error" data-ng-show="formData.error.passord">{{formData.error.passord}}</label>
+            <input type="password" class="form-control" ng-model="formData.passord">
+
+        </div>
+    </form>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="ok()" tooltip="{{'common.tooltip.LAGRE_PASSORD' | translate}}">{{'common.LAGRE' | translate}}</button>
+    <button class="btn btn-default btn-danger" ng-click="avbryt()" tooltip="{{'common.tooltip.AVBRYT' | translate}}">{{'common.AVBRYT' | translate}}</button>
+</div>

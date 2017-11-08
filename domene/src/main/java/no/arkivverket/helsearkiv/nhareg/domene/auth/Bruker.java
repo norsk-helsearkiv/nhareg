@@ -11,6 +11,7 @@ public class Bruker {
     private String brukernavn;
     private String passord;
     private String authToken;
+    private String resetPassord;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="rollenavn")
@@ -55,6 +56,13 @@ public class Bruker {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+    public String getResetPassord() {
+        return resetPassord;
+    }
+
+    public void setResetPassord(String resetPassord) {
+        this.resetPassord = resetPassord;
     }
 
 }

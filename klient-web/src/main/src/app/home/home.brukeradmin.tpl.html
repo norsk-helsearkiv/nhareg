@@ -6,7 +6,7 @@
 
     <div class="row">
         <div class="span span2 panel panel-default">
-            <div class="panel-heading">Brukere</div>
+            <div class="panel-heading"><b>Brukere</b> <i>(Velg en i listen for å gjøre endringer)</i></div>
             <div class="panel-body">
                 <div class="sokeresultat-wrapper">
                     <table class="table" ts-wrapper>
@@ -14,18 +14,12 @@
                         <tr>
                             <th ts-criteria="brukernavn">{{ 'common.table.BRUKERNAVN' | translate }}</th>
                             <th ts-criteria="rollenavn">{{ 'common.table.ROLLENAVN' | translate }}</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedRow}" ng-click="setClickedRow($index)" ts-repeat>
+                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}" ng-click="velgBruker($index)" ts-repeat>
                             <td>{{ bruker.brukernavn }}</td>
-                            <td>{{ bruker.rollenavn }}</td>
-                            <td>
-                                <button class="icon icon-padding-left icon-edit"
-                                        data-ng-click="velgBruker(bruker)"
-                                        tooltip="{{'home.brukere.tooltip.ENDRE_BRUKER' | translate}}"></button>
-                            </td>
+                            <td>{{ bruker.rolle.navn }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -40,23 +34,27 @@
     <form class="row input-group form-group">
         <div class="row">
             <div class="span span4 padding-bottom">
-                <label>{{'home.brukere.EPOST' | translate}}</label>
-                <input type="text" data-ng-model="bruker.epost" class="form-control" placeholder="E-post">
+                <label>{{'common.table.BRUKERNAVN' | translate}}</label>
+                <input type="text" data-ng-model="bruker.brukernavn" class="form-control" placeholder="Brukernavn">
             </div>
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
                 <label>{{'home.brukere.ROLLE' | translate}}</label>
-                <select class="form-control" data-ng-model="bruker.rolle" ng-options="rolle as rolle.navn for item in roller">
-                    <option value="" disabled selected>Rolle...</option>
+                <select class="form-control" data-ng-model="bruker.rolle" ng-options="rolle.navn for rolle in roller">
                 </select>
+            </div>
+        </div>
+        <div class="row" data-ng-show="checkError('passord')">
+            <div class="span span4">
+                <label id="labelPassordFeil"  data-ng-class="{error: error['passord'] !== undefined }">{{'home.brukere.PASSORD_FEIL' | translate}}</label>
             </div>
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
-                <label>{{'home.brukere.PASSORD' | translate}}</label>
-                <input type="password" data-ng-model="bruker.passord" class="form-control" placeholder="Passord">
-                <input type="checkbox" data-ng-model="bruker.nyttpassord">
+                <label id="labelPassord" data-ng-class="{error: error['passord'] !== undefined }">{{'home.brukere.PASSORD' | translate}}</label>
+                <input type="password" data-ng-model="bruker.password" class="form-control" placeholder="Passord">
+                <input type="checkbox" data-ng-model="bruker.resetPassword">
                     {{ 'home.brukere.NYTTPASSORD' | translate }}
                 </label>
             </div>

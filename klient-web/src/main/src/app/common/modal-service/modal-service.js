@@ -277,6 +277,30 @@ function modalService($modal, httpService, errorService, hotkeys) {
         return $modal.open(template);
     }
 
+    function endrePassord(){
+        template.templateUrl = 'common/modal-service/endre-passord-modal.tpl.html';
+        template.controller = function ($scope, $modalInstance) {
+            $scope.formData = {
+                "error" : {}
+            };
+
+            $scope.ok = function() {
+                
+                httpService.ny("admin/oppdaterPassord", $scope.formData.passord)
+                    .success(function(data, status, headers, config) {
+                        $modalInstance.close();
+                    }).error(function(data, status, headers, config) {
+                    errorService.errorCode(status);
+                });
+            };
+
+            $scope.avbryt = function() {
+                $modalInstance.close();
+            };
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
 
     function velgLagringsenhet(tpl, callback, lagringsenhetmaske, lagringsenheter){
         template.templateUrl = tpl;
@@ -346,7 +370,8 @@ function modalService($modal, httpService, errorService, hotkeys) {
         velgModal : velgModal,
         velgLagringsenhet : velgLagringsenhet,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
-        endreLagringsenhet : endreLagringsenhet
+        endreLagringsenhet : endreLagringsenhet,
+        endrePassord : endrePassord
 
     };
 

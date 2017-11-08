@@ -13,7 +13,8 @@
           "LAGRE" :"Lagrer valgte lagringsenhet(er) på registreringen",
           "LAGRE_LAGRINGSENHET" : "Lagrer ny identifikator på lagringsenheten",
           "UTSKRIFT_OG_LAGRE" : "Skriver ut etikett til boksen og lagrer",
-          "AVBRYT" : "Avbryter registreringen"
+          "AVBRYT" : "Avbryter registreringen",
+          "LAGRE_PASSORD":"Lagrer nytt passord på brukeren"
         },
 
 
@@ -66,6 +67,9 @@
           "EPOST" : "E-post",
           "ROLLE" : "Rolle",
           "PASSORD" : "Passord",
+          "PASSORD_FEIL" : "Passordet har feil lengde, må være 5 tegn eller mer",
+          "NYTT_PASSORD" :"Nytt passord",
+          "ENDRE_PASSORD" : "Endre passordet mitt",
           "NYTTPASSORD" : "Sett nytt passord ved neste pålogging",
           "HENT" : "Hent",
           "LAGRE" : "Lagre",
@@ -148,6 +152,9 @@
           "TITTEL" : "Flytte journaler til ny lagringsenhet",
           "BESKRIVELSE" : "Er du sikker på at du vil flytte valgte pasientjournaler til ny lagringsenhet?"
         },
+        "endre_passord":{
+          "TITTEL": "Sett nytt passord for brukeren din"
+        },
 
       "warning_laas_opp" :{
         "TITTEL" : "Er du siker på at du vil låse opp avleveringen?"
@@ -192,7 +199,8 @@
         "DiagEtterDod" : "Diagnosedato kan ikke være etter død",
         "DiagForFodt" : "Diagnosedato kan ikke være før fødsel",
       "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-      "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}"
+      "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
+      "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn"
 
     },
     "konfig" : {

@@ -63,8 +63,23 @@ angular.module('nha.home', [
             $rootScope.userrole = data;
 
         }).error(function () {
-
-
+            errorService.errorCode(status);
+        });
+        httpService.hentAlle("admin/roller", false).success(function (data, status, headers, config) {
+            $scope.roller = data;
+        }).error(function(){
+            errorService.errorCode(status);
+        });
+        $scope.endrePassord = function(){
+            var modal = modalService.endrePassord();
+            modal.result.then(function () {
+                //TODO
+            });
+        };
+        httpService.hent("admin/resetPassord", false).success(function (data){
+           if (data==='true'){
+               $scope.endrePassord();
+           }
         });
 
 
@@ -479,15 +494,61 @@ angular.module('nha.home', [
         $scope.bruker  = {};
         $scope.brukere = [];
 
-        $scope.velgBruker = function(bruker){
-            //TODO
+        $scope.selectedBrukerRow = null;  // initialize our variable to null
+
+        $scope.velgBruker = function(index){
+            if (index === $scope.selectedBrukerRow){
+                $scope.selectedBrukerRow = null;
+                $scope.bruker.brukernavn = "";
+                $scope.bruker.rolle = "";
+            }else{
+                var valgtBruker = $scope.brukere[index];
+                var rolleIndex = $scope.roller.map(function(e) { return e.navn; }).indexOf(valgtBruker.rolle.navn);
+                $scope.selectedBrukerRow = index;
+                $scope.bruker.brukernavn = valgtBruker.brukernavn;
+                $scope.bruker.rolle = $scope.roller[rolleIndex];
+            }
         };
 
         $scope.hentBrukere = function(){
-            //TODO
+
+            httpService.hentAlle("admin/brukere", false)
+                .success(function (data, status, headers, config) {
+                    $scope.brukere = data;
+                }).error(function (data, status, headers, config) {
+                errorService.errorCode(status);
+            });
+        };
+
+        var resetBruker = function(){
+            $scope.bruker = {};
         };
 
         $scope.oppdaterBruker = function(){
-            //TODO
+            $scope.error=[];
+            httpService.ny("admin/brukere", $scope.bruker)
+                .success(function (data, status, headers, config) {
+                    $scope.hentBrukere();
+                    resetBruker();
+
+                }).error(function (data, status, headers, config) {
+                    setFeilmeldinger(data, status);
+            });
+        };
+        $scope.error = [];
+        $scope.checkError = function(attributt){
+            var err =  $scope.error[attributt]!==undefined;
+            return err;
+        };
+
+        var setFeilmeldinger = function (data, status) {
+            if (status != 400) {
+                errorService.errorCode(status);
+                return;
+            }
+
+            angular.forEach(data, function (element) {
+                $scope.error[element.attributt] = element.constriant;
+            });
         };
     });
