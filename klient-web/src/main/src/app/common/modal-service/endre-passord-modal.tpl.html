@@ -8,7 +8,9 @@
 
             <label>{{ 'home.brukere.NYTT_PASSORD' | translate }}</label>
             <label class="label-error" data-ng-show="formData.error.passord">{{formData.error.passord}}</label>
-            <input type="password" class="form-control" ng-model="formData.passord">
+            <input type="password" class="form-control" ng-model="formData.passord" placeholder="Passord">
+            <br>
+            <input type="password" class="form-control" ng-model="formData.passordConfirm" placeholder="Bekreft passord">
 
         </div>
     </form>

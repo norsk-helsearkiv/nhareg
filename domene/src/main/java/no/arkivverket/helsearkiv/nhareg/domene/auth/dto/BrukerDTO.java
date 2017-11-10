@@ -11,6 +11,7 @@ public class BrukerDTO {
     private String brukernavn;
     private RolleDTO rolle;
     private String password;
+    private String passwordConfirm;
     private Boolean resetPassword;
 
     public BrukerDTO(final Bruker b){
@@ -20,10 +21,11 @@ public class BrukerDTO {
     public BrukerDTO(){
 
     }
-    public BrukerDTO(final String brukernavn, final RolleDTO rolle, final String password, final Boolean resetPassword){
+    public BrukerDTO(final String brukernavn, final RolleDTO rolle, final String password, final String passwordConfirm, final Boolean resetPassword){
         this.brukernavn = brukernavn;
         this.rolle = rolle;
         this.password = password;
+        this.passwordConfirm = passwordConfirm;
         this.resetPassword = resetPassword;
     }
 
@@ -57,6 +59,14 @@ public class BrukerDTO {
 
     public void setResetPassword(Boolean resetPassword) {
         this.resetPassword = resetPassword;
+    }
+
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 
     public Bruker toBruker(){

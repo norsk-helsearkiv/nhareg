@@ -524,15 +524,31 @@ angular.module('nha.home', [
             $scope.bruker = {};
         };
 
+        var sjekkPassord = function(){
+            return $scope.bruker.password === $scope.bruker.passwordConfirm;
+        };
+
         $scope.oppdaterBruker = function(){
             $scope.error=[];
+            if (!sjekkPassord()){
+                $scope.error['passord']= $filter('translate')('home.brukere.PASSORD_ULIKT');
+                return;
+            }
+
             httpService.ny("admin/brukere", $scope.bruker)
                 .success(function (data, status, headers, config) {
                     $scope.hentBrukere();
                     resetBruker();
 
                 }).error(function (data, status, headers, config) {
-                    setFeilmeldinger(data, status);
+                if (status != 400) {
+                    errorService.errorCode(status);
+                    return;
+                }else{
+                    if (data[0].attributt==='passord'){
+                        $scope.error['passord']= $filter('translate')('home.brukere.PASSORD_FEIL');
+                    }
+                }
             });
         };
         $scope.error = [];
@@ -542,10 +558,7 @@ angular.module('nha.home', [
         };
 
         var setFeilmeldinger = function (data, status) {
-            if (status != 400) {
-                errorService.errorCode(status);
-                return;
-            }
+
 
             angular.forEach(data, function (element) {
                 $scope.error[element.attributt] = element.constriant;

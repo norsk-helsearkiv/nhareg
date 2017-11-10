@@ -5,9 +5,9 @@ var mod = angular.module('nha.common.modal-service', [
     'cfp.hotkeys'
 ]);
 
-mod.factory('modalService', ['$modal', 'httpService', 'errorService', 'hotkeys', modalService]);
+mod.factory('modalService', ['$modal', 'httpService', 'errorService', 'hotkeys', '$filter', modalService]);
 
-function modalService($modal, httpService, errorService, hotkeys) {
+function modalService($modal, httpService, errorService, hotkeys, $filter) {
     var template = {
         backdrop: 'static',
         windowClass: "modal-center"
@@ -285,7 +285,11 @@ function modalService($modal, httpService, errorService, hotkeys) {
             };
 
             $scope.ok = function() {
-                
+                $scope.formData.error.passord='';
+                if (($scope.formData.passord !== $scope.formData.passordConfirm)){
+                    $scope.formData.error.passord= $filter('translate')('home.brukere.PASSORD_ULIKT');
+                    return;
+                }
                 httpService.ny("admin/oppdaterPassord", $scope.formData.passord)
                     .success(function(data, status, headers, config) {
                         $modalInstance.close();
