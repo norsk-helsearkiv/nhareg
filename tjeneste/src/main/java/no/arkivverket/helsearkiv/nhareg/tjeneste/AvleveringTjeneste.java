@@ -1,9 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import com.sun.xml.internal.ws.developer.SerializationFeature;
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
-import no.arkivverket.helsearkiv.nhareg.auth.UserServiceBean;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -13,8 +11,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.logging.Log;
@@ -29,7 +25,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.*;
-import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

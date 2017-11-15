@@ -121,8 +121,13 @@
                     <input type="text" class="form-control" placeholder="Merknad..." data-ng-model="formData.merknad" data-ng-enter="nyEllerOppdater()">
                 </div>
             </div>
+
         </div>
 
+        <div class="row">
+            <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
+        </div>
+        <br>
         <!-- Diagnoser -->
         <div class="well" data-ng-show="state === 0">
             <label>Diagnoser</label>
@@ -218,7 +223,6 @@
         </div>
 
 
-        <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
         <label></label>
         <button class="right icon-padding-right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
             {{ 'common.LEGG_TIL' | translate }}
