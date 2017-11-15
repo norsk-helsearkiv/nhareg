@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.*;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
 @XmlType(name = "Avlevering", propOrder = {
     "avleveringsidentifikator",
     "avleveringsbeskrivelse",

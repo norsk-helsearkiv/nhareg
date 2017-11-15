@@ -63,6 +63,8 @@
             <scope>runtime</scope>
         </dependency>
         -->
+
+
         <dependency>
             <groupId>no.arkivverket.helsearkiv.nhareg</groupId>
             <artifactId>domene</artifactId>

@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import com.sun.xml.internal.ws.developer.SerializationFeature;
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.auth.UserServiceBean;
@@ -28,12 +29,17 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.*;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.FileNotFoundException;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.*;
 
@@ -224,7 +230,19 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
             p.getDiagnose().size();
         }
 
-        ResponseBuilder response = Response.ok(avlevering);
+        StringWriter sw;
+        try {
+            Marshaller marshaller  = JAXBContext.newInstance(avlevering.getClass()).createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            sw = new StringWriter();
+            marshaller.marshal(avlevering, sw);
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+
+        ResponseBuilder response = Response.ok(sw.toString());
         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
         return response.build();
 
