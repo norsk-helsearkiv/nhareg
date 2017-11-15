@@ -15,7 +15,9 @@ public class DagEllerAarValidator implements ConstraintValidator<DagEllerAar, St
     }
 
     public boolean isValid(String object, ConstraintValidatorContext constraintContext) {
-        if (object == null || object.isEmpty() || object.toLowerCase().equals("mors") || object.toLowerCase().equals("ukjent")) {
+        if (object == null || object.isEmpty()
+                || object.toLowerCase().equals("mors") || object.toLowerCase().equals("m")
+                || object.toLowerCase().equals("ukjent") || object.toLowerCase().equals("u")) {
             return true;
         }
 

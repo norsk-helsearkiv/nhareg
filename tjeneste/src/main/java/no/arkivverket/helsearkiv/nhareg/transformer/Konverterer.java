@@ -235,7 +235,8 @@ public class Konverterer {
     }
 
     public static DatoEllerAar tilDatoEllerAar(String tid) throws ParseException {
-        if (tid.toLowerCase().equals("mors")||"".equals(tid)||"ukjent".equals(tid)) {
+        if (tid.toLowerCase().equals("mors")||"".equals(tid)||tid.toLowerCase().equals("m")
+                ||tid.toLowerCase().equals("ukjent") || tid.toLowerCase().equals("u")) {
             return null;
         }
 

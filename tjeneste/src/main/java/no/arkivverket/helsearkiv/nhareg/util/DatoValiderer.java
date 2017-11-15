@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,6 +24,10 @@ import javax.persistence.EntityManager;
  * @author robing
  */
 public class DatoValiderer {
+
+    private static final List<String> gyldigMors = Arrays.asList("mors", "m", "M");
+    private static final List<String> gyldigUkjent = Arrays.asList("ukjent", "u", "U");
+
     /**
      * Diagnosedato/år valideres med javax.validation
      *
@@ -81,11 +86,11 @@ public class DatoValiderer {
             return feil;
         }
         //født kan ikke være mors
-        if (sjekkMorsUkjent(person.getFodt(), "mors")){
+        if (sjekkMorsUkjent(person.getFodt(), "mors") && sjekkMorsUkjent(person.getFodt(), "m")){
             feil.add(new Valideringsfeil("fodt", "DagEllerAar"));
         }
         //død kan ikke være ukjent
-        if (sjekkMorsUkjent(person.getDod(), "ukjent")) {
+        if (sjekkMorsUkjent(person.getDod(), "ukjent") && sjekkMorsUkjent(person.getDod(), "u")) {
             feil.add(new Valideringsfeil("dod", "DagEllerAar"));
         }
 
@@ -102,17 +107,17 @@ public class DatoValiderer {
         List<Valideringsfeil> fnumfeil = fnumSjekk(person, lowLim, maxLim);
         leggTilFeil(feil, fnumfeil);
         //skjema 2a
-        if ("ukjent".equals(person.getFodt()) ) {//mors sjekkes i metoden pga feilmelding hvis den mangler
+        if (gyldigUkjent.contains(person.getFodt())){//mors sjekkes i metoden pga feilmelding hvis den mangler
             List<Valideringsfeil> pdatofeil = pasientjournaldatoerutenkjentfogmors(person, lowLim, maxLim);
             leggTilFeil(feil, pdatofeil);
         }
         //skjema 2b
-        if ("mors".equals(person.getDod()) && sjekk(person.getFodt())) {
+        if (gyldigMors.contains(person.getDod()) && sjekk(person.getFodt())) {
             List<Valideringsfeil> pdatofeilb = pasientjournaldatokjentfdatoukjentdod(person, minLim);
             leggTilFeil(feil, pdatofeilb);
         }
         //skjema 2c
-        if ("ukjent".equals(person.getFodt()) && sjekk(person.getDod())) {
+        if (gyldigUkjent.contains(person.getFodt()) && sjekk(person.getDod())) {
             List<Valideringsfeil> pdatofeilc = pasientjournaldatokjentmorsukjentfodt(person, lowLim, maxLim);
             leggTilFeil(feil, pdatofeilc);
         }
@@ -134,7 +139,7 @@ public class DatoValiderer {
     private static ArrayList<Valideringsfeil> fnumSjekk(PersondataDTO person, Date lowLim, Date maxLim) {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         String fnr = person.getFodselsnummer();
-        if ("ukjent".equals(person.getFodt())){
+        if (gyldigUkjent.contains(person.getFodt())){
             //kjønn er validert i input.
         }else{
             if (fnr==null||"".equals(fnr)){
@@ -161,7 +166,7 @@ public class DatoValiderer {
     //skjema 02a
     private static ArrayList<Valideringsfeil> pasientjournaldatoerutenkjentfogmors(PersondataDTO person, Date lowLim, Date maxLim){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
-        if ("mors".equals(person.getDod())){
+        if (gyldigMors.contains(person.getDod())){
 
             if (sjekk(person.getsKontakt()) && sjekk(person.getfKontakt())){
                 Date sKontakt = getDate(person.getsKontakt());
@@ -187,7 +192,7 @@ public class DatoValiderer {
     //skjema 02b
     private static List<Valideringsfeil> pasientjournaldatokjentfdatoukjentdod(PersondataDTO person, Date maxAge) {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
-        if (sjekk(person.getDod())||"mors".equals(person.getDod())){
+        if (sjekk(person.getDod())||gyldigMors.contains(person.getDod())){
             List<Valideringsfeil> f = sjekkKontaktdatoFodt(person);
             if (!f.isEmpty()){
                 feil.addAll(f);
@@ -515,7 +520,9 @@ public class DatoValiderer {
 
     
     private static boolean sjekk(String s) {
-        if(s == null || s.isEmpty() || s.toLowerCase().equals("mors") || s.toLowerCase().equals("ukjent")) {
+        if(s == null || s.isEmpty()
+                || s.toLowerCase().equals("mors") || s.toLowerCase().equals("m")
+                || s.toLowerCase().equals("ukjent") || s.toLowerCase().equals("u"))  {
             return false;
         }
         
