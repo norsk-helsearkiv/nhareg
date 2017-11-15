@@ -351,7 +351,7 @@ angular.module('nha.registrering', [
             } else
             //Oppdater
             if ($scope.state === 2) {
-                document.getElementById("lagringsenhet").focus();
+                document.getElementById("diagnoseDato").focus();
             }
         };
         setFocus();

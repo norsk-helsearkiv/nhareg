@@ -139,7 +139,7 @@
                     <label id="diagnosedatoLbl" data-ng-class="{error: error['diagnosedato'] !== undefined }">
                         Diagnosedato
                     </label>
-                    <input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-enter="leggTilDiagnose()">
+                    <input type="text" id="diagnoseDato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-enter="leggTilDiagnose()" data-ng-show="state !== 0" focus-on-show>
                 </div>
                 <div class="span span4">
                     <label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
