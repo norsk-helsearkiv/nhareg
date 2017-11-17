@@ -497,7 +497,8 @@ angular.module('nha.registrering', [
         $scope.setFocusEtterNavn = function () {
             if ($scope.formData !== undefined) {
                 if ($scope.formData.navn !== undefined && $scope.formData.navn.length > 0) {
-                    $scope.formData.navn = $scope.formData.navn.substring(0, 1).toUpperCase() + $scope.formData.navn.substring(1);
+                    var str = $scope.formData.navn;
+                    $scope.formData.navn = str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
                 }
             }
 
