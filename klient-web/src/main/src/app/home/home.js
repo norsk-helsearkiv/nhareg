@@ -347,7 +347,7 @@ angular.module('nha.home', [
                 .success(function (data, status, headers, config) {
 
                     var tittel = {
-                        "tittel": avlevering.avleveringsbeskrivelse,
+                        "tittel": avlevering.avtale.virksomhet.foretaksnavn+" / "+avlevering.avtale.avtalebeskrivelse+" / "+avlevering.avleveringsbeskrivelse,
                         "underTittel": avlevering.arkivskaper
                     };
                     listService.init(tittel, data);
