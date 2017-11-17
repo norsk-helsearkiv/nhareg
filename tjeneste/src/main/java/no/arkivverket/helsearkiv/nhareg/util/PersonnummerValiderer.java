@@ -16,10 +16,7 @@ public class PersonnummerValiderer {
     /** Lengden på gyldig fødselsnummer. */
     public static final int LEN_FNR= 11;
 
-    public static Valideringsfeil valider(PersondataDTO dto){
-
-
-        String fnr = dto.getFodselsnummer();
+    public static Valideringsfeil valider(String fnr){
         if (fnr!=null&&!"".equals(fnr)){
             if (gyldigFnr(fnr)){
                 return null;
@@ -29,8 +26,13 @@ public class PersonnummerValiderer {
         }else{
             return null;
         }
-
     }
+
+    public static Valideringsfeil valider(PersondataDTO dto){
+        String fnr = dto.getFodselsnummer();
+        return valider(fnr);
+    }
+
     public static final boolean isDnummer(final String nr){
         if (nr==null||"".equals(nr)){
             return false;

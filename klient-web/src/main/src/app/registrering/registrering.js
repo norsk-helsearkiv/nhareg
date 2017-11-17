@@ -386,6 +386,8 @@ angular.module('nha.registrering', [
         var fodselsnummer;
         $scope.setFnr = function () {
             if ($scope.formData && $scope.formData.fodselsnummer) {
+
+
                 fodselsnummer = $scope.formData.fodselsnummer;
             }
         };
@@ -444,6 +446,28 @@ angular.module('nha.registrering', [
         };
 
         $scope.populerFelt = function () {
+            if ($scope.formData.fodselsnummer !== undefined) {
+               var fnrs = $scope.formData.fodselsnummer.replace(/\D/g, '');
+                fnrs = fnrs.substr(0, 11);
+                $scope.formData.fodselsnummer = fnrs;
+            }
+
+            httpService.hent("pasientjournaler/valider/" + $scope.formData.fodselsnummer)
+                .success(function (data, status, headers, config) {
+                    $scope.error = {};
+                    $scope.feilmeldinger = [];
+                    $scope.validerOgTrekkUt();
+                })
+                .error(function (data, status, headers, config) {
+                    if (status === 400) {
+                        setFeilmeldinger(data, status);
+                    } else {
+                        errorService.errorCode(status);
+                    }
+                });
+        };
+
+        $scope.validerOgTrekkUt = function(){
             if (($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) && $scope.formData.fodt !== '') {
                 return;
             }
@@ -498,7 +522,10 @@ angular.module('nha.registrering', [
             if ($scope.formData !== undefined) {
                 if ($scope.formData.navn !== undefined && $scope.formData.navn.length > 0) {
                     var str = $scope.formData.navn;
-                    $scope.formData.navn = str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+                    $scope.formData.navn = str.replace(/\w\S*/g,
+                        function(txt){
+                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                        });
                 }
             }
 

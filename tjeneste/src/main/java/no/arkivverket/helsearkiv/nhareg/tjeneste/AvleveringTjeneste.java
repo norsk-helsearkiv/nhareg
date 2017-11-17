@@ -182,8 +182,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);
         }
-        PasientjournalDTO dto=null;
-        for (int i=0;i<100;i++) {
+
         //KONVERTERING
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(person);
         //
@@ -195,23 +194,21 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         }
 
         //LAGRER
+        pasientjournalTjeneste.create(pasientjournal);
+        Avlevering avlevering = getSingleInstance(avleveringid);
+        avlevering.getPasientjournal().add(pasientjournal);
+        //
+        // Sporing.
+        //
+        avlevering.setOppdateringsinfo(konstruerOppdateringsinfo());
+        PasientjournalDTO dto = Konverterer.tilPasientjournalDTO(pasientjournal);
+        dto.setAvleveringsidentifikator(getAvleveringsidentifikator(pasientjournal.getUuid()));
 
-            pasientjournalTjeneste.create(pasientjournal);
-            Avlevering avlevering = getSingleInstance(avleveringid);
-            avlevering.getPasientjournal().add(pasientjournal);
-            //
-            // Sporing.
-            //
-            avlevering.setOppdateringsinfo(konstruerOppdateringsinfo());
-            dto = Konverterer.tilPasientjournalDTO(pasientjournal);
-            dto.setAvleveringsidentifikator(getAvleveringsidentifikator(pasientjournal.getUuid()));
+        //oppdater sist brukte lagringsenhet på brukeren
 
-            //oppdater sist brukte lagringsenhet på brukeren
-
-            Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
-            final String username = sessionContext.getCallerPrincipal().getName();
-            userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
-        }
+        Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
 
 
         return Response.ok().entity(dto).build();

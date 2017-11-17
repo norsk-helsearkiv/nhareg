@@ -300,6 +300,16 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return Response.ok(tilPasientjournalDTO(persistert)).build();
     }
 
+    @GET
+    @Path("/valider/{fnr}")
+    public Response validerFnr(@PathParam("fnr") String fnr) {
+        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(fnr);
+        if (fnrfeil!=null){
+            throw new ValideringsfeilException(Collections.singleton(fnrfeil));
+        }
+        return Response.ok().build();
+    }
+
     public List<Valideringsfeil> validerGrunnopplysningerPasientjournal(PersondataDTO persondata) throws ParseException {
         // VALIDERING - Persondata
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondata).valider();
