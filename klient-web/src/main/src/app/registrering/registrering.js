@@ -446,11 +446,14 @@ angular.module('nha.registrering', [
         };
 
         $scope.populerFelt = function () {
-            if ($scope.formData.fodselsnummer !== undefined) {
+            if ($scope.formData.fodselsnummer !== undefined && $scope.formData.fodselsnummer !=='') {
                var fnrs = $scope.formData.fodselsnummer.replace(/\D/g, '');
                 fnrs = fnrs.substr(0, 11);
                 $scope.formData.fodselsnummer = fnrs;
+            }else{
+                return;
             }
+
 
             httpService.hent("pasientjournaler/valider/" + $scope.formData.fodselsnummer)
                 .success(function (data, status, headers, config) {
