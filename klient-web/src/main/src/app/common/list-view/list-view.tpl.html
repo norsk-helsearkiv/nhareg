@@ -97,12 +97,15 @@
         <div class="paging-holder">
             <div id="paging-ctrl">
                 <ul class="pagination">
-                    <li data-ng-repeat="i in antallSider() track by $index" data-ng-class="{active : aktivSide === $index +1}">
-                        <a href="" data-ng-click="navPage($index+1)">{{$index+1}}</a>
+                    <li data-ng-repeat="page in pager.pages" data-ng-class="{active:pager.currentPage === page}">
+                        <a href="" data-ng-click="setPage(page)">{{page}}</a>
                     </li>
                 </ul>
             </div>
         </div>
+
+
+
 
     </div>
 </div>

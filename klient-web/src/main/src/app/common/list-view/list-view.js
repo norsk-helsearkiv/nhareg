@@ -1,5 +1,6 @@
 angular.module('nha.common.list-view', [
         'nha.common.list-service',
+        'nha.common.pager-service',
         'nha.common.http-service',
         'nha.common.error-service',
         'nha.common.modal-service',
@@ -19,7 +20,7 @@ angular.module('nha.common.list-view', [
         });
     })
 
-    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registreringService, stateService) {
+    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registreringService, stateService, pagerService) {
         var antall = 15;
         $scope.$watch(
             function () {
@@ -74,15 +75,7 @@ angular.module('nha.common.list-view', [
         $scope.tittel = listService.getTittel();
         setTittel($scope.data);
 
-        $scope.aktivSide = 1;
-        var sider = 0;
-        $scope.antallSider = function () {
-            if ($scope.data.total <= $scope.data.antall) {
-                return new Array(1);
-            }
-            sider = Math.ceil($scope.data.total / $scope.data.antall);
-            return new Array(Math.ceil(sider));
-        };
+
         $scope.lagringsenhetAsc = false;
         $scope.fodselsnummerAsc = false;
         $scope.fanearkidAsc = false;
@@ -162,6 +155,59 @@ angular.module('nha.common.list-view', [
             });
         };
 
+
+
+
+
+
+        /*
+        initController();
+
+        function initController() {
+            // initialize to page 1
+            vm.setPage(1);
+        }*/
+        $scope.aktivSide = 1;
+        var sider = 0;
+
+
+        $scope.antallSider = function () {
+            if ($scope.data.total <= $scope.data.antall) {
+                return new Array(1);
+            }
+            sider = Math.ceil($scope.data.total / $scope.data.antall);
+            return new Array(Math.ceil(sider));
+        };
+        $scope.pager = pagerService.getPager($scope.data.total, 1);
+        $scope.setPage = function(page) {
+            if (page < 1 || page > $scope.pager.totalPages) {
+                return;
+            }
+
+            // get pager object from service
+            $scope.pager = pagerService.getPager($scope.data.total, page);
+
+            // get current page of items
+           // $scope.items = $scope.data.slice($scope.pager.startIndex, $scope.pager.endIndex + 1);
+            var ordering = "";
+            if ($scope.sortColumn) {
+                ordering += "&orderBy=" + $scope.sortColumn;
+            }
+            if ($scope.sortDirection) {
+                ordering += "&sortDirection=" + $scope.sortDirection;
+            }
+
+            httpService.hentAlle("pasientjournaler?side=" + (page-1) + "&antall=" + antall + listService.getQuery() + ordering)
+                .success(function (data, status, headers, config) {
+                    setTittel(data);
+                    $scope.data = data;
+                    //$scope.aktivSide = index;
+
+                }).error(function (data, status, headers, config) {
+                errorService.errorCode(status);
+            });
+        };
+        /*
         $scope.navPage = function (index) {
             var ordering = "";
             if ($scope.sortColumn) {
@@ -183,7 +229,7 @@ angular.module('nha.common.list-view', [
                 errorService.errorCode(status);
             });
         };
-
+        */
         $scope.$watch(
             function () {
                 return sider;
