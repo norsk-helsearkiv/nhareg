@@ -776,7 +776,7 @@ angular.module('nha.registrering', [
             if ($scope.formDiagnose === null || $scope.formDiagnose.diagnosekode === null) {
                 return;
             }
-            diagnose = $scope.formDiagnose.diagnosekode;
+            diagnosekode = $scope.formDiagnose.diagnosekode;
         };
 
         $scope.setDiagnoseDato = function(){
@@ -789,12 +789,14 @@ angular.module('nha.registrering', [
             }
         };
 
+        var prevDiagnose="";
         //Setter diagnoseteksten når koden er endret
         $scope.setDiagnoseTekst = function () {
             //Hvis koden ikke er endret
             if (diagnosekode === $scope.formDiagnose.diagnosekode) {
                 return;
             }
+
             diagnosekode = $scope.formDiagnose.diagnosekode;
 
             //Setter koden til upper case
@@ -820,8 +822,10 @@ angular.module('nha.registrering', [
                         $scope.diagnosetekstErSatt = false;
                         document.getElementById("diagnosekode-input").focus();
                     }
+                    prevDiagnose = diagnosekode;
                 }, function () {
                     document.getElementById("diagnosekode-input").focus();
+                    $scope.formDiagnose.diagnosekode = prevDiagnose;
                 });
             } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
                 //En diagnose med gitt verdi
@@ -830,9 +834,11 @@ angular.module('nha.registrering', [
 
                 $scope.diagnosetekstErSatt = true;
                 document.getElementById("btn-diagnose").focus();
+                prevDiagnose = diagnosekode;
             } else {
                 //Ingen resultat på gitt kode
                 $scope.diagnosetekstErSatt = false;
+                prevDiagnose = "";
             }
         };
 
