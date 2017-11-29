@@ -31,7 +31,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr data-ng-repeat="lagringsenhet in lagringsenheter" ng-class="{'sokeresultat-selected':$index == selectedRow}" ng-click="setClickedRow($index)" ts-repeat>
+                    <tr data-ng-repeat="lagringsenhet in lagringsenheter" ng-class="{'sokeresultat-selected':$index == selectedRowViewIndex}" ng-click="setClickedRow(lagringsenhet.uuid, $index)" ts-repeat>
                         <td>{{ lagringsenhet.uuid }}</td>
                         <td>{{ lagringsenhet.identifikator }}</td>
                         <td>

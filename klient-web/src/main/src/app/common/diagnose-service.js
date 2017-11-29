@@ -6,9 +6,7 @@ var mod = angular.module('nha.common.diagnose-service', [
 mod.factory('diagnoseService', ['httpService', 'errorService', diagnoseService]);
 
 function diagnoseService(httpService, errorService) {
-
-    var diagnoser;
-
+    
     function getDiagnoserServer(dato, diagnosekode, callback) {
 
         httpService.hentAlle("diagnosekoder?code=" + diagnosekode + "&diagnoseDate=" + (dato || ''), false)
@@ -35,24 +33,7 @@ function diagnoseService(httpService, errorService) {
         return diagMap;
     }
 
-    function getDiagnoser() {
-        if (diagnoser) {
-            return diagnoser;
-        }
-        diagnoser = {};
-
-        httpService.hentAlle("diagnosekoder", false)
-            .success(function (data, status, headers, config) {
-                diagnoser = extractMap(data);
-            }).error(function (data, status, headers, config) {
-            errorService.errorCode(status);
-        });
-
-        return diagnoser;
-    }
-
     return {
-        getDiagnoser: getDiagnoser,
         getDiagnoserServer: getDiagnoserServer
     };
 

@@ -4,8 +4,7 @@ angular.module('nha.home', [
         'nha.common.error-service',
         'nha.common.list-service',
         'nha.common.modal-service',
-        'nha.registrering.registrering-service',
-        'nha.common.diagnose-service'
+        'nha.registrering.registrering-service'
     ])
 
     .config(function config($stateProvider) {
@@ -39,7 +38,7 @@ angular.module('nha.home', [
 
     })
 
-    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, stateService, $modal, $window, $cookies) {
+    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, stateService, $modal, $window, $cookies) {
 
 
         $scope.$on('$stateChangeSuccess', function () {
@@ -86,8 +85,6 @@ angular.module('nha.home', [
 
 
         var antall = 15;
-        //Henter ned diagnosene, dette tar litt tid så gjøres ved oppstart, en gang.
-        diagnoseService.getDiagnoser();
 
         //Tekster i vinduet lastet fra kontroller
         $scope.text = {
@@ -423,26 +420,37 @@ angular.module('nha.home', [
                 }
             }
         };
-        $scope.lagringsenheter = [];
+        $scope.lagringsenheter = {};
         $scope.lagrSok = {};
         $scope.lagrPasientjournaler = [];
 
         $scope.lagrActionSok = function () {
 
             httpService.hentAlle("lagringsenheter/sok?identifikatorSok=" + $scope.lagrSok.lagringsenhet, false)
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.lagringsenheter = data;
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
+                }).error(function (data, status) {
+                    errorService.errorCode(status);
             });
         };
 
-        $scope.selectedRow = null;  // initialize our variable to null
-        $scope.setClickedRow = function (index) {  //function that sets the value of selectedRow to current index
-            if (index === $scope.selectedRow) {
+        $scope.selectedRow = null;// initialize our variable to null
+        $scope.selectedRowIndex = null;
+        $scope.selectedRowViewIndex = null;
+        $scope.setClickedRow = function (item, index) {  //function that sets the value of selectedRow to current item.uuid
+            if (item === $scope.selectedRow) {
                 $scope.selectedRow = null;
+                $scope.selectedRowIndex = null;
+                $scope.selectedRowViewIndex = null;
             } else {
-                $scope.selectedRow = index;
+                for (var i=0;i<$scope.lagringsenheter.length;i++){
+                    if ($scope.lagringsenheter[i].uuid === item){
+                        $scope.selectedRowIndex = i;
+                        break;
+                    }
+                }
+                $scope.selectedRow = item;
+                $scope.selectedRowViewIndex = index;
             }
         };
 
@@ -455,8 +463,8 @@ angular.module('nha.home', [
             });
         };
         $scope.lagrActionHentPasientjournaler = function () {
-            if ($scope.selectedRow > -1) {
-                var valgtLagringsenhet = $scope.lagringsenheter[$scope.selectedRow];
+            if ($scope.selectedRowIndex > -1) {
+                var valgtLagringsenhet = $scope.lagringsenheter[$scope.selectedRowIndex];
                 httpService.hentAlle("lagringsenheter/" + valgtLagringsenhet.identifikator + "/pasientjournaler", false)
                     .success(function (data, status, headers, config) {
                         $scope.lagrPasientjournaler = data;
