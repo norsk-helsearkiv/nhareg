@@ -216,6 +216,15 @@ angular.module('nha.home', [
         });
 
         $scope.sok = {};
+        $scope.actionRensSok = function(){
+            $scope.sok.lagringsenhet = '';
+            $scope.sok.fanearkId = '';
+            $scope.sok.fodselsnummer = '';
+            $scope.sok.navn = '';
+            $scope.sok.fodt = '';
+            $scope.sok.oppdatertAv = '';
+            $scope.sok.sistOppdatert = '';
+        };
         $scope.actionSok = function (sokestring) {
             var txt = $scope.text.sokeresultat;
             var viser = $scope.text.viser;

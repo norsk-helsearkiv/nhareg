@@ -44,13 +44,6 @@
                     <span data-ng-repeat="enhet in formData.lagringsenheter">{{enhet}} </span>
                 </p>
                 <label id="lagringsenhet" class="form-control" data-ng-click="velgLagringsenhet()">{{formData.lagringsenheter.join(', ')}}</label>
-                <!--<input type="text" id="lagringsenhet1" class="form-control" placeholder="Lagringsenhet..." data-ng-model="lagringseneheterModel" ng-enter="keyAddLagringsenhet()" data-ng-show="state !== 1">
-                <ul id="lagringsenhet-liste">
-                    <li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">
-                        <button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
-                        {{ enhet }}
-                    </li>
-                </ul>-->
             </div>
             <hr/>
             <div class="row">

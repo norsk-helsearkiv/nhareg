@@ -42,7 +42,10 @@
                     </div>
                     <div class="span span4">
                         <label>&nbsp;</label>
-                        <button class="form-control btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                        <div>
+                            <button class="btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                            <button class="btn btn-primary" type="submit" data-ng-click="actionRensSok()">{{ 'common.CLEAR_SEARCH' | translate }}</button>
+                        </div>
                     </div>
                 </div>
             </div>

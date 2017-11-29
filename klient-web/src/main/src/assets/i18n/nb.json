@@ -3,6 +3,7 @@
 		"APP_TITTEL": "Registreringstøtte for pasientjournaler",
 		"OK": "Ok",
 		"SEARCH": "Søk",
+        "CLEAR_SEARCH": "Rens søkefelt",
 		"AVBRYT": "Avbryt",
 		"LEGG_TIL" : "Ny",
         "NY_LAGRINGSENHET": "Ny lagringsenhet",
