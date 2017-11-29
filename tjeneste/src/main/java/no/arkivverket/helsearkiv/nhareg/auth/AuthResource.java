@@ -26,6 +26,7 @@ public class AuthResource {
     @Path("logout")
     @PermitAll
     public void logout(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+
         response.setHeader("Cache-Control", "no-cache, no-store");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", new java.util.Date().toString());

@@ -25,9 +25,7 @@ angular.module('nha.registrering', [
         $scope.navHome = function () {
             history.back();
         };
-        $scope.loggUt = function () {
-            $location.path('/login');
-        };
+
 
         //Hotkeylistener for ctrl+n og ctrl+s
         $window.onkeydown = function (event) {

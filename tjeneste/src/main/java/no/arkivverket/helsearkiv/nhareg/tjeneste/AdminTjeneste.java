@@ -195,33 +195,6 @@ public class AdminTjeneste {
     }
 
 
-    @GET
-    @Path("/logout")
-    public void logout(@Context HttpServletRequest request, @Context HttpServletResponse response) throws IOException, ServletException {request.logout();
-      /*  String redirectUrl = "/web/index.html";
-        clearCache((String)request.getSession().getAttribute("username"));
-        response.sendRedirect(redirectUrl);
-*/
-        response.setHeader("Cache-Control", "no-cache, no-store");
-
-        response.setHeader("Pragma", "no-cache");
-
-        response.setHeader("Expires", new java.util.Date().toString());
-        if (request.getSession(false) != null) {
-
-            request.getSession(false).invalidate();// remove session.
-
-        }
-
-//      if (request.getSession() != null) {
-//
-//          request.getSession().invalidate();// remove session.
-//
-//      }
-        request.logout();
-        response.sendRedirect(request.getContextPath());
-    }
-
     public void clearCache(String username){
         try {
 
