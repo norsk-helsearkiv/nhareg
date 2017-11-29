@@ -74,7 +74,8 @@ module.exports = {
       'vendor/angular-cookies/angular-cookies.js',
       'vendor/angular-underscore-module/angular-underscore-module.js',
         'vendor/angular-hotkeys/build/hotkeys.js',
-        'vendor/angular-tablesort/js/angular-tablesort.js'
+        'vendor/angular-tablesort/js/angular-tablesort.js',
+      'vendor/angular-cookies/angular-cookies.js'
 
 
     ],

@@ -39,21 +39,21 @@ angular.module('nha.home', [
 
     })
 
-    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, stateService, $modal, $window) {
+    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, diagnoseService, stateService, $modal, $window, $cookies) {
 
 
-        $scope.$on('$stateChangeSuccess', function() {
+        $scope.$on('$stateChangeSuccess', function () {
             $scope.sokVisible = false;
             $scope.lagringsenheterVisible = false;
             $scope.brukereVisible = false;
             var path = $location.path();
 
-            if(path === '/') {
+            if (path === '/') {
                 $scope.sokVisible = true;
-            } else if(path === '/lagringsenheter') {
+            } else if (path === '/lagringsenheter') {
                 $scope.lagringsenheterVisible = true;
-                
-            } else if (path === '/brukere'){
+
+            } else if (path === '/brukere') {
                 $scope.brukereVisible = true;
             }
         });
@@ -69,19 +69,19 @@ angular.module('nha.home', [
 
         httpService.hentAlle("admin/roller", false).success(function (data) {
             $scope.roller = data;
-        }).error(function(status){
+        }).error(function (status) {
             errorService.errorCode(status);
         });
-        $scope.endrePassord = function(){
+        $scope.endrePassord = function () {
             var modal = modalService.endrePassord();
             modal.result.then(function () {
                 //TODO
             });
         };
-        httpService.hent("admin/resetPassord", false).success(function (data){
-           if (data==='true'){
-               $scope.endrePassord();
-           }
+        httpService.hent("admin/resetPassord", false).success(function (data) {
+            if (data === 'true') {
+                $scope.endrePassord();
+            }
         });
 
 
@@ -216,7 +216,7 @@ angular.module('nha.home', [
         });
 
         $scope.sok = {};
-        $scope.actionRensSok = function(){
+        $scope.actionRensSok = function () {
             $scope.sok.lagringsenhet = '';
             $scope.sok.fanearkId = '';
             $scope.sok.fodselsnummer = '';
@@ -240,7 +240,7 @@ angular.module('nha.home', [
             };
 
             listService.setSok(sok);
-            stateService.sokState=$scope.sok;
+            stateService.sokState = $scope.sok;
 
             httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
                 .success(function (data, status, headers, config) {
@@ -359,7 +359,7 @@ angular.module('nha.home', [
                 .success(function (data, status, headers, config) {
 
                     var tittel = {
-                        "tittel": avlevering.avtale.virksomhet.foretaksnavn+" / "+avlevering.avtale.avtalebeskrivelse+" / "+avlevering.avleveringsbeskrivelse,
+                        "tittel": avlevering.avtale.virksomhet.foretaksnavn + " / " + avlevering.avtale.avtalebeskrivelse + " / " + avlevering.avleveringsbeskrivelse,
                         "underTittel": avlevering.arkivskaper
                     };
                     listService.init(tittel, data);
@@ -381,10 +381,11 @@ angular.module('nha.home', [
                 .success(function (status, headers, config) {
                     $window.location.reload();
 
-                }).error(function () {
-                //alert('logout error');
-                $window.location.reload();
-            });
+                })
+                .error(function () {
+                    delete $cookies["JSESSIONID"];
+                    $window.location.reload();
+                });
         };
 
         $scope.actionLeggTilPasientjournald = function (avlevering) {
@@ -426,26 +427,26 @@ angular.module('nha.home', [
         $scope.lagrSok = {};
         $scope.lagrPasientjournaler = [];
 
-        $scope.lagrActionSok = function(){
+        $scope.lagrActionSok = function () {
 
-            httpService.hentAlle("lagringsenheter/sok?identifikatorSok="+$scope.lagrSok.lagringsenhet, false)
+            httpService.hentAlle("lagringsenheter/sok?identifikatorSok=" + $scope.lagrSok.lagringsenhet, false)
                 .success(function (data, status, headers, config) {
                     $scope.lagringsenheter = data;
                 }).error(function (data, status, headers, config) {
-                    errorService.errorCode(status);
+                errorService.errorCode(status);
             });
         };
 
         $scope.selectedRow = null;  // initialize our variable to null
-        $scope.setClickedRow = function(index){  //function that sets the value of selectedRow to current index
-            if (index === $scope.selectedRow){
+        $scope.setClickedRow = function (index) {  //function that sets the value of selectedRow to current index
+            if (index === $scope.selectedRow) {
                 $scope.selectedRow = null;
-            }else{
+            } else {
                 $scope.selectedRow = index;
             }
         };
-        
-        $scope.lagrActionEndreLagringsenhet = function(lagringsenhet){
+
+        $scope.lagrActionEndreLagringsenhet = function (lagringsenhet) {
             var modal = modalService.endreLagringsenhet('common/modal-service/endre-lagringsenhet-modal.tpl.html',
                 'lagringsenheter/',
                 lagringsenhet);
@@ -453,38 +454,42 @@ angular.module('nha.home', [
                 //TODO
             });
         };
-        $scope.lagrActionHentPasientjournaler = function(){
-            if ($scope.selectedRow>-1){
+        $scope.lagrActionHentPasientjournaler = function () {
+            if ($scope.selectedRow > -1) {
                 var valgtLagringsenhet = $scope.lagringsenheter[$scope.selectedRow];
-                httpService.hentAlle("lagringsenheter/"+valgtLagringsenhet.identifikator+"/pasientjournaler", false)
+                httpService.hentAlle("lagringsenheter/" + valgtLagringsenhet.identifikator + "/pasientjournaler", false)
                     .success(function (data, status, headers, config) {
                         $scope.lagrPasientjournaler = data;
                     }).error(function (data, status, headers, config) {
-                        errorService.errorCode(status);
+                    errorService.errorCode(status);
                 });
             }
         };
 
         $scope.lagrSelection = {
-            allSelected : false
+            allSelected: false
         };
-        $scope.lagrToggleAll = function() {
+        $scope.lagrToggleAll = function () {
             var toggleStatus = !$scope.lagrSelection.allSelected;
-            angular.forEach($scope.lagrPasientjournaler, function(itm){ itm.selected = toggleStatus; });
+            angular.forEach($scope.lagrPasientjournaler, function (itm) {
+                itm.selected = toggleStatus;
+            });
         };
-        $scope.lagrOptionToggled = function(){
-            $scope.lagrSelection.allSelected = $scope.lagrPasientjournaler.every(function(itm){ return itm.selected; });
+        $scope.lagrOptionToggled = function () {
+            $scope.lagrSelection.allSelected = $scope.lagrPasientjournaler.every(function (itm) {
+                return itm.selected;
+            });
         };
 
 
         $scope.lagrFlytt = {
-            lagringsenhet : ""
+            lagringsenhet: ""
         };
 
-        $scope.lagrActionFlytt = function(){
+        $scope.lagrActionFlytt = function () {
             var selectedPasientjournaler = [];
-            angular.forEach($scope.lagrPasientjournaler,function(pasientjournal){
-                if (pasientjournal.selected){
+            angular.forEach($scope.lagrPasientjournaler, function (pasientjournal) {
+                if (pasientjournal.selected) {
                     selectedPasientjournaler.push(pasientjournal.uuid);
                 }
             });
@@ -503,26 +508,28 @@ angular.module('nha.home', [
             );
         };
 
-        $scope.bruker  = {};
+        $scope.bruker = {};
         $scope.brukere = [];
 
         $scope.selectedBrukerRow = null;  // initialize our variable to null
 
-        $scope.velgBruker = function(index){
-            if (index === $scope.selectedBrukerRow){
+        $scope.velgBruker = function (index) {
+            if (index === $scope.selectedBrukerRow) {
                 $scope.selectedBrukerRow = null;
                 $scope.bruker.brukernavn = "";
                 $scope.bruker.rolle = "";
-            }else{
+            } else {
                 var valgtBruker = $scope.brukere[index];
-                var rolleIndex = $scope.roller.map(function(e) { return e.navn; }).indexOf(valgtBruker.rolle.navn);
+                var rolleIndex = $scope.roller.map(function (e) {
+                    return e.navn;
+                }).indexOf(valgtBruker.rolle.navn);
                 $scope.selectedBrukerRow = index;
                 $scope.bruker.brukernavn = valgtBruker.brukernavn;
                 $scope.bruker.rolle = $scope.roller[rolleIndex];
             }
         };
 
-        $scope.hentBrukere = function(){
+        $scope.hentBrukere = function () {
 
             httpService.hentAlle("admin/brukere", false)
                 .success(function (data, status, headers, config) {
@@ -532,18 +539,18 @@ angular.module('nha.home', [
             });
         };
 
-        var resetBruker = function(){
+        var resetBruker = function () {
             $scope.bruker = {};
         };
 
-        var sjekkPassord = function(){
+        var sjekkPassord = function () {
             return $scope.bruker.password === $scope.bruker.passwordConfirm;
         };
 
-        $scope.oppdaterBruker = function(){
-            $scope.error=[];
-            if (!sjekkPassord()){
-                $scope.error['passord']= $filter('translate')('home.brukere.PASSORD_ULIKT');
+        $scope.oppdaterBruker = function () {
+            $scope.error = [];
+            if (!sjekkPassord()) {
+                $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_ULIKT');
                 return;
             }
 
@@ -556,16 +563,16 @@ angular.module('nha.home', [
                 if (status != 400) {
                     errorService.errorCode(status);
                     return;
-                }else{
-                    if (data[0].attributt==='passord'){
-                        $scope.error['passord']= $filter('translate')('home.brukere.PASSORD_FEIL');
+                } else {
+                    if (data[0].attributt === 'passord') {
+                        $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_FEIL');
                     }
                 }
             });
         };
         $scope.error = [];
-        $scope.checkError = function(attributt){
-            var err =  $scope.error[attributt]!==undefined;
+        $scope.checkError = function (attributt) {
+            var err = $scope.error[attributt] !== undefined;
             return err;
         };
 

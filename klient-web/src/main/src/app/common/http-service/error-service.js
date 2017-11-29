@@ -81,9 +81,6 @@ function errorService($modal, $location) {
         },
 
         errorCode: function (status) {
-            if (status === undefined){
-                location.reload();
-            }
             switch(status){
 
                 case 400:
@@ -99,8 +96,7 @@ function errorService($modal, $location) {
                 case 417:
                     return this.expectationFailed();
                 case 403:
-                    location.reload();
-                    break;
+                    return this.unauthorizedError();
                 default:
                     return this.serverError();
             }
