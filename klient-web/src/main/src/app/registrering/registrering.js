@@ -830,41 +830,43 @@ angular.module('nha.registrering', [
             }
 
             //Henter alle diagnoser fra tjenesten
-            var diagnosekoder = diagnoseService.getDiagnoser();
-
-            //Hvis vi har flere matcher på samme id (fra flere kodeverk)
-            if (diagnosekoder[$scope.formDiagnose.diagnosekode] && diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
-                //Viser en modal med en liste over valgene
-                var modal = modalService.velgModal('common/modal-service/liste-modal.tpl.html',
-                    diagnosekoder[$scope.formDiagnose.diagnosekode],
-                    $scope.formDiagnose);
-                modal.result.then(function () {
-                    //Dersom teksten er satt, settes fokus på legg til diagnose    
-                    if ($scope.formDiagnose.diagnosetekst) {
-                        $scope.diagnosetekstErSatt = true;
-                        document.getElementById("btn-diagnose").focus();
-                    } else {
-                        $scope.diagnosetekstErSatt = false;
+            diagnoseService.getDiagnoserServer($scope.formDiagnose.diagnosedato, $scope.formDiagnose.diagnosekode,  function(diagnosekoder){
+                
+                if (diagnosekoder[$scope.formDiagnose.diagnosekode] && diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
+                    //Viser en modal med en liste over valgene
+                    var modal = modalService.velgModal('common/modal-service/liste-modal.tpl.html', diagnosekoder[$scope.formDiagnose.diagnosekode], $scope.formDiagnose);
+                    modal.result.then(function () {
+                        //Dersom teksten er satt, settes fokus på legg til diagnose
+                        if ($scope.formDiagnose.diagnosetekst) {
+                            $scope.diagnosetekstErSatt = true;
+                            document.getElementById("btn-diagnose").focus();
+                        } else {
+                            $scope.diagnosetekstErSatt = false;
+                            document.getElementById("diagnosekode-input").focus();
+                        }
+                        prevDiagnose = diagnosekode;
+                    }, function () {
                         document.getElementById("diagnosekode-input").focus();
-                    }
-                    prevDiagnose = diagnosekode;
-                }, function () {
-                    document.getElementById("diagnosekode-input").focus();
-                    $scope.formDiagnose.diagnosekode = prevDiagnose;
-                });
-            } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
-                //En diagnose med gitt verdi
-                $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
-                $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
+                        $scope.formDiagnose.diagnosekode = prevDiagnose;
+                    });
 
-                $scope.diagnosetekstErSatt = true;
-                document.getElementById("btn-diagnose").focus();
-                prevDiagnose = diagnosekode;
-            } else {
-                //Ingen resultat på gitt kode
-                $scope.diagnosetekstErSatt = false;
-                prevDiagnose = "";
-            }
+
+                } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
+                    //En diagnose med gitt verdi
+                    $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
+                    $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
+
+                    $scope.diagnosetekstErSatt = true;
+                    document.getElementById("btn-diagnose").focus();
+                    prevDiagnose = diagnosekode;
+                } else {
+                    //Ingen resultat på gitt kode
+                    $scope.diagnosetekstErSatt = false;
+                    prevDiagnose = "";
+                }
+            });
+
+            
         };
 
         //Nullstiller diagnose skjema

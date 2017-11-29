@@ -57,6 +57,8 @@ public class DiagnosekodeTjeneste extends EntitetsTjeneste<Diagnosekode, String>
         return diagnosekoder;
     }
 
+
+
     @Override
     protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters,
             CriteriaBuilder criteriaBuilder,
@@ -96,18 +98,17 @@ public class DiagnosekodeTjeneste extends EntitetsTjeneste<Diagnosekode, String>
                 Expression<String> expression = root.get(type.getDeclaredSingularAttribute("codeSystemVersion", String.class));
                 Predicate p = expression.in(kodeverksversjoner);
                 predicates.add(p);
-
             }
         }
         if (queryParameters.containsKey(DISPLAY_NAME_LIKE_QUERY_PARAMETER)) {
             EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
             String displayNameLike = queryParameters.getFirst(DISPLAY_NAME_LIKE_QUERY_PARAMETER);
             Predicate p = criteriaBuilder.like(
-                    criteriaBuilder.lower(
-                            root.get(
-                                    type.getDeclaredSingularAttribute("displayName", String.class)
-                            )
-                    ), "%" + displayNameLike.toLowerCase() + "%");
+                criteriaBuilder.lower(
+                    root.get(
+                        type.getDeclaredSingularAttribute("displayName", String.class)
+                    )
+                ), "%" + displayNameLike.toLowerCase() + "%");
             predicates.add(p);
         }
         return predicates.toArray(new Predicate[]{});
