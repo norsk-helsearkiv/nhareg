@@ -314,7 +314,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         // VALIDERING - Persondata
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondata).valider();
         //Validerer forholdet mellom dataoer
-        valideringsfeil.addAll(DatoValiderer.valider(persondata, konfigparam));
+        DatoValiderer datoValiderer = new DatoValiderer();
+        valideringsfeil.addAll(datoValiderer.valider(persondata, konfigparam));
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondata);
         if (fnrfeil != null) {
             valideringsfeil.add(fnrfeil);
@@ -396,7 +397,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         new Validator<DiagnoseDTO>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
-        List<Valideringsfeil> feil = DatoValiderer.validerDiagnose(diagnoseDTO, pasientjournal, konfigparam);
+        DatoValiderer datoValiderer = new DatoValiderer();
+        List<Valideringsfeil> feil = datoValiderer.validerDiagnose(diagnoseDTO, pasientjournal);
         ArrayList<Valideringsfeil> kodefeil = validerDiagnosekode(diagnoseDTO);
         if (kodefeil != null) {
             feil.addAll(kodefeil);
@@ -444,7 +446,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
 
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<DiagnoseDTO>(DiagnoseDTO.class).valider(diagnoseDTO);
-        List<Valideringsfeil> diagfeil = DatoValiderer.validerDiagnose(diagnoseDTO, pasientjournal, konfigparam);
+        DatoValiderer datoValiderer = new DatoValiderer();
+        List<Valideringsfeil> diagfeil = datoValiderer.validerDiagnose(diagnoseDTO, pasientjournal);
         if (diagfeil.size() > 0) {
             valideringsfeil.addAll(diagfeil);
         }
@@ -538,7 +541,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * @param identifikator
      * @return
      */
+
     public List<PasientjournalSokeresultatDTO> hentPasientjournalerForLagringsenhet(String identifikator) {
+        @SuppressWarnings("JpaQlInspection")
         String select = "SELECT p"
                 + "        FROM Pasientjournal p"
                 + "  INNER JOIN p.lagringsenhet l"

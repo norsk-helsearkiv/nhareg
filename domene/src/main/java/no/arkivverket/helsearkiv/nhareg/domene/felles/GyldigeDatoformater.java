@@ -5,18 +5,21 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * Created by haraldk on 30.04.15.
  */
 public class GyldigeDatoformater {
-    public static Date getDate(String dato) {
-        String[] formater = {
-                "d.M.yyyy", "dd.MM.yyyy","d.MM.yyyy", "dd.M.yyyy",
-                "d,M,yyyy", "dd,MM,yyyy","d,MM,yyyy", "dd,M,yyyy",
-                "d-M-yyyy", "dd-MM-yyyy","d-MM-yyyy", "dd-M-yyyy",
-                "ddMMyyyy", "yyyy"};
-        Date d = null;
+    private static final String[] formater = {
+            "d.M.yyyy", "dd.MM.yyyy","d.MM.yyyy", "dd.M.yyyy",
+            "d,M,yyyy", "dd,MM,yyyy","d,MM,yyyy", "dd,M,yyyy",
+            "d-M-yyyy", "dd-MM-yyyy","d-MM-yyyy", "dd-M-yyyy",
+            "ddMMyyyy", "yyyy"};
+
+    public static Date getDate(final String dato) {
+
+        Date d;
         for (String format : formater) {
 
             SimpleDateFormat df = new SimpleDateFormat(format);

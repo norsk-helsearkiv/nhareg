@@ -23,20 +23,20 @@ import javax.persistence.EntityManager;
  * Benyttes i POST og PUt
  * @author robing
  */
+@SuppressWarnings("Since15")
 public class DatoValiderer {
 
-    private static final List<String> gyldigMors = Arrays.asList("mors", "m", "M");
-    private static final List<String> gyldigUkjent = Arrays.asList("ukjent", "u", "U");
+    private final List<String> gyldigMors = Arrays.asList("mors", "m", "M");
+    private final List<String> gyldigUkjent = Arrays.asList("ukjent", "u", "U");
 
     /**
      * Diagnosedato/år valideres med javax.validation
      *
      * @param diagnose
      * @param pasientjournal
-     * @param konfig
      * @return
      */
-    public static List<Valideringsfeil> validerDiagnose(DiagnoseDTO diagnose, Pasientjournal pasientjournal, KonfigparamTjeneste konfig){
+    public List<Valideringsfeil> validerDiagnose(DiagnoseDTO diagnose, Pasientjournal pasientjournal){
         List<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         Grunnopplysninger gr = pasientjournal.getGrunnopplysninger();
 
@@ -67,7 +67,7 @@ public class DatoValiderer {
     }
 
     //Hjelpemetoder for validering
-    public static ArrayList<Valideringsfeil> valider(PersondataDTO person, KonfigparamTjeneste konfig) throws ParseException {
+    public ArrayList<Valideringsfeil> valider(PersondataDTO person, KonfigparamTjeneste konfig) throws ParseException {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
 
         if(person == null) {
@@ -117,14 +117,14 @@ public class DatoValiderer {
 
         return feil;
     }
-    private static void leggTilFeil(List<Valideringsfeil> feilliste, List<Valideringsfeil> nyeFeil){
+    private void leggTilFeil(List<Valideringsfeil> feilliste, List<Valideringsfeil> nyeFeil){
         if (!nyeFeil.isEmpty()){
             feilliste.addAll(nyeFeil);
         }
     }
 
     //skjema 01
-    private static ArrayList<Valideringsfeil> fnumSjekk(PersondataDTO person, Date lowLim, Date maxLim) {
+    private ArrayList<Valideringsfeil> fnumSjekk(PersondataDTO person, Date lowLim, Date maxLim) {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         String fnr = person.getFodselsnummer();
         if (gyldigUkjent.contains(person.getFodt())){
@@ -152,7 +152,7 @@ public class DatoValiderer {
     }
 
     //skjema 02a
-    private static ArrayList<Valideringsfeil> pasientjournaldatoerutenkjentfogmors(PersondataDTO person, Date lowLim, Date maxLim){
+    private ArrayList<Valideringsfeil> pasientjournaldatoerutenkjentfogmors(PersondataDTO person, Date lowLim, Date maxLim){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         if (gyldigMors.contains(person.getDod())){
 
@@ -174,7 +174,7 @@ public class DatoValiderer {
         return feil;
     }
     //skjema 02b
-    private static List<Valideringsfeil> pasientjournaldatokjentfdatoukjentdod(PersondataDTO person, Date maxAge) {
+    private List<Valideringsfeil> pasientjournaldatokjentfdatoukjentdod(PersondataDTO person, Date maxAge) {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         if (sjekk(person.getDod())||gyldigMors.contains(person.getDod())){
             List<Valideringsfeil> f = sjekkKontaktdatoFodt(person);
@@ -204,7 +204,7 @@ public class DatoValiderer {
     }
 
     //skjema 02c
-    private static List<Valideringsfeil> pasientjournaldatokjentmorsukjentfodt(PersondataDTO person, Date lowLim, Date maxLim){
+    private List<Valideringsfeil> pasientjournaldatokjentmorsukjentfodt(PersondataDTO person, Date lowLim, Date maxLim){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         Date dod = getDate(person.getDod());
         //TODO også her sammenlign på år?
@@ -221,7 +221,7 @@ public class DatoValiderer {
     }
 
     //skjema 02d
-    private static List<Valideringsfeil> pasientjournaldatokjentfodtogmors(PersondataDTO person, Date lowLim, Date maxLim){
+    private List<Valideringsfeil> pasientjournaldatokjentfodtogmors(PersondataDTO person, Date lowLim, Date maxLim){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         Date dod = getDate(person.getDod());
         //TODO også her sammenligne på ÅR?
@@ -244,7 +244,7 @@ public class DatoValiderer {
         return feil;
     }
 
-    private static List<Valideringsfeil> sjekkKontaktdatoFodtogDod(PersondataDTO person){
+    private List<Valideringsfeil> sjekkKontaktdatoFodtogDod(PersondataDTO person){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
 
         //første og siste kontaktdato registrert
@@ -290,7 +290,7 @@ public class DatoValiderer {
      * @param person
      * @return
      */
-    private static List<Valideringsfeil> sjekkKontaktdatoFodt(PersondataDTO person){
+    private List<Valideringsfeil> sjekkKontaktdatoFodt(PersondataDTO person){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         //første og siste kontaktdato registrert
         if (sjekk(person.getfKontakt()) && sjekk(person.getsKontakt())) {
@@ -325,7 +325,7 @@ public class DatoValiderer {
      * @param person
      * @return
      */
-    private static List<Valideringsfeil> sjekkKontaktdatoDod(PersondataDTO person){
+    private List<Valideringsfeil> sjekkKontaktdatoDod(PersondataDTO person){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         Date dod = getDate(person.getDod());
         //første og siste kontaktdato registrert
@@ -356,14 +356,14 @@ public class DatoValiderer {
         return feil;
     }
 
-    public static boolean isOnlyYearPresent(String dato1, String dato2){
+    public boolean isOnlyYearPresent(String dato1, String dato2){
         if (isYearOnly(dato1)||isYearOnly(dato2)){
             return true;
         }
         return false;
     }
 
-    public static int getYear(String dato){
+    public int getYear(String dato){
         Calendar c = Calendar.getInstance();
         c.setTime(GyldigeDatoformater.getDate(dato));
         return c.get(Calendar.YEAR);
@@ -382,7 +382,7 @@ public class DatoValiderer {
      * @param dato2
      * @return
      */
-    public static DateCompareResult compareDateString(String dato1, String dato2){
+    public DateCompareResult compareDateString(String dato1, String dato2){
         if (isOnlyYearPresent(dato1, dato2)){
             int y1 = getYear(dato1);
             int y2 = getYear(dato2);
@@ -407,13 +407,14 @@ public class DatoValiderer {
         return null;
     }
 
-    static enum DateCompareResult{
+    enum DateCompareResult{
         BEFORE,
         EQUAL,
         AFTER
     }
 
-    public static Date getDate(String dato){
+    private Date getDate(String dato){
+
         return GyldigeDatoformater.getDate(dato);
     }
 
@@ -422,7 +423,7 @@ public class DatoValiderer {
      * @param dato
      * @return
      */
-    public static boolean isYearOnly(String dato){
+    private boolean isYearOnly(String dato){
         try {
             Integer.parseInt(dato);
             return dato.length() == 4;
@@ -432,7 +433,7 @@ public class DatoValiderer {
     }
 
     
-    private static boolean sjekk(String s) {
+    private boolean sjekk(String s) {
         if(s == null || s.isEmpty()
                 || s.toLowerCase().equals("mors") || s.toLowerCase().equals("m")
                 || s.toLowerCase().equals("ukjent") || s.toLowerCase().equals("u"))  {
@@ -442,7 +443,7 @@ public class DatoValiderer {
         return getDate(s) != null;
     }
 
-    private static boolean sjekkMorsUkjent(String s, String toCheck){
+    private boolean sjekkMorsUkjent(String s, String toCheck){
         if(s == null || s.isEmpty()) {
             return false;
         }

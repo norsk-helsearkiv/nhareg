@@ -42,6 +42,8 @@ public class AdminTjeneste {
 
     @EJB
     private UserService userService;
+    @EJB
+    private KonfigparamTjeneste konfigparam;
     @Resource
     private SessionContext sessionContext;
 
@@ -52,6 +54,14 @@ public class AdminTjeneste {
     public String getRolle(){
         final String username = sessionContext.getCallerPrincipal().getName();
         return userService.getRolle(username);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/century")
+    public String getCentury(){
+        return konfigparam.getVerdi(KonfigparamTjeneste.KONFIG_AARHUNDRE);
     }
 
     @GET

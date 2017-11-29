@@ -59,15 +59,17 @@ angular.module('nha.home', [
         });
 
 
-        httpService.brukerRolle().success(function (data, status, headers, config) {
+        httpService.brukerRolle().success(function (data) {
             $rootScope.userrole = data;
 
-        }).error(function () {
+        }).error(function (status) {
             errorService.errorCode(status);
         });
-        httpService.hentAlle("admin/roller", false).success(function (data, status, headers, config) {
+
+
+        httpService.hentAlle("admin/roller", false).success(function (data) {
             $scope.roller = data;
-        }).error(function(){
+        }).error(function(status){
             errorService.errorCode(status);
         });
         $scope.endrePassord = function(){
@@ -195,6 +197,7 @@ angular.module('nha.home', [
                 $scope.text.tooltip.laast = newval;
             }
         );
+
 
         $scope.sok = stateService.sokState;
 

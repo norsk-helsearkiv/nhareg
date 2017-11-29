@@ -252,6 +252,13 @@ angular.module('nha.registrering', [
             }
         );
 
+        httpService.hentAlle("admin/century", false).success(function (data) {
+            $scope.century = data;
+        }).error(function(status){
+            errorService.errorCode(status);
+        });
+
+
         $scope.formData = {
             lagringsenheter: []
         };
@@ -279,7 +286,7 @@ angular.module('nha.registrering', [
             }
 
             httpService.sistBrukteLagringsenhet()
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     if ($scope.formData.lagringsenheter.length===0){
                         $scope.formData.lagringsenheter.push(data);
                     }
@@ -294,10 +301,7 @@ angular.module('nha.registrering', [
                         var formdata = $scope.formData;
                         //TODO finish this!!
                     });
-                }).error(function () {
-            });
-
-
+                });
         };
 
         //Setter verdier fra registrering-service
@@ -538,26 +542,6 @@ angular.module('nha.registrering', [
             hoppOver = false;
         };
 
-        var getDagEllerAar = function (verdi) {
-            if (verdi === undefined) {
-                return {
-                    dato: undefined,
-                    aar: undefined
-                };
-            }
-            if (verdi.indexOf(".") > -1) {
-                return {
-                    dato: verdi,
-                    aar: undefined
-                };
-            } else {
-                return {
-                    dato: undefined,
-                    aar: verdi
-                };
-            }
-        };
-
         function compare(a, b) {
             if (a.indeks < b.indeks) {
                 return -1;
@@ -660,6 +644,45 @@ angular.module('nha.registrering', [
                 }
             });
             $scope.feilmeldinger.sort(compare);
+        };
+
+        $scope.injectCenturiesPJ = function(event){
+
+            $scope.formData.fodt = $scope.injectCentury($scope.formData.fodt);
+            $scope.formData.dod = $scope.injectCentury($scope.formData.dod);
+            $scope.formData.fKontakt = $scope.injectCentury($scope.formData.fKontakt);
+            $scope.formData.sKontakt = $scope.injectCentury($scope.formData.sKontakt);
+        };
+
+
+        $scope.injectCentury = function(date){
+            if (date === undefined){
+                return;
+            }
+            //case 1 ddMMyy - legg til århundre res: ddMMyyyy
+            var regexp1 = new RegExp("^[0-9]{6}$");
+            if (regexp1.test(date)){
+                return insertAt(date);
+            }
+            //case 2 d.M.yy - legg til århundre res: d.M.yyyy
+            var regexp2 = new RegExp("^\\d{1}[.\\,\\-]\\d{1}[.\\,\\-]\\d{2}$");
+            if (regexp2.test(date)){
+                return insertAt(date);
+            }
+            //case 4 dd.MM.yy - legg til århundre res: dd.MM.yyyy
+            var regexp4 = new RegExp("^\\d{2}[.\\,\\-]\\d{2}[.\\,\\-]\\d{2}$");
+            if (regexp4.test(date)){
+                return insertAt(date);
+            }
+            //case 3 yy - legg til århundre res: yyyy
+            var regexp3 = new RegExp("^[0-9]{2}$");
+            if (regexp3.test(date)){
+                return insertAt(date);
+            }
+            return date;
+        };
+        var insertAt = function(date){
+            return [date.slice(0, date.length-2), $scope.century, date.slice(date.length-2, date.length)].join('');
         };
 
         $scope.sjekkDiagnoseFeltTomt = function(caller){
@@ -780,6 +803,8 @@ angular.module('nha.registrering', [
         };
 
         $scope.setDiagnoseDato = function(){
+            $scope.formDiagnose.diagnosedato = $scope.injectCentury($scope.formDiagnose.diagnosedato);
+
             var dato = $scope.formDiagnose.diagnosedato;
             if (dato){
                 $scope.diagnoseDatoErSatt = true;
@@ -953,6 +978,8 @@ angular.module('nha.registrering', [
         };
 
         $scope.update = function (diagnose) {
+            //TODO
+            diagnose.diagnosedato = $scope.injectCentury(diagnose.diagnosedato);
             $scope.feilmeldinger = [];
             httpService.oppdater("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", diagnose)
                 .success(function (data, status, headers, config) {

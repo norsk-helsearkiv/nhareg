@@ -95,22 +95,22 @@
                 <!-- Født dato -->
                 <div class="span span4">
                     <label id="fodt" data-ng-class="{error: error['fodt'] !== undefined }">Født</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fodt" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fodt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
                 </div>
                 <!-- Død dato -->
                 <div class="span span4">
                     <label id="dod" data-ng-class="{error: error['dod'] !== undefined }">Død</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
                 </div>
                 <!-- første kontakt dato -->
                 <div class="span span4">
                     <label id="fKontakt" data-ng-class="{error: error['fKontakt'] !== undefined }">Første kontakt</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
                 </div>
                 <!-- Siste kontakt dato -->
                 <div class="span span4">
                     <label id="sKontakt" data-ng-class="{error: error['sKontakt'] !== undefined }">Siste kontakt</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
                 </div>
             </div>
             <hr/>
