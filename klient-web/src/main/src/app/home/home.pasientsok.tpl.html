@@ -1,4 +1,7 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <!--<div ng-controller="HomePasientsokCtrl">
+        {{hellow}}
+    </div>-->
     <h2>{{ text.pasientsok }}</h2>
 
     <form class="input-group">
@@ -36,7 +39,10 @@
                 </div>
                 <div class="span span4">
                     <label>&nbsp;</label>
-                    <button class="form-control btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                    <div>
+                        <button class="btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                        <button class="btn btn-primary" type="submit" data-ng-click="actionRensSok()">{{ 'common.CLEAR_SEARCH' | translate }}</button>
+                    </div>
                 </div>
             </div>
         </div>

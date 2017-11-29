@@ -5,18 +5,18 @@
 <div class="modal-body">
     <form>
         <div class="form-group">
-            <label>{{ 'common.table.ID' | translate }}</label>
+            <label>{{ 'common.table.AVLEVERING_ID' | translate }}</label>
             <input type="text" class="form-control" ng-model="formData.avleveringsidentifikator" data-ng-show="!erEndring">
             <p data-ng-show="erEndring">{{formData.avleveringsidentifikator}}</p>
             <label class="label-error" data-ng-show="formData.error.avleveringsidentifikator">{{formData.error.avleveringsidentifikator}}</label>
         </div>
         <div class="form-group">
-            <label>{{ 'common.table.ARKIVSKAPER' | translate }}</label>
+            <label>{{ 'common.table.AVLEVERING_SKAPER' | translate }}</label>
             <input type="text" class="form-control" ng-model="formData.arkivskaper">
             <label class="label-error" data-ng-show="formData.error.arkivskaper">{{formData.error.arkivskaper}}</label>
         </div>
         <div class="form-group">
-            <label>{{ 'common.table.BESKRIVELSE' | translate }}</label>
+            <label>{{ 'common.table.AVLEVERING_BESKRIVELSE' | translate }}</label>
             <input type="text" class="form-control" ng-model="formData.avleveringsbeskrivelse">
             <label class="label-error" data-ng-show="formData.error.avleveringsbeskrivelse">{{formData.error.avleveringsbeskrivelse}}</label>
         </div>

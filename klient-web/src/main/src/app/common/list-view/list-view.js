@@ -1,5 +1,6 @@
 angular.module('nha.common.list-view', [
         'nha.common.list-service',
+        'nha.common.pager-service',
         'nha.common.http-service',
         'nha.common.error-service',
         'nha.common.modal-service',
@@ -19,7 +20,7 @@ angular.module('nha.common.list-view', [
         });
     })
 
-    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registreringService, stateService) {
+    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registreringService, stateService, pagerService) {
         var antall = 15;
         $scope.$watch(
             function () {
@@ -74,15 +75,7 @@ angular.module('nha.common.list-view', [
         $scope.tittel = listService.getTittel();
         setTittel($scope.data);
 
-        $scope.aktivSide = 1;
-        var sider = 0;
-        $scope.antallSider = function () {
-            if ($scope.data.total <= $scope.data.antall) {
-                return new Array(1);
-            }
-            sider = Math.ceil($scope.data.total / $scope.data.antall);
-            return new Array(Math.ceil(sider));
-        };
+
         $scope.lagringsenhetAsc = false;
         $scope.fodselsnummerAsc = false;
         $scope.fanearkidAsc = false;
@@ -104,35 +97,28 @@ angular.module('nha.common.list-view', [
             $scope.sortDirection = direction;
             $scope.sortColumn = column;
 
-            httpService.hentAlle("pasientjournaler?side=" + $scope.aktivSide + "&antall=" + antall + listService.getQuery() + "&orderBy=" + $scope.sortColumn + "&sortDirection=" + $scope.sortDirection)
+            httpService.hentAlle("pasientjournaler?side=" + $scope.pager.currentPage + "&antall=" + antall + listService.getQuery() + "&orderBy=" + $scope.sortColumn + "&sortDirection=" + $scope.sortDirection)
                 .success(function (data, status, headers, config) {
 
                     setTittel(data);
                     $scope.data = data;
+                    $scope.updatePager($scope.pager.currentPage);
 
                 }).error(function (data, status, headers, config) {
                 errorService.errorCode(status);
             });
         };
-        /*
-        $scope.actionSok = function () {
-            var txt = $scope.tekster.sokeresultat;
-            var viser = $scope.tekster.viser;
-            listService.setSok($scope.sokInput);
-            httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
-                .success(function (data, status, headers, config) {
 
-                    setTittel(data);
-                    $scope.tittel.tittel = $scope.tekster.pasientsok;
-
-                    $scope.data = data;
-                    $scope.aktivSide = 1;
-
-                    $scope.antallSider();
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
-        };*/
+        $scope.actionRensSok = function(){
+            $scope.sok.lagringsenhet = '';
+            $scope.sok.fanearkId = '';
+            $scope.sok.fodselsnummer = '';
+            $scope.sok.navn = '';
+            $scope.sok.fodt = '';
+            $scope.sok.oppdatertAv = '';
+            $scope.sok.sistOppdatert = '';
+        };
+        
         $scope.actionSok = function (sokestring) {
             var txt = $scope.tekster.sokeresultat;
             var viser = $scope.tekster.viser;
@@ -153,16 +139,32 @@ angular.module('nha.common.list-view', [
                     $scope.tittel.tittel = $scope.tekster.pasientsok;
 
                     $scope.data = data;
-                    $scope.aktivSide = 1;
 
-                    $scope.antallSider();
+
+                    $scope.updatePager(1);
+
 
                 }).error(function (data, status, headers, config) {
                 errorService.errorCode(status);
             });
         };
 
-        $scope.navPage = function (index) {
+
+
+        $scope.updatePager = function(page){
+            $scope.pager = pagerService.getPager($scope.data.total, page, antall);
+        };
+
+        $scope.updatePager(1);
+
+        $scope.setPage = function(page) {
+            if (page < 1 || page > $scope.pager.totalPages) {
+                return;
+            }
+
+            // get pager object from service
+            $scope.updatePager(page);
+
             var ordering = "";
             if ($scope.sortColumn) {
                 ordering += "&orderBy=" + $scope.sortColumn;
@@ -171,27 +173,15 @@ angular.module('nha.common.list-view', [
                 ordering += "&sortDirection=" + $scope.sortDirection;
             }
 
-            httpService.hentAlle("pasientjournaler?side=" + index + "&antall=" + antall + listService.getQuery() + ordering)
+            httpService.hentAlle("pasientjournaler?side=" + page + "&antall=" + $scope.pager.pageSize + listService.getQuery() + ordering)
                 .success(function (data, status, headers, config) {
-
                     setTittel(data);
-
                     $scope.data = data;
-                    $scope.aktivSide = index;
 
                 }).error(function (data, status, headers, config) {
                 errorService.errorCode(status);
             });
         };
-
-        $scope.$watch(
-            function () {
-                return sider;
-            },
-            function (newval) {
-                document.getElementById("paging-ctrl").style.width = (36 * newval) + 'px';
-            }
-        );
 
         $scope.actionFjernPasientjournal = function (pasientjournal) {
             modalService.deleteModal($scope.tekster.pasientjournal, pasientjournal.navn + " (" + pasientjournal.fodselsnummer + ") ", function () {

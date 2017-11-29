@@ -59,15 +59,17 @@ angular.module('nha.home', [
         });
 
 
-        httpService.brukerRolle().success(function (data, status, headers, config) {
+        httpService.brukerRolle().success(function (data) {
             $rootScope.userrole = data;
 
-        }).error(function () {
+        }).error(function (status) {
             errorService.errorCode(status);
         });
-        httpService.hentAlle("admin/roller", false).success(function (data, status, headers, config) {
+
+
+        httpService.hentAlle("admin/roller", false).success(function (data) {
             $scope.roller = data;
-        }).error(function(){
+        }).error(function(status){
             errorService.errorCode(status);
         });
         $scope.endrePassord = function(){
@@ -196,6 +198,7 @@ angular.module('nha.home', [
             }
         );
 
+
         $scope.sok = stateService.sokState;
 
         httpService.hentAlle("avtaler", false)
@@ -213,6 +216,15 @@ angular.module('nha.home', [
         });
 
         $scope.sok = {};
+        $scope.actionRensSok = function(){
+            $scope.sok.lagringsenhet = '';
+            $scope.sok.fanearkId = '';
+            $scope.sok.fodselsnummer = '';
+            $scope.sok.navn = '';
+            $scope.sok.fodt = '';
+            $scope.sok.oppdatertAv = '';
+            $scope.sok.sistOppdatert = '';
+        };
         $scope.actionSok = function (sokestring) {
             var txt = $scope.text.sokeresultat;
             var viser = $scope.text.viser;
@@ -347,7 +359,7 @@ angular.module('nha.home', [
                 .success(function (data, status, headers, config) {
 
                     var tittel = {
-                        "tittel": avlevering.avleveringsbeskrivelse,
+                        "tittel": avlevering.avtale.virksomhet.foretaksnavn+" / "+avlevering.avtale.avtalebeskrivelse+" / "+avlevering.avleveringsbeskrivelse,
                         "underTittel": avlevering.arkivskaper
                     };
                     listService.init(tittel, data);

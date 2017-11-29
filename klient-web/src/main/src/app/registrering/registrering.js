@@ -252,6 +252,13 @@ angular.module('nha.registrering', [
             }
         );
 
+        httpService.hentAlle("admin/century", false).success(function (data) {
+            $scope.century = data;
+        }).error(function(status){
+            errorService.errorCode(status);
+        });
+
+
         $scope.formData = {
             lagringsenheter: []
         };
@@ -279,7 +286,7 @@ angular.module('nha.registrering', [
             }
 
             httpService.sistBrukteLagringsenhet()
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     if ($scope.formData.lagringsenheter.length===0){
                         $scope.formData.lagringsenheter.push(data);
                     }
@@ -294,10 +301,7 @@ angular.module('nha.registrering', [
                         var formdata = $scope.formData;
                         //TODO finish this!!
                     });
-                }).error(function () {
-            });
-
-
+                });
         };
 
         //Setter verdier fra registrering-service
@@ -351,7 +355,7 @@ angular.module('nha.registrering', [
             } else
             //Oppdater
             if ($scope.state === 2) {
-                document.getElementById("lagringsenhet").focus();
+                document.getElementById("diagnoseDato").focus();
             }
         };
         setFocus();
@@ -386,6 +390,8 @@ angular.module('nha.registrering', [
         var fodselsnummer;
         $scope.setFnr = function () {
             if ($scope.formData && $scope.formData.fodselsnummer) {
+
+
                 fodselsnummer = $scope.formData.fodselsnummer;
             }
         };
@@ -444,6 +450,31 @@ angular.module('nha.registrering', [
         };
 
         $scope.populerFelt = function () {
+            if ($scope.formData.fodselsnummer !== undefined && $scope.formData.fodselsnummer !=='') {
+               var fnrs = $scope.formData.fodselsnummer.replace(/\D/g, '');
+                fnrs = fnrs.substr(0, 11);
+                $scope.formData.fodselsnummer = fnrs;
+            }else{
+                return;
+            }
+
+
+            httpService.hent("pasientjournaler/valider/" + $scope.formData.fodselsnummer)
+                .success(function (data, status, headers, config) {
+                    $scope.error = {};
+                    $scope.feilmeldinger = [];
+                    $scope.validerOgTrekkUt();
+                })
+                .error(function (data, status, headers, config) {
+                    if (status === 400) {
+                        setFeilmeldinger(data, status);
+                    } else {
+                        errorService.errorCode(status);
+                    }
+                });
+        };
+
+        $scope.validerOgTrekkUt = function(){
             if (($scope.formData.fodselsnummer === undefined || fodselsnummer === $scope.formData.fodselsnummer || $scope.formData.fodselsnummer.length != 11) && $scope.formData.fodt !== '') {
                 return;
             }
@@ -497,7 +528,11 @@ angular.module('nha.registrering', [
         $scope.setFocusEtterNavn = function () {
             if ($scope.formData !== undefined) {
                 if ($scope.formData.navn !== undefined && $scope.formData.navn.length > 0) {
-                    $scope.formData.navn = $scope.formData.navn.substring(0, 1).toUpperCase() + $scope.formData.navn.substring(1);
+                    var str = $scope.formData.navn;
+                    $scope.formData.navn = str.replace(/\w\S*/g,
+                        function(txt){
+                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                        });
                 }
             }
 
@@ -505,26 +540,6 @@ angular.module('nha.registrering', [
                 document.getElementById("ddato").focus();
             }
             hoppOver = false;
-        };
-
-        var getDagEllerAar = function (verdi) {
-            if (verdi === undefined) {
-                return {
-                    dato: undefined,
-                    aar: undefined
-                };
-            }
-            if (verdi.indexOf(".") > -1) {
-                return {
-                    dato: verdi,
-                    aar: undefined
-                };
-            } else {
-                return {
-                    dato: undefined,
-                    aar: verdi
-                };
-            }
         };
 
         function compare(a, b) {
@@ -629,6 +644,45 @@ angular.module('nha.registrering', [
                 }
             });
             $scope.feilmeldinger.sort(compare);
+        };
+
+        $scope.injectCenturiesPJ = function(event){
+
+            $scope.formData.fodt = $scope.injectCentury($scope.formData.fodt);
+            $scope.formData.dod = $scope.injectCentury($scope.formData.dod);
+            $scope.formData.fKontakt = $scope.injectCentury($scope.formData.fKontakt);
+            $scope.formData.sKontakt = $scope.injectCentury($scope.formData.sKontakt);
+        };
+
+
+        $scope.injectCentury = function(date){
+            if (date === undefined){
+                return;
+            }
+            //case 1 ddMMyy - legg til århundre res: ddMMyyyy
+            var regexp1 = new RegExp("^[0-9]{6}$");
+            if (regexp1.test(date)){
+                return insertAt(date);
+            }
+            //case 2 d.M.yy - legg til århundre res: d.M.yyyy
+            var regexp2 = new RegExp("^\\d{1}[.\\,\\-]\\d{1}[.\\,\\-]\\d{2}$");
+            if (regexp2.test(date)){
+                return insertAt(date);
+            }
+            //case 4 dd.MM.yy - legg til århundre res: dd.MM.yyyy
+            var regexp4 = new RegExp("^\\d{2}[.\\,\\-]\\d{2}[.\\,\\-]\\d{2}$");
+            if (regexp4.test(date)){
+                return insertAt(date);
+            }
+            //case 3 yy - legg til århundre res: yyyy
+            var regexp3 = new RegExp("^[0-9]{2}$");
+            if (regexp3.test(date)){
+                return insertAt(date);
+            }
+            return date;
+        };
+        var insertAt = function(date){
+            return [date.slice(0, date.length-2), $scope.century, date.slice(date.length-2, date.length)].join('');
         };
 
         $scope.sjekkDiagnoseFeltTomt = function(caller){
@@ -745,10 +799,12 @@ angular.module('nha.registrering', [
             if ($scope.formDiagnose === null || $scope.formDiagnose.diagnosekode === null) {
                 return;
             }
-            diagnose = $scope.formDiagnose.diagnosekode;
+            diagnosekode = $scope.formDiagnose.diagnosekode;
         };
 
         $scope.setDiagnoseDato = function(){
+            $scope.formDiagnose.diagnosedato = $scope.injectCentury($scope.formDiagnose.diagnosedato);
+
             var dato = $scope.formDiagnose.diagnosedato;
             if (dato){
                 $scope.diagnoseDatoErSatt = true;
@@ -758,12 +814,14 @@ angular.module('nha.registrering', [
             }
         };
 
+        var prevDiagnose="";
         //Setter diagnoseteksten når koden er endret
         $scope.setDiagnoseTekst = function () {
             //Hvis koden ikke er endret
             if (diagnosekode === $scope.formDiagnose.diagnosekode) {
                 return;
             }
+
             diagnosekode = $scope.formDiagnose.diagnosekode;
 
             //Setter koden til upper case
@@ -772,37 +830,43 @@ angular.module('nha.registrering', [
             }
 
             //Henter alle diagnoser fra tjenesten
-            var diagnosekoder = diagnoseService.getDiagnoser();
-
-            //Hvis vi har flere matcher på samme id (fra flere kodeverk)
-            if (diagnosekoder[$scope.formDiagnose.diagnosekode] && diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
-                //Viser en modal med en liste over valgene
-                var modal = modalService.velgModal('common/modal-service/liste-modal.tpl.html',
-                    diagnosekoder[$scope.formDiagnose.diagnosekode],
-                    $scope.formDiagnose);
-                modal.result.then(function () {
-                    //Dersom teksten er satt, settes fokus på legg til diagnose    
-                    if ($scope.formDiagnose.diagnosetekst) {
-                        $scope.diagnosetekstErSatt = true;
-                        document.getElementById("btn-diagnose").focus();
-                    } else {
-                        $scope.diagnosetekstErSatt = false;
+            diagnoseService.getDiagnoserServer($scope.formDiagnose.diagnosedato, $scope.formDiagnose.diagnosekode,  function(diagnosekoder){
+                
+                if (diagnosekoder[$scope.formDiagnose.diagnosekode] && diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
+                    //Viser en modal med en liste over valgene
+                    var modal = modalService.velgModal('common/modal-service/liste-modal.tpl.html', diagnosekoder[$scope.formDiagnose.diagnosekode], $scope.formDiagnose);
+                    modal.result.then(function () {
+                        //Dersom teksten er satt, settes fokus på legg til diagnose
+                        if ($scope.formDiagnose.diagnosetekst) {
+                            $scope.diagnosetekstErSatt = true;
+                            document.getElementById("btn-diagnose").focus();
+                        } else {
+                            $scope.diagnosetekstErSatt = false;
+                            document.getElementById("diagnosekode-input").focus();
+                        }
+                        prevDiagnose = diagnosekode;
+                    }, function () {
                         document.getElementById("diagnosekode-input").focus();
-                    }
-                }, function () {
-                    document.getElementById("diagnosekode-input").focus();
-                });
-            } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
-                //En diagnose med gitt verdi
-                $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
-                $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
+                        $scope.formDiagnose.diagnosekode = prevDiagnose;
+                    });
 
-                $scope.diagnosetekstErSatt = true;
-                document.getElementById("btn-diagnose").focus();
-            } else {
-                //Ingen resultat på gitt kode
-                $scope.diagnosetekstErSatt = false;
-            }
+
+                } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
+                    //En diagnose med gitt verdi
+                    $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
+                    $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
+
+                    $scope.diagnosetekstErSatt = true;
+                    document.getElementById("btn-diagnose").focus();
+                    prevDiagnose = diagnosekode;
+                } else {
+                    //Ingen resultat på gitt kode
+                    $scope.diagnosetekstErSatt = false;
+                    prevDiagnose = "";
+                }
+            });
+
+            
         };
 
         //Nullstiller diagnose skjema
@@ -916,6 +980,8 @@ angular.module('nha.registrering', [
         };
 
         $scope.update = function (diagnose) {
+            //TODO
+            diagnose.diagnosedato = $scope.injectCentury(diagnose.diagnosedato);
             $scope.feilmeldinger = [];
             httpService.oppdater("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", diagnose)
                 .success(function (data, status, headers, config) {

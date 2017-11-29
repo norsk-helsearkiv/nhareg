@@ -42,7 +42,10 @@
                     </div>
                     <div class="span span4">
                         <label>&nbsp;</label>
-                        <button class="form-control btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                        <div>
+                            <button class="btn btn-primary" type="submit" data-ng-click="actionSok()">{{ 'common.SEARCH' | translate }}</button>
+                            <button class="btn btn-primary" type="submit" data-ng-click="actionRensSok()">{{ 'common.CLEAR_SEARCH' | translate }}</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,15 +97,32 @@
             </table>
         </div>
         <button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
-        <div class="paging-holder">
-            <div id="paging-ctrl">
-                <ul class="pagination">
-                    <li data-ng-repeat="i in antallSider() track by $index" data-ng-class="{active : aktivSide === $index +1}">
-                        <a href="" data-ng-click="navPage($index+1)">{{$index+1}}</a>
-                    </li>
-                </ul>
+        <div class="container">
+            <div class="row">
+                <div ng-view class="col-xs-2"></div>
+                    <div ng-view class="col-xs-8">
+                        <ul class="pagination">
+                            <li data-ng-class="{disabled:pager.currentPage === 1}">
+                                <a data-ng-click="setPage(1)">Første</a>
+                            </li>
+                            <li data-ng-class="{disabled:pager.currentPage === 1}">
+                                <a data-ng-click="setPage(pager.currentPage - 1)">Forrige</a>
+                            </li>
+                            <li data-ng-repeat="page in pager.pages" data-ng-class="{active:pager.currentPage === page}">
+                                <a href="" data-ng-click="setPage(page)">{{page}}</a>
+                            </li>
+                            <li data-ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a data-ng-click="setPage(pager.currentPage + 1)">Neste</a>
+                            </li>
+                            <li data-ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                                <a data-ng-click="setPage(pager.totalPages)">Siste</a>
+                            </li>
+                        </ul>
+                    </div>
+                <div ng-view class="col-xs-2"></div>
             </div>
         </div>
-
+        <br>
+        <br>
     </div>
 </div>

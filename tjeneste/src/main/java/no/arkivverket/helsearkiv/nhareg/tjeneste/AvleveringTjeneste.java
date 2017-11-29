@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
-import no.arkivverket.helsearkiv.nhareg.auth.UserServiceBean;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -12,8 +11,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.logging.Log;
@@ -33,7 +30,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.FileNotFoundException;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.*;
 
@@ -209,6 +210,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         final String username = sessionContext.getCallerPrincipal().getName();
         userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
 
+
         return Response.ok().entity(dto).build();
     }
 
@@ -224,7 +226,19 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
             p.getDiagnose().size();
         }
 
-        ResponseBuilder response = Response.ok(avlevering);
+        StringWriter sw;
+        try {
+            Marshaller marshaller  = JAXBContext.newInstance(avlevering.getClass()).createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            sw = new StringWriter();
+            marshaller.marshal(avlevering, sw);
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+
+        ResponseBuilder response = Response.ok(sw.toString());
         response.header("Content-Disposition", "attachment; filename=" + avleveringsidentifikator + ".xml");
         return response.build();
 

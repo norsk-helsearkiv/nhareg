@@ -16,7 +16,8 @@ import org.apache.commons.collections4.Transformer;
 public class StringTilDatoEllerAarTransformer implements Transformer<String, DatoEllerAar> {
 
     public DatoEllerAar transform(String tid) {
-        if (tid == null || tid.toLowerCase().equals("mors") || tid.toLowerCase().equals("ukjent")) {
+        if (tid == null || tid.toLowerCase().equals("mors") || tid.toLowerCase().equals("m")
+                || tid.toLowerCase().equals("ukjent") || tid.toLowerCase().equals("u")) {
             return null;
         }
 
