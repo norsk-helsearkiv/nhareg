@@ -336,7 +336,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 if ($scope.formData.lagringsenhet === undefined || $scope.formData.lagringsenhet === '') {
                     return true;
                 }
-                if (lagringsenhetmaske !== undefined || lagringsenhetmaske !== "") {
+                if (lagringsenhetmaske) {
                     var regexp = new RegExp("(" + lagringsenhetmaske + ")$");
                     if (!regexp.test($scope.formData.lagringsenhet)) {
                         $scope.feilFormat = "(Feil format i lagringsenhet)";
