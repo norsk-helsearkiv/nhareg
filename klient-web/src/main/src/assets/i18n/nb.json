@@ -101,6 +101,7 @@
 			"FOLDER" : "Generer leveranse",
 			"ENDRE" : "Endre",
 			"DELETE" : "Slett",
+            "FAVORITE" : "Klikk for å sette til favoritt avlevering",
           "LAAS" : "Lås avlevering",
           "LAAST" : "Avleveringen er låst, kan kun åpnes av administrator"
 		}

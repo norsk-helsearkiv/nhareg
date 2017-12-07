@@ -61,13 +61,6 @@ public class UserServiceBean implements UserService{
         }
         return null;
     }
-    public static void main (String[] args){
-        System.out.println(plainToHash("truls"));
-        System.out.println(plainToHash("admin"));
-         //wFJL0uiR9Idsk1OyYd9ZJ0HsteHi9+VUafr2hykoN20=
-         //jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=
-
-    }
 
     public void updateLagringsenhet(final String username, final String lagringsenhet){
         Bruker b = findByUsername(username);
@@ -78,6 +71,17 @@ public class UserServiceBean implements UserService{
     public String getLagringsenhet(final String username){
         return findByUsername(username).getLagringsenhet();
     }
+
+    public void updateDefaultAvlevering(final String username, final String avleveringsidentifikator) {
+        Bruker b = findByUsername(username);
+        if (avleveringsidentifikator.equals(b.getDefaultAvleveringsUuid())){
+            b.setDefaultAvleveringsUuid(null);
+        }else {
+            b.setDefaultAvleveringsUuid(avleveringsidentifikator);
+        }
+        em.persist(b);
+    }
+
     public void saveUser(final Bruker user) {
         //TODO
     }

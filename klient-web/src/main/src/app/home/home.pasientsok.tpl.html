@@ -74,7 +74,9 @@
                 <td>{{ avlevering.arkivskaper }}</td>
                 <td>{{ avlevering.avleveringsbeskrivelse }}</td>
                 <td>
-                    <button class="icon icon-list" data-ng-click="actionVisAvlevering(avlevering)"
+                    <button class="icon favorite" data-ng-click="actionSettDefaultAvlevering(avlevering)" favorite-class avlevering="avlevering"
+                            tooltip="{{text.tooltip.favorite}}"></button>
+                    <button class="icon icon-padding-left icon-list" data-ng-click="actionVisAvlevering(avlevering)"
                             tooltip="{{text.tooltip.list}}"></button>
                     <button class="icon icon-padding-left icon-add-journal" ng-hide="avlevering.laast"
                             data-ng-click="actionLeggTilPasientjournald(avlevering)"

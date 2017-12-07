@@ -156,6 +156,14 @@ angular.module('nha.home', [
         );
         $scope.$watch(
             function () {
+                return $filter('translate')('home.tooltip.FAVORITE');
+            },
+            function (newval) {
+                $scope.text.tooltip.favorite = newval;
+            }
+        );
+        $scope.$watch(
+            function () {
                 return $filter('translate')('home.tooltip.FOLDER');
             },
             function (newval) {
@@ -198,10 +206,29 @@ angular.module('nha.home', [
 
         $scope.sok = stateService.sokState;
 
+        $scope.defaultAvlevering = null;
+        
         httpService.hentAlle("avtaler", false)
             .success(function (data, status, headers, config) {
                 $scope.avtaler = data;
-                $scope.setValgtAvtale(data[0]);
+                httpService.hent("avtaler/default", false)
+                    .success(function(avtaleIdent, status){
+                        if (avtaleIdent){
+                            $scope.defaultAvlevering = avtaleIdent;
+                            //TODO må testes litt....
+                            for (var i = 0; i < data.length; i++) {
+                                if (data[i].avtaleidentifikator === avtaleIdent){
+                                    $scope.setValgtAvtale(data[i]);
+                                    break;
+                                }
+                            }
+                        }else{
+                            $scope.setValgtAvtale(data[0]);
+                        }
+                }).error(function (data, status, headers, config) {
+                    errorService.errorCode(status);
+                });
+
             }).error(function (data, status, headers, config) {
             errorService.errorCode(status);
         });
@@ -282,6 +309,7 @@ angular.module('nha.home', [
             });
         };
 
+
         var validerAvtale = function (formData) {
             formData.error = {};
             var success = true;
@@ -346,6 +374,15 @@ angular.module('nha.home', [
                     }).error(function (data, status, headers, config) {
                     errorService.errorCode(status);
                 });
+            });
+        };
+
+        $scope.actionSettDefaultAvlevering = function(avlevering){
+            httpService.hent("avleveringer/"+avlevering.avleveringsidentifikator+"/aktiv")
+                .success(function(data, status){
+                    $scope.setValgtAvtale($scope.valgtAvtale);
+                }).error(function(data, status){
+                    errorService.errorCode(status);
             });
         };
 

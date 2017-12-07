@@ -18,4 +18,5 @@ public interface UserService {
     void saveUser(final Bruker user);
     void updateLagringsenhet(final String username, final String lagringsenhet);
     String getLagringsenhet(final String username);
+    void updateDefaultAvlevering(final String username, final String avleveringsidentifikator);
 }

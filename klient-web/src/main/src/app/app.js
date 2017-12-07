@@ -45,6 +45,27 @@ angular.module('nha', [
         };
     })
 
+    .directive('favoriteClass', [function() {
+
+        return {
+            restrict: 'A',
+            scope: {
+                avlevering: '='
+            },
+            link: function(scope, element, attrs, controller) {
+                scope.$watch('favorites', function() {
+                    element.removeClass('favorite');
+                    element.removeClass('favoriteActive');
+                    if (scope.avlevering.defaultAvlevering) {
+                        element.addClass('favoriteActive');
+                    }else{
+                        element.addClass('favorite');
+                    }
+                }, true);
+            }
+        };
+    }])
+
     .directive('focusOnShow', function($timeout) {
         return {
             restrict: 'A',

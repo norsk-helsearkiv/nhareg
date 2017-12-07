@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -13,6 +14,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -85,9 +87,32 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         return String.valueOf(result);
     }
     public final Avlevering getAvlevering(String avleveringsidentifikator){
-        Query query = getEntityManager().createQuery("SELECT a FROM Avlevering  a where a.avleveringsidentifikator=:identifikator");
+        Query query = getEntityManager().createQuery("SELECT a FROM Avlevering a where a.avleveringsidentifikator=:identifikator");
         query.setParameter("identifikator", avleveringsidentifikator);
         return (Avlevering) query.getSingleResult();
+    }
+    @GET
+    @Path("/default")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Avlevering getDefaultAvlevering(){
+        final String username = sessionContext.getCallerPrincipal().getName();
+        final Bruker bruker = userService.findByUsername(username);
+        final String defaultUuid = bruker.getDefaultAvleveringsUuid();
+
+        if (StringUtils.isEmpty(defaultUuid)){
+            return null;
+        }
+        return getAvlevering(defaultUuid);
+    }
+
+    @GET
+    @Path("/{id}/aktiv")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setDefaultAvlevering(@PathParam("id") String avleveringsidentifikator){
+        final String username = sessionContext.getCallerPrincipal().getName();
+        userService.updateDefaultAvlevering(username, avleveringsidentifikator);
+
+        return Response.ok().build();
     }
 
     @POST

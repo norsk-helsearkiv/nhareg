@@ -2,24 +2,29 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityExistsException;
 import javax.persistence.Query;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * <p>
@@ -32,9 +37,32 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
 @Stateless
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
+    @EJB
+    private UserService userService;
+    @EJB
+    private AvleveringTjeneste avleveringTjeneste;
 
     public AvtaleTjeneste() {
         super(Avtale.class, String.class, "avtaleidentifikator");
+    }
+
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Avtale> getAll(@Context UriInfo uriInfo) {
+        List<Avtale> avtaler = getAll(uriInfo.getQueryParameters());
+        return avtaler;
+    }
+
+    @GET
+    @Path("/default")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getDefaultAvtale(){
+        Avlevering a = avleveringTjeneste.getDefaultAvlevering();
+        if (a==null) {
+            return null;
+        }
+        return a.getAvtale().getAvtaleidentifikator();
     }
 
     /**
@@ -52,10 +80,18 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("avtaleidentifikator", avtaleidentifikator);
         List<Avlevering> avleveringer = query.getResultList();
-        
+
+        Avlevering defaultAvlevering = avleveringTjeneste.getDefaultAvlevering();
+
         List<AvleveringDTO> dtoListe = new ArrayList<AvleveringDTO>();
         for(Avlevering a : avleveringer) {
-            dtoListe.add(new AvleveringDTO(a));
+            AvleveringDTO dto = new AvleveringDTO(a);
+            if (defaultAvlevering!=null) {
+                if (a.getAvleveringsidentifikator().equals(defaultAvlevering.getAvleveringsidentifikator())) {
+                    dto.setDefaultAvlevering(true);
+                }
+            }
+            dtoListe.add(dto);
         }
         
         return Response.ok(dtoListe).build();

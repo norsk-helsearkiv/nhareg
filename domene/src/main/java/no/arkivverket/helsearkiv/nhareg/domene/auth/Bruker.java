@@ -12,10 +12,18 @@ public class Bruker {
     private String passord;
     private String authToken;
     private String resetPassord;
-
+    private String defaultAvleveringsUuid;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="rollenavn")
     private Rolle rolle;
+
+    public String getDefaultAvleveringsUuid() {
+        return defaultAvleveringsUuid;
+    }
+
+    public void setDefaultAvleveringsUuid(String defaultAvleveringsUuid) {
+        this.defaultAvleveringsUuid = defaultAvleveringsUuid;
+    }
 
     public String getLagringsenhet() {
         return lagringsenhet;
