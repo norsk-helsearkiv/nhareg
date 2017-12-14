@@ -127,3 +127,7 @@ INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('fanearkid', '1
 -- NHA-040
 INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('aarhundre', '19', 'Standardårhundre ved brukav 2 og 6 sifrete datoer');
 -- NHA-040 end...
+
+-- NHA-038/2
+INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('templateFilePath', '/Users/haraldk/template.txt', 'Filplasseringen til malen som benyttes til printing av etiketter');
+INSERT INTO nhareg.Konfigparam(navn, verdi, beskrivelse) VALUES ('printerPort', '9100', 'Portnummeret som benyttes av Etikettprinter');

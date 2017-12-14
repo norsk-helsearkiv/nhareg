@@ -20,6 +20,9 @@ public class KonfigparamTjeneste {
     public static final String KONFIG_MAXAGE = "MaxAge";
     public static final String KONFIG_WAITLIM = "WaitLim";
     public static final String KONFIG_AARHUNDRE = "aarhundre";
+    public static final String KONFIG_TEMPLATEFILE = "templateFilePath";
+    public static final String KONFIG_PRINTER_PORT = "printerPort";
+
 
 
     @PersistenceContext(name = "primary")

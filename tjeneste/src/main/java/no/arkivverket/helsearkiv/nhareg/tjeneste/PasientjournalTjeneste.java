@@ -543,6 +543,23 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      */
 
     public List<PasientjournalSokeresultatDTO> hentPasientjournalerForLagringsenhet(String identifikator) {
+        List<Pasientjournal> res = sokPasientjournalerForLagringsenhet(identifikator);
+        List<PasientjournalSokeresultatDTO> finalList = new ArrayList<PasientjournalSokeresultatDTO>();
+        for (Pasientjournal pj:res) {
+            PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
+            finalList.add(sokres);
+        }
+        return finalList;
+    }
+
+    /**
+     * Henter Avlevering for en lagringsenhet.
+     *
+     * @param identifikator
+     * @return
+     */
+
+    public List<Pasientjournal> sokPasientjournalerForLagringsenhet(String identifikator) {
         @SuppressWarnings("JpaQlInspection")
         String select = "SELECT p"
                 + "        FROM Pasientjournal p"
@@ -552,11 +569,26 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         query.setParameter("identifikator", identifikator);
 
         List<Pasientjournal> res = query.getResultList();
-        List<PasientjournalSokeresultatDTO> finalList = new ArrayList<PasientjournalSokeresultatDTO>();
-        for (Pasientjournal pj:res) {
-            PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
-            finalList.add(sokres);
-        }
-        return finalList;
+        return res;
+    }
+
+    /**
+     * Henter Avlevering for en lagringsenhet.
+     *
+     * @param identifikator
+     * @return
+     */
+
+    public Integer getPasientjournalerForLagringsenhetCount(String identifikator) {
+        @SuppressWarnings("JpaQlInspection")
+        String select = "SELECT count(p)"
+                + "        FROM Pasientjournal p"
+                + "  INNER JOIN p.lagringsenhet l"
+                + "       WHERE l.identifikator = :identifikator";
+        final Query query = getEntityManager().createQuery(select);
+        query.setParameter("identifikator", identifikator);
+
+        Long res = (Long)query.getSingleResult();
+        return res.intValue();
     }
 }

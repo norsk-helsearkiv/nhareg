@@ -13,6 +13,7 @@ public class BrukerDTO {
     private String password;
     private String passwordConfirm;
     private Boolean resetPassword;
+    private String printerzpl;
 
     public BrukerDTO(final Bruker b){
         this.brukernavn = b.getBrukernavn();
@@ -69,6 +70,14 @@ public class BrukerDTO {
         this.passwordConfirm = passwordConfirm;
     }
 
+    public String getPrinterzpl() {
+        return printerzpl;
+    }
+
+    public void setPrinterzpl(String printerzpl) {
+        this.printerzpl = printerzpl;
+    }
+
     public Bruker toBruker(){
         Bruker b = new Bruker();
         b.setBrukernavn(brukernavn);
@@ -78,6 +87,7 @@ public class BrukerDTO {
             r.setNavn(rolle.getNavn());
         }
         b.setRolle(r);
+        b.setPrinterzpl(getPrinterzpl());
         return b;
     }
 }

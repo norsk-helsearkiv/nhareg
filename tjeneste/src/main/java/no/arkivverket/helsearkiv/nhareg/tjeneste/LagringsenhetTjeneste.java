@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import javax.ws.rs.core.*;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
@@ -26,6 +29,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSoke
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
+import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
 /**
  * <p>
@@ -57,6 +62,9 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @EJB
     private PasientjournalTjeneste pasientjournalTjeneste;
 
+    @EJB
+    private KonfigparamTjeneste konfigParam;
+
     public LagringsenhetTjeneste() {
         super(Lagringsenhet.class, String.class, "uuid");
 
@@ -86,6 +94,20 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         Lagringsenhet updated = update(lagringsenhet);
         return Response.ok(updated).build();
     }
+
+    public final String getFirstAvleveringsidentifikator(String lagringsenhetUuid){
+        Query query = getEntityManager().createNativeQuery(
+                "select Avlevering_avleveringsidentifikator " +
+                "from Avlevering_Pasientjournal " +
+                "where pasientjournal_uuid " +
+                "in (select pasientjournal_uuid " +
+                "   from pasientjournal_lagringsenhet " +
+                "   where lagringsenhet_uuid=?)");
+        query.setParameter(1, lagringsenhetUuid);
+        List<String> result = query.getResultList();
+        return String.valueOf(result.get(0));
+    }
+
 
     public final Integer getLagringsenhetCount(String lagringsenhetIdentifikator){
         Query query = getEntityManager().createNativeQuery("select count(*) from Lagringsenhet where identifikator=?");
@@ -217,7 +239,32 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         }
         return lagringsenhet;
     }
-    
+
+    @GET
+    @Path("/{id}/print")
+    public Response printPasientjournal(@PathParam("id") String id) throws IOException {
+        Lagringsenhet le = hentLagringsenhetMedIdentifikator(id);
+        Integer pasientjournalCount = pasientjournalTjeneste.getPasientjournalerForLagringsenhetCount(id);
+        String avlId = getFirstAvleveringsidentifikator(le.getUuid());
+        Avlevering avl = avleveringTjeneste.getAvlevering(avlId);
+
+        final String username = sessionContext.getCallerPrincipal().getName();
+
+        Bruker bruker = userTjeneste.findByUsername(username);
+        String printerIp = bruker.getPrinterzpl();
+
+        Integer printerPort = konfigParam.getInt(KonfigparamTjeneste.KONFIG_PRINTER_PORT);
+        if (printerPort==null){
+            printerPort = 9100;
+        }
+
+        String fileTemplatePath = konfigParam.getVerdi(KonfigparamTjeneste.KONFIG_TEMPLATEFILE);
+        String toPrint = new EtikettBuilder().buildContent(fileTemplatePath, le, avl, pasientjournalCount);
+
+        new SocketPrinter().print(toPrint, printerIp, printerPort);
+
+        return Response.ok().build();
+    }
     /**
      * Henter Lagringsenheter for en avlevering.
      * @param avleveringsidentifikator

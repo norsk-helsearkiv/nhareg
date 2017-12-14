@@ -45,6 +45,12 @@
                 </select>
             </div>
         </div>
+        <div class="row">
+            <div class="span span4 padding-bottom">
+                <label>{{'common.table.PRINTER' | translate}}</label>
+                <input type="text" data-ng-model="bruker.printerzpl" class="form-control" placeholder="Printer-ip">
+            </div>
+        </div>
         <div class="row" data-ng-show="checkError('passord')">
             <div class="span span4">
                 <label id="labelPassordFeil"  data-ng-class="{error: error['passord'] !== undefined }">{{ error['passord'] }}</label>

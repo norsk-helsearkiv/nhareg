@@ -13,6 +13,8 @@ public class Bruker {
     private String authToken;
     private String resetPassord;
     private String defaultAvleveringsUuid;
+    private String printerzpl;
+
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="rollenavn")
     private Rolle rolle;
@@ -73,4 +75,11 @@ public class Bruker {
         this.resetPassord = resetPassord;
     }
 
+    public String getPrinterzpl() {
+        return printerzpl;
+    }
+
+    public void setPrinterzpl(String printerzpl) {
+        this.printerzpl = printerzpl;
+    }
 }

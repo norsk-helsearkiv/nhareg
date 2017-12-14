@@ -354,7 +354,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 return true;
             };
             $scope.utskrift = function(){
-                $modalInstance.close();
+                httpService.hent("lagringsenheter/"+$scope.formData.lagringsenheter[0]+"/print")
+                    .success(function(data, status, headers, config) {
+                        $modalInstance.close();
+                    }).error(function(data, status, headers, config) {
+                    errorService.errorCode(status);
+                });
             };
 
             $scope.avbryt = function(){
