@@ -527,7 +527,7 @@ angular.module('nha.registrering', [
             if ($scope.formData !== undefined) {
                 if ($scope.formData.navn !== undefined && $scope.formData.navn.length > 0) {
                     var str = $scope.formData.navn;
-                    $scope.formData.navn = str.replace(/\w\S*/g,
+                    $scope.formData.navn = str.replace(/\S+/g,
                         function(txt){
                             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                         });
