@@ -2,11 +2,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
@@ -44,6 +40,16 @@ public class Lagringsenhet implements Serializable
     protected String identifikator;
     @XmlAttribute(name = "uuid")
     protected String uuid;
+    @XmlTransient
+    private boolean utskrift;
+
+    public boolean isUtskrift() {
+        return utskrift;
+    }
+
+    public void setUtskrift(boolean utskrift) {
+        this.utskrift = utskrift;
+    }
 
     /**
      * Gets the value of the identifikator property.

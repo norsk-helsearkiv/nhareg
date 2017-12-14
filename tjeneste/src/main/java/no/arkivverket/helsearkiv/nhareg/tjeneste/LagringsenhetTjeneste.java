@@ -262,7 +262,9 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         String toPrint = new EtikettBuilder().buildContent(fileTemplatePath, le, avl, pasientjournalCount);
 
         new SocketPrinter().print(toPrint, printerIp, printerPort);
+        le.setUtskrift(true);
 
+        getEntityManager().merge(le);
         return Response.ok().build();
     }
     /**
