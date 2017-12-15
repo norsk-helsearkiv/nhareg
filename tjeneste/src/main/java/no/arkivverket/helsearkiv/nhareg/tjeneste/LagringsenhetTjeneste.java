@@ -252,6 +252,9 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
         Bruker bruker = userTjeneste.findByUsername(username);
         String printerIp = bruker.getPrinterzpl();
+        if (printerIp==null){
+            printerIp = "127.0.0.1";
+        }
 
         Integer printerPort = konfigParam.getInt(KonfigparamTjeneste.KONFIG_PRINTER_PORT);
         if (printerPort==null){
