@@ -285,7 +285,7 @@ angular.module('nha.registrering', [
 
             httpService.sistBrukteLagringsenhet()
                 .success(function (data) {
-                    if ($scope.formData.lagringsenheter.length===0){
+                    if ($scope.formData.lagringsenheter.length===0 && data){
                         $scope.formData.lagringsenheter.push(data);
                     }
 
