@@ -6,7 +6,7 @@
     <form>
         <div class="form-group">
             <label data-ng-class="{error: feilFormat !== undefined }">{{ 'common.table.LAGRINGSENHET' | translate }} {{txtMaske}} {{feilFormat}}</label>
-            <input type="text" class="form-control" ng-model="formData.lagringsenhet" ng-enter="nyLagringsenhet()">
+            <input type="text" class="form-control" ng-model="formData.lagringsenhet" ng-enter="nyLagringsenhet()" focus-on-show>
             <label class="label-error" data-ng-show="formData.error.lagringsenhet">{{formData.error.lagringsenhet}}</label>
             <ul id="lagringsenhet-liste">
                 <li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">

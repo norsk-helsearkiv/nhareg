@@ -212,8 +212,9 @@ angular.module('nha.common.list-view', [
 
                     httpService.hent("pasientjournaler/" + first.uuid)
                         .success(function (data, status, headers, config) {
-                            registreringService.setAvlevering(data.avleveringsidentifikator);
+                            //registreringService.setAvlevering(data.avleveringsidentifikator);
                             registreringService.setVirksomhet(data.virksomhet);
+                            registreringService.setPasientjournalDTO(null);
                             registreringService.setValgtAvtale(data.avtaleBeskrivelse);
                             registreringService.setAvleveringsidentifikator(data.avleveringsidentifikator);
                             registreringService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);

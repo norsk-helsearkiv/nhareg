@@ -388,7 +388,9 @@ angular.module('nha.home', [
 
         $scope.actionVisAvlevering = function (avlevering) {
             registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
-            registreringService.setAvlevering(undefined);
+            //TODO sjekk at dette ikke medfører feil
+            //registreringService.setAvlevering(undefined);
+            registreringService.setAvlevering(avlevering);
             httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + "&avlevering=" + avlevering.avleveringsidentifikator)
                 .success(function (data, status, headers, config) {
 

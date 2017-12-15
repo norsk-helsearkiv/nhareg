@@ -273,9 +273,10 @@ angular.module('nha.registrering', [
         $scope.velgLagringsenhet = function() {
 
             var lagringsenhetmaske;
-            if ($scope.avlevering !== undefined) {
+            if ($scope.avlevering.lagringsenhetformat) {
+                //TODO...
                 lagringsenhetmaske = $scope.avlevering.lagringsenhetformat;
-            } else if ($scope.pasientjournalDTO !== undefined) {
+            } else if ($scope.pasientjournalDTO.lagringsenhetformat){
                 lagringsenhetmaske = $scope.pasientjournalDTO.lagringsenhetformat;
             }
 
@@ -303,7 +304,7 @@ angular.module('nha.registrering', [
         };
 
         //Setter verdier fra registrering-service
-        if ($scope.avlevering !== undefined) {
+        if ($scope.avlevering && !$scope.pasientjournalDTO) {
             //Ny pasientjouranl
             $scope.state = 0;
             $scope.velgLagringsenhet();
