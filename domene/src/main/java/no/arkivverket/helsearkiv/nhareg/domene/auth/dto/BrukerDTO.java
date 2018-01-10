@@ -17,6 +17,7 @@ public class BrukerDTO {
 
     public BrukerDTO(final Bruker b){
         this.brukernavn = b.getBrukernavn();
+        this.printerzpl = b.getPrinterzpl();
         this.rolle = new RolleDTO(b.getRolle());
     }
     public BrukerDTO(){

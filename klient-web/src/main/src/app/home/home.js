@@ -557,6 +557,7 @@ angular.module('nha.home', [
         };
 
         $scope.bruker = {};
+        $scope.bruker.printerzpl = '127.0.0.1';
         $scope.brukere = [];
 
         $scope.selectedBrukerRow = null;  // initialize our variable to null
@@ -564,8 +565,9 @@ angular.module('nha.home', [
         $scope.velgBruker = function (index) {
             if (index === $scope.selectedBrukerRow) {
                 $scope.selectedBrukerRow = null;
-                $scope.bruker.brukernavn = "";
-                $scope.bruker.rolle = "";
+                $scope.bruker.brukernavn = null;
+                $scope.bruker.rolle = null;
+                $scope.bruker.printerzpl = null;
             } else {
                 var valgtBruker = $scope.brukere[index];
                 var rolleIndex = $scope.roller.map(function (e) {
@@ -573,6 +575,7 @@ angular.module('nha.home', [
                 }).indexOf(valgtBruker.rolle.navn);
                 $scope.selectedBrukerRow = index;
                 $scope.bruker.brukernavn = valgtBruker.brukernavn;
+                $scope.bruker.printerzpl = valgtBruker.printerzpl;
                 $scope.bruker.rolle = $scope.roller[rolleIndex];
             }
         };

@@ -899,7 +899,7 @@ angular.module('nha.registrering', [
 
             if (keepDate){
                 document.getElementById("diagnosedato").focus();
-                
+
                 $scope.formDiagnose.diagnosedato = oldDiagnosedato;
             }
 
