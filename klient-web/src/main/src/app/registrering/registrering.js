@@ -7,7 +7,12 @@ angular.module('nha.registrering', [
         'nha.common.modal-service',
         'cfp.hotkeys'
     ])
-
+    .filter('parseCustomDate', function(){
+        return function(date){
+            var d = new Date(date);
+            return d.getTime();
+        };
+    })
     .config(function config($stateProvider) {
         $stateProvider.state('registrer', {
             url: '/registrer',
@@ -1002,5 +1007,4 @@ angular.module('nha.registrering', [
                     }
                 });
         };
-
     });
