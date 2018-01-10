@@ -83,21 +83,21 @@
                             tooltip="{{text.tooltip.add}}"></button>
                     <button class="icon icon-padding-left icon-folder"
                             data-ng-click="actionAvleveringLeveranse(avlevering)"
-                            tooltip="{{text.tooltip.folder}}"></button>
+                            tooltip="{{text.tooltip.folder}}" data-access-level-admin></button>
                     <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast"
                             data-ng-click="actionEndreAvlevering(avlevering)"
                             tooltip="{{text.tooltip.endre}}"></button>
                     <button class="icon icon-padding-left icon-delete"
                             data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)"
                             tooltip="{{text.tooltip.deleteElement}}"
-                            data-ng-show="avlevering.antallPasientjournaler === 0"></button>
+                            data-ng-show="avlevering.antallPasientjournaler === 0" data-access-level-admin></button>
 
                     <button ng-hide="avlevering.laast" class="icon icon-padding-left icon-unlock"
                             data-ng-click="actionLaasAvlevering(avlevering)"
-                            tooltip="{{text.tooltip.laas}}"></button>
+                            tooltip="{{text.tooltip.laas}}" data-access-level-admin></button>
                     <button ng-hide="!avlevering.laast" class="icon icon-padding-left icon-lock"
                             data-ng-click="actionLaasOppAvlevering(avlevering)"
-                            tooltip="{{text.tooltip.laast}}"></button>
+                            tooltip="{{text.tooltip.laast}}" data-access-level-admin></button>
 
                 </td>
             </tr>

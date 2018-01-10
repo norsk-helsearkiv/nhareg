@@ -13,7 +13,7 @@
                 <small> {{ 'home.VIRKSOMHET' | translate }} {{ virksomhet.foretaksnavn}}</small>
                 <h4>
                     {{ 'home.AVTALER' | translate }}
-                    <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()">{{
+                    <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()" data-access-level-admin>{{
                         'common.LEGG_TIL' | translate }}
                     </button>
                 </h4>
@@ -24,11 +24,11 @@
                         data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
                         <a href="">
                             <button class="icon icon-edit" data-ng-click="actionEndreAvtale(avtale)"
-                                    tooltip="{{text.tooltip.endr}}"></button>
+                                    tooltip="{{text.tooltip.endr}}" data-access-level-admin></button>
                             <button class="icon icon-delete icon-padding-right"
                                     data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)"
                                     tooltip="{{text.tooltip.deleteElement}}"
-                                    data-ng-show="valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0">
+                                    data-ng-show="valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0" data-access-level-admin>
                             </button>
                             {{ avtale.avtalebeskrivelse }}
                         </a>

@@ -107,6 +107,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     }
 
     @POST
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Override
     public Avtale create(Avtale avtale) {
         //Henter virksomhet
@@ -126,6 +127,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     
     @DELETE
     @Path("/{id}")
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Override
     public Avtale delete(@PathParam("id") String id) {
         Avtale avtale = getSingleInstance(id);

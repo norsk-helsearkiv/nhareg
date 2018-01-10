@@ -117,6 +117,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     @POST
     @Override
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     public Avlevering create(Avlevering entity) {
         //
         // Sporing.
@@ -144,6 +145,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     public AvleveringDTO updateAvlevering(AvleveringDTO entity) {
         //
         // Validerer.
@@ -242,6 +244,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @GET
     @Path("/{id}/leveranse")
     @Produces(MediaType.APPLICATION_XML)
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     public Response getLeveranse(@PathParam("id") String avleveringsidentifikator) throws FileNotFoundException {
         Avlevering avlevering = hent(avleveringsidentifikator);
 
@@ -272,6 +275,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @POST
     @Path("/{id}/laas")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     public Response laasAvlevering(@PathParam("id") String avleveringsidentifikator){
         Avlevering avlevering = hent(avleveringsidentifikator);
         avlevering.setLaast(true);
@@ -293,6 +297,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @DELETE
     @Path("/{id}")
     @Override
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     public Avlevering delete(@PathParam("id") String id) {
         Avlevering avlevering = getSingleInstance(id);
 
