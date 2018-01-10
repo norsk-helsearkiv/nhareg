@@ -359,11 +359,11 @@ angular.module('nha.home', [
 
         };
         $scope.actionLeggTilAvlevering = function () {
-            modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", validering);
+            modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer/ny", validering);
         };
 
         $scope.actionEndreAvlevering = function (avlevering) {
-            modalService.endreModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer", validering, avlevering);
+            modalService.endreModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering);
         };
 
         $scope.actionFjernAvlevering = function (elementType, id, element) {

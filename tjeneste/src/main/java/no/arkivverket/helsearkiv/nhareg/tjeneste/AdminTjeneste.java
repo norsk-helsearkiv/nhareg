@@ -132,7 +132,7 @@ public class AdminTjeneste {
             b.getRolle().setNavn(loggedInRolle);
         }
 
-        
+
         boolean resetPass = false;
         if (bruker.getResetPassword()!=null&&bruker.getResetPassword()){
             b.setResetPassord("Y");//enkel resetpassord-indikator kan forfines ved behov...

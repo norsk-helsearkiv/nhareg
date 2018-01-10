@@ -116,17 +116,17 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     }
 
     @POST
-    @Override
+    @Path("/ny")
     @RolesAllowed(value = {Roller.ROLE_ADMIN})
-    public Avlevering create(Avlevering entity) {
+    public Avlevering create(AvleveringDTO dto) {
         //
         // Sporing.
         //
-        Avlevering other = getEntityManager().find(Avlevering.class, entity.getAvleveringsidentifikator());
+        Avlevering other = getEntityManager().find(Avlevering.class, dto.getAvleveringsidentifikator());
         if (other!=null){
             throw new EntityExistsException("Avlevering med samme Id eksisterer");
         }
-
+        Avlevering entity = dto.toAvlevering();
         entity.setOppdateringsinfo(konstruerOppdateringsinfo());
         return super.create(entity);
     }
@@ -144,6 +144,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     }
 
     @PUT
+    @Path("/ny")
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roller.ROLE_ADMIN})
     public AvleveringDTO updateAvlevering(AvleveringDTO entity) {

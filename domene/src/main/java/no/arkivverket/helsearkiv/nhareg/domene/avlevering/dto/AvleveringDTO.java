@@ -93,5 +93,15 @@ public class AvleveringDTO implements Serializable{
     public void setLagringsenhetformat(String lagringsenhetformat) {
         this.lagringsenhetformat = lagringsenhetformat;
     }
+    public Avlevering toAvlevering(){
+        Avlevering a = new Avlevering();
+        a.setLagringsenhetformat(getLagringsenhetformat());
+        a.setArkivskaper(getArkivskaper());
+        a.setAvleveringsbeskrivelse(getAvleveringsbeskrivelse());
+        a.setAvleveringsidentifikator(getAvleveringsidentifikator());
+        a.setAvtale(getAvtale());
+        a.setLaast(isLaast());
+        return a;
+    }
 
 }
