@@ -813,6 +813,7 @@ angular.module('nha.registrering', [
                 return;
             }
             diagnosekode = $scope.formDiagnose.diagnosekode;
+            $scope.setDiagnoseTekst(false);
         };
 
         $scope.setDiagnoseDato = function(){
@@ -832,7 +833,7 @@ angular.module('nha.registrering', [
 
         var prevDiagnose="";
         //Setter diagnoseteksten når koden er endret
-        $scope.setDiagnoseTekst = function () {
+        $scope.setDiagnoseTekst = function (laasDiagnosetekst) {
             //Hvis koden ikke er endret
             if (diagnosekode === $scope.formDiagnose.diagnosekode) {
                 return;
@@ -854,7 +855,9 @@ angular.module('nha.registrering', [
                     modal.result.then(function () {
                         //Dersom teksten er satt, settes fokus på legg til diagnose
                         if ($scope.formDiagnose.diagnosetekst) {
-                            $scope.diagnosetekstErSatt = true;
+                            if (laasDiagnosetekst){
+                                $scope.diagnosetekstErSatt = true;
+                            }
                             document.getElementById("btn-diagnose").focus();
                         } else {
                             $scope.diagnosetekstErSatt = false;
@@ -871,8 +874,9 @@ angular.module('nha.registrering', [
                     //En diagnose med gitt verdi
                     $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
                     $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
-
-                    $scope.diagnosetekstErSatt = true;
+                    if (laasDiagnosetekst){
+                        $scope.diagnosetekstErSatt = true;
+                    }
                     document.getElementById("btn-diagnose").focus();
                     prevDiagnose = diagnosekode;
                 } else {
@@ -953,7 +957,7 @@ angular.module('nha.registrering', [
         $scope.onSelectDiagnose = function ($item, $model, $label) {
             $scope.formDiagnose.diagnosekode = $item.code;
             $scope.formDiagnose.diagnosetekst = null;
-            $scope.setDiagnoseTekst();
+            $scope.setDiagnoseTekst(true);
         };
 
 
