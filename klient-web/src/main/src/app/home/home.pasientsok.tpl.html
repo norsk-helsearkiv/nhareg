@@ -53,7 +53,7 @@
     <h2 class="sub-header">
         {{ 'home.AVLEVERINGER' | translate }}
         <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn}} &#x2F {{valgtAvtale.avtalebeskrivelse }}</small>
-        <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale">
+        <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale" data-access-level-admin>
             {{ 'common.LEGG_TIL' | translate }}
         </button>
     </h2>
@@ -86,7 +86,7 @@
                             tooltip="{{text.tooltip.folder}}" data-access-level-admin></button>
                     <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast"
                             data-ng-click="actionEndreAvlevering(avlevering)"
-                            tooltip="{{text.tooltip.endre}}"></button>
+                            tooltip="{{text.tooltip.endre}}" data-access-level-admin></button>
                     <button class="icon icon-padding-left icon-delete"
                             data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)"
                             tooltip="{{text.tooltip.deleteElement}}"
