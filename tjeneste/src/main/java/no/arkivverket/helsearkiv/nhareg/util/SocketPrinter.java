@@ -16,10 +16,11 @@ public class SocketPrinter {
         Socket clientSocket = new Socket(hostIp, printerPort);
 
         DataOutputStream outToPrinter = new DataOutputStream(clientSocket.getOutputStream());
-        DataInputStream fileInput = new DataInputStream(new FileInputStream(content));
-        IOUtils.copy(fileInput, outToPrinter);
+        PrintStream print = new PrintStream(outToPrinter);
+        print.print(content);
+
         clientSocket.close();
         outToPrinter.close();
-        fileInput.close();
+        print.close();
     }
 }
