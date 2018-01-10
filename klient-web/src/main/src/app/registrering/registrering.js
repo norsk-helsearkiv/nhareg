@@ -819,6 +819,9 @@ angular.module('nha.registrering', [
             $scope.formDiagnose.diagnosedato = $scope.injectCentury($scope.formDiagnose.diagnosedato);
 
             var dato = $scope.formDiagnose.diagnosedato;
+            $scope.formDiagnose.diagnosekode = null;
+            $scope.formDiagnose.diagnosetekst = null;
+            $scope.diagnosetekstErSatt = false;
             if (dato){
                 $scope.diagnoseDatoErSatt = true;
                 document.getElementById("diagnosekode-input").focus();
