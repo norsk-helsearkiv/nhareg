@@ -243,6 +243,14 @@ angular.module('nha.registrering', [
         );
         $scope.$watch(
             function () {
+                return $filter('translate')('feltfeil.DiagFormatFeil');
+            },
+            function (newval) {
+                $scope.feilTekster['DiagFormatFeil'] = newval;
+            }
+        );
+        $scope.$watch(
+            function () {
                 return $filter('translate')('feltfeil.sKontaktNotNull');
             },
             function (newval) {
@@ -350,11 +358,11 @@ angular.module('nha.registrering', [
             } else
             //Legg til diagnoser
             if ($scope.state === 1) {
-                document.getElementById("diagnoseDato").focus();
+                document.getElementById("diagnosedato").focus();
             } else
             //Oppdater
             if ($scope.state === 2) {
-                document.getElementById("diagnoseDato").focus();
+                document.getElementById("diagnosedato").focus();
             }
         };
         setFocus();
@@ -875,7 +883,7 @@ angular.module('nha.registrering', [
             $scope.diagnosetekstErSatt = false;
             $scope.diagnoseDatoErSatt = false;
             diagnosekode = "";
-            document.getElementById("diagnoseDato").focus();
+            document.getElementById("diagnosedato").focus();
             if (keepDate){
                 $scope.formDiagnose.diagnosedato = oldDiagnosedato;
             }

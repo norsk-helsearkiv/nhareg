@@ -47,6 +47,11 @@ public class DatoValiderer {
 
         DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
         String diag = diagnose.getDiagnosedato();
+        Date diagd = getDate(diag);
+        if (diagd==null){
+            feil.add(new Valideringsfeil("diagnosedato", "DiagFormatFeil"));
+            return feil;
+        }
 
         //fødtdatoår kjent
         if (gr.isFodtdatoUkjent()==null || !gr.isFodtdatoUkjent()){

@@ -209,6 +209,7 @@
         "sKontaktNotNull" : "Siste kontakt kan ikke være tom når Født er ukjent",
         "DiagEtterDod" : "Diagnosedato kan ikke være etter død",
         "DiagForFodt" : "Diagnosedato kan ikke være før fødsel",
+        "DiagFormatFeil" : "Feltet krever gyldig dato/årstall, vennligst korriger",
       "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
       "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
       "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn"
