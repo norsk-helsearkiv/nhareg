@@ -724,6 +724,7 @@ angular.module('nha.registrering', [
             
             $scope.prevState = $scope.state;
             $scope.state = 3;
+            resetDiagnose(false);
             $scope.nyEllerOppdater();
             $scope.velgLagringsenhet();
         };
@@ -888,8 +889,9 @@ angular.module('nha.registrering', [
             $scope.diagnosetekstErSatt = false;
             $scope.diagnoseDatoErSatt = false;
             diagnosekode = "";
-            document.getElementById("diagnosedato").focus();
+
             if (keepDate){
+                document.getElementById("diagnosedato").focus();
                 $scope.formDiagnose.diagnosedato = oldDiagnosedato;
             }
 
