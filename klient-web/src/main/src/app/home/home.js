@@ -65,6 +65,12 @@ angular.module('nha.home', [
             errorService.errorCode(status);
         });
 
+        httpService.brukerNavn().success(function (data) {
+            $rootScope.username = data;
+
+        }).error(function (status) {
+            errorService.errorCode(status);
+        });
 
         httpService.hentAlle("admin/roller", false).success(function (data) {
             $scope.roller = data;

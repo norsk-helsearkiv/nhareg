@@ -98,6 +98,14 @@ function httpService($http) {
 		});
 	}
 
+	function brukerNavn(){
+		return $http({
+			cache : false,
+			accept: "application/json",
+			method: "GET",
+			url: url + "admin/bruker"
+		});
+	}
 	function getSokeresultat(sokestring) {
 		return $http({
 			accept: "application/json",
@@ -127,6 +135,7 @@ function httpService($http) {
 		genererAvlevering: genererAvlevering,
 		getSokeresultat: getSokeresultat,
 		brukerRolle : brukerRolle,
+		brukerNavn : brukerNavn,
 		getRoot: getRoot,
 		setCredentials: setCredentials
 

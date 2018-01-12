@@ -59,6 +59,15 @@ public class AdminTjeneste {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/bruker")
+    public String getBruker(){
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return username;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/century")
     public String getCentury(){
         return konfigparam.getVerdi(KonfigparamTjeneste.KONFIG_AARHUNDRE);
