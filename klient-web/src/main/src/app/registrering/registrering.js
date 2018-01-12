@@ -650,8 +650,9 @@ angular.module('nha.registrering', [
                     }
                     var txt = $scope.feilTekster[element.constriant];
                     var elm = {indeks:index,  feilmelding:txt, felt:felt };
-                    var index = $scope.feilmeldinger.findIndex(item => item.indeks === elm.indeks);
-                    if (index === -1){
+                    var pos = $scope.feilmeldinger.map(function(e) { return e.indeks; }).indexOf(elm.index);
+
+                    if (pos === -1){
                         $scope.feilmeldinger.push(elm);
                     }
                 }
