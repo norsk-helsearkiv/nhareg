@@ -75,6 +75,22 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
+    function warningMessageModal(msg, title, desc){
+        template.templateUrl = "common/modal-service/warning-message-modal.tpl.html";
+        template.controller = function ($scope, $modalInstance) {
+            $scope.melding = msg;
+            $scope.tittel = title;
+            $scope.beskrivelse = desc;
+
+            $scope.ok = function() {
+                $modalInstance.close();
+            };
+
+        };
+        template.controller.$inject = ['$scope', '$modalInstance'];
+        return $modal.open(template);
+    }
+
     function warningModal(tpl, relativeUrl, msg, title, desc, okFunction){
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
@@ -264,7 +280,15 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                         $modalInstance.close();
                         okFunction();
                     }).error(function(data, status, headers, config) {
-                    errorService.errorCode(status);
+                    if (data[0].attributt==='identifikator'){
+                        $modalInstance.close();
+                        var msg = $filter('translate')('modal.FlyttLagringsenhetFeil.msg');
+                        var title = $filter('translate')('modal.FlyttLagringsenhetFeil.title');
+                        var desc = $filter('translate')('modal.FlyttLagringsenhetFeil.descr');
+                        warningMessageModal(msg, title, desc);
+                    }else{
+                        errorService.errorCode(status);
+                    }
                 });
 
             };
@@ -376,6 +400,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         nyModal : nyModal,
         endreModal : endreModal,
         warningModal : warningModal,
+        warningMessageModal : warningMessageModal,
         velgModal : velgModal,
         velgLagringsenhet : velgLagringsenhet,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,

@@ -172,7 +172,13 @@
       },
       "velg" : {
       	"TITTEL" : "Velg en diagnose"
+      },
+      "FlyttLagringsenhetFeil" : {
+          "msg":"Lagringsenheten det ble forsøkt å flytte til finnes ikke i systemet",
+        "title":"Feil ved flytting",
+        "descr":""
       }
+
 
 	},
 	"error" :  {
