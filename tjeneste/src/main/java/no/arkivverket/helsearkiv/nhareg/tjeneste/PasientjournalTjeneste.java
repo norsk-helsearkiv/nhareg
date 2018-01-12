@@ -554,7 +554,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         List<Pasientjournal> res = sokPasientjournalerForLagringsenhet(identifikator);
         List<PasientjournalSokeresultatDTO> finalList = new ArrayList<PasientjournalSokeresultatDTO>();
         for (Pasientjournal pj:res) {
-            if (!pj.isSlettet()) {
+            if (pj.isSlettet() == null || !pj.isSlettet()) {
                 PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
                 finalList.add(sokres);
             }
