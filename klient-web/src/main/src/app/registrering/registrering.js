@@ -648,11 +648,12 @@ angular.module('nha.registrering', [
                         var fm = $filter('translate')(predefined,element.message);
                         $scope.feilTekster[element.constriant] = fm;
                     }
-                    $scope.feilmeldinger.push({
-                        indeks: index,
-                        felt: felt,
-                        feilmelding: $scope.feilTekster[element.constriant]
-                    });
+                    var txt = $scope.feilTekster[element.constriant];
+                    var elm = {indeks:index,  feilmelding:txt, felt:felt };
+                    var index = $scope.feilmeldinger.findIndex(item => item.indeks === elm.indeks);
+                    if (index === -1){
+                        $scope.feilmeldinger.push(elm);
+                    }
                 }
             });
             $scope.feilmeldinger.sort(compare);

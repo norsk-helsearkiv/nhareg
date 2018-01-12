@@ -319,9 +319,13 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //Validerer forholdet mellom dataoer
         DatoValiderer datoValiderer = new DatoValiderer();
         valideringsfeil.addAll(datoValiderer.valider(persondata, konfigparam));
+
+
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondata);
         if (fnrfeil != null) {
-            valideringsfeil.add(fnrfeil);
+            if (!valideringsfeil.contains(fnrfeil)) {
+                valideringsfeil.add(fnrfeil);
+            }
         }
         Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondata, konfigparam);
         if (fanearkidFeil!=null){

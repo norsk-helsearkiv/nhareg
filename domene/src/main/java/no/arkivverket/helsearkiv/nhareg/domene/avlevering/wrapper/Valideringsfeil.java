@@ -46,5 +46,24 @@ public class Valideringsfeil implements Serializable {
         this.message = message;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Valideringsfeil that = (Valideringsfeil) o;
+
+        if (attributt != null ? !attributt.equals(that.attributt) : that.attributt != null) return false;
+        if (constriant != null ? !constriant.equals(that.constriant) : that.constriant != null) return false;
+        return message != null ? message.equals(that.message) : that.message == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = attributt != null ? attributt.hashCode() : 0;
+        result = 31 * result + (constriant != null ? constriant.hashCode() : 0);
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        return result;
+    }
 }
