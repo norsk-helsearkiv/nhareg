@@ -199,7 +199,7 @@
     	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
         "UtenforGyldigPeriode" : "Dato/år utenfor gyldighetsområde",
         "UkjentDiagnosekode" : "Ukjent diagnosekode",
-      "FeilFodselsnummer" : "Fødselsnummer er feil (kan også være D/H-nummer)",
+      "FeilFodselsnummer" : "Fødselsnr (alt. H/D-nummer) er ugyldig",
     	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
     	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
     	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
