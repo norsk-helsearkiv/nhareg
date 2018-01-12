@@ -166,7 +166,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (directions != null && directions.size() > 0) {
             direction = directions.get(0);
         }
-        SortPasientjournaler.sort(pasientjournaler, order, direction);
+        new SortPasientjournaler().sort(pasientjournaler, order, direction);
         //
         //Begrenser antallet som skal returneres til paging
         int total = pasientjournaler.size();
