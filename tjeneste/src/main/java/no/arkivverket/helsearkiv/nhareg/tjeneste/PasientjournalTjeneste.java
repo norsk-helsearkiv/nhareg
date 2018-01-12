@@ -14,6 +14,7 @@ import org.apache.commons.collections4.Closure;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.Transformer;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -295,7 +296,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
         final String username = sessionContext.getCallerPrincipal().getName();
-        userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+        if (StringUtils.isNotBlank(lagringsenhet.getIdentifikator())) {
+            userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+        }
 
         return Response.ok(tilPasientjournalDTO(persistert)).build();
     }

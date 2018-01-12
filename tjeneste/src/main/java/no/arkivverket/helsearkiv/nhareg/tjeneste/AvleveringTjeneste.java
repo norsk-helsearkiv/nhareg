@@ -236,7 +236,9 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
         Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
         final String username = sessionContext.getCallerPrincipal().getName();
-        userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+        if (StringUtils.isNotBlank(lagringsenhet.getIdentifikator())) {
+            userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+        }
 
 
         return Response.ok().entity(dto).build();
