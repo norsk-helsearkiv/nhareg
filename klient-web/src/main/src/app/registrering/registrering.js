@@ -9,6 +9,9 @@ angular.module('nha.registrering', [
     ])
     .filter('parseCustomDate', function(){
         return function(date){
+            if (date==='mors'||date=="ukjent"){
+                return new Date("01.01.1000").getTime();
+            }
             var d = new Date(date);
             return d.getTime();
         };

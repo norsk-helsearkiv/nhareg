@@ -6,7 +6,12 @@ angular.module('nha.home', [
         'nha.common.modal-service',
         'nha.registrering.registrering-service'
     ])
-
+    .filter('parseCustomDate', function(){
+        return function(date){
+            var d = new Date(date);
+            return d.getTime();
+        };
+    })
     .config(function config($stateProvider) {
         $stateProvider.state('home', {
             url: '/',
