@@ -384,6 +384,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Override
     public Pasientjournal delete(@PathParam("id") String id) {
         Pasientjournal p = super.getSingleInstance(id);
+        p.getDiagnose().size();
         p.setSlettet(true);
         p.setOppdateringsinfo(konstruerOppdateringsinfo());
         return update(p);
