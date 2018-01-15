@@ -9,7 +9,7 @@
             <label>{{ 'modal.endre_lagringsenhet.IDENTIFIKATOR' | translate }}</label>
             <label class="label-error" data-ng-show="formData.error.identifikator">{{formData.error.identifikator}}</label>
             <input type="text" class="form-control" ng-model="formData.lagringsenhet.identifikator">
-            <label>{{ 'modal.endre_lagringsenhet.NY_IDENTIFIKATOR' | translate }}</label>
+            <label data-ng-class="{error: feilFormat !== undefined }">{{ 'modal.endre_lagringsenhet.NY_IDENTIFIKATOR' | translate }} {{txtMaske}} {{feilFormat}}</label>
             <input type="text" class="form-control" ng-model="formData.lagringsenhet.nyIdentifikator">
 
         </div>

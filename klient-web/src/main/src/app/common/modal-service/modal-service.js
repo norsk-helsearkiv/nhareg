@@ -216,9 +216,10 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function endreLagringsenhet(tpl, relativUrl, lagringsenhet){
+    function endreLagringsenhet(tpl, relativUrl, lagringsenhet, lagringsenhetmaske){
         template.templateUrl = tpl;
         template.controller = function( $scope, $modalInstance) {
+            $scope.txtMaske = lagringsenhetmaske;
             $scope.formData = {
                 "error" : {},
                 "lagringsenhet": lagringsenhet
@@ -232,6 +233,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     uuid :lagr.uuid,
                     identifikator : lagr.nyIdentifikator
                 };
+
+                var regexp = new RegExp("(" + lagringsenhetmaske + ")$");
+                if (!regexp.test($scope.formData.lagringsenhet.nyIdentifikator)) {
+                    $scope.feilFormat = "(Feil format i lagringsenhet)";
+                    return false;
+                }
 
                 httpService.oppdater(relativUrl, nyLagringsenhet)
                     .success(function(data, status, headers, config) {

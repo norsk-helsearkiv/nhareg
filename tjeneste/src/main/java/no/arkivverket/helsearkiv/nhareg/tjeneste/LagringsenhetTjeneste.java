@@ -189,6 +189,16 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         return lagringsenheter;
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed(value = {"admin", "bruker"})
+    @Path("/{uuid}/maske")
+    public String getLagringsenhetMaske(@PathParam("uuid") String uuid){
+        Lagringsenhet e = getEntityManager().find(Lagringsenhet.class, uuid);
+        Avlevering a = avleveringTjeneste.hentAvleveringForLagringsenhet(e.getIdentifikator());
+        return a.getLagringsenhetformat();
+    }
+
     @Override
     public Lagringsenhet create(Lagringsenhet entity) {
         //

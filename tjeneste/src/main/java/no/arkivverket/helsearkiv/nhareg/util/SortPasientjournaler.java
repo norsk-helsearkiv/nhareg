@@ -152,7 +152,7 @@ public class SortPasientjournaler {
 
             return (StringUtils.isBlank(s1))?1:-1;
         }
-         
+
 
         private int compDate(String s1, String s2){
             Date d1 = createDate(s1);

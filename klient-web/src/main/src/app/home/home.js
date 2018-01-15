@@ -506,12 +506,23 @@ angular.module('nha.home', [
         };
 
         $scope.lagrActionEndreLagringsenhet = function (lagringsenhet) {
-            var modal = modalService.endreLagringsenhet('common/modal-service/endre-lagringsenhet-modal.tpl.html',
-                'lagringsenheter/',
-                lagringsenhet);
-            modal.result.then(function () {
-                //TODO
+            var uuid = lagringsenhet.uuid;
+            httpService.hent("lagringsenheter/"+uuid+"/maske", false)
+                .success(function (data, status, headers, config) {
+                    var maske = data;
+                    var modal = modalService.endreLagringsenhet('common/modal-service/endre-lagringsenhet-modal.tpl.html',
+                        'lagringsenheter/',
+                        lagringsenhet,
+                        maske
+                    );
+                    modal.result.then(function () {
+                        //TODO
+                    });
+                }).error(function (data, status, headers, config) {
+                errorService.errorCode(status);
             });
+
+
         };
         $scope.lagrActionHentPasientjournaler = function () {
             if ($scope.selectedRowIndex > -1) {
