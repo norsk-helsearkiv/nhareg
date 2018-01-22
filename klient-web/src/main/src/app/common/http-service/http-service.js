@@ -118,10 +118,6 @@ function httpService($http) {
 		return url;
 	}
 
-	function setCredentials(authdata) {
-		$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-	}
-
 	return {
         logout: logout,
 		ny: ny,
@@ -136,8 +132,6 @@ function httpService($http) {
 		getSokeresultat: getSokeresultat,
 		brukerRolle : brukerRolle,
 		brukerNavn : brukerNavn,
-		getRoot: getRoot,
-		setCredentials: setCredentials
-
+		getRoot: getRoot
 	};
 }

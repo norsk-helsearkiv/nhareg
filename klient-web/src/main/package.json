@@ -12,7 +12,6 @@
     "url": "git@github.com/arkivverket/NHAREG.git"
   },
   "dependencies": {
-    "angular-cookies": "^1.6.7",
     "angular-hotkeys": "~1.4.5"
   },
   "devDependencies": {

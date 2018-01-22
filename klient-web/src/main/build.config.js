@@ -64,26 +64,24 @@ module.exports = {
   vendor_files: {
     js: [
       'vendor/angular/angular.js',
-      'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      'vendor/angular-bootstrap/ui-bootstrap-tpls.js',
       'vendor/placeholders/angular-placeholders-0.0.1-SNAPSHOT.min.js',
       'vendor/angular-ui-router/release/angular-ui-router.js',
       'vendor/angular-ui-utils/modules/route/route.js',
-
       'vendor/angular-translate/angular-translate.js',
       'vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
       'vendor/angular-cookies/angular-cookies.js',
       'vendor/angular-underscore-module/angular-underscore-module.js',
-        'vendor/angular-hotkeys/build/hotkeys.js',
-        'vendor/angular-tablesort/js/angular-tablesort.js',
-      'vendor/angular-cookies/angular-cookies.js'
-
-
+      'vendor/angular-hotkeys/build/hotkeys.js',
+      'vendor/angular-tablesort/js/angular-tablesort.js',
+      'vendor/ng-idle/angular-idle.js',
+      'vendor/ngkookies/ngKookies.js'
     ],
     css: [
     ],
     assets: [
       'vendor/bootstrap/fonts/glyphicons-halflings-regular.ttf',
-      'vendor/bootstrap/fonts/glyphicons-halflings-regular.woff',
+      'vendor/bootstrap/fonts/glyphicons-halflings-regular.woff'
     ]
   },
 };

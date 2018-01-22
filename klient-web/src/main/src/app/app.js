@@ -17,18 +17,24 @@ angular.module('nha', [
         //'nha.login',
         'nha.registrering',
         'nha.registrering.registrering-service',
-        'ngCookies'
+        'ngCookies',
+        'ngIdle'
     ])
 
-    .config(function myAppConfig($stateProvider, $urlRouterProvider, $translateProvider, $httpProvider) {
+    .config(function myAppConfig($stateProvider, $urlRouterProvider, $translateProvider, $httpProvider, IdleProvider, KeepaliveProvider) {
         $urlRouterProvider.otherwise('/');
 
         $translateProvider.useStaticFilesLoader({
             prefix: 'assets/i18n/',
             suffix: '.json'
         });
+
+        $httpProvider.defaults.withCredentials = true;
+
         $translateProvider.preferredLanguage('nb');
-        
+        IdleProvider.idle(10); //idle starts after 10 seconds.
+        IdleProvider.timeout(30*60); //after 30 minutes idle, time the user out
+        KeepaliveProvider.interval(30); //10 sec ping interval for keep-alive ping
     })
 
     .directive('ngEnter', function () {
@@ -196,6 +202,49 @@ angular.module('nha', [
     };
     })
 
-    .controller('AppCtrl', function AppCtrl($http, $scope, $location, diagnoseService) {
+    .run(function(Idle){
+        // start watching when the app runs. also starts the Keepalive service by default.
+        Idle.watch();
+    })
+    .controller('AppCtrl', function AppCtrl($http, $scope, $location, diagnoseService, httpService, $window, $cookies) {
+        $scope.events = [];
+
+        $scope.$on('IdleStart', function() {
+            console.log("User entered idle-mode");
+            // the user appears to have gone idle
+        });
+
+        $scope.$on('IdleWarn', function(e, countdown) {
+            //console.log("User is ideling");
+            // follows after the IdleStart event, but includes a countdown until the user is considered timed out
+            // the countdown arg is the number of seconds remaining until then.
+            // you can change the title or display a warning dialog from here.
+            // you can let them resume their session by calling Idle.watch()
+        });
+
+        $scope.$on('IdleTimeout', function() {
+            console.log("User timed-out...");
+            // the user has timed out (meaning idleDuration + timeout has passed without any activity)
+            // this is where you'd log them
+            httpService.logout()
+                .success(function (status, headers, config) {
+                    $window.location.reload();
+
+                })
+                .error(function () {
+                    delete $cookies["JSESSIONID"];
+                    $window.location.reload();
+                });
+        });
+
+        $scope.$on('IdleEnd', function() {
+            //console.log("app.js: IdleEnd");
+            // the user has come back from AFK and is doing stuff. if you are warning them, you can use this to hide the dialog
+        });
+
+        $scope.$on('Keepalive', function() {
+            //console.log("app.js: Keepalive");
+            // do something to keep the user's session alive
+        });
     });
 
