@@ -6,7 +6,11 @@
     <artifactId>klient-web</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-
+    <parent>
+        <groupId>no.arkivverket.helsearkiv.nhareg</groupId>
+        <artifactId>nhareg</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <name>klient-web</name>
 
     <properties>
@@ -50,6 +54,7 @@
                             <directory>${project.basedir}/src/main/build</directory><!--distr-->
                             <targetPath>.</targetPath>
                         </resource>
+
                     </webResources>
                 </configuration>
             </plugin>

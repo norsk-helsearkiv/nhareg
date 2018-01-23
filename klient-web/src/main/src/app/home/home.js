@@ -67,20 +67,18 @@ angular.module('nha.home', [
             $rootScope.userrole = data;
 
         }).error(function (status) {
-            errorService.errorCode(status);
+            $scope.loggUt();
         });
 
         httpService.brukerNavn().success(function (data) {
             $rootScope.username = data;
 
         }).error(function (status) {
-            errorService.errorCode(status);
         });
 
         httpService.hentAlle("admin/roller", false).success(function (data) {
             $scope.roller = data;
         }).error(function (status) {
-            errorService.errorCode(status);
         });
         $scope.endrePassord = function () {
             var modal = modalService.endrePassord();
@@ -424,15 +422,8 @@ angular.module('nha.home', [
 
         //Util
         $scope.loggUt = function () {
-            httpService.logout()
-                .success(function (status, headers, config) {
-                    $window.location.reload();
-
-                })
-                .error(function () {
-                    delete $cookies["JSESSIONID"];
-                    $window.location.reload();
-                });
+            httpService.logout();
+            $window.location="logout";
         };
 
         $scope.actionLeggTilPasientjournald = function (avlevering) {

@@ -14,7 +14,6 @@ angular.module('nha', [
         'nha.common.diagnose-service',
         'nha.home',
         'nha.state',
-        //'nha.login',
         'nha.registrering',
         'nha.registrering.registrering-service',
         'ngCookies',
@@ -226,15 +225,8 @@ angular.module('nha', [
             console.log("User timed-out...");
             // the user has timed out (meaning idleDuration + timeout has passed without any activity)
             // this is where you'd log them
-            httpService.logout()
-                .success(function (status, headers, config) {
-                    $window.location.reload();
-
-                })
-                .error(function () {
-                    delete $cookies["JSESSIONID"];
-                    $window.location.reload();
-                });
+            httpService.logout();
+            $window.location="logout";
         });
 
         $scope.$on('IdleEnd', function() {
@@ -247,4 +239,3 @@ angular.module('nha', [
             // do something to keep the user's session alive
         });
     });
-
