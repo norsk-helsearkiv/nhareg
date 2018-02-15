@@ -17,7 +17,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}" ng-click="velgBruker($index)" ts-repeat>
+                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}" ng-click="velgBruker(bruker, $index)" ts-repeat>
                             <td>{{ bruker.brukernavn }}</td>
                             <td>{{ bruker.rolle.navn }}</td>
                         </tr>

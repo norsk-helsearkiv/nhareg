@@ -575,14 +575,13 @@ angular.module('nha.home', [
 
         $scope.selectedBrukerRow = null;  // initialize our variable to null
 
-        $scope.velgBruker = function (index) {
+        $scope.velgBruker = function (valgtBruker, index) {
             if (index === $scope.selectedBrukerRow) {
                 $scope.selectedBrukerRow = null;
                 $scope.bruker.brukernavn = null;
                 $scope.bruker.rolle = null;
                 $scope.bruker.printerzpl = null;
             } else {
-                var valgtBruker = $scope.brukere[index];
                 var rolleIndex = $scope.roller.map(function (e) {
                     return e.navn;
                 }).indexOf(valgtBruker.rolle.navn);
