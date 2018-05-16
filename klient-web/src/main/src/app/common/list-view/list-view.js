@@ -240,7 +240,8 @@ angular.module('nha.common.list-view', [
             httpService.hent("pasientjournaler/" + pasientjournal)
                 .success(function (data, status, headers, config) {
                     registreringService.setPasientjournalDTO(data);
-
+                    var avlevering = {lagringsenhetformat:data.lagringsenhetformat};
+                    registreringService.setAvlevering(avlevering);
                     registreringService.setVirksomhet(data.virksomhet);
                     registreringService.setValgtAvtale(data.avtaleBeskrivelse);
                     registreringService.setAvleveringsidentifikator(data.avleveringsidentifikator);

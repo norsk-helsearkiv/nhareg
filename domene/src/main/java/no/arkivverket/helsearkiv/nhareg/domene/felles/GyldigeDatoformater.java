@@ -47,7 +47,21 @@ public class GyldigeDatoformater {
         c.set(Calendar.YEAR, year);
         return c.getTime();
     }
-
+    /**
+     * Returnerer en dato som er rullet med days-antall dager
+     *
+     * negative tall fører til rulling bakover
+     * positive tall fører til rulling forover
+     * @param date
+     * @param days
+     * @return
+     */
+    public static Date getDateRollDay(Date date, int days){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.roll(Calendar.DATE, days);
+        return c.getTime();
+    }
     /**
      * Returnerer en dato som er rullet med days-antall dager
      *

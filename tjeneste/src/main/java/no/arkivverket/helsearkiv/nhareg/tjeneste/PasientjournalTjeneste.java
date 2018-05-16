@@ -126,6 +126,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         qp.add("sistOppdatert", queryParameter.getFirst("sokSistOppdatert"));
 
 
+
+
         List<Pasientjournal> pasientjournaler = getAll(qp);
         return getActiveWithPaging(pasientjournaler, uriInfo);
     }
