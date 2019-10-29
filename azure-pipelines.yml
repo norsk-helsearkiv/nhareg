@@ -1,0 +1,43 @@
+
+variables:
+  vmImage: 'ubuntu-latest'
+  javaHome: 'JDKVersion'
+  mavenOptions: '-Xmx3072m'
+  jdkVersion: '1.8'
+  pomFilePath: ''
+
+stages:
+### BUILD STAGE ###
+- stage: Build
+  jobs:
+# COMPILE
+  - job: compile
+    displayName: compile
+    pool: 
+      vmImage: $(vmImage)
+    steps:
+    - task: Maven@3
+      displayName: maven compile
+      inputs:
+        mavenPomFile: $(pomFilePath)
+        mavenOptions: $(mavenOptions)
+        javaHomeOption: $(javaHome)
+        jdkVersionOption: $(jdkVersion)
+        publishJUnitResults: false
+        goals: 'compile'
+# TEST
+  - job: test
+    displayName: test
+    pool:
+      vmImage: $(vmImage)
+    steps:
+    - task: Maven@3
+      displayName: maven test
+      inputs:
+        mavenPomFile: $(pomFilePath)
+        mavenOptions: $(mavenOptions)
+        javaHomeOption: $(javaHome)
+        jdkVersionOption: $(jdkVersion)
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: false
+        goals: 'test'
