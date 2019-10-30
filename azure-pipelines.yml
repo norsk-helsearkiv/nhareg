@@ -4,7 +4,7 @@ variables:
   javaHome: 'JDKVersion'
   mavenOptions: '-Xmx3072m'
   jdkVersion: '1.8'
-  pomFilePath: ''
+  pomFilePath: 'pom.xml'
 
 stages:
 ### BUILD STAGE ###
@@ -41,3 +41,31 @@ stages:
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
         goals: 'test'
+# STAGING
+- stage: Staging
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'dev'))
+  jobs:
+  - job: package_and_stage
+    displayName: package and stage
+    pool:
+      vmImage: $(vmImage)
+    steps:
+    - task: Maven@3
+      displayName: maven package
+      inputs:
+        mavenPomFile: $(pomFilePath)
+        mavenOptions: $(mavenOptions)
+        javaHomeOption: $(javaHome)
+        jdkVersionOption: $(jdkVersion)
+        publishJUnitResults: false
+        goals: package
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.BuildDirectory)
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        ArtifactName: 'nhareg_artifact'
