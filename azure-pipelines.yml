@@ -7,7 +7,7 @@ variables:
   pomFilePath: 'pom.xml'
 
 stages:
-### BUILD STAGE ###
+### BUILD ###
 - stage: Build
   jobs:
 # COMPILE
@@ -45,8 +45,7 @@ stages:
         publishJUnitResults: false
         # Exclude the 'tjeneste' module from testing
         goals: 'test  -pl !tjeneste'
-
-# STAGING
+### STAGING ###
 - stage: Staging
   dependsOn: Build
   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'dev'))
