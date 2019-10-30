@@ -28,6 +28,9 @@ stages:
 # TEST
   - job: test
     displayName: test
+    dependsOn:
+      - compile
+    condition: and(succeeded(), eq('${{ skip_tests }}', 'true'))
     pool:
       vmImage: $(vmImage)
     steps:
