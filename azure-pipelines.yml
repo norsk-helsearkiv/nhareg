@@ -30,7 +30,7 @@ stages:
     displayName: test
     dependsOn:
       - compile
-    condition: and(succeeded(), eq('${{ SKIP_TESTS }}', 'true'))
+    condition: and(succeeded(), eq('$(SKIP_TESTS)', 'true'))
     pool:
       vmImage: $(vmImage)
     steps:
