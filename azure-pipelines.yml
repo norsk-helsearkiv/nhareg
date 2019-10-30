@@ -38,13 +38,13 @@ stages:
       displayName: maven test
       inputs:
         mavenPomFile: $(pomFilePath)
-        # Exclude the 'tjeneste' module from testing
-        mavenOptions: $(mavenOptions) -pl '!tjeneste'
+        mavenOptions: $(mavenOptions)
         javaHomeOption: $(javaHome)
         jdkVersionOption: $(jdkVersion)
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
-        goals: 'test'
+        # Exclude the 'tjeneste' module from testing
+        goals: 'test  -pl !tjeneste'
 
 # STAGING
 - stage: Staging
