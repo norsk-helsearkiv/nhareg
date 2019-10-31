@@ -9,14 +9,37 @@ variables:
 stages:
 ### BUILD ###
 - stage: Build
+  pool:
+      vmImage: $(vmImage)
   jobs:
 # COMPILE
   - job: compile
     displayName: compile
-    pool: 
-      vmImage: $(vmImage)
     steps:
+    ## Compile web components
+    - task: Npm@1
+      name: npm_install
+      displayName: npm install
+      inputs:
+        workingDir: klient-web/src/main
+        command: install
+    - task: CmdLine@2
+      name: bower_install
+      displayName: bower install
+      inputs:
+        script: 'bower install'
+        workingDirectory: 'klient-web/src/main'
+    - task: Grunt@0
+      name: grunt_compile
+      displayName: grunt build compile
+      inputs:
+        gruntFile: 'gruntfile.js'
+        targets: 'build compile'
+        workingDirectory: 'klient-web/src/main'
+        gruntCli: 'node_modules/grunt-cli/bin/grunt'
+    ## Compile maven project
     - task: Maven@3
+      name: maven_compile
       displayName: maven compile
       inputs:
         mavenPomFile: $(pomFilePath)
@@ -31,10 +54,9 @@ stages:
     dependsOn:
       - compile
     condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
-    pool:
-      vmImage: $(vmImage)
     steps:
     - task: Maven@3
+      name: maven_test
       displayName: maven test
       inputs:
         mavenPomFile: $(pomFilePath)
@@ -43,12 +65,12 @@ stages:
         jdkVersionOption: $(jdkVersion)
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
-        # Exclude the 'tjeneste' module from testing
+        # Exclude the 'tjeneste' module from testing, relies on external config
         goals: 'test  -pl !tjeneste'
 ### STAGING ###
 - stage: Staging
   dependsOn: Build
-  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'dev'))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master'))
   jobs:
   - job: package_and_stage
     displayName: package and stage
