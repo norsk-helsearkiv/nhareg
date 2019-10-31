@@ -34,9 +34,8 @@ stages:
       name: grunt_compile
       displayName: grunt build compile
       inputs:
-        gruntFile: Gruntfile.js
+        gruntFile: $(webFolder)/Gruntfile.js
         targets: build compile
-        workingDirectory: $(webFolder)
         gruntCli: 'node_modules/grunt-cli/bin/grunt'
     ## Compile maven project
     - task: Maven@3
