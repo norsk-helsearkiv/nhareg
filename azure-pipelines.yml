@@ -5,6 +5,7 @@ variables:
   mavenOptions: '-Xmx3072m'
   jdkVersion: '1.8'
   pomFilePath: 'pom.xml'
+  webFolder: klient-web/src/main
 
 stages:
 ### BUILD ###
@@ -21,21 +22,21 @@ stages:
       name: npm_install
       displayName: npm install
       inputs:
-        workingDir: klient-web/src/main
+        workingDir: $(webFolder)
         command: install
     - task: CmdLine@2
       name: bower_install
       displayName: bower install
       inputs:
         script: 'bower install'
-        workingDirectory: 'klient-web/src/main'
+        workingDirectory: $(webFolder)
     - task: Grunt@0
       name: grunt_compile
       displayName: grunt build compile
       inputs:
-        gruntFile: 'gruntfile.js'
-        targets: 'build compile'
-        workingDirectory: 'klient-web/src/main'
+        gruntFile: Gruntfile.js
+        targets: build compile
+        workingDirectory: $(webFolder)
         gruntCli: 'node_modules/grunt-cli/bin/grunt'
     ## Compile maven project
     - task: Maven@3
