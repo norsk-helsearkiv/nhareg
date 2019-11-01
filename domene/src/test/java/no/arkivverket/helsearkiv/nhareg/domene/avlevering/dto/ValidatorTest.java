@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 public class ValidatorTest {
 
     @Test
-    public void valider_nullObjekt_feil() {
+    public void validator_nullObjekt_skalGiEnFeil() {
         ArrayList<Valideringsfeil> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, null).valider();
         
@@ -16,17 +16,17 @@ public class ValidatorTest {
     }
     
     @Test
-    public void valider_tomtObjekt_feil() {
+    public void validator_tomDto_skalGiIngenFeil() {
         PersondataDTO person = new PersondataDTO();
         
         ArrayList<Valideringsfeil> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
         
-        assertFalse(feil.isEmpty());
+        assert(feil.isEmpty());
     }
     
     @Test
-    public void valider_objekt_riktig() {
+    public void validator_DtoMedData_skalGiNullFeil() {
         PersondataDTO person = new PersondataDTO();
         String[] enheter = {"1"};
         person.setLagringsenheter(enheter);
@@ -43,8 +43,6 @@ public class ValidatorTest {
         ArrayList<Valideringsfeil> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
         
-        assertTrue(feil.isEmpty());
+        assert(feil.isEmpty());
     }
-    
-    
 }

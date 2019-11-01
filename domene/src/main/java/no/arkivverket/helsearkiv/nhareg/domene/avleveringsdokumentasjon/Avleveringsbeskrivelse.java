@@ -21,9 +21,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * 
- *                     En instans av denne klassen benyttes for å registrere opplysninger om en avtale om avlevering av materiale fra et pasientarkiv som er inngått mellom arkivskaper og arkivdepot.
- *                 
- * 
+ * En instans av denne klassen benyttes for å registrere opplysninger om en avtale om avlevering av materiale fra et
+ * pasientarkiv som er inngått mellom arkivskaper og arkivdepot.
+ *
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
@@ -64,7 +64,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Avleveringsbeskrivelse
     implements Serializable
 {
-
     @XmlElement(required = true)
     protected String avleveringsidentifikator;
     @XmlElement(name = "arkivskaper_ID", required = true)
@@ -281,5 +280,4 @@ public class Avleveringsbeskrivelse
     public void setUtfyllendeOpplysninger(String value) {
         this.utfyllendeOpplysninger = value;
     }
-
 }
