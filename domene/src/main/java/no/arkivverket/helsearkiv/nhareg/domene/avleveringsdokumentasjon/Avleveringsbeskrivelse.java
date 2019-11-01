@@ -21,9 +21,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * 
- *                     En instans av denne klassen benyttes for å registrere opplysninger om en avtale om avlevering av materiale fra et pasientarkiv som er inngått mellom arkivskaper og arkivdepot.
- *                 
- * 
+ * En instans av denne klassen benyttes for å registrere opplysninger om en avtale om avlevering av materiale fra et
+ * pasientarkiv som er inngått mellom arkivskaper og arkivdepot.
+ *
  * <p>Java class for anonymous complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
