@@ -64,7 +64,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Avleveringsbeskrivelse
     implements Serializable
 {
-
     @XmlElement(required = true)
     protected String avleveringsidentifikator;
     @XmlElement(name = "arkivskaper_ID", required = true)
@@ -281,5 +280,4 @@ public class Avleveringsbeskrivelse
     public void setUtfyllendeOpplysninger(String value) {
         this.utfyllendeOpplysninger = value;
     }
-
 }

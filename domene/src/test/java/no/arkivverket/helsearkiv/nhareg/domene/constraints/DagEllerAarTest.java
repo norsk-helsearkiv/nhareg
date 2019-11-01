@@ -21,62 +21,62 @@ public class DagEllerAarTest {
     }
     
     @Test
-    public void isValid_null_true() {
+    public void dagEllerAarValidator_null_skalGiTrue() {
         boolean returnValue = validator.isValid(null, null);
-        assertEquals(returnValue, true);
+        assertTrue(returnValue);
     }
     
     @Test
-    public void isValid_skilleTegn_false() {
+    public void dagEllerAarValidator_bindestrek_skalGiTrue() {
         boolean returnValue = validator.isValid("01-01-1999", null);
-        assertEquals(returnValue, false);
+        assertTrue(returnValue);
     }
     
     @Test
-    public void isValid_skilleTegn_true() {
+    public void dagEllerAarValidator_punktum_skalGiTrue() {
         boolean returnValue = validator.isValid("01.01.1999", null);
-        assertEquals(returnValue, true);
+        assertTrue(returnValue);
     }
     
     @Test
-    public void isValid_skuddAar_false() {
+    public void dagEllerAarValidator_ikkeEksisterendeDato_skalGiFalse() {
         boolean returnValue = validator.isValid("29.02.2015", null);
-        assertEquals(returnValue, false);
+        assertFalse(returnValue);
     }
     
     @Test
-    public void isValid_skuddAar_true() {
+    public void dagEllerAarValidator_gyldigSkuddaarsDato_skalGiTrue() {
         boolean returnValue = validator.isValid("29.02.2016", null);
-        assertEquals(returnValue, true);
+        assertTrue(returnValue);
     }
     
     @Test
-    public void isValid_valid_true() {
+    public void dagEllerAarValidator_gyldigDatoFormatEn_skalGiTrue() {
         boolean returnValue = validator.isValid("01.02.2016", null);
-        assertEquals(returnValue, true);
-    }
-    
-    @Test
-    public void isValid_aar_true() {
-        boolean returnValue = validator.isValid("2016", null);
-        assertEquals(returnValue, true);
+        assertTrue(returnValue);
     }
 
     @Test
-    public void isValid_mndAar_false() {
+    public void dagEllerAarValidator_gyldigDatoFormatTo_skalGiTrue() {
+        boolean returnValue = validator.isValid("1.1.2016", null);
+        assertTrue(returnValue);
+    }
+
+    @Test
+    public void dagEllerAarValidator_gyldigAar_skalGiTrue() {
+        boolean returnValue = validator.isValid("2016", null);
+        assertTrue(returnValue);
+    }
+
+    @Test
+    public void dagEllerAarValidator_ugyldigMaanedAar_skalGiFalse() {
         boolean returnValue = validator.isValid("1.2016", null);
-        assertEquals(returnValue, false);
+        assertFalse(returnValue);
     }
     
     @Test
-    public void isValid_nuller_false() {
+    public void dagEllerAarValidator_ugyldigDato_skalGiFalse() {
         boolean returnValue = validator.isValid("0.1.2016", null);
-        assertEquals(returnValue, false);
+        assertFalse(returnValue);
     }
- 
-    @Test
-    public void isValid_utenNull_true() {
-        boolean returnValue = validator.isValid("1.1.2016", null);
-        assertEquals(returnValue, true);
-    }   
 }
