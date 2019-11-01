@@ -8,8 +8,6 @@ import java.io.Serializable;
  */
 
 public class PersondataDTO implements Serializable {
-
-
     private String[] lagringsenheter;
     private String fanearkid;
     private String journalnummer;
