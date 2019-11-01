@@ -35,7 +35,5 @@ public class AvleveringTest {
         assertTrue(constraintViolations.size() > 0);
         assertEquals(
             "may not be null", constraintViolations.iterator().next().getMessage());
-
     }
-    
 }
