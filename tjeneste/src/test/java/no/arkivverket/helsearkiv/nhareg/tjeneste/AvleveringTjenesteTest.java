@@ -1,16 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.net.URI;
-import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
@@ -19,12 +8,21 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSoke
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.ws.rs.core.*;
+import java.net.URI;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class AvleveringTjenesteTest {
@@ -54,7 +52,7 @@ public class AvleveringTjenesteTest {
         String avleveringsid = "Avlevering-1";
         PersondataDTO pasient = getPasient();
         PasientjournalDTO nyPasient = (PasientjournalDTO) tjeneste.nyPasientjournal(avleveringsid, pasient).getEntity();
-        assertTrue(nyPasient.getPersondata().getUuid() != null);
+        assertNotNull(nyPasient.getPersondata().getUuid());
     }
 
     @Test
@@ -197,5 +195,4 @@ public class AvleveringTjenesteTest {
             }
         };
     }
-
 }

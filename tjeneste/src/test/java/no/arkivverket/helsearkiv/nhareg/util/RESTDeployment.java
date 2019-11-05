@@ -1,5 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
@@ -20,13 +23,15 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 public class RESTDeployment {
 
     public static WebArchive deployment() {
-
         return NharegDeployment.deployment()
                 //model
                 .addPackage(Avtale.class.getPackage())
                 .addPackage(ListeObjekt.class.getPackage())
                 .addPackage(PersondataDTO.class.getPackage())
                 .addPackage(DagEllerAar.class.getPackage())
+                .addPackage(UserService.class.getPackage())
+                .addPackage(BrukerDTO.class.getPackage())
+                .addPackage(Bruker.class.getPackage())
                 // exception
                 .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
                 // tjeneste
@@ -46,10 +51,5 @@ public class RESTDeployment {
                 .addPackage(CommandVisitor.class.getPackage())
                 .addPackage(AbstractSortedMapDecorator.class.getPackage())
                 .addPackage(PredicatedList.class.getPackage());
-
-//                .addClass(AllocatedSeats.class)
-//                .addClass(MediaPath.class)
-//                .addClass(MediaManager.class);
     }
-
 }
