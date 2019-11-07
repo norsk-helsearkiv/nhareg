@@ -5,12 +5,13 @@
              version="2.1">    
     <persistence-unit name="test-primary">
         <jta-data-source>java:jboss/datasources/NharegTestDS</jta-data-source>
-        <jar-file>domene-1.0-SNAPSHOT.jar</jar-file>
         <mapping-file>META-INF/orm.xml</mapping-file>
+        <jar-file>domene-1.0-SNAPSHOT.jar</jar-file>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Properties for Hibernate -->

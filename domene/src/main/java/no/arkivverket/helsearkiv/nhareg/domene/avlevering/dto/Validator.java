@@ -66,5 +66,4 @@ public class Validator<T> {
             throw new ValideringsfeilException(valideringsfeil);
         }
     }
-
 }

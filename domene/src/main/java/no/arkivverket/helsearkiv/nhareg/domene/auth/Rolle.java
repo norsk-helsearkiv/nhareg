@@ -6,8 +6,6 @@ import javax.persistence.Id;
 /**
  * Created by haraldk on 15.04.15.
  */
-
-
 @Entity
 public class Rolle {
 

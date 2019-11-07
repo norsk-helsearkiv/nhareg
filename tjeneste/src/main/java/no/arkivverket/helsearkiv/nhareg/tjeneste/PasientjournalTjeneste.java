@@ -56,7 +56,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @EJB
     private KjønnTjeneste kjønnTjeneste;
     @EJB
-    DiagnoseTjeneste diagnoseTjeneste;
+    private DiagnoseTjeneste diagnoseTjeneste;
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
     @EJB
@@ -81,7 +81,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     private KonfigparamTjeneste konfigparam;
 
     public PasientjournalTjeneste() {
-        super(Pasientjournal.class, String.class, "uuid");
+        super(Pasientjournal.class, "uuid");
     }
 
     @Override

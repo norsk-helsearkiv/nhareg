@@ -1,15 +1,22 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.utilities;
 
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
 import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
 import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
+import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+import no.arkivverket.helsearkiv.nhareg.utilities.NharegDeployment;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
@@ -28,10 +35,15 @@ public class RESTDeployment {
                 .addPackage(Avtale.class.getPackage())
                 .addPackage(ListeObjekt.class.getPackage())
                 .addPackage(PersondataDTO.class.getPackage())
-                .addPackage(DagEllerAar.class.getPackage())
+                .addPackage(DatoEllerAar.class.getPackage())
+//                .addPackage(DagEllerAar.class.getPackage())
+                .addPackage(Konfigparam.class.getPackage())
+                .addPackage(KonfigparamTjeneste.class.getPackage())
+                .addPackage(ValideringsfeilException.class.getPackage())
                 .addPackage(UserService.class.getPackage())
-                .addPackage(BrukerDTO.class.getPackage())
                 .addPackage(Bruker.class.getPackage())
+                .addPackage(BrukerDTO.class.getPackage())
+                .addPackage(PasientjournalDTO.class.getPackage())
                 // exception
                 .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
                 // tjeneste

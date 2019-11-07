@@ -25,56 +25,59 @@ import java.security.NoSuchAlgorithmException;
  * Created by haraldk on 26.03.15.
  */
 public class TestRunner {
-    public static void main(String[] args) throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+    public static void main(String[] args) {
+        try {
+            SSLContextBuilder builder = new SSLContextBuilder();
+            builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build(),
+                                                                              SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            final CloseableHttpClient c = HttpClients.custom().setSSLSocketFactory(
+                sslsf).build();
+            // runPasientjournaler(c);
+            runDiagnose(c);
+            //        HttpClient c = HttpClientBuilder.create().build();
 
-
-
-
-            try {
-                SSLContextBuilder builder = new SSLContextBuilder();
-                builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
-                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build(),
-                        SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-                final CloseableHttpClient c = HttpClients.custom().setSSLSocketFactory(
-                        sslsf).build();
-               // runPasientjournaler(c);
-                runDiagnose(c);
-    //        HttpClient c = HttpClientBuilder.create().build();
-
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
-    public static void runDiagnose(HttpClient c) throws Exception{
+    public static void runDiagnose(HttpClient c) throws Exception {
         String url = "https://localhost:8443/api/pasientjournaler/<uuid>/diagnoser";
-        for (int j=21;j<Puuids.uuids.length;j++) {
+        for (int j = 21; j < Puuids.uuids.length; j++) {
             String urlid =Puuids.uuids[j];
             url = url.replace("<uuid>", urlid);
             final HttpPost post = new HttpPost(url);
             post.addHeader("Content-Type", "application/json;charset=UTF-8");
             post.addHeader("Authorization", "Basic TkhBQnJ1a2VyMToxMjM=");
             post.addHeader("Accept", "application/json, text/plain, */*");
-            for (int i=0;i<10;i++) {
-                post.setEntity(new StringEntity("{\"diagnosedato\":\"1950\",\"diagnosetekst\":\"Tarminfeksjon forårsaket av andre organismer\",\"diagnosekode\":\"008\"}", "UTF-8"));
+            
+            for (int i = 0; i < 10; i++) {
+                post.setEntity(new StringEntity("{\"diagnosedato\":\"1950\"," 
+                                                + "\"diagnosetekst\":\"Tarminfeksjon forårsaket av andre organismer\"," 
+                                                + "\"diagnosekode\":\"008\"}",
+                                                "UTF-8"));
                 HttpResponse res = c.execute(post);
                 HttpEntity n = res.getEntity();
                 String value = inputStreamToString(n.getContent());
                 System.out.println(value);
             }
-            System.out.println(urlid+" got 10 diagnoser( "+j+"/"+Puuids.uuids.length);
+            System.out.println(urlid + " got 10 diagnoser( " + j + "/" + Puuids.uuids.length);
         }
     }
 
-    public static void runPasientjournaler(HttpClient c) throws Exception{
-        for (int i =0;i<10000;i++) {
+    public static void runPasientjournaler(HttpClient c) throws Exception {
+        for (int i = 0; i < 10000; i++) {
             final HttpPost post = new HttpPost("https://localhost:8443/api/avleveringer/avlevering/pasientjournaler");
             post.addHeader("Content-Type", "application/json;charset=UTF-8");
             post.addHeader("Authorization", "Basic TkhBQnJ1a2VyMToxMjM=");
             post.addHeader("Accept", "application/json, text/plain, */*");
-            post.setEntity(new StringEntity("{\"lagringsenheter\": [\"enhet\"], \"journalnummer\": \"1\", \"navn\": \"Navn\", \"kjonn\": \"M\", \"fodt\": \"1900\", \"dod\": \"mors\"}"));
-
+            post.setEntity(new StringEntity("{\"lagringsenheter\": [\"enhet\"], " 
+                                            + "\"journalnummer\": \"1\"," 
+                                            + " \"navn\": \"Navn\"," 
+                                            + " \"kjonn\": \"M\", " 
+                                            + "\"fodt\": \"1900\"," 
+                                            + " \"dod\": \"mors\"}"));
             HttpResponse res = c.execute(post);
             HttpEntity n = res.getEntity();
             String value = inputStreamToString(n.getContent());
@@ -85,6 +88,7 @@ public class TestRunner {
             System.out.println("\"" + id + "\",");
         }
     }
+    
     // Fast Implementation
     private static String inputStreamToString(InputStream is) throws Exception{
         String line = "";
@@ -101,5 +105,4 @@ public class TestRunner {
         // Return full string
         return total.toString();
     }
-
 }

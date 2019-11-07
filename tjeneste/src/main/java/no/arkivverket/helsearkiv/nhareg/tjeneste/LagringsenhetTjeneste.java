@@ -1,23 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.persistence.Query;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
@@ -32,26 +14,42 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
 import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
 import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
+import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.persistence.Query;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.*;
+
 /**
  * <p>
  * JAX-RS endepunkt for håndtering av {@link Lagringsenhet}er. Arver metodene
  * fra {@link EntitetsTjeneste}i tillegg til egne metoder.
  * </p>
  *
- */
-    @Path("/lagringsenheter")
-/**
  * <p>
  * Dette er en stateless service, vi deklarer den som EJB for å få
  * transaksjonsstøtte.
  * </p>
  */
 @Stateless
-@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+//@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@PermitAll
+@Path("/lagringsenheter")
 public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, String> {
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final javax.validation.Validator validator = factory.getValidator();
+
     @Resource
     private SessionContext sessionContext;
     @EJB
@@ -66,8 +64,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     private KonfigparamTjeneste konfigParam;
 
     public LagringsenhetTjeneste() {
-        super(Lagringsenhet.class, String.class, "uuid");
-
+        super(Lagringsenhet.class, "uuid");
     }
 
     @PUT
@@ -78,36 +75,36 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pasientjournalUuid);
 
         //sjekk om lagringsenhet finnes i en annen avlevering
-        List<Valideringsfeil> valideringsfeil = avleveringTjeneste.validerLagringsenheter(avleveringsId, Arrays.asList(lagringsenhet));
+        List<Valideringsfeil> valideringsfeil = avleveringTjeneste.validerLagringsenheter(avleveringsId, Collections.singletonList(lagringsenhet));
         if (!valideringsfeil.isEmpty()) {
-            Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenhetens identifikator finnes i en annen avlevering, benytt en annen identifikator");
-
-            return Response.status(Response.Status.BAD_REQUEST).entity(Arrays.asList(feil)).build();
+            Valideringsfeil feil = new Valideringsfeil("identifikator",
+                    "Lagringsenhetens identifikator finnes i en annen avlevering, benytt en annen identifikator");
+            return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
         }
 
         Integer count = getLagringsenhetCount(lagringsenhet.getIdentifikator());
-        if (count>0){
-            Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenhetens identifikator er ikke unik, benytt en annen identifikator");
-            return Response.status(Response.Status.BAD_REQUEST).entity(Arrays.asList(feil)).build();
+        if (count > 0) {
+            Valideringsfeil feil = new Valideringsfeil("identifikator",
+                    "Lagringsenhetens identifikator er ikke unik, benytt en annen identifikator");
+            return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
         }
 
         Lagringsenhet updated = update(lagringsenhet);
         return Response.ok(updated).build();
     }
 
-    public final String getFirstAvleveringsidentifikator(String lagringsenhetUuid){
+    public final String getFirstAvleveringsidentifikator(String lagringsenhetUuid) {
         Query query = getEntityManager().createNativeQuery(
                 "select Avlevering_avleveringsidentifikator " +
                 "from Avlevering_Pasientjournal " +
                 "where pasientjournal_uuid " +
                 "in (select pasientjournal_uuid " +
-                "   from pasientjournal_lagringsenhet " +
-                "   where lagringsenhet_uuid=?)");
+                "from pasientjournal_lagringsenhet " +
+                "where lagringsenhet_uuid=?)");
         query.setParameter(1, lagringsenhetUuid);
         List<String> result = query.getResultList();
         return String.valueOf(result.get(0));
     }
-
 
     public final Integer getLagringsenhetCount(String lagringsenhetIdentifikator){
         Query query = getEntityManager().createNativeQuery("select count(*) from Lagringsenhet where identifikator=?");
@@ -116,7 +113,8 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         BigInteger result = (BigInteger) query.getSingleResult();
         return Integer.valueOf(result.intValue());
     }
-    public final String getPasientjournalUuid(String lagringsenhetUuid){
+
+    public final String getPasientjournalUuid(String lagringsenhetUuid) {
         Query query = getEntityManager().createNativeQuery("select Pasientjournal_uuid from Pasientjournal_Lagringsenhet where lagringsenhet_uuid=?");
         query.setParameter(1, lagringsenhetUuid);
         query.setMaxResults(1);
@@ -128,39 +126,36 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/sistBrukte")
-    public String getSistBrukteLagringsenhet(){
+    public String getSistBrukteLagringsenhet() {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final String lagringsenhet = userTjeneste.getLagringsenhet(username);
-        return lagringsenhet;
+        return userTjeneste.getLagringsenhet(username);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/{id}/pasientjournaler")
-    public List<PasientjournalSokeresultatDTO> getPasientjournaler(@PathParam("id") final String id){
-        List<PasientjournalSokeresultatDTO> list = pasientjournalTjeneste.hentPasientjournalerForLagringsenhet(id);
-
-        return list;
+    public List<PasientjournalSokeresultatDTO> getPasientjournaler(@PathParam("id") final String id) {
+        return pasientjournalTjeneste.hentPasientjournalerForLagringsenhet(id);
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Path("/flytt")
-    public Response flyttPasientjournaler(final FlyttPasientjournalDTO lagringsenhet){
+    public Response flyttPasientjournaler(final FlyttPasientjournalDTO lagringsenhet) {
         Lagringsenhet enhet = hentLagringsenhetMedIdentifikator(lagringsenhet.getLagringsenhetIdentifikator());
-        if (enhet==null){
+
+        if (enhet == null) {
             Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenheten finnes ikke");
-            return Response.status(Response.Status.BAD_REQUEST).entity(Arrays.asList(feil)).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
         }
 
         int updated = oppdaterPasientjournalLagringsenhet(lagringsenhet.getPasientjournalUuids(), enhet);
-
         return Response.ok(updated).build();
     }
 
-    private int oppdaterPasientjournalLagringsenhet(List<String> uuids, Lagringsenhet enhet){
+    private int oppdaterPasientjournalLagringsenhet(List<String> uuids, Lagringsenhet enhet) {
         for (String uuid: uuids){
             Pasientjournal p = getEntityManager().find(Pasientjournal.class, uuid);
             p.getLagringsenhet().clear();
@@ -193,9 +188,10 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/{uuid}/maske")
-    public String getLagringsenhetMaske(@PathParam("uuid") String uuid){
+    public String getLagringsenhetMaske(@PathParam("uuid") String uuid) {
         Lagringsenhet e = getEntityManager().find(Lagringsenhet.class, uuid);
         Avlevering a = avleveringTjeneste.hentAvleveringForLagringsenhet(e.getIdentifikator());
+
         return a.getLagringsenhetformat();
     }
 
@@ -205,8 +201,8 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         // Lagringsenhet.identifikator skal være unikt,
         // så vi må hindre at det opprettes flere med samme identifikator.
         //
-                
         ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+
         if (entity == null) {
             valideringsfeil.add(new Valideringsfeil("Lagringsenhet", "NotNull"));
             throw new ValideringsfeilException(valideringsfeil);
@@ -214,6 +210,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
             valideringsfeil.add(new Valideringsfeil("Lagringsenhet.identifikator", "NotNull"));
             throw new ValideringsfeilException(valideringsfeil);
         }
+
         entity.setUuid(UUID.randomUUID().toString());
         //
         // Validering
@@ -228,7 +225,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     /**
      * Henter lagringsenhet med identifikator.
      *
-     * @param identifikator
+     * @param identifikator id
      * @return Lagringsenhet.
      */
     public Lagringsenhet hentLagringsenhetMedIdentifikator(String identifikator) {
@@ -247,6 +244,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         if (!lagringsenheter.isEmpty()) {
             lagringsenhet = lagringsenheter.get(0);
         }
+
         return lagringsenhet;
     }
 
@@ -259,15 +257,15 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         Avlevering avl = avleveringTjeneste.getAvlevering(avlId);
 
         final String username = sessionContext.getCallerPrincipal().getName();
-
         Bruker bruker = userTjeneste.findByUsername(username);
+
         String printerIp = bruker.getPrinterzpl();
-        if (printerIp==null){
+        if (printerIp == null) {
             printerIp = "127.0.0.1";
         }
 
         Integer printerPort = konfigParam.getInt(KonfigparamTjeneste.KONFIG_PRINTER_PORT);
-        if (printerPort==null){
+        if (printerPort == null) {
             printerPort = 9100;
         }
 
@@ -280,10 +278,11 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         getEntityManager().merge(le);
         return Response.ok().build();
     }
+
     /**
      * Henter Lagringsenheter for en avlevering.
-     * @param avleveringsidentifikator
-     * @return 
+     * @param avleveringsidentifikator id
+     * @return liste med lagringsenheter
      */
     public List<Lagringsenhet> hentLagringsenheterForAvlevering(String avleveringsidentifikator) {
         String select = "SELECT distinct l"
@@ -294,7 +293,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
                 + "    ORDER BY l.identifikator";
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("avleveringsidentifikator", avleveringsidentifikator);
-        List<Lagringsenhet> lagringsenheter = query.getResultList();
-        return lagringsenheter;
+
+        return (List<Lagringsenhet>) query.getResultList();
     }
 }

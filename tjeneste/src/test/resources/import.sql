@@ -7,7 +7,6 @@ INSERT INTO VIRKSOMHET (ORGANISASJONSNUMMER, NAVN) VALUES ('100', 'Testorganisas
 --
 INSERT INTO AVTALE (AVTALEIDENTIFIKATOR, AVTALEBESKRIVELSE, AVTALEDATO, VIRKSOMHET_ORGANISASJONSNUMMER) VALUES ('Avtale1', 'Første avtale', '2015-01-23 17:39:41.281', '100');
 INSERT INTO AVTALE (AVTALEBESKRIVELSE, AVTALEDATO, AVTALEIDENTIFIKATOR,VIRKSOMHET_ORGANISASJONSNUMMER) VALUES ('Avtale for testing', '2014-09-30 19:30:00', 'A1234','100');
-
 --
 -- AVLEVERING
 --
@@ -16,8 +15,8 @@ INSERT INTO AVLEVERING (AVLEVERINGSIDENTIFIKATOR, ARKIVSKAPER, AVLEVERINGSBESKRI
 --
 -- KJØNN
 --
-insert into Kjonn(code,displayName) values ('K','Kvinne');
-insert into Kjonn(code,displayName) values ('M','Mann');
+INSERT INTO KJONN(CODE,DISPLAYNAME) VALUES ('K','Kvinne');
+INSERT INTO KJONN(CODE,DISPLAYNAME) VALUES ('M','Mann');
 -- PASIENTJOURNAL
 --
 INSERT INTO PASIENTJOURNAL (UUID, PID, JOURNALNUMMER, LOPENUMMER, DDATO, FDATO, KJONN, foersteKontaktAar, PNAVN, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT) VALUES ('uuid1', '01019912345', '1', '2', '2015-01-23 17:42:47.356', '2015-01-23 17:42:47.356', 'K', NULL, 'Hunden Fido', 'AS', 'Registrering', '2015-01-23 17:42:47.356');
@@ -45,7 +44,7 @@ INSERT INTO PASIENTJOURNAL_LAGRINGSENHET VALUES('uuid3', 'enhet-1');
 --
 INSERT INTO CV (CODESYSTEMVERSION, CODESYSTEM, CODE, DISPLAYNAME, ORIGINALTEXT) VALUES ('1.0', '1.2.3', 'Code0', 'Code Zero', NULL);
 INSERT INTO CV (CODESYSTEMVERSION, CODESYSTEM, CODE, DISPLAYNAME, ORIGINALTEXT) VALUES ('1.0', '1.2.3', 'Code1', 'Code One', NULL);
-insert into CV (displayName, originalText, codeSystemVersion, codeSystem, code) values ('displayName', 'originalText', 'codeSystemVersion', 'codeSystem', 'code');
+INSERT INTO CV (DISPLAYNAME, ORIGINALTEXT, CODESYSTEMVERSION, CODESYSTEM, CODE) VALUES ('displayName', 'originalText', 'codeSystemVersion', 'codeSystem', 'code');
 --
 -- DIAGNOSE
 --
@@ -54,14 +53,53 @@ INSERT INTO DIAGNOSEKODE (CODESYSTEMVERSION, CODESYSTEM, CODE) VALUES ('codeSyst
 INSERT INTO DIAGNOSE (UUID, DATO, DIAGNOSETEKST, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT, DIAGNOSEKODE_CODESYSTEMVERSION, DIAGNOSEKODE_CODESYSTEM, DIAGNOSEKODE_CODE) VALUES ('uuid-diagnose-1', CURRENT_TIMESTAMP, 'Influensa', 'AS', 'Registrering', CURRENT_TIMESTAMP, '1.0', '1.2.3', 'Code0');
 INSERT INTO DIAGNOSE (UUID, DATO, DIAGNOSETEKST, OPPDATERTAV, PROSESSTRINN, SISTOPPDATERT, DIAGNOSEKODE_CODESYSTEMVERSION, DIAGNOSEKODE_CODESYSTEM, DIAGNOSEKODE_CODE) VALUES ('uuid-diagnose-2', CURRENT_TIMESTAMP, 'Influensa', 'AS', 'Registrering', CURRENT_TIMESTAMP, '1.0', '1.2.3', 'Code0');
 --
--- PASIENTJOURNAL_DIAGNOSE
+-- PASIENTJOURNAL_DIAGNOSE 
 --
 INSERT INTO PASIENTJOURNAL_DIAGNOSE (PASIENTJOURNAL_UUID, DIAGNOSE_UUID) VALUES ('uuid1', 'uuid-diagnose-1');
 INSERT INTO PASIENTJOURNAL_DIAGNOSE (PASIENTJOURNAL_UUID, DIAGNOSE_UUID) VALUES ('uuid1', 'uuid-diagnose-2');
-
 --
 -- AVLEVERING_PASIENTJOURNAL
 --
-INSERT INTO Avlevering_Pasientjournal(Avlevering_avleveringsidentifikator,pasientjournal_uuid) VALUES ('Avlevering-1', 'uuid1');
-INSERT INTO Avlevering_Pasientjournal(Avlevering_avleveringsidentifikator,pasientjournal_uuid) VALUES ('Avlevering-1', 'uuid2');
-INSERT INTO Avlevering_Pasientjournal(Avlevering_avleveringsidentifikator,pasientjournal_uuid) VALUES ('Avlevering-1', 'uuid3');
+INSERT INTO AVLEVERING_PASIENTJOURNAL(AVLEVERING_AVLEVERINGSIDENTIFIKATOR,PASIENTJOURNAL_UUID) VALUES ('Avlevering-1', 'uuid1');
+INSERT INTO AVLEVERING_PASIENTJOURNAL(AVLEVERING_AVLEVERINGSIDENTIFIKATOR,PASIENTJOURNAL_UUID) VALUES ('Avlevering-1', 'uuid2');
+INSERT INTO AVLEVERING_PASIENTJOURNAL(AVLEVERING_AVLEVERINGSIDENTIFIKATOR,PASIENTJOURNAL_UUID) VALUES ('Avlevering-1', 'uuid3');
+--
+-- KONFIGPARAM
+--
+INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('LowLim', '5.11.2019');
+INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('MaxAge', '110');
+---
+--- BRUKER AND LOGIN
+---
+CREATE TABLE Rolle(navn VARCHAR(255) NOT NULL PRIMARY KEY);
+ 
+CREATE TABLE Bruker(
+  brukernavn VARCHAR(255) NOT NULL PRIMARY KEY ,
+  passord VARCHAR(255) NOT NULL,
+  rollenavn VARCHAR(255) NOT NULL,
+  authtoken VARCHAR(255),
+  CONSTRAINT fk_rolle_navn FOREIGN KEY (rollenavn) REFERENCES Rolle(navn)
+);
+--CREATE TABLE BrukerRolle(
+--  id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+--  brukernavn VARCHAR(255) NOT NULL,
+--  rolle VARCHAR(255) NOT NULL,
+--  CONSTRAINT fk_rolle_navn FOREIGN KEY (rolle) REFERENCES Rolle(navn),
+--  CONSTRAINT fk_bruker_brukernavn FOREIGN KEY (brukernavn) REFERENCES Bruker(brukernavn)
+--);
+--
+--CREATE TABLE Rolle(
+--  navn VARCHAR(255) NOT NULL PRIMARY KEY
+--);
+--
+--INSERT INTO nhareg.Rolle(navn) values('bruker');
+--INSERT INTO nhareg.Bruker(brukernavn, passord, rollenavn) VALUES ('nhabruker2', 'BgWGA+ADDzl11fikSWj2FYtZl4xNNfm5cln0oUWC49w=', 'bruker');
+--
+--INSERT INTO nhareg.BrukerRolle(brukernavn, rolle) values('nhabruker1', 'admin');
+--select * from BrukerRolle;
+--
+--select passord as 'Password' from Bruker where brukernavn='nhabruker1';
+--
+--select passwd from Users where username;
+--select rolle, 'Roles' from BrukerRolle where brukernavn='nhabruker1';
+--select rolle as 'role', 'Roles' from BrukerRolle where brukernavn='nhabruker1';
