@@ -108,21 +108,10 @@ public class AvleveringTjenesteTest {
             public Object call() throws ParseException {
                 final String avleveringsid = "Avlevering-1";
                 final PersondataDTO persondataDTO = getPasient();
-                log.info(String.format("Avleverings id: %s", avleveringsid));
-                log.info(String.format("persondataDTO: %s", persondataDTO));
-                log.info(persondataDTO);
-                try {
-                    final Response response = tjeneste.nyPasientjournal(avleveringsid, persondataDTO);
-                } catch (ValideringsfeilException vfe) {
-                    log.error(vfe);
-                    log.error(vfe.getValideringsfeil());
-                    log.error(vfe.getMessage());
-                    log.error(vfe.toString());
-                    log.error(vfe.getStackTrace());
-                }
-                //                final PasientjournalDTO nyPasient = (PasientjournalDTO) response.getEntity();
-                
-//                assertNotNull(nyPasient.getPersondata().getUuid());
+                final Response response = tjeneste.nyPasientjournal(avleveringsid, persondataDTO);
+                final PasientjournalDTO nyPasient = (PasientjournalDTO) response.getEntity();
+
+                assertNotNull(nyPasient.getPersondata().getUuid());
                 
                 return null;
             }
@@ -208,7 +197,7 @@ public class AvleveringTjenesteTest {
         pasient.setFanearkid("123456789100");
         pasient.setJournalnummer("123");
         pasient.setLopenummer("2345");
-        pasient.setFodselsnummer("01019912345");
+        pasient.setFodselsnummer("19090040165");
         pasient.setNavn("Nora");
         pasient.setKjonn("K");
         pasient.setFodt("1.1.1999");

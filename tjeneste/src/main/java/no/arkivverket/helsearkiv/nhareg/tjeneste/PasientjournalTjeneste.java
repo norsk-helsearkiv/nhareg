@@ -316,9 +316,9 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondataDTO).valider();
         
         if (valideringsfeil.size() > 0) {
-            log.error("Failed to validate persondataDTO");
             return valideringsfeil;
         }
+        
         //Validerer forholdet mellom dataoer
         DatoValiderer datoValiderer = new DatoValiderer();
         valideringsfeil.addAll(datoValiderer.valider(persondataDTO, konfigparam));

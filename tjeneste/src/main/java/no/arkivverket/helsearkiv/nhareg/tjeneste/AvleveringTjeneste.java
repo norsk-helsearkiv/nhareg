@@ -3,8 +3,6 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.StringWriter;
 import java.text.ParseException;
@@ -80,8 +78,6 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     private Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
-
-    Log log = LogFactory.getLog(AvleveringTjeneste.class);
 
     public AvleveringTjeneste() {
         super(Avlevering.class, "avleveringsidentifikator");
@@ -228,7 +224,6 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         // Valider persondataDTO
         List<Valideringsfeil> valideringsfeil = pasientjournalTjeneste.validerGrunnopplysningerPasientjournal(persondataDTO);
         if (!valideringsfeil.isEmpty()) {
-            log.error("Failed to validate grunnopplysninger");
             throw new ValideringsfeilException(valideringsfeil);
         }
 
@@ -238,7 +233,6 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         // Validerer lagringsenheter.
         valideringsfeil.addAll(validerLagringsenheter(avleveringid, pasientjournal.getLagringsenhet()));
         if (!valideringsfeil.isEmpty()) {
-            log.error("Failed to validate lagringsenheter");
             throw new ValideringsfeilException(valideringsfeil);
         }
 
