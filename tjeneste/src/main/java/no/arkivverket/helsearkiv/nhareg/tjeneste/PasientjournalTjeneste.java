@@ -209,8 +209,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 totalAktive++;
             }
         }
-        ListeObjekt list = new ListeObjekt(resultatListe, totalAktive, side, antall);
-        return list;
+        
+        return new ListeObjekt<List<PasientjournalSokeresultatDTO>>(resultatListe, totalAktive, side, antall);
     }
 
     @GET
