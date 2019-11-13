@@ -54,7 +54,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Resource
     private SessionContext sessionContext;
     @EJB
-    private KjønnTjeneste kjønnTjeneste;
+    private KjønnTjeneste kjonnTjeneste;
     @EJB
     private DiagnoseTjeneste diagnoseTjeneste;
     @EJB
@@ -111,9 +111,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //Underliggende pasientjouranler for avlevering
         MultivaluedMap<String, String> queryParameter = uriInfo.getQueryParameters();
         if (queryParameter.containsKey("avlevering")) {
-            ListeObjekt lstObj = avleveringTjeneste
-                    .getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
-            return lstObj;
+            return avleveringTjeneste.getPasientjournaler(queryParameter.getFirst("avlevering"), uriInfo);
         }
 
         MultivaluedMap<String, String> qp = new MultivaluedHashMap<String, String>();
@@ -125,26 +123,24 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         qp.add("oppdatertAv", queryParameter.getFirst("sokOppdatertAv"));
         qp.add("sistOppdatert", queryParameter.getFirst("sokSistOppdatert"));
 
-
-
-
         List<Pasientjournal> pasientjournaler = getAll(qp);
         return getActiveWithPaging(pasientjournaler, uriInfo);
     }
 
-    protected javax.persistence.criteria.Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<Pasientjournal> root) {
+    protected javax.persistence.criteria.Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, 
+                                                                       CriteriaBuilder criteriaBuilder,
+                                                                       Root<Pasientjournal> root) {
         return new PasientjournalExtractPredicates().extractPredicates(queryParameters, criteriaBuilder, root);
     }
 
-        /**
-         * Pasientjournal has soft delete, this methods removes the inactive and
-         * returns the number of active pasientjournals.
-         *
-         * @param pasientjournalerInput
-         * @param uriInfo
-         * @return ListeObjekt
-         */
-
+    /**
+     * Pasientjournal has soft delete, this methods removes the inactive and
+     * returns the number of active pasientjournals.
+     *
+     * @param pasientjournalerInput
+     * @param uriInfo
+     * @return ListeObjekt
+     */
     public ListeObjekt getActiveWithPaging(Collection<Pasientjournal> pasientjournalerInput, UriInfo uriInfo) {
         //
         // Kopierer for ikke å manipulere på input-collection.
@@ -228,7 +224,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return tilPasientjournalDTO(pasientjournal);
     }
 
-    private final PasientjournalDTO tilPasientjournalDTO(Pasientjournal pasientjournal) {
+    private PasientjournalDTO tilPasientjournalDTO(Pasientjournal pasientjournal) {
         PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
         pasientjournalDTO.setAvleveringsidentifikator(avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid()));
         //
@@ -276,23 +272,22 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
+
         opprettOgKnyttLagringsenheter(pasientjournal);
-
-
         Pasientjournal orig = super.hent(pasientjournal.getUuid());
+
         if (orig != null) {
             pasientjournal.getDiagnose().addAll(orig.getDiagnose());
         }
+        
         //pasientjournal.getDiagnose().addAll(CollectionUtils.collect(pasientjournalDTO.getDiagnoser(), diagnoseFraDTOTransformer));
         //Setter verdier
         if (pasientjournalDTO.getPersondata().getKjonn() != null) {
-            Kjønn k = kjønnTjeneste
-                    .getSingleInstance(pasientjournalDTO.getPersondata()
-                            .getKjonn());
-            pasientjournal.getGrunnopplysninger().setKjønn(k);
+            Kjønn kjonn = kjonnTjeneste.getSingleInstance(pasientjournalDTO.getPersondata().getKjonn());
+            pasientjournal.getGrunnopplysninger().setKjønn(kjonn);
         }
+        
         pasientjournal.setOppdateringsinfo(konstruerOppdateringsinfo());
-
         pasientjournal.setOpprettetDato(orig.getOpprettetDato());
         Pasientjournal persistert = update(pasientjournal);
 
@@ -309,44 +304,53 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @Path("/valider/{fnr}")
     public Response validerFnr(@PathParam("fnr") String fnr) {
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(fnr);
-        if (fnrfeil!=null){
+        if (fnrfeil != null) {
             throw new ValideringsfeilException(Collections.singleton(fnrfeil));
         }
+        
         return Response.ok().build();
     }
 
-    public List<Valideringsfeil> validerGrunnopplysningerPasientjournal(PersondataDTO persondata) throws ParseException {
+    public List<Valideringsfeil> validerGrunnopplysningerPasientjournal(PersondataDTO persondataDTO) {
         // VALIDERING - Persondata
-        ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondata).valider();
+        ArrayList<Valideringsfeil> valideringsfeil = new Validator<PersondataDTO>(PersondataDTO.class, persondataDTO).valider();
+        
+        if (valideringsfeil.size() > 0) {
+            log.error("Failed to validate persondataDTO");
+            return valideringsfeil;
+        }
         //Validerer forholdet mellom dataoer
         DatoValiderer datoValiderer = new DatoValiderer();
-        valideringsfeil.addAll(datoValiderer.valider(persondata, konfigparam));
+        valideringsfeil.addAll(datoValiderer.valider(persondataDTO, konfigparam));
 
-
-        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondata);
+        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondataDTO);
         if (fnrfeil != null) {
+            log.error("Failed to validate personnr");
             if (!valideringsfeil.contains(fnrfeil)) {
                 valideringsfeil.add(fnrfeil);
             }
         }
-        Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondata, konfigparam);
-        if (fanearkidFeil!=null){
+        
+        Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondataDTO, konfigparam);
+        if (fanearkidFeil != null) {
+            log.error("Failed to validate fanearkid");
             valideringsfeil.add(fanearkidFeil);
         }
 
+        log.error("Failed to validate other things");
         return valideringsfeil;
     }
 
     @Override
     public Pasientjournal create(Pasientjournal entity) {
         entity.setUuid(UUID.randomUUID().toString());
-        //
+
         if (entity.getGrunnopplysninger() != null) {
             Grunnopplysninger grunnopplysninger = entity.getGrunnopplysninger();
             if (grunnopplysninger.getKjønn() != null) {
-                Kjønn kjønn = grunnopplysninger.getKjønn();
-                kjønn = kjønnTjeneste.hent(kjønn.getCode());
-                grunnopplysninger.setKjønn(kjønn);
+                Kjønn kjonn = grunnopplysninger.getKjønn();
+                kjonn = kjonnTjeneste.hent(kjonn.getCode());
+                grunnopplysninger.setKjønn(kjonn);
             }
         }
 
@@ -354,6 +358,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
         entity.setOppdateringsinfo(konstruerOppdateringsinfo());
         entity.setOpprettetDato(Calendar.getInstance());
+        
         return super.create(entity);
     }
 
@@ -429,8 +434,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         pasientjournal.setOppdateringsinfo(oppdateringsinfo);
 
         diagnoseDTO = diagnoseTilDTOTransformer.transform(diagnose);
-        return Response.ok(diagnoseDTO).build();
 
+        return Response.ok(diagnoseDTO).build();
     }
 
     private ArrayList<Valideringsfeil> validerDiagnosekode(DiagnoseDTO diagnoseDTO) {
@@ -444,6 +449,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
                 return valideringsfeil;
             }
         }
+        
         return null;
     }
 
@@ -461,21 +467,24 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         if (diagfeil.size() > 0) {
             valideringsfeil.addAll(diagfeil);
         }
+        
         ArrayList<Valideringsfeil> kodefeil = validerDiagnosekode(diagnoseDTO);
         if (kodefeil != null) {
             valideringsfeil.addAll(kodefeil);
         }
+        
         if (valideringsfeil.size() != 0) {
             for (Valideringsfeil f : valideringsfeil) {
-                if (f.getAttributt().equals("diagnosedato")) {
-                    f.setAttributt("diagnosedatotab");
+                if (f.getAttribute().equals("diagnosedato")) {
+                    f.setAttribute("diagnosedatotab");
                 }
-                if (f.getAttributt().equals("diagnosekode")) {
-                    f.setAttributt("diagnosekodetab");
+                if (f.getAttribute().equals("diagnosekode")) {
+                    f.setAttribute("diagnosekodetab");
                 }
             }
             throw new ValideringsfeilException(valideringsfeil);
         }
+
         Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
         diagnose.setOppdateringsinfo(konstruerOppdateringsinfo());
         diagnoseTjeneste.update(diagnose);
@@ -537,7 +546,6 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return Response.noContent().build();
     }
 
-
     private Oppdateringsinfo konstruerOppdateringsinfo() {
         Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
         oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
@@ -551,16 +559,17 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * @param identifikator
      * @return
      */
-
     public List<PasientjournalSokeresultatDTO> hentPasientjournalerForLagringsenhet(String identifikator) {
         List<Pasientjournal> res = sokPasientjournalerForLagringsenhet(identifikator);
         List<PasientjournalSokeresultatDTO> finalList = new ArrayList<PasientjournalSokeresultatDTO>();
-        for (Pasientjournal pj:res) {
+        
+        for (Pasientjournal pj : res) {
             if (pj.isSlettet() == null || !pj.isSlettet()) {
                 PasientjournalSokeresultatDTO sokres = Konverterer.tilPasientjournalSokeresultatDTO(pj);
                 finalList.add(sokres);
             }
         }
+        
         return finalList;
     }
 
@@ -570,18 +579,16 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * @param identifikator
      * @return
      */
-
     public List<Pasientjournal> sokPasientjournalerForLagringsenhet(String identifikator) {
         @SuppressWarnings("JpaQlInspection")
         String select = "SELECT p"
-                + "        FROM Pasientjournal p"
-                + "  INNER JOIN p.lagringsenhet l"
-                + "       WHERE l.identifikator = :identifikator";
+                        + "        FROM Pasientjournal p"
+                        + "  INNER JOIN p.lagringsenhet l"
+                        + "       WHERE l.identifikator = :identifikator";
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("identifikator", identifikator);
 
-        List<Pasientjournal> res = query.getResultList();
-        return res;
+        return (List<Pasientjournal>) query.getResultList();
     }
 
     /**
@@ -594,13 +601,14 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     public Integer getPasientjournalerForLagringsenhetCount(String identifikator) {
         @SuppressWarnings("JpaQlInspection")
         String select = "SELECT count(p)"
-                + "        FROM Pasientjournal p"
-                + "  INNER JOIN p.lagringsenhet l"
-                + "       WHERE l.identifikator = :identifikator";
+                        + "        FROM Pasientjournal p"
+                        + "  INNER JOIN p.lagringsenhet l"
+                        + "       WHERE l.identifikator = :identifikator";
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("identifikator", identifikator);
 
         Long res = (Long)query.getSingleResult();
+        
         return res.intValue();
     }
 }

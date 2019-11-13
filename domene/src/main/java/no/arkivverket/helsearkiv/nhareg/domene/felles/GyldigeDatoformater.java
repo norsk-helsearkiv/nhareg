@@ -64,6 +64,7 @@ public class GyldigeDatoformater {
 
         return c.getTime();
     }
+    
     /**
      * Returnerer en dato som er rullet med days-antall dager
      *

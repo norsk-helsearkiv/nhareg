@@ -25,7 +25,7 @@ public class KonfigparamTjeneste {
     @PersistenceContext(name = "primary")
     private EntityManager em;
 
-    public String getVerdi(String navn){
+    public String getVerdi(String navn) {
         Konfigparam param = em.find(Konfigparam.class, navn);
         return param == null ? null : param.getVerdi();
     }

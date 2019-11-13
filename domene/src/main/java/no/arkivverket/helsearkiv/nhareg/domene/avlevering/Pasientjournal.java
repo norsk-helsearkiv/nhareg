@@ -71,12 +71,11 @@ public class Pasientjournal implements Serializable
     @XmlTransient
     protected Calendar opprettetDato;
 
-    public String getFanearkid() {return this.fanearkid;}
+    public String getFanearkid() { return this.fanearkid; }
 
     public void setFanearkid(String fanearkid){
         this.fanearkid = fanearkid;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -85,9 +84,7 @@ public class Pasientjournal implements Serializable
 
         Pasientjournal that = (Pasientjournal) o;
 
-        if (!uuid.equals(that.uuid)) return false;
-
-        return true;
+        return uuid.equals(that.uuid);
     }
 
     @Override
@@ -169,6 +166,7 @@ public class Pasientjournal implements Serializable
         if (diagnose == null) {
             diagnose = new HashSet<Diagnose>();
         }
+        
         return this.diagnose;
     }
 
@@ -198,6 +196,7 @@ public class Pasientjournal implements Serializable
         if (supplerendeopplysninger == null) {
             supplerendeopplysninger = new ArrayList<Supplerendeopplysninger>();
         }
+        
         return this.supplerendeopplysninger;
     }
 
@@ -227,6 +226,7 @@ public class Pasientjournal implements Serializable
         if (lagringsenhet == null) {
             lagringsenhet = new ArrayList<Lagringsenhet>();
         }
+        
         return this.lagringsenhet;
     }
 

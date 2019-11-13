@@ -1,22 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
-import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
-import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.utilities.NharegDeployment;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
@@ -27,41 +10,58 @@ import org.apache.commons.collections4.sequence.CommandVisitor;
 import org.apache.commons.collections4.set.AbstractSetDecorator;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
+import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
+import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
+import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+
 public class RESTDeployment {
 
     public static WebArchive deployment() {
         return NharegDeployment.deployment()
-                //model
-                .addPackage(Avtale.class.getPackage())
-                .addPackage(ListeObjekt.class.getPackage())
-                .addPackage(PersondataDTO.class.getPackage())
-                .addPackage(DatoEllerAar.class.getPackage())
-//                .addPackage(DagEllerAar.class.getPackage())
-                .addPackage(Konfigparam.class.getPackage())
-                .addPackage(KonfigparamTjeneste.class.getPackage())
-                .addPackage(ValideringsfeilException.class.getPackage())
-                .addPackage(UserService.class.getPackage())
-                .addPackage(Bruker.class.getPackage())
-                .addPackage(BrukerDTO.class.getPackage())
-                .addPackage(PasientjournalDTO.class.getPackage())
-                // exception
-                .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
-                // tjeneste
-                .addPackage(EntitetsTjeneste.class.getPackage())
-                //transformer
-                .addPackage(DatoEllerAarTilStringTransformer.class.getPackage())
-                //util
-                .addPackage(DatoValiderer.class.getPackage())
-                //
-                // Denne blokken er med for å få med commons-collections4 i testene
-                //
-                .addPackage(Transformer.class.getPackage())
-                .addPackage(AbstractMapEntryDecorator.class.getPackage())
-                .addPackage(AbstractUntypedIteratorDecorator.class.getPackage())
-                .addPackage(AbstractSetDecorator.class.getPackage())
-                .addPackage(AbstractCollectionDecorator.class.getPackage())
-                .addPackage(CommandVisitor.class.getPackage())
-                .addPackage(AbstractSortedMapDecorator.class.getPackage())
-                .addPackage(PredicatedList.class.getPackage());
+                   //model
+                   .addPackage(Avtale.class.getPackage())
+                   .addPackage(ListeObjekt.class.getPackage())
+                   .addPackage(PersondataDTO.class.getPackage())
+                   .addPackage(DatoEllerAar.class.getPackage())
+                   .addPackage(GyldigeDatoformater.class.getPackage())
+                   .addPackage(Konfigparam.class.getPackage())
+                   .addPackage(KonfigparamTjeneste.class.getPackage())
+                   .addPackage(ValideringsfeilException.class.getPackage())
+                   .addPackage(UserService.class.getPackage())
+                   .addPackage(Bruker.class.getPackage())
+                   .addPackage(BrukerDTO.class.getPackage())
+                   .addPackage(PasientjournalDTO.class.getPackage())
+                   // exception
+                   .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
+                   // tjeneste
+                   .addPackage(EntitetsTjeneste.class.getPackage())
+                   //transformer
+                   .addPackage(DatoEllerAarTilStringTransformer.class.getPackage())
+                   //util
+                   .addPackage(DatoValiderer.class.getPackage())
+                   //
+                   // Denne blokken er med for å få med commons-collections4 i testene
+                   //
+                   .addPackage(Transformer.class.getPackage())
+                   .addPackage(AbstractMapEntryDecorator.class.getPackage())
+                   .addPackage(AbstractUntypedIteratorDecorator.class.getPackage())
+                   .addPackage(AbstractSetDecorator.class.getPackage())
+                   .addPackage(AbstractCollectionDecorator.class.getPackage())
+                   .addPackage(CommandVisitor.class.getPackage())
+                   .addPackage(AbstractSortedMapDecorator.class.getPackage())
+                   .addPackage(PredicatedList.class.getPackage());
     }
 }

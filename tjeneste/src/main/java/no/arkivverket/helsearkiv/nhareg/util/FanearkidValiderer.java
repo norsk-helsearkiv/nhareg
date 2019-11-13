@@ -14,12 +14,12 @@ public class FanearkidValiderer {
 
         Integer fieldLength = konfig.getInt(KONFIG_FANEARKID);
         String fanearkid = dto.getFanearkid();
-        if (fieldLength!=null){
-            if (fanearkid==null){
-                return new Valideringsfeil("fanearkid", "FeilFanearkidNull", "{fanearkidfeltlengde :"+fieldLength.toString()+"}");
+        if (fieldLength != null) {
+            if (fanearkid == null) {
+                return new Valideringsfeil("fanearkid", "FeilFanearkidNull", "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
             }
-            if (fanearkid.length()!=fieldLength.intValue()){
-                return new Valideringsfeil("fanearkid", "FeilFanearkid", "{fanearkidfeltlengde :"+fieldLength.toString()+"}");
+            if (fanearkid.length() != fieldLength) {
+                return new Valideringsfeil("fanearkid", "FeilFanearkid", "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
             }
         }
         return null;

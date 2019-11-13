@@ -137,7 +137,7 @@ public class Konverterer {
             }
 
             if (pasientjournal.getGrunnopplysninger().isFodtdatoUkjent() != null &&
-                    pasientjournal.getGrunnopplysninger().isFodtdatoUkjent()) {
+                pasientjournal.getGrunnopplysninger().isFodtdatoUkjent()) {
                 resultat.setFaar("ukjent");
             }
 
@@ -146,7 +146,7 @@ public class Konverterer {
                 resultat.setDaar(trans.transform(dod));
             }
             if (pasientjournal.getGrunnopplysninger().isDødsdatoUkjent() != null &&
-                    pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()) {
+                pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()) {
                 resultat.setDaar("mors");
             }
         }
@@ -159,7 +159,7 @@ public class Konverterer {
         resultat.setFanearkid(pasientjournal.getFanearkid());
 
         if (pasientjournal.getLagringsenhet() != null &&
-                pasientjournal.getLagringsenhet().size() > 0) {
+            pasientjournal.getLagringsenhet().size() > 0) {
             resultat.setLagringsenhet(pasientjournal.getLagringsenhet().get(0).getIdentifikator());
         }
 
@@ -178,6 +178,7 @@ public class Konverterer {
         }
 
         resultat.setUuid(pasientjournal.getUuid());
+        
         return resultat;
     }
 
@@ -186,17 +187,22 @@ public class Konverterer {
         PersondataDTO person = new PersondataDTO();
         person.setUuid(pasientjournal.getUuid());
         person.setMerknad(pasientjournal.getMerknad());
-        if (pasientjournal.getLagringsenhet() != null && !pasientjournal.getLagringsenhet().isEmpty()) {
+        
+        if (pasientjournal.getLagringsenhet() != null &&
+            !pasientjournal.getLagringsenhet().isEmpty()) {
             String[] enheter = new String[pasientjournal.getLagringsenhet().size()];
+
             for (int i = 0; i < pasientjournal.getLagringsenhet().size(); i++) {
                 enheter[i] = pasientjournal.getLagringsenhet().get(i).getIdentifikator();
             }
+
             person.setLagringsenheter(enheter);
         }
 
         if (pasientjournal.getGrunnopplysninger() != null) {
             Grunnopplysninger grn = pasientjournal.getGrunnopplysninger();
             person.setNavn(pasientjournal.getGrunnopplysninger().getPnavn());
+            
             if (grn.getIdentifikator() != null) {
                 person.setFodselsnummer(pasientjournal.getGrunnopplysninger().getIdentifikator().getPID());
             }
@@ -208,19 +214,25 @@ public class Konverterer {
             if (grn.getFødt() != null) {
                 person.setFodt(tilString(pasientjournal.getGrunnopplysninger().getFødt()));
             }
+            
             if (grn.getDød() != null) {
                 person.setDod(tilString(pasientjournal.getGrunnopplysninger().getDød()));
             }
-            if (grn.isDødsdatoUkjent()!=null&&grn.isDødsdatoUkjent()){
+            
+            if (grn.isDødsdatoUkjent() != null && grn.isDødsdatoUkjent()) {
                 person.setDod("mors");
             }
-            if (grn.isFodtdatoUkjent()!=null&&grn.isFodtdatoUkjent()){
+            
+            if (grn.isFodtdatoUkjent() != null && grn.isFodtdatoUkjent()) {
                 person.setFodt("ukjent");
             }
+            
             if (grn.getKontakt() != null) {
+                
                 if (grn.getKontakt().getFoerste() != null) {
                     person.setfKontakt(tilString(grn.getKontakt().getFoerste()));
                 }
+                
                 if (grn.getKontakt().getSiste() != null) {
                     person.setsKontakt(tilString(grn.getKontakt().getSiste()));
                 }
@@ -231,9 +243,10 @@ public class Konverterer {
             person.setLopenummer(pasientjournal.getJournalidentifikator().getLøpenummer());
             person.setJournalnummer(pasientjournal.getJournalidentifikator().getJournalnummer());
         }
+        
         person.setFanearkid(pasientjournal.getFanearkid());
-
         dto.setPersondata(person);
+
         return dto;
     }
 
@@ -245,6 +258,7 @@ public class Konverterer {
                 return dato.getAar().toString();
             }
         }
+        
         return null;
     }
 
@@ -257,17 +271,17 @@ public class Konverterer {
             return null;
         }
 
-        DatoEllerAar dea = new DatoEllerAar();
+        DatoEllerAar datoEllerAar = new DatoEllerAar();
         if (tid.length() == 4) {
-            dea.setAar(Integer.parseInt(tid));
-            return dea;
+            datoEllerAar.setAar(Integer.parseInt(tid));
+            return datoEllerAar;
         }
 
         Date dato = GyldigeDatoformater.getDate(tid);
         Calendar cal = Calendar.getInstance();
         cal.setTime(dato);
-        dea.setDato(cal);
+        datoEllerAar.setDato(cal);
 
-        return dea;
+        return datoEllerAar;
     }
 }

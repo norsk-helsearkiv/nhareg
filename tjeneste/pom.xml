@@ -72,7 +72,7 @@
                         <version>3.1.0</version>
                         <executions>
                             <execution>
-                                <id>copy-standalone-xml</id>
+                                <id>copy-configuration</id>
                                 <phase>process-test-resources</phase>
                                 <goals>
                                     <goal>copy-resources</goal>

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
@@ -64,8 +63,7 @@ import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
  */
 @Path("/avleveringer")
 @Stateless
-//@RolesAllowed({Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-@PermitAll
+@RolesAllowed({Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     private static final String FINNES_I_ANNEN_AVLEVERING_CONSTRAINT = "NotUnique";
@@ -218,7 +216,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
      * Oppretter en ny pasientjournal under avleveringen
      *
      * @param avleveringid
-     * @param person
+     * @param persondataDTO
      * @return Pasientjournal
      * @throws java.text.ParseException av datoteksten til Date objekt for å
      * sammenligne størrelse
@@ -226,19 +224,21 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @POST
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response nyPasientjournal(@PathParam("id") String avleveringid, PersondataDTO person) throws ParseException {
+    public Response nyPasientjournal(@PathParam("id") String avleveringid, PersondataDTO persondataDTO) throws ParseException {
         // Valider persondataDTO
-        List<Valideringsfeil> valideringsfeil = pasientjournalTjeneste.validerGrunnopplysningerPasientjournal(person);
+        List<Valideringsfeil> valideringsfeil = pasientjournalTjeneste.validerGrunnopplysningerPasientjournal(persondataDTO);
         if (!valideringsfeil.isEmpty()) {
+            log.error("Failed to validate grunnopplysninger");
             throw new ValideringsfeilException(valideringsfeil);
         }
 
         // Konvertering
-        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(person);
+        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(persondataDTO);
 
         // Validerer lagringsenheter.
         valideringsfeil.addAll(validerLagringsenheter(avleveringid, pasientjournal.getLagringsenhet()));
         if (!valideringsfeil.isEmpty()) {
+            log.error("Failed to validate lagringsenheter");
             throw new ValideringsfeilException(valideringsfeil);
         }
 

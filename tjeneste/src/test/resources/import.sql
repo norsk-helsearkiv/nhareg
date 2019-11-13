@@ -66,40 +66,8 @@ INSERT INTO AVLEVERING_PASIENTJOURNAL(AVLEVERING_AVLEVERINGSIDENTIFIKATOR,PASIEN
 --
 -- KONFIGPARAM
 --
-INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('LowLim', '5.11.2019');
+INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('LowLim', '01.01.1800');
+INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('WaitLim', '10');
 INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('MaxAge', '110');
----
---- BRUKER AND LOGIN
----
-CREATE TABLE Rolle(navn VARCHAR(255) NOT NULL PRIMARY KEY);
- 
-CREATE TABLE Bruker(
-  brukernavn VARCHAR(255) NOT NULL PRIMARY KEY ,
-  passord VARCHAR(255) NOT NULL,
-  rollenavn VARCHAR(255) NOT NULL,
-  authtoken VARCHAR(255),
-  CONSTRAINT fk_rolle_navn FOREIGN KEY (rollenavn) REFERENCES Rolle(navn)
-);
---CREATE TABLE BrukerRolle(
---  id int NOT NULL PRIMARY KEY AUTO_INCREMENT,
---  brukernavn VARCHAR(255) NOT NULL,
---  rolle VARCHAR(255) NOT NULL,
---  CONSTRAINT fk_rolle_navn FOREIGN KEY (rolle) REFERENCES Rolle(navn),
---  CONSTRAINT fk_bruker_brukernavn FOREIGN KEY (brukernavn) REFERENCES Bruker(brukernavn)
---);
---
---CREATE TABLE Rolle(
---  navn VARCHAR(255) NOT NULL PRIMARY KEY
---);
---
---INSERT INTO nhareg.Rolle(navn) values('bruker');
---INSERT INTO nhareg.Bruker(brukernavn, passord, rollenavn) VALUES ('nhabruker2', 'BgWGA+ADDzl11fikSWj2FYtZl4xNNfm5cln0oUWC49w=', 'bruker');
---
---INSERT INTO nhareg.BrukerRolle(brukernavn, rolle) values('nhabruker1', 'admin');
---select * from BrukerRolle;
---
---select passord as 'Password' from Bruker where brukernavn='nhabruker1';
---
---select passwd from Users where username;
---select rolle, 'Roles' from BrukerRolle where brukernavn='nhabruker1';
---select rolle as 'role', 'Roles' from BrukerRolle where brukernavn='nhabruker1';
+INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('fanearkid', '12');
+INSERT INTO KONFIGPARAM(NAVN, VERDI) VALUES ('aarhundre', '19');

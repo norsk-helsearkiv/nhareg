@@ -46,12 +46,8 @@
                     </ssl>
                 </server-identities>
                 <authentication>
-                    <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
-                    <properties path="application-users.properties" relative-to="jboss.server.config.dir"/>
+                    <jaas name="secureDomain" />
                 </authentication>
-                <authorization>
-                    <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
-                </authorization>
             </security-realm>
         </security-realms>
         <audit-log>
@@ -212,7 +208,7 @@
                     <keepalive-time time="100" unit="milliseconds"/>
                 </thread-pool>
             </thread-pools>
-            <default-security-domain value="other"/>
+            <default-security-domain value="secureDomain"/>
             <default-missing-method-permissions-deny-access value="false"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:io:1.1">
@@ -303,11 +299,11 @@
                 <security-domain name="secureDomain" cache-type="default">
                     <authentication>
                         <login-module code="Database" flag="required">
-                            <module-option name="dsJndiName" value="java:jboss/datasources/NharegDS"/>
-                            <module-option name="principalsQuery" value="select passord as 'Password' form Bruker where brukernavn=?"/>
-                            <module-option name="rolesQuery" value="select rollenavn as 'role', 'Roles' from Bruker where brukernavn=?"/>
-                            <module-option name="hashAlgorithm" value="SHA-256"/>
-                            <module-option name="hashEncoding" value="base64"/>
+                            <module-option name="dsJndiName" value="java:jboss/datasources/NharegTestDS" />
+                            <module-option name="principalsQuery" value="select passord as 'Password' form Bruker where brukernavn=?" />
+                            <module-option name="rolesQuery" value="select rollenavn as 'role', 'Roles' from Bruker where brukernavn=?" />
+                            <module-option name="hashAlgorithm" value="SHA-256" />
+                            <module-option name="hashEncoding" value="base64" />
                         </login-module>
                     </authentication>
                 </security-domain>
@@ -345,7 +341,6 @@
             <buffer-cache name="default"/>
             <server name="default-server">
                 <http-listener name="default" socket-binding="http"/>
-                <https-listener name="default-https" socket-binding="https" security-realm="ApplicationRealm" verify-client="REQUESTED"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
                     <filter-ref name="server-header"/>

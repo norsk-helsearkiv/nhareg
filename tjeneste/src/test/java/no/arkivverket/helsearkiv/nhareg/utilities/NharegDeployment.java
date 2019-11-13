@@ -17,7 +17,6 @@ public class NharegDeployment {
             .addAsResource("constraints.xml")
             .addAsResource("import.sql")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-//                .addAsLibraries("C:\\prosjekter\\NHAREG\\tjeneste\\target\\api\\WEB-INF\\lib\\commons-collections4-4.0.jar")
             // Deploy our test datasource
             .addAsWebInfResource("test-ds.xml");
     }

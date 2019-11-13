@@ -136,14 +136,14 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     public Avtale delete(@PathParam("id") String id) {
         Avtale avtale = getSingleInstance(id);
         
-        //Hent antall barn
+        // Hent antall barn
         String jpql = "SELECT count(a) FROM Avlevering a WHERE a.avtale = :avtale";
         Query q = super.getEntityManager().createQuery(jpql);
         q.setParameter("avtale", avtale);
         Long antall = (Long) q.getSingleResult();
         
-        //Slett om det ikke er barn
-        if(antall == 0) {
+        // Slett om det ikke er barn
+        if (antall == 0) {
             getEntityManager().remove(avtale);
             return avtale;
         } 

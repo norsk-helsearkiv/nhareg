@@ -8,34 +8,35 @@ import java.io.Serializable;
  */
 public class Valideringsfeil implements Serializable {
     
-    private String attributt;
-    private String constriant;
+    private String attribute;
+    private String constraint;
+    private String message;
 
-        private String message;
-
-    public Valideringsfeil(String attributt, String constriant) {
-        setAttributt(attributt);
-        setConstriant(constriant);
+    public Valideringsfeil(String attribute, String constraint) {
+        setAttribute(attribute);
+        setConstraint(constraint);
     }
-    public Valideringsfeil(String attributt, String constriant, String message) {
-        setAttributt(attributt);
-        setConstriant(constriant);
+    
+    public Valideringsfeil(String attribute, String constraint, String message) {
+        setAttribute(attribute);
+        setConstraint(constraint);
         setMessage(message);
     }
-    public String getAttributt() {
-        return attributt;
+    
+    public String getAttribute() {
+        return attribute;
     }
 
-    public void setAttributt(String attributt) {
-        this.attributt = attributt;
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
     }
 
-    public String getConstriant() {
-        return constriant;
+    public String getConstraint() {
+        return constraint;
     }
 
-    public void setConstriant(String constriant) {
-        this.constriant = constriant;
+    public void setConstraint(String constraint) {
+        this.constraint = constraint;
     }
 
     public String getMessage() {
@@ -53,16 +54,16 @@ public class Valideringsfeil implements Serializable {
 
         Valideringsfeil that = (Valideringsfeil) o;
 
-        if (attributt != null ? !attributt.equals(that.attributt) : that.attributt != null) return false;
-        if (constriant != null ? !constriant.equals(that.constriant) : that.constriant != null) return false;
+        if (attribute != null ? !attribute.equals(that.attribute) : that.attribute != null) return false;
+        if (constraint != null ? !constraint.equals(that.constraint) : that.constraint != null) return false;
         return message != null ? message.equals(that.message) : that.message == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = attributt != null ? attributt.hashCode() : 0;
-        result = 31 * result + (constriant != null ? constriant.hashCode() : 0);
+        int result = attribute != null ? attribute.hashCode() : 0;
+        result = 31 * result + (constraint != null ? constraint.hashCode() : 0);
         result = 31 * result + (message != null ? message.hashCode() : 0);
         return result;
     }
