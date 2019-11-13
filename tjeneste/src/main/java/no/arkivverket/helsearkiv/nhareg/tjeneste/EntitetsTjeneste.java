@@ -85,13 +85,14 @@ import org.apache.commons.logging.LogFactory;
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public abstract class EntitetsTjeneste<T, K> {
 
+    public static final String ANTALL = "antall";
+    public static final String SIDE = "side";
+    
     Log log = LogFactory.getLog(EntitetsTjeneste.class);
 
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
 
-    private static final String ANTALL = "antall";
-    private static final String SIDE = "side";
     private Class<T> entityClass;
     private String idName;
     private String orderByName;
@@ -147,8 +148,7 @@ public abstract class EntitetsTjeneste<T, K> {
         }
 
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
-        if (queryParameters.containsKey(SIDE)
-                && queryParameters.containsKey(ANTALL)) {
+        if (queryParameters.containsKey(SIDE) && queryParameters.containsKey(ANTALL)) {
             int side = Integer.parseInt(queryParameters.getFirst(SIDE));
             int antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
             
