@@ -42,8 +42,7 @@ import java.util.*;
  * </p>
  */
 @Stateless
-//@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-@PermitAll
+@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 @Path("/lagringsenheter")
 public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, String> {
 

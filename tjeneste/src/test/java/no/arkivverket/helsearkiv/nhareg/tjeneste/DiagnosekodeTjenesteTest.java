@@ -62,7 +62,7 @@ public class DiagnosekodeTjenesteTest {
                 MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
-                assertEquals(3, diagnosekoder.size());
+                assertEquals(2, diagnosekoder.size());
                 
                 return null;
             }
