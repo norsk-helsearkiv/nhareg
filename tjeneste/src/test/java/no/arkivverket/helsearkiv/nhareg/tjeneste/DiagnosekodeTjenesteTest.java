@@ -37,7 +37,7 @@ public class DiagnosekodeTjenesteTest {
     private UserHandler userHandler;
     
     @Test
-    public void create() throws Exception {
+    public void create_nyDiagnosekode_skalIkkeGiNull() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -55,7 +55,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllUtenPaginering() throws Exception {
+    public void getAll_utenPaginering_skalFinneTre() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -70,7 +70,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllMedPaginering() throws Exception {
+    public void getAll_medPaginering_skalFinneEn() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -87,7 +87,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void hentDiagnosekoderMedCode() throws Exception {
+    public void hentDiagnosekoderMedCode_gyldigCode_skalFinneEn() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -102,7 +102,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllMedCode() throws Exception {
+    public void getAll_medCode_skalFinneEn() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -119,7 +119,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllDisplayNameLike() throws Exception {
+    public void getAll_displayNameLike_skalFinneEn() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -136,7 +136,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllDisplayNameLikeIgnoreCase() throws Exception {
+    public void getAll_displayNameLikeIgnoreCase_skalFinneEn() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -153,7 +153,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void hentDiagnosekoderMedUkjentCode() throws Exception {
+    public void hentDiagnosekoderMedCode_ukjentCode_skalFinneNull() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -168,7 +168,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllMedUkjentCode() throws Exception {
+    public void getAll_medUkjentCode_skalFinneNull() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -185,7 +185,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void hentDiagnosekoderMedNulltCode() throws Exception {
+    public void hentDiagnosekoderMedCode_nullCode_skalFinneNull() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -200,7 +200,7 @@ public class DiagnosekodeTjenesteTest {
     }
 
     @Test
-    public void getAllMedNulltCode() throws Exception {
+    public void getAll_nullCode_skalFinneNull() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {

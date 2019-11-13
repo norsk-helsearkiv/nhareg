@@ -31,6 +31,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
+import no.arkivverket.helsearkiv.nhareg.utilities.MockUriInfo;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
 
@@ -58,7 +59,7 @@ public class AvleveringTjenesteTest {
     private UserHandler userHandler;
 
     @Test
-    public void avleveringsTest_validerLagringsenheter_nullFeil() throws Exception {
+    public void validerLagringsenheter_nullFeil() throws Exception {
         userHandler.call(new Callable() {
             @Override
             public Object call() {
@@ -79,7 +80,7 @@ public class AvleveringTjenesteTest {
     }
 
     @Test
-    public void avleveringsTest_validerLagringsenheter_enFeil() throws Exception {
+    public void validerLagringsenheter_enFeil() throws Exception {
         userHandler.call(new Callable() {
             @Override
             public Object call() {
@@ -102,7 +103,7 @@ public class AvleveringTjenesteTest {
     }
 
     @Test
-    public void avleveringsTest_nyPasientjournal_utenFeil() throws Exception {
+    public void nyPasientjournal_nyJournal_utenFeil() throws Exception {
         adminHandler.call(new Callable() {
             @Override
             public Object call() throws ParseException {
@@ -119,7 +120,7 @@ public class AvleveringTjenesteTest {
     }
 
     @Test
-    public void avleveringsTest_sletterAvleveringUtenPasientjournaler_skalIkkeKasteException() throws Exception {
+    public void sletterAvleveringUtenPasientjournaler_skalIkkeKasteException() throws Exception {
         adminHandler.call(new Callable() {
             @Override
             public Object call() {
@@ -132,7 +133,7 @@ public class AvleveringTjenesteTest {
     }
 
     @Test(expected = ValideringsfeilException.class)
-    public void avleveringsTest_sletterAvleveringMedPasientjournaler_skalKasteException() throws Exception {
+    public void sletterAvleveringMedPasientjournaler_skalKasteException() throws Exception {
         adminHandler.call(new Callable<Object>() {
             @Override
             public Object call() throws ValideringsfeilException {
@@ -144,11 +145,11 @@ public class AvleveringTjenesteTest {
     }
 
     @Test
-    public void avleveringsTest_getPasientjournaler_skalGiIkkeTomListe() throws Exception {
+    public void getPasientjournaler_skalGiIkkeTomListe() throws Exception {
         adminHandler.call(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                ListeObjekt pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", getInfo());
+                ListeObjekt pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", MockUriInfo.getInfo());
                 assertNotNull(pasientjournaler);
         
                 List<PasientjournalSokeresultatDTO> liste = (List<PasientjournalSokeresultatDTO>) pasientjournaler.getListe();
@@ -160,7 +161,7 @@ public class AvleveringTjenesteTest {
     }
 
     @Test
-    public void avleveringsTest_updateAvlevering_pasientJournalSizeIkkeEndret() throws Exception {
+    public void updateAvlevering_pasientJournalSizeIkkeEndret() throws Exception {
         adminHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
@@ -207,104 +208,5 @@ public class AvleveringTjenesteTest {
         pasient.setUuid("1234");
         
         return pasient;
-    }
-    
-    private UriInfo getInfo() {
-        return new UriInfo() {
-            @Override
-            public String getPath() {
-                return null;
-            }
-
-            @Override
-            public String getPath(final boolean decode) {
-                return null;
-            }
-
-            @Override
-            public List<PathSegment> getPathSegments() {
-                return null;
-            }
-
-            @Override
-            public List<PathSegment> getPathSegments(final boolean decode) {
-                return null;
-            }
-
-            @Override
-            public URI getRequestUri() {
-                return null;
-            }
-
-            @Override
-            public UriBuilder getRequestUriBuilder() {
-                return null;
-            }
-
-            @Override
-            public URI getAbsolutePath() {
-                return null;
-            }
-
-            @Override
-            public UriBuilder getAbsolutePathBuilder() {
-                return null;
-            }
-
-            @Override
-            public URI getBaseUri() {
-                return null;
-            }
-
-            @Override
-            public UriBuilder getBaseUriBuilder() {
-                return null;
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getPathParameters() {
-                return null;
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getPathParameters(final boolean decode) {
-                return null;
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getQueryParameters() {
-                return new MultivaluedHashMap<String, String>();
-            }
-
-            @Override
-            public MultivaluedMap<String, String> getQueryParameters(final boolean decode) {
-                return null;
-            }
-
-            @Override
-            public List<String> getMatchedURIs() {
-                return null;
-            }
-
-            @Override
-            public List<String> getMatchedURIs(final boolean decode) {
-                return null;
-            }
-
-            @Override
-            public List<Object> getMatchedResources() {
-                return null;
-            }
-
-            @Override
-            public URI resolve(final URI uri) {
-                return null;
-            }
-
-            @Override
-            public URI relativize(final URI uri) {
-                return null;
-            }
-        };
     }
 }
