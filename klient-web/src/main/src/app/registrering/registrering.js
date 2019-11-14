@@ -12,7 +12,14 @@ angular.module('nha.registrering', [
             if (date==='mors'||date=="ukjent"){
                 return new Date("01.01.1000").getTime();
             }
-            var d = new Date(date);
+
+            var sliceDay = date.slice(0, 3);
+            var sliceMonth = date.slice(3, 6);
+            var sliceYear = date.slice(6, 10);
+            var newDate = sliceMonth + sliceDay + sliceYear;
+
+            var d = new Date(newDate);
+
             return d.getTime();
         };
     })
