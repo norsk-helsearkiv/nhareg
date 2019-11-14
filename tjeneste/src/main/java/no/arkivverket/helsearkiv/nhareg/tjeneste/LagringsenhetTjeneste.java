@@ -1,5 +1,34 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.persistence.Query;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
@@ -14,22 +43,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
 import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
 import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
-import javax.annotation.Resource;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.persistence.Query;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.*;
-
 /**
  * <p>
  * JAX-RS endepunkt for håndtering av {@link Lagringsenhet}er. Arver metodene
@@ -42,7 +55,7 @@ import java.util.*;
  * </p>
  */
 @Stateless
-@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@RolesAllowed({Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 @Path("/lagringsenheter")
 public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, String> {
 
@@ -51,8 +64,10 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     @Resource
     private SessionContext sessionContext;
+    
     @EJB
     private UserService userTjeneste;
+    
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
 
@@ -123,7 +138,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
     @Path("/sistBrukte")
     public String getSistBrukteLagringsenhet() {
         final String username = sessionContext.getCallerPrincipal().getName();
@@ -132,7 +147,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
     @Path("/{id}/pasientjournaler")
     public List<PasientjournalSokeresultatDTO> getPasientjournaler(@PathParam("id") final String id) {
         return pasientjournalTjeneste.hentPasientjournalerForLagringsenhet(id);
@@ -166,7 +181,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
     @Path("/sok")
     public List<Lagringsenhet> sokLagringsenhetMedIdentifikator(@Context UriInfo uriInfo) {
         MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
@@ -185,7 +200,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
     @Path("/{uuid}/maske")
     public String getLagringsenhetMaske(@PathParam("uuid") String uuid) {
         Lagringsenhet e = getEntityManager().find(Lagringsenhet.class, uuid);
@@ -229,10 +244,10 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
      */
     public Lagringsenhet hentLagringsenhetMedIdentifikator(String identifikator) {
         Lagringsenhet lagringsenhet = null;
-        String select = "select object(o)"
-                + "  from Lagringsenhet as o"
-                + " where o.identifikator = :identifikator"
-                + "  order by o.uuid";
+        String select = "select object(o) "
+                + "from Lagringsenhet as o "
+                + "where o.identifikator = :identifikator "
+                + "order by o.uuid";
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("identifikator", identifikator);
         List<Lagringsenhet> lagringsenheter = query.getResultList();

@@ -2,10 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Identifikator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Journalidentifikator;
@@ -13,11 +14,9 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kontakt;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.DatatypeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
@@ -29,11 +28,11 @@ import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 @Deprecated
 public class Konverterer {
 
-    public static Pasientjournal tilPasientjournal(PasientjournalDTO person) throws ParseException {
-        return tilPasientjournal(person.getPersondata());
-    }
-
     private static final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+
+    public static Pasientjournal tilPasientjournal(PasientjournalDTO pasientjournalDTO) throws ParseException {
+        return tilPasientjournal(pasientjournalDTO.getPersondata());
+    }
 
     public static Pasientjournal tilPasientjournal(PersondataDTO person) throws ParseException {
         Pasientjournal pasientjournal = new Pasientjournal();
@@ -44,10 +43,10 @@ public class Konverterer {
 
         if (person.getLagringsenheter() != null) {
             for (String enhet : person.getLagringsenheter()) {
-                Lagringsenhet lEnhet = new Lagringsenhet();
-                lEnhet.setIdentifikator(enhet);
-                lEnhet.setUuid(UUID.randomUUID().toString());
-                pasientjournal.getLagringsenhet().add(lEnhet);
+                Lagringsenhet lagringsenhet = new Lagringsenhet();
+                lagringsenhet.setIdentifikator(enhet);
+                lagringsenhet.setUuid(UUID.randomUUID().toString());
+                pasientjournal.getLagringsenhet().add(lagringsenhet);
             }
         }
 

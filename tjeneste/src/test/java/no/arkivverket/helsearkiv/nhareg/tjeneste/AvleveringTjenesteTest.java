@@ -7,19 +7,13 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
@@ -149,7 +143,7 @@ public class AvleveringTjenesteTest {
         adminHandler.call(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                ListeObjekt pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", MockUriInfo.getInfo());
+                ListeObjekt pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", new MockUriInfo());
                 assertNotNull(pasientjournaler);
         
                 List<PasientjournalSokeresultatDTO> liste = (List<PasientjournalSokeresultatDTO>) pasientjournaler.getListe();

@@ -1,14 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
 import java.util.Date;
+
+import javax.inject.Inject;
+
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,6 +46,6 @@ public class KonfigparamTjenesteTest {
     @Test
     public void testHentingAvHeltall(){
         Integer integer = konfigparamTjeneste.getInt("MaxAge");
-        assertEquals(Integer.valueOf(110), integer);
+        assertEquals(Integer.valueOf(200), integer);
     }
 }

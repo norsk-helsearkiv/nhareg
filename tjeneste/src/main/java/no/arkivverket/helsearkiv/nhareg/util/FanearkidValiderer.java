@@ -10,8 +10,7 @@ import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
 public class FanearkidValiderer {
     public static final String KONFIG_FANEARKID = "fanearkid";
 
-    public static Valideringsfeil valider(PersondataDTO dto, KonfigparamTjeneste konfig){
-
+    public static Valideringsfeil valider(PersondataDTO dto, KonfigparamTjeneste konfig) {
         Integer fieldLength = konfig.getInt(KONFIG_FANEARKID);
         String fanearkid = dto.getFanearkid();
         if (fieldLength != null) {
@@ -22,6 +21,7 @@ public class FanearkidValiderer {
                 return new Valideringsfeil("fanearkid", "FeilFanearkid", "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
             }
         }
+        
         return null;
     }
 }

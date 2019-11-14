@@ -1,9 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,7 +24,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * <p>
@@ -71,43 +73,44 @@ public class DiagnosekodeTjeneste extends EntitetsTjeneste<Diagnosekode, String>
                 !StringUtils.isEmpty(queryParameters.getFirst(DIAGNOSE_DATE_QUERY_PARAMETER))) {
             String diagnoseDateString = queryParameters.getFirst(DIAGNOSE_DATE_QUERY_PARAMETER);
             //datostreng kan bestå av kun år eller full dato.
-            Date d = null;
+            Date date = null;
             try {
                 DatoEllerAar dea = Konverterer.tilDatoEllerAar(diagnoseDateString);
                 if (dea.getAar() != null) {
-                    d = GyldigeDatoformater.getDateFromYear(dea.getAar());
+                    date = GyldigeDatoformater.getDateFromYear(dea.getAar());
                 } else {
-                    d = dea.getDato().getTime();
+                    date = dea.getDato().getTime();
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            if (d != null) {
+            if (date != null) {
                 List kodeverksversjoner = getEntityManager()
                         .createNativeQuery("select kodeverkversjon from Diagnosekodeverk where gyldig_til_dato >=?1 and gyldig_fra_dato <= ?1")
-                        .setParameter(1, new java.sql.Date(d.getTime()))
+                        .setParameter(1, new java.sql.Date(date.getTime()))
                         .getResultList();
                 kodeverksversjoner.size();
                 //kan være flere kodeverk som overlapper her...
                 EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
                 Expression<String> expression = root.get(type.getDeclaredSingularAttribute("codeSystemVersion", String.class));
-                Predicate p = expression.in(kodeverksversjoner);
-                predicates.add(p);
+                Predicate predicate = expression.in(kodeverksversjoner);
+                predicates.add(predicate);
             }
         }
 
         if (queryParameters.containsKey(DISPLAY_NAME_LIKE_QUERY_PARAMETER)) {
             EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
             String displayNameLike = queryParameters.getFirst(DISPLAY_NAME_LIKE_QUERY_PARAMETER);
-            Predicate p = criteriaBuilder.like(
+            Predicate predicate = criteriaBuilder.like(
                 criteriaBuilder.lower(
                     root.get(
                         type.getDeclaredSingularAttribute("displayName", String.class)
                     )
                 ), "%" + displayNameLike.toLowerCase() + "%");
-            predicates.add(p);
+            predicates.add(predicate);
         }
+        
         return predicates.toArray(new Predicate[] {});
     }
 }

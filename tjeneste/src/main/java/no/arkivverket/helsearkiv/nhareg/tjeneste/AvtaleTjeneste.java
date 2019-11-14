@@ -77,7 +77,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     @Path("/{id}/avleveringer")
     public Response getAvleveringer(@PathParam("id") String avtaleidentifikator) {
         String select = "select object(o)"
-                + "  from Avlevering as o"
+                + " from Avlevering as o"
                 + " where o.avtale.avtaleidentifikator = :avtaleidentifikator";
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("avtaleidentifikator", avtaleidentifikator);
@@ -86,7 +86,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         Avlevering defaultAvlevering = avleveringTjeneste.getDefaultAvlevering();
 
         List<AvleveringDTO> dtoListe = new ArrayList<AvleveringDTO>();
-        for(Avlevering avlevering : avleveringer) {
+        for (Avlevering avlevering : avleveringer) {
             AvleveringDTO dto = new AvleveringDTO(avlevering);
             if (defaultAvlevering != null) {
                 if (avlevering.getAvleveringsidentifikator().equals(defaultAvlevering.getAvleveringsidentifikator())) {

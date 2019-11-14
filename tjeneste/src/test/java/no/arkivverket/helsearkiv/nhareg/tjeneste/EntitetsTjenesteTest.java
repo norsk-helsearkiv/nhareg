@@ -1,6 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.net.URI;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -11,16 +16,6 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
@@ -71,7 +66,7 @@ public class EntitetsTjenesteTest {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
-                Map<String, Long> map = tjeneste.getCount(MockUriInfo.getInfo());
+                Map<String, Long> map = tjeneste.getCount(new MockUriInfo());
                 assertTrue(map.get("antall") > 0);
                 
                 return null;

@@ -119,8 +119,8 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         final String username = sessionContext.getCallerPrincipal().getName();
         final Bruker bruker = userService.findByUsername(username);
         final String defaultUuid = bruker.getDefaultAvleveringsUuid();
-
-        return defaultUuid.isEmpty() ? null : getAvlevering(defaultUuid);
+        
+        return defaultUuid == null || defaultUuid.isEmpty() ? null : getAvlevering(defaultUuid);
     }
 
     @GET
@@ -346,9 +346,8 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
 
     public List<Valideringsfeil> validerLagringsenheter(String avleveringid, List<Lagringsenhet> lagringsenheter) {
         List<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
-        //
+
         // Plukker ut de eksisterende lagringsenhetene
-        //
         Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.select(lagringsenheter, eksisterendeLagringsenhetPredicate);
         for (Lagringsenhet lagringsenhet : eksisterendeLagringsenheter) {
             try {
@@ -357,7 +356,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
                     valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
                     break;
                 }
-            } catch (NoResultException nre) {
+            } catch (NoResultException ignored) {
                 // Ingen Avleveringer med pasientjournaler som har lagringsenhet med ID.
             }
         }
