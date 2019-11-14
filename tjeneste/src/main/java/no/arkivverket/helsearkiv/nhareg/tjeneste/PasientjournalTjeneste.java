@@ -91,16 +91,22 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
     @Resource
     private SessionContext sessionContext;
+    
     @EJB
     private KjønnTjeneste kjonnTjeneste;
+    
     @EJB
     private DiagnoseTjeneste diagnoseTjeneste;
+    
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
+    
     @EJB
     private AvtaleTjeneste avtaleTjeneste;
+    
     @EJB
     private DiagnosekodeTjeneste diagnosekodeTjeneste;
+    
     @EJB
     private UserService userService;
 
@@ -114,6 +120,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
 
     @EJB
     private LagringsenhetTjeneste lagringsenhetTjeneste;
+    
     @EJB
     private KonfigparamTjeneste konfigparam;
 
@@ -521,12 +528,12 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         }
         
         if (valideringsfeil.size() != 0) {
-            for (Valideringsfeil f : valideringsfeil) {
-                if (f.getAttribute().equals("diagnosedato")) {
-                    f.setAttribute("diagnosedatotab");
+            for (Valideringsfeil feil : valideringsfeil) {
+                if (feil.getAttribute().equals("diagnosedato")) {
+                    feil.setAttribute("diagnosedatotab");
                 }
-                if (f.getAttribute().equals("diagnosekode")) {
-                    f.setAttribute("diagnosekodetab");
+                if (feil.getAttribute().equals("diagnosekode")) {
+                    feil.setAttribute("diagnosekodetab");
                 }
             }
             throw new ValideringsfeilException(valideringsfeil);

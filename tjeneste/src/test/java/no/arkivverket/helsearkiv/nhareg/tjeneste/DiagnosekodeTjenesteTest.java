@@ -1,12 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-
-import static org.junit.Assert.assertNotNull;
-
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +16,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class DiagnosekodeTjenesteTest {
@@ -59,7 +57,7 @@ public class DiagnosekodeTjenesteTest {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
                 assertEquals(2, diagnosekoder.size());
@@ -74,7 +72,7 @@ public class DiagnosekodeTjenesteTest {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 queryParameters.add(EntitetsTjeneste.SIDE, "1");
                 queryParameters.add(EntitetsTjeneste.ANTALL, "1");
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
@@ -107,7 +105,7 @@ public class DiagnosekodeTjenesteTest {
             @Override
             public Object call() {
                 String code = "Code0";
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 queryParameters.add(DiagnosekodeTjeneste.CODE_QUERY_PARAMETER, code);
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
@@ -124,7 +122,7 @@ public class DiagnosekodeTjenesteTest {
             @Override
             public Object call() {
                 String displayNameLike = "ode";
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
@@ -141,7 +139,7 @@ public class DiagnosekodeTjenesteTest {
             @Override
             public Object call() {
                 String displayNameLike = "oDe";
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
@@ -173,7 +171,7 @@ public class DiagnosekodeTjenesteTest {
             @Override
             public Object call() {
                 String code = "Ukjent";
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 queryParameters.add("code", code);
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
@@ -205,7 +203,7 @@ public class DiagnosekodeTjenesteTest {
             @Override
             public Object call() {
                 String code = null;
-                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
                 queryParameters.add("code", code);
                 List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
                 assertNotNull(diagnosekoder);
