@@ -1,21 +1,24 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
-import static org.junit.Assert.assertEquals;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class DiagnosekodeTjenesteTest {
@@ -28,106 +31,186 @@ public class DiagnosekodeTjenesteTest {
     @Inject
     private DiagnosekodeTjeneste tjeneste;
 
-    @Test
-    public void create() {
-        Diagnosekode diagnosekode = new Diagnosekode();
-        diagnosekode.setCode("Diagnosekode100");
-        diagnosekode.setCodeSystem("Kodesystem99");
-        diagnosekode.setCodeSystemVersion("0.9.Beta");
-        diagnosekode.setDisplayName("Influensa beta");
-        Diagnosekode response = tjeneste.create(diagnosekode);
-        assertNotNull(response);
-    }
-
-    @Test
-    public void getAllUtenPaginering() {
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(3, diagnosekoder.size());
-    }
-
-    @Test
-    public void getAllMedPaginering() {
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add(EntitetsTjeneste.SIDE, "1");
-        queryParameters.add(EntitetsTjeneste.ANTALL, "1");
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(1, diagnosekoder.size());
-    }
-
-    @Test
-    public void hentDiagnosekoderMedCode() {
-        String code = "Code0";
-        List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
-        assertNotNull(diagnosekoder);
-        assertEquals(1, diagnosekoder.size());
-    }
-
-    @Test
-    public void getAllMedCode() {
-        String code = "Code0";
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add(DiagnosekodeTjeneste.CODE_QUERY_PARAMETER, code);
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(1, diagnosekoder.size());
-    }
+    @Inject
+    private UserHandler userHandler;
     
     @Test
-    public void getAllDisplayNameLike() {
-        String displayNameLike = "ode";
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(1, diagnosekoder.size());
-    }
-    
-    @Test
-    public void getAllDisplayNameLikeIgnoreCase() {
-        String displayNameLike = "oDe";
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(1, diagnosekoder.size());
+    public void create_nyDiagnosekode_skalIkkeGiNull() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                Diagnosekode diagnosekode = new Diagnosekode();
+                diagnosekode.setCode("Diagnosekode100");
+                diagnosekode.setCodeSystem("Kodesystem99");
+                diagnosekode.setCodeSystemVersion("0.9.Beta");
+                diagnosekode.setDisplayName("Influensa beta");
+                Diagnosekode response = tjeneste.create(diagnosekode);
+                assertNotNull(response);
+
+                return null;
+            }
+        });
     }
 
     @Test
-    public void hentDiagnosekoderMedUkjentCode() {
-        String code = "Ukjent";
-        List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
-        assertNotNull(diagnosekoder);
-        assertEquals(0, diagnosekoder.size());
+    public void getAll_utenPaginering_skalFinneTre() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(2, diagnosekoder.size());
+                
+                return null;
+            }
+        });
     }
 
     @Test
-    public void getAllMedUkjentCode() {
-        String code = "Ukjent";
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add("code", code);
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(0, diagnosekoder.size());
+    public void getAll_medPaginering_skalFinneEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                queryParameters.add(EntitetsTjeneste.SIDE, "1");
+                queryParameters.add(EntitetsTjeneste.ANTALL, "1");
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(1, diagnosekoder.size());
+                
+                return null;
+            }
+        });
     }
 
     @Test
-    public void hentDiagnosekoderMedNulltCode() {
-        String code = null;
-        List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
-        assertNotNull(diagnosekoder);
-        assertEquals(0, diagnosekoder.size());
+    public void hentDiagnosekoderMedCode_gyldigCode_skalFinneEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String code = "Code0";
+                List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+                assertNotNull(diagnosekoder);
+                assertEquals(1, diagnosekoder.size());
+                
+                return null;
+            }
+        });
     }
 
     @Test
-    public void getAllMedNulltCode() {
-        String code = null;
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add("code", code);
-        List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
-        assertNotNull(diagnosekoder);
-        assertEquals(0, diagnosekoder.size());
+    public void getAll_medCode_skalFinneEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String code = "Code0";
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                queryParameters.add(DiagnosekodeTjeneste.CODE_QUERY_PARAMETER, code);
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(1, diagnosekoder.size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void getAll_displayNameLike_skalFinneEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String displayNameLike = "ode";
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(1, diagnosekoder.size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void getAll_displayNameLikeIgnoreCase_skalFinneEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String displayNameLike = "oDe";
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                queryParameters.add(DiagnosekodeTjeneste.DISPLAY_NAME_LIKE_QUERY_PARAMETER, displayNameLike);
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(1, diagnosekoder.size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void hentDiagnosekoderMedCode_ukjentCode_skalFinneNull() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String code = "Ukjent";
+                List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+                assertNotNull(diagnosekoder);
+                assertEquals(0, diagnosekoder.size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void getAll_medUkjentCode_skalFinneNull() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String code = "Ukjent";
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                queryParameters.add("code", code);
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(0, diagnosekoder.size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void hentDiagnosekoderMedCode_nullCode_skalFinneNull() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String code = null;
+                List<Diagnosekode> diagnosekoder = tjeneste.hentDiagnosekoderMedCode(code);
+                assertNotNull(diagnosekoder);
+                assertEquals(0, diagnosekoder.size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void getAll_nullCode_skalFinneNull() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                String code = null;
+                MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+                queryParameters.add("code", code);
+                List<Diagnosekode> diagnosekoder = tjeneste.getAll(queryParameters);
+                assertNotNull(diagnosekoder);
+                assertEquals(0, diagnosekoder.size());
+
+                return null;
+            }
+        });
     }
 }

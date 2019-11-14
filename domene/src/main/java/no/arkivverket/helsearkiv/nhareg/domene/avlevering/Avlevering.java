@@ -213,18 +213,19 @@ public class Avlevering implements Serializable
         this.oppdateringsinfo = value;
     }
 
-    public void setLaast(boolean laast){
+    public void setLaast(boolean laast) {
         this.laast = laast;
     }
 
-    public boolean isLaast(){
+    public boolean isLaast() {
         return this.laast;
     }
 
-    public void setLagringsenhetformat(final String lagringsenhetformat){
+    public void setLagringsenhetformat(final String lagringsenhetformat) {
         this.lagringsenhetformat = lagringsenhetformat;
     }
-    public String getLagringsenhetformat(){
+    
+    public String getLagringsenhetformat() {
         return this.lagringsenhetformat;
     }
 }

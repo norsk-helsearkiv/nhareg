@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by haraldk on 13.05.15.
  */
-public class PersonnummerValidererTest {
+public class PersonnummerValidererUtilTest {
 
     @Test
     public void testRiktigFnr()  {

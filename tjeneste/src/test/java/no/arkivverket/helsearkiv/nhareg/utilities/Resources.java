@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.utilities;
 
 import java.util.logging.Logger;
 

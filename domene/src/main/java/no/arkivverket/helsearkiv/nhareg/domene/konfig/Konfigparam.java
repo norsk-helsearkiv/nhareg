@@ -29,6 +29,7 @@ public class Konfigparam {
     public void setVerdi(String verdi) {
         this.verdi = verdi;
     }
+
     public String getBeskrivelse() {
         return beskrivelse;
     }
@@ -36,6 +37,4 @@ public class Konfigparam {
     public void setBeskrivelse(String beskrivelse) {
         this.beskrivelse = beskrivelse;
     }
-
-
 }

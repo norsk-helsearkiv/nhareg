@@ -11,8 +11,6 @@
     
     -->
     <bean class="PersondataDTO" ignore-annotations="true">
-
-
         <field name="lagringsenheter">
             <constraint annotation="javax.validation.constraints.NotNull" />
             <constraint annotation="javax.validation.constraints.Size">

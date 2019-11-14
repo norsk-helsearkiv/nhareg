@@ -1,28 +1,29 @@
 package no.arkivverket.helsearkiv.nhareg.auth;
 
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
+
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 
 
 /**
  * Created by haraldk on 15.04.15.
  */
 @Stateless
-public class UserServiceBean implements UserService{
+public class UserServiceBean implements UserService {
+
     @PersistenceContext(name = "primary")
     private EntityManager em;
 
-
-    public String getRolle(final String username){
+    public String getRolle(final String username) {
         return findByUsername(username).getRolle().getNavn();
     }
 
@@ -31,55 +32,55 @@ public class UserServiceBean implements UserService{
     }
 
     public List<Bruker> getAllBrukere() {
-        String select = "SELECT b"
-                + "        FROM Bruker b";
+        String select = "SELECT b FROM Bruker b";
         final Query query = em.createQuery(select);
         return query.getResultList();
     }
 
-    public Bruker createBruker(Bruker bruker){
-        Bruker b = em.merge(bruker);
-        return b;
+    public Bruker createBruker(Bruker bruker) {
+        return em.merge(bruker);
     }
-    public List<Rolle> getRoller(){
-        String select = "SELECT b"
-                + "        FROM Rolle b";
+    
+    public List<Rolle> getRoller() {
+        String select = "SELECT b FROM Rolle b";
         final Query query = em.createQuery(select);
+        
         return query.getResultList();
     }
 
-    private static String plainToHash(final String userPass){
-        MessageDigest md = null;
+    private static String plainToHash(final String userPass) {
+        MessageDigest messageDigest;
         try {
-            md = MessageDigest.getInstance("SHA-256");
-            md.update(userPass.getBytes());
-            byte byteData[] = md.digest();
-            String pass = DatatypeConverter.printBase64Binary(byteData);
-            return pass;
+            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(userPass.getBytes());
+            byte[] byteData = messageDigest.digest();
+            
+            return DatatypeConverter.printBase64Binary(byteData);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+        
         return null;
     }
 
-    public void updateLagringsenhet(final String username, final String lagringsenhet){
-        Bruker b = findByUsername(username);
-        b.setLagringsenhet(lagringsenhet);
-        em.persist(b);
+    public void updateLagringsenhet(final String username, final String lagringsenhet) {
+        Bruker bruker = findByUsername(username);
+        bruker.setLagringsenhet(lagringsenhet);
+        em.persist(bruker);
     }
 
-    public String getLagringsenhet(final String username){
+    public String getLagringsenhet(final String username) {
         return findByUsername(username).getLagringsenhet();
     }
 
     public void updateDefaultAvlevering(final String username, final String avleveringsidentifikator) {
-        Bruker b = findByUsername(username);
-        if (avleveringsidentifikator.equals(b.getDefaultAvleveringsUuid())){
-            b.setDefaultAvleveringsUuid(null);
-        }else {
-            b.setDefaultAvleveringsUuid(avleveringsidentifikator);
+        Bruker bruker = findByUsername(username);
+        if (avleveringsidentifikator.equals(bruker.getDefaultAvleveringsUuid())) {
+            bruker.setDefaultAvleveringsUuid(null);
+        } else {
+            bruker.setDefaultAvleveringsUuid(avleveringsidentifikator);
         }
-        em.persist(b);
+        em.persist(bruker);
     }
 
     public void saveUser(final Bruker user) {

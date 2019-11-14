@@ -25,18 +25,19 @@ public class PersondataDTO implements Serializable {
     
     //For Oppdatering trenger vi iden
     private String uuid;
-
     private String merknad;
     
     public PersondataDTO() {
     }
 
-    public String getFanearkid(){
+    public String getFanearkid() {
         return fanearkid;
     }
-    public void setFanearkid(String fanearkid){
+    
+    public void setFanearkid(String fanearkid) {
         this.fanearkid = fanearkid;
     }
+    
     public String[] getLagringsenheter() {
         return lagringsenheter;
     }
@@ -124,6 +125,7 @@ public class PersondataDTO implements Serializable {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+    
     public String getMerknad() {
         return merknad;
     }
