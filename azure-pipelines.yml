@@ -13,11 +13,10 @@ stages:
   pool:
       vmImage: $(vmImage)
   jobs:
-# COMPILE
-  - job: compile
-    displayName: compile
+# COMPILE WEB COMPONENTS
+  - job: compile_web
+    displayName: compile web components
     steps:
-    ## Compile web components
     - task: Npm@1
       name: npm_install
       displayName: npm install
@@ -37,17 +36,6 @@ stages:
         gruntFile: $(webFolder)/Gruntfile.js
         targets: build compile
         gruntCli: 'node_modules/grunt-cli/bin/grunt'
-    ## Compile maven project
-    - task: Maven@3
-      name: maven_compile
-      displayName: maven compile
-      inputs:
-        mavenPomFile: $(pomFilePath)
-        mavenOptions: $(mavenOptions)
-        javaHomeOption: $(javaHome)
-        jdkVersionOption: $(jdkVersion)
-        publishJUnitResults: false
-        goals: 'compile'
 # TEST
   - job: test
     displayName: test
@@ -65,8 +53,7 @@ stages:
         jdkVersionOption: $(jdkVersion)
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
-        # Exclude the 'tjeneste' module from testing, relies on external config
-        goals: 'test  -pl !tjeneste'
+        goals: 'test '
 ### STAGING ###
 - stage: Staging
   dependsOn: Build
