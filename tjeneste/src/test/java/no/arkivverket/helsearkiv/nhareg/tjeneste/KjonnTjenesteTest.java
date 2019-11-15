@@ -1,16 +1,21 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
-
-import javax.inject.Inject;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+
 import static org.junit.Assert.assertNotNull;
+
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
 
 @RunWith(Arquillian.class)
 public class KjonnTjenesteTest {
@@ -23,12 +28,22 @@ public class KjonnTjenesteTest {
     @Inject
     private KjønnTjeneste tjeneste;
 
+    @Inject
+    private UserHandler userHandler;
+    
     @Test
-    public void create() {
-        Kjønn kjønn = new Kjønn();
-        kjønn.setCode("I");
-        kjønn.setDisplayName("Intetkjønn");
-        Kjønn rsp = tjeneste.create(kjønn);
-        assertNotNull(rsp);
+    public void create_gyldigKjonn_skalIkkeGiNull() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                Kjønn kjonn = new Kjønn();
+                kjonn.setCode("I");
+                kjonn.setDisplayName("Intetkjønn");
+                Kjønn result = tjeneste.create(kjonn);
+                assertNotNull(result);
+                
+                return null;
+            }
+        });
     }
 }

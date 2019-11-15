@@ -15,12 +15,11 @@
     <!-- Example configuration for a remote JBoss EAP instance -->
     <container qualifier="jboss" default="true">
         <!-- If you want to use the JBOSS_HOME environment variable, just delete the jbossHome property -->
-        <!--
         <configuration>
-           <property name="jbossHome">/path/to/jboss/as</property>
+<!--            <property name="serverConfig">test-standalone.xml</property>-->
+            <!--           <property name="jbossHome">target/wildfly-8.2.0.Final</property>-->
+<!--        <property name="javaVmArguments">-Xms64m -Xmx1024m -XX:MaxPermSize=1024m</property>-->
         </configuration>
-        -->
-        <property name="javaVmArguments">-Xms64m -Xmx1024m -XX:MaxPermSize=1024m -Dorg.jboss.resolver.warning=true</property>
     </container>
 
 </arquillian>

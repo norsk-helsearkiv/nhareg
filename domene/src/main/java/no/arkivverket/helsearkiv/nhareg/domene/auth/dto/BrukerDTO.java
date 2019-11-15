@@ -7,7 +7,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
  * Created by haraldk on 08/11/2017.
  */
 public class BrukerDTO {
-
     private String brukernavn;
     private RolleDTO rolle;
     private String password;
@@ -15,15 +14,17 @@ public class BrukerDTO {
     private Boolean resetPassword;
     private String printerzpl;
 
-    public BrukerDTO(final Bruker b){
+    public BrukerDTO(final Bruker b) {
         this.brukernavn = b.getBrukernavn();
         this.printerzpl = b.getPrinterzpl();
         this.rolle = new RolleDTO(b.getRolle());
     }
-    public BrukerDTO(){
-
+    
+    public BrukerDTO() {
     }
-    public BrukerDTO(final String brukernavn, final RolleDTO rolle, final String password, final String passwordConfirm, final Boolean resetPassword){
+    
+    public BrukerDTO(final String brukernavn, final RolleDTO rolle, final String password,
+                     final String passwordConfirm, final Boolean resetPassword) {
         this.brukernavn = brukernavn;
         this.rolle = rolle;
         this.password = password;
@@ -80,15 +81,18 @@ public class BrukerDTO {
     }
 
     public Bruker toBruker(){
-        Bruker b = new Bruker();
-        b.setBrukernavn(brukernavn);
-        b.setPassord(password);
-        Rolle r = new Rolle();
-        if (rolle!=null) {
-            r.setNavn(rolle.getNavn());
+        Bruker bruker = new Bruker();
+        bruker.setBrukernavn(brukernavn);
+        bruker.setPassord(password);
+        Rolle rolle = new Rolle();
+        
+        if (this.rolle != null) {
+            rolle.setNavn(this.rolle.getNavn());
         }
-        b.setRolle(r);
-        b.setPrinterzpl(getPrinterzpl());
-        return b;
+        
+        bruker.setRolle(rolle);
+        bruker.setPrinterzpl(getPrinterzpl());
+        
+        return bruker;
     }
 }

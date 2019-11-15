@@ -15,8 +15,8 @@ public class Bruker {
     private String defaultAvleveringsUuid;
     private String printerzpl;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="rollenavn")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rollenavn")
     private Rolle rolle;
 
     public String getDefaultAvleveringsUuid() {
@@ -60,6 +60,7 @@ public class Bruker {
     public void setRolle(Rolle rolle) {
         this.rolle = rolle;
     }
+    
     public String getAuthToken() {
         return authToken;
     }
@@ -67,6 +68,7 @@ public class Bruker {
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
+    
     public String getResetPassord() {
         return resetPassord;
     }

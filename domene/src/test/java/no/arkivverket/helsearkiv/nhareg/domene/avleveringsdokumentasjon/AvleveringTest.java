@@ -1,14 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon;
 
-import java.util.Set;
-import javax.validation.ConstraintViolation;
+import org.junit.BeforeClass;
+
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import static org.junit.Assert.*;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
@@ -24,18 +20,5 @@ public class AvleveringTest {
         validator = factory.getValidator();
     }
     
-    @Test
-    public void testPasientjournalGrunnopplysningerIsNull() {
-
-        Pasientjournal pasientjournal = new Pasientjournal();
-
-        Set<ConstraintViolation<Pasientjournal>> constraintViolations =
-            validator.validate(pasientjournal);
-        
-        assertTrue(constraintViolations.size() > 0);
-        assertEquals(
-            "may not be null", constraintViolations.iterator().next().getMessage());
-
-    }
-    
+    // Lag tester her.
 }

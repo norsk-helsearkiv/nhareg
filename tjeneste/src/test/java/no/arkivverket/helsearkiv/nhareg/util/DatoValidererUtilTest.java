@@ -12,7 +12,7 @@ import org.junit.Test;
  *
  * @author robing
  */
-public class DatoValidererTest {
+public class DatoValidererUtilTest {
     
     @Test
     public void testKonsistensIDato() throws ParseException {

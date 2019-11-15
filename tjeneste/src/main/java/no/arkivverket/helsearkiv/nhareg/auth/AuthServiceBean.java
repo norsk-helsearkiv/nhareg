@@ -14,11 +14,10 @@ import java.util.UUID;
 public class AuthServiceBean implements AuthService {
 
     @EJB
-    UserService userService;
+    private UserService userService;
 
     public boolean isAuthorized(String name, Set<String> rolesAllowed){
         Bruker user = userService.findByUsername(name);
         return rolesAllowed.contains(user.getRolle().getNavn());
     }
-
 }

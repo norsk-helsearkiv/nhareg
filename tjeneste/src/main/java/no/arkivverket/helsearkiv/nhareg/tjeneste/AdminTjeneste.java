@@ -51,7 +51,7 @@ public class AdminTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/rolle")
-    public String getRolle(){
+    public String getRolle() {
         final String username = sessionContext.getCallerPrincipal().getName();
         return userService.getRolle(username);
     }
@@ -60,16 +60,15 @@ public class AdminTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/bruker")
-    public String getBruker(){
-        final String username = sessionContext.getCallerPrincipal().getName();
-        return username;
+    public String getBruker() {
+        return sessionContext.getCallerPrincipal().getName();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/century")
-    public String getCentury(){
+    public String getCentury() {
         return konfigparam.getVerdi(KonfigparamTjeneste.KONFIG_AARHUNDRE);
     }
 
@@ -77,7 +76,7 @@ public class AdminTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/resetPassord")
-    public Boolean checkPassordReset(){
+    public Boolean checkPassordReset() {
         final String username = sessionContext.getCallerPrincipal().getName();
         Bruker b = userService.findByUsername(username);
         return "Y".equals(b.getResetPassord());
@@ -87,16 +86,17 @@ public class AdminTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/oppdaterPassord")
-    public Response oppdaterPassord(final String nyttPassord){
+    public Response oppdaterPassord(final String nyttPassord) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        Bruker b = userService.findByUsername(username);
+        Bruker bruker = userService.findByUsername(username);
         String b64pwd = passordToHash(nyttPassord);
         List<Valideringsfeil> feil = validerNyEndreBruker(nyttPassord);
+
         if (feil.size() > 0) {
             throw new ValideringsfeilException(feil);
         }
-        b.setPassord(b64pwd);
-        b.setResetPassord("");
+        bruker.setPassord(b64pwd);
+        bruker.setResetPassord("");
 
         return Response.ok().build();
     }
@@ -105,20 +105,20 @@ public class AdminTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/roller")
-    public List<Rolle> getRoller(){
+    public List<Rolle> getRoller() {
         return userService.getRoller();
     }
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin"})
     @Path("/brukere")
-    public List<BrukerDTO> getBrukere(){
+    public List<BrukerDTO> getBrukere() {
         List<BrukerDTO> dtos = new ArrayList<BrukerDTO>();
-        for (Bruker b:userService.getAllBrukere()){
-            dtos.add(new BrukerDTO(b));
+        for (Bruker bruker: userService.getAllBrukere()) {
+            dtos.add(new BrukerDTO(bruker));
         }
+
         return dtos;
     }
 
@@ -127,44 +127,44 @@ public class AdminTjeneste {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin"})
     @Path("/brukere")
-    public Response oppdaterBruker(BrukerDTO bruker){
-        Bruker b = bruker.toBruker();
-        if ("".equals(b.getRolle().getNavn())){//defaulter til bruker-rolle hvis det mangler..
-            b.getRolle().setNavn("bruker");
+    public Response oppdaterBruker(BrukerDTO brukerDTO) {
+        Bruker bruker = brukerDTO.toBruker();
+        //defaulter til bruker-rolle hvis det mangler..
+        if (bruker.getRolle().getNavn().isEmpty()) {
+            bruker.getRolle().setNavn("bruker");
         }
-
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
         final String username = sessionContext.getCallerPrincipal().getName();
         String loggedInRolle = getRolle();
-        if (loggedInRolle.equals("admin")&&bruker.getBrukernavn().equals(username)){
-            b.getRolle().setNavn(loggedInRolle);
+        if (loggedInRolle.equals("admin") && brukerDTO.getBrukernavn().equals(username)) {
+            bruker.getRolle().setNavn(loggedInRolle);
         }
-
 
         boolean resetPass = false;
-        if (bruker.getResetPassword()!=null&&bruker.getResetPassword()){
-            b.setResetPassord("Y");//enkel resetpassord-indikator kan forfines ved behov...
+        if (brukerDTO.getResetPassword() != null && brukerDTO.getResetPassword()) {
+            bruker.setResetPassord("Y"); // enkel resetpassord-indikator kan forfines ved behov...
             resetPass = true;
-        }else{
-            b.setResetPassord("");
+        } else {
+            bruker.setResetPassord("");
         }
 
-        if (!resetPass) { //lite poeng å validere passord hvis det skal resettes
-            List<Valideringsfeil> feil = validerNyEndreBruker(bruker.getPassword());
+        if (!resetPass) { // lite poeng å validere passord hvis det skal resettes
+            List<Valideringsfeil> feil = validerNyEndreBruker(brukerDTO.getPassword());
             if (feil.size() > 0) {
                 throw new ValideringsfeilException(feil);
             }
         }
 
-        String b64Pwd = passordToHash(b.getPassord());
-        b.setPassord(b64Pwd);
+        String b64Pwd = passordToHash(bruker.getPassord());
+        bruker.setPassord(b64Pwd);
 
-        Bruker ny = userService.createBruker(b);
+        Bruker ny = userService.createBruker(bruker);
+
         return Response.ok(new BrukerDTO(ny)).build();
     }
 
-    private String passordToHash(final String passord){
+    private String passordToHash(final String passord) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(passord.getBytes("UTF-8"));
@@ -174,23 +174,20 @@ public class AdminTjeneste {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
-    private boolean validerPassord(String passord){
-        if (passord==null||passord.length()<5){
-            return false;
-        }
-        return true;
+    private boolean validerPassord(String passord) {
+        return passord != null && passord.length() >= 5;
     }
 
-    private List<Valideringsfeil> validerNyEndreBruker(final String passord){
+    private List<Valideringsfeil> validerNyEndreBruker(final String passord) {
         List<Valideringsfeil> feilList = new ArrayList<Valideringsfeil>();
-        if (!validerPassord(passord)){
+        if (!validerPassord(passord)) {
             Valideringsfeil feil = new Valideringsfeil("passord", "FeilPassord");
             feilList.add(feil);
         }
-
 
         return feilList;
     }
@@ -198,22 +195,19 @@ public class AdminTjeneste {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {"admin", "bruker"})
     @Path("/sistBrukte")
-    public String getSistBrukteLagringsenhet(){
+    public String getSistBrukteLagringsenhet() {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final String lagringsenhet = userService.getLagringsenhet(username);
-        return lagringsenhet;
+
+        return userService.getLagringsenhet(username);
     }
 
-
-    public void clearCache(String username){
+    public void clearCache(String username) {
         try {
-
-            ObjectName jaasMgr = new ObjectName("jboss.as:subsystem=security,security-domain=<YOUR SECURITY DOMAIN>" );
-            Object[] params = {username};
+            ObjectName jaasMgr = new ObjectName("jboss.as:subsystem=security,security-domain=<YOUR SECURITY DOMAIN>");
+            Object[] params = { username };
             String[] signature = {"java.lang.String"};
             MBeanServer server = MBeanServerFactory.findMBeanServer(null).get(0);
             server.invoke(jaasMgr, "flushCache", params, signature);
-        } catch (Exception ex) {
-
-        }}
+        } catch (Exception ignored) {}
+    }
 }

@@ -1,9 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
+import org.apache.commons.collections4.Transformer;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.DatatypeConverter;
-import org.apache.commons.collections4.Transformer;
 
 /**
  *
@@ -20,16 +21,17 @@ public class DiagnoseTilDTOTransformer implements Transformer<Diagnose, Diagnose
             dto.setUuid(input.getUuid());
             dto.setDiagnosetekst(input.getDiagnosetekst());
             dto.setDiagnosedato(datoEllerAarTilStringTransformer.transform(input.getDiagdato()));
+            
             if (input.getDiagnosekode() != null) {
                 dto.setDiagnosekode(input.getDiagnosekode().getCode());
                 dto.setDiagnosekodeverk(input.getDiagnosekode().getCodeSystemVersion());
             }
-            if (input.getOppdateringsinfo()!=null) {
+            
+            if (input.getOppdateringsinfo() != null) {
                 dto.setOppdatertAv(input.getOppdateringsinfo().getOppdatertAv());
                 dto.setOppdatertDato(DatatypeConverter.printDateLong(input.getOppdateringsinfo().getSistOppdatert()));
             }
         }
         return dto;
     }
-
 }

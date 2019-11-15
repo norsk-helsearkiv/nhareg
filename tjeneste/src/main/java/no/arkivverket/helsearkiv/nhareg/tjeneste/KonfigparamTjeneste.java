@@ -1,7 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -23,32 +22,48 @@ public class KonfigparamTjeneste {
     public static final String KONFIG_TEMPLATEFILE = "templateFilePath";
     public static final String KONFIG_PRINTER_PORT = "printerPort";
 
-
-
     @PersistenceContext(name = "primary")
     private EntityManager em;
 
-    public String getVerdi(String navn){
+    public String getVerdi(String navn) {
         Konfigparam param = em.find(Konfigparam.class, navn);
-        return param.getVerdi();
+        return param == null ? null : param.getVerdi();
     }
 
-    public Date getDate(String navn){
-        String date = getVerdi(navn);
-        Date d = null;
+    public Date getDate(final String navn) {
+        final String verdi = getVerdi(navn);
+        Date date = null;
+
         try {
-            d = new SimpleDateFormat("dd.MM.yyyy").parse(date);
+            date = new SimpleDateFormat("dd.MM.yyyy").parse(verdi);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return d;
+
+        return date;
     }
-    public Integer getInt(String navn){
-        String tall = getVerdi(navn);
-        return StringUtils.isEmpty(tall)?null:Integer.parseInt(tall);
+
+    public Integer getInt(final String navn) {
+        final String tall = getVerdi(navn);
+
+        try {
+            return Integer.parseInt(tall);
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
+
+        return null;
     }
-    public Double getDouble(String navn){
-        String tall = getVerdi(navn);
-        return Double.parseDouble(tall);
+
+    public Double getDouble(final String navn) {
+        final String tall = getVerdi(navn);
+
+        try {
+            return Double.parseDouble(tall);
+        } catch (NumberFormatException nfe) {
+            nfe.printStackTrace();
+        }
+
+        return null;
     }
 }
