@@ -16,11 +16,12 @@ angular.module('nha.registrering', [
             var sliceDay = date.slice(0, 3);
             var sliceMonth = date.slice(3, 6);
             var sliceYear = date.slice(6, 10);
-            var newDate = sliceMonth + sliceDay + sliceYear;
 
-            var d = new Date(newDate);
+            var validDate = sliceMonth + sliceDay + sliceYear;
 
-            return d.getTime();
+            var parsedDate = new Date(validDate);
+
+            return parsedDate.getTime();
         };
     })
     .config(function config($stateProvider) {
