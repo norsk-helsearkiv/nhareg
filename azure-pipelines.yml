@@ -19,19 +19,19 @@ stages:
     steps:
     - task: Npm@1
       name: npm_install
-      displayName: npm install
+      displayName: NPM Install
       inputs:
         workingDir: $(webFolder)
         command: install
     - task: CmdLine@2
       name: bower_install
-      displayName: bower install
+      displayName: Bower Install
       inputs:
         script: 'bower install'
         workingDirectory: $(webFolder)
     - task: Grunt@0
       name: grunt_compile
-      displayName: grunt build compile
+      displayName: Grunt build and compile
       inputs:
         gruntFile: $(webFolder)/Gruntfile.js
         targets: build compile
@@ -43,7 +43,7 @@ stages:
         publishLocation: 'pipeline'
 # TEST
   - job: verify
-    displayName: verify
+    displayName: maven verify
     condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
     steps:
     - task: DownloadPipelineArtifact@2
@@ -52,7 +52,7 @@ stages:
         targetPath: '$(Pipeline.Workspace)'
     - task: Maven@3
       name: maven_verify
-      displayName: maven verify
+      displayName: Maven verify
       inputs:
         mavenPomFile: $(pomFilePath)
         mavenOptions: $(mavenOptions)
@@ -67,12 +67,12 @@ stages:
   condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
   jobs:
   - job: package_and_stage
-    displayName: package and stage
+    displayName: Package and Stage
     pool:
       vmImage: $(vmImage)
     steps:
     - task: Maven@3
-      displayName: maven package
+      displayName: Maven Package
       inputs:
         mavenPomFile: $(pomFilePath)
         mavenOptions: $(mavenOptions)
