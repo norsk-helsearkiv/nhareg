@@ -3,7 +3,7 @@ variables:
   vmImage: 'ubuntu-latest'
   javaHome: 'JDKVersion'
   mavenOptions: '-Xmx3072m'
-  jdkVersion: '1.8'
+  jdkVersion: '1.7'
   pomFilePath: 'pom.xml'
   webFolder: klient-web/src/main
 
@@ -48,7 +48,6 @@ stages:
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
-        artifactName: webCompileArtifact
         buildType: 'current'
         targetPath: '$(Pipeline.Workspace)'
     - task: Maven@3
