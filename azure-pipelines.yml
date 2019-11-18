@@ -47,6 +47,7 @@ stages:
   - job: verify
     displayName: maven verify
     condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
+    dependsOn: compile_web
     steps:
     - task: DownloadPipelineArtifact@2
       name: download_web_artifact
