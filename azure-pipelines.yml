@@ -36,11 +36,21 @@ stages:
         gruntFile: $(webFolder)/Gruntfile.js
         targets: build compile
         gruntCli: 'node_modules/grunt-cli/bin/grunt'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'webCompileArtifact'
+        publishLocation: 'pipeline'
 # TEST
-  - job: test
-    displayName: test
+  - job: verify
+    displayName: verify
     condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
     steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifactName: webCompileArtifact
+        buildType: 'current'
+        targetPath: '$(Pipeline.Workspace)'
     - task: Maven@3
       name: maven_verify
       displayName: maven verify
@@ -75,7 +85,6 @@ stages:
       inputs:
         sourceFolder: $(Agent.BuildDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
-
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: $(Build.ArtifactStagingDirectory)
