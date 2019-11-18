@@ -53,6 +53,7 @@ stages:
       displayName: Download Web Pipeline Artifact
       inputs:
         buildType: 'current'
+        artifactName: 'webCompileArtifact'
         targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
     - task: Maven@3
       name: maven_verify
