@@ -38,7 +38,7 @@ stages:
         gruntCli: 'node_modules/grunt-cli/bin/grunt'
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '$(Pipeline.Workspace)'
+        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
         artifact: 'webCompileArtifact'
         publishLocation: 'pipeline'
 # TEST
@@ -49,7 +49,7 @@ stages:
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'current'
-        targetPath: '$(Pipeline.Workspace)'
+        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
     - task: Maven@3
       name: maven_verify
       displayName: Maven verify
