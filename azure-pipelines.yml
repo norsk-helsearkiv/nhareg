@@ -51,7 +51,7 @@ stages:
         jdkVersionOption: $(jdkVersion)
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
-        goals: 'verify'
+        goals: verify
 ### STAGING ###
 - stage: Staging
   dependsOn: Build
@@ -70,7 +70,7 @@ stages:
         javaHomeOption: $(javaHome)
         jdkVersionOption: $(jdkVersion)
         publishJUnitResults: false
-        goals: package
+        goals: package -DskipTests
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.BuildDirectory)
