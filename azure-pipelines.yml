@@ -42,8 +42,8 @@ stages:
     condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
     steps:
     - task: Maven@3
-      name: maven_test
-      displayName: maven test
+      name: maven_verify
+      displayName: maven verify
       inputs:
         mavenPomFile: $(pomFilePath)
         mavenOptions: $(mavenOptions)
@@ -51,7 +51,7 @@ stages:
         jdkVersionOption: $(jdkVersion)
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
-        goals: 'test '
+        goals: 'verify'
 ### STAGING ###
 - stage: Staging
   dependsOn: Build
