@@ -77,6 +77,13 @@ stages:
     pool:
       vmImage: $(vmImage)
     steps:
+    - task: DownloadPipelineArtifact@2
+      name: download_web_artifact
+      displayName: Download Web Pipeline Artifact
+      inputs:
+        buildType: 'current'
+        artifactName: 'webCompileArtifact'
+        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)' 
     - task: Maven@3
       displayName: Maven Package
       inputs:
