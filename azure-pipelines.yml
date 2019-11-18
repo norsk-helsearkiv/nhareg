@@ -37,6 +37,8 @@ stages:
         targets: build compile
         gruntCli: 'node_modules/grunt-cli/bin/grunt'
     - task: PublishPipelineArtifact@1
+      name: publish_web_artifact
+      displayName: Publish Web Pipeline Artifact
       inputs:
         targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
         artifact: 'webCompileArtifact'
@@ -47,6 +49,8 @@ stages:
     condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
     steps:
     - task: DownloadPipelineArtifact@2
+      name: download_web_artifact
+      displayName: Download Web Pipeline Artifact
       inputs:
         buildType: 'current'
         targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
