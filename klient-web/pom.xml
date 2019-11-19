@@ -46,7 +46,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-
                 <version>2.3</version>
                 <configuration>
                     <webResources>
@@ -54,7 +53,6 @@
                             <directory>${project.basedir}/src/main/build</directory><!--distr-->
                             <targetPath>.</targetPath>
                         </resource>
-
                     </webResources>
                 </configuration>
             </plugin>
