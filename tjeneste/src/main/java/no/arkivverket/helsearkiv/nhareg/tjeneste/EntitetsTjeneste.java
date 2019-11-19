@@ -1,8 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -28,8 +32,6 @@ import javax.ws.rs.core.UriInfo;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * <p>
@@ -87,13 +89,13 @@ public abstract class EntitetsTjeneste<T, K> {
 
     public static final String ANTALL = "antall";
     public static final String SIDE = "side";
+    
     Log log = LogFactory.getLog(EntitetsTjeneste.class);
-    //@Inject
+
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
 
     private Class<T> entityClass;
-    private Class<K> idClass;
     private String idName;
     private String orderByName;
     private Validator validator;
@@ -101,15 +103,15 @@ public abstract class EntitetsTjeneste<T, K> {
     public EntitetsTjeneste() {
     }
 
-    public EntitetsTjeneste(Class<T> entityClass, Class<K> keyClass, String idName) {
+    public EntitetsTjeneste(Class<T> entityClass, String idName) {
         this.entityClass = entityClass;
-        this.idClass = keyClass;
         this.idName = idName;
     }
 
     protected void setOrderByName(String orderByName){
         this.orderByName = orderByName;
     }
+
     public EntityManager getEntityManager() {
         return entityManager;
     }
@@ -142,18 +144,20 @@ public abstract class EntitetsTjeneste<T, K> {
         Root<T> root = criteriaQuery.from(entityClass);
         Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-        if (orderByName!=null&&!"".equals(orderByName)) {
+
+        if (orderByName != null && !orderByName.isEmpty()) {
             criteriaQuery.orderBy(criteriaBuilder.desc(root.get(orderByName)));
         }
+
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
-        if (queryParameters.containsKey(SIDE)
-                && queryParameters.containsKey(ANTALL)) {
-            Integer side = Integer.parseInt(queryParameters.getFirst(SIDE));
-            Integer antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
+        if (queryParameters.containsKey(SIDE) && queryParameters.containsKey(ANTALL)) {
+            int side = Integer.parseInt(queryParameters.getFirst(SIDE));
+            int antall = Integer.parseInt(queryParameters.getFirst(ANTALL));
             
             query.setFirstResult((side - 1) * antall);
             query.setMaxResults(antall);
         }
+
         return query.getResultList();
     }
 
@@ -178,6 +182,7 @@ public abstract class EntitetsTjeneste<T, K> {
         criteriaQuery.where(predicates);
         Map<String, Long> result = new HashMap<String, Long>();
         result.put("antall", entityManager.createQuery(criteriaQuery).getSingleResult());
+
         return result;
     }
 
@@ -194,7 +199,9 @@ public abstract class EntitetsTjeneste<T, K> {
      * @param root @{link Root} used by the invoker
      * @return a list of {@link Predicate}s that will added as query parameters
      */
-    protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters, CriteriaBuilder criteriaBuilder, Root<T> root) {
+    protected Predicate[] extractPredicates(MultivaluedMap<String, String> queryParameters,
+                                            CriteriaBuilder criteriaBuilder,
+                                            Root<T> root) {
         return new Predicate[]{};
     }
 
@@ -234,14 +241,10 @@ public abstract class EntitetsTjeneste<T, K> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public T create(@NotNull T entity) {
-        //
         // Validerer.
-        //
         new Validator<T>(entityClass).validerMedException(entity);
-        //
-        // Oppretter.
-        //
 
+        // Oppretter.
         getEntityManager().persist(entity);
 
         return entity;
@@ -250,14 +253,12 @@ public abstract class EntitetsTjeneste<T, K> {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public T update(T entity) {
-        //
         // Validerer.
-        //
         new Validator<T>(entityClass).validerMedException(entity);
-        //
+
         // Oppdaterer.
-        //
         getEntityManager().merge(entity);
+
         return entity;
     }
 
@@ -266,6 +267,7 @@ public abstract class EntitetsTjeneste<T, K> {
     public T delete(@PathParam("id") K id) {
         T entity = getSingleInstance(id);
         getEntityManager().remove(entity);
+        
         return entity;
     }
 }

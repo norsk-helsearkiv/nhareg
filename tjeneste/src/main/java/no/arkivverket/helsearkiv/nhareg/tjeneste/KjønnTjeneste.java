@@ -26,7 +26,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 public class KjønnTjeneste extends EntitetsTjeneste<Kjønn, String> {
 
     public KjønnTjeneste() {
-        super(Kjønn.class, String.class, "code");
+        super(Kjønn.class, "code");
     }
 
 }

@@ -36,35 +36,37 @@ public class Validator<T> {
     public ArrayList<Valideringsfeil> valider(T obj) {
         ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
 
-        //Håndterer null objekt
+        // Håndterer null objekt
         if (obj == null) {
-            valideringsfeil.add(new Valideringsfeil(objClass + "", "NotNull"));
+            valideringsfeil.add(new Valideringsfeil(objClass + "", "NotNull", "Object cannot be null"));
             return valideringsfeil;
         }
 
         //Validerer obj
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(obj);
         for (ConstraintViolation<T> feil : constraintViolations) {
-            String msgTpl = feil.getConstraintDescriptor().getMessageTemplate();
+            String messageTemplate = feil.getConstraintDescriptor().getMessageTemplate();
 
-            int start = msgTpl.indexOf("constraints") + 12;
-            int stop = msgTpl.length() - 1;
-            if (msgTpl.indexOf("message") > 0) {
-                stop = msgTpl.indexOf("message") - 1;
+            int start = messageTemplate.indexOf("constraints") + 12;
+            int stop = messageTemplate.length() - 1;
+            if (messageTemplate.indexOf("message") > 0) {
+                stop = messageTemplate.indexOf("message") - 1;
             }
 
             String attributt = feil.getPropertyPath().toString();
-            String constraint = msgTpl.substring(start, stop);
+            String constraint = messageTemplate.substring(start, stop);
 
-            valideringsfeil.add((new Valideringsfeil(attributt, constraint)));
+            valideringsfeil.add((new Valideringsfeil(attributt, constraint, feil.getMessage())));
         }
+        
         return valideringsfeil;
     }
-    public void validerMedException(T obj){
+    
+    public void validerMedException(T obj) {
         ArrayList<Valideringsfeil> valideringsfeil = valider(obj);
-        if(!valideringsfeil.isEmpty()){
+        
+        if (!valideringsfeil.isEmpty()) {
             throw new ValideringsfeilException(valideringsfeil);
         }
     }
-
 }

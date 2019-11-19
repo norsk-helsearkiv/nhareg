@@ -18,14 +18,13 @@ public class CredentialsCatchFilter implements Filter {
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain next)
-            throws IOException, ServletException
-    {
+        throws IOException, ServletException {
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpServletRequest = (HttpServletRequest) request;
             if (httpServletRequest.getSession().getAttribute("principal") == null
-                    && httpServletRequest.getUserPrincipal() != null) {
+                && httpServletRequest.getUserPrincipal() != null) {
                 Object p = httpServletRequest.getUserPrincipal();
-               // httpServletRequest.getSession().setAttribute("principal", httpServletRequest.getUserPrincipal());
+                // httpServletRequest.getSession().setAttribute("principal", httpServletRequest.getUserPrincipal());
             }
         }
         next.doFilter(request, response);
@@ -35,5 +34,4 @@ public class CredentialsCatchFilter implements Filter {
     public void destroy() {
 
     }
-
 }

@@ -1,30 +1,38 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import no.arkivverket.helsearkiv.nhareg.util.RESTDeployment;
-import java.net.URI;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.logging.Logger;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.Callable;
+
 import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
+import no.arkivverket.helsearkiv.nhareg.utilities.MockUriInfo;
+import no.arkivverket.helsearkiv.nhareg.utilities.MockUriInfoQPFilled;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class PasientjournalTjenesteTest {
@@ -32,368 +40,293 @@ public class PasientjournalTjenesteTest {
     @Inject
     private PasientjournalTjeneste tjeneste;
 
+    @Inject
+    private UserHandler userHandler;
+    
+    @Inject
+    private AdminHandler adminHandler;
+
+    private static Logger log = Logger.getLogger(PasientjournalTjenesteTest.class);
+
     @Deployment
     public static WebArchive deployment() {
         return RESTDeployment.deployment();
     }
 
-    // GET
     @Test
-    public void getAll_utenQueryParameter_allePasientjournaler() {
-        ListeObjekt listeObjekt = tjeneste.hentAlle(getUriInfoTom());
-        assertEquals(2, listeObjekt.getTotal());
-    }
+    public void getAll_tomInfo_skalGiTo() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                ListeObjekt listeObjekt = tjeneste.hentAlle(new MockUriInfo());
+                assertEquals(2, listeObjekt.getTotal());
 
-    @Test
-    public void getActiveWithPaging_henterEnFraSideTo_andreElementIListen() {
-        //Henter alle pasientjournaler i databasen for test av paging
-        MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
-        List<Pasientjournal> pasientjournaler = tjeneste.getAll(map);
-
-        UriInfo info = getUriInfo();
-        ListeObjekt listeObjekt = tjeneste.getActiveWithPaging(pasientjournaler, info);
-
-        assertEquals(2, listeObjekt.getTotal());
-        assertEquals(1, listeObjekt.getAntall());
-        List<PasientjournalSokeresultatDTO> resultatListe
-                = (List<PasientjournalSokeresultatDTO>) listeObjekt.getListe();
-        assertEquals("uuid3", resultatListe.get(0).getUuid());
+                return null;
+            }
+        });
     }
 
     @Test
-    public void getSingleInstance_henterForsteObjekt_returnererDTO() {
-        PasientjournalDTO dto = tjeneste.getPasientjournalDTO("uuid1");
-
-        assertEquals("Hunden Fido", dto.getPersondata().getNavn());
-        assertEquals(3, dto.getPersondata().getLagringsenheter().length);
-        assertFalse(dto.getDiagnoser().isEmpty());
-    }
-
-    // POST
-    @Test
-    public void leggTilDiagnose() {
-        Pasientjournal pasientjournal = tjeneste.hent("uuid1");
-        assertNotNull(pasientjournal);
-        assertNotNull(pasientjournal.getDiagnose());
-        //
-        // Henter antall diagnoser før.
-        //
-        int antallDiagnoserFør = pasientjournal.getDiagnose().size();
-        //
-        // Henter antall lagringsenheter før.
-        //
-        assertNotNull(pasientjournal.getLagringsenhet());
-        int antallLagringsenheterFør = pasientjournal.getLagringsenhet().size();
-        //
-        // Legger til diagnose.
-        //
-        DiagnoseDTO dto = new DiagnoseDTO();
-        dto.setDiagnosedato("15.01.2015");
-        dto.setDiagnosetekst("Jeg er syk");
-        dto.setDiagnosekode("Code0");
-        Response response = tjeneste.leggTilDiagnose("uuid1", dto);
-        assertNotNull(response);
-        //
-        // Sjekker at antall diagnoser har økt med 1.
-        //
-        pasientjournal = tjeneste.hent("uuid1");
-        assertNotNull(pasientjournal);
-        assertNotNull(pasientjournal.getDiagnose());
-        assertEquals(antallDiagnoserFør + 1, pasientjournal.getDiagnose().size());
-        //
-        // Sjekker at antall lagringsenheter er det samme
-        //
-        assertNotNull(pasientjournal.getLagringsenhet());
-        assertEquals(antallLagringsenheterFør, pasientjournal.getLagringsenhet().size());
-
-    }
-
-    @Test
-    public void fjernDiagnose() {
-/*
-        Pasientjournal pj = tjeneste.hent("uuid1");
-        assertNotNull(pj);
-        assertNotNull(pj.getDiagnose());
-        assertFalse(pj.getDiagnose().isEmpty());
-        int sizeFor = pj.getDiagnose().size();
-
-        DiagnoseDTO dto = new DiagnoseDTO();
-        dto.setUuid(pj.getDiagnose().get(0).getUuid());
-        Response response = tjeneste.fjernDiagnose("uuid1", dto);
-        assertNotNull(response);
-        assertEquals(200, response.getStatus());
-        //
-        pj = tjeneste.hent("uuid1");
-        assertNotNull(pj);
-        assertNotNull(pj.getDiagnose());
-        assertEquals(sizeFor - 1, pj.getDiagnose().size());
-*/
-    }
-
-//    @Test
-    public void leggTilDiagnoseNull() {
-        Response response = tjeneste.leggTilDiagnose("uuid1", null);
-        assertNotNull(response);
-    }
-
-    // PUT
-    @Test
-    public void oppdaterPasientjournal_setterNyttJournalnummer_ok() throws ParseException {
-        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-        pasientjournalDTO.getPersondata().setJournalnummer("12345");
-        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
-        //Ingen feilmeldinger
-    }
-
-    @Test
-    public void oppdaterPasientjournal_antall_diagnoser() throws ParseException {
-        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-        assertNotNull(pasientjournalDTO);
-        assertNotNull(pasientjournalDTO.getDiagnoser());
-        assertFalse(pasientjournalDTO.getDiagnoser().isEmpty());
-        int antallDiagnoser = pasientjournalDTO.getDiagnoser().size();
-        //
-        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
-        //
-        // Sjekker antall diagnoser som er lagret
-        //
-        pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-        assertNotNull(pasientjournalDTO);
-        assertNotNull(pasientjournalDTO.getDiagnoser());
-        assertEquals(antallDiagnoser, pasientjournalDTO.getDiagnoser().size());
-    }
-
-    @Test
-    public void oppdaterPasientjournal_antall_Lagringsenheter() throws ParseException {
-        String id = "uuid1";
-        Pasientjournal pasientjournal = tjeneste.hent(id);
-        assertNotNull(pasientjournal);
-        assertNotNull(pasientjournal.getLagringsenhet());
-        assertEquals(3, pasientjournal.getLagringsenhet().size());
-        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-        assertNotNull(pasientjournalDTO);
-        //
-        //
-        assertNotNull(pasientjournalDTO.getPersondata());
-        assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
-        assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
-        //
-        // Gjør en oppdatering.
-        //
-        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
-        //
-        // Sjekker antall diagnoser som er lagret
-        //
-        pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-        assertNotNull(pasientjournalDTO);
-        assertNotNull(pasientjournalDTO.getPersondata());
-        assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
-        assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
-    }
-
-    @Test
-    public void oppdaterPasientjournal_nha_98() throws ParseException {
-        //
-        // Oppretter diagnoser uten diagnosekoder, men med tekst og lagrer.
-        // Tar opp igjen pasientjournalen og endrer f.eks. dato.
-        // Resultatet er at de registrerte diagnosetekstene er forsvunnet.
-        //
-        String id = "uuid1";
-        PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
-        assertNotNull(pasientjournalDTO);
-        //
-        // Legger til diagnose.
-        //
-        DiagnoseDTO dto = new DiagnoseDTO();
-        dto.setDiagnosedato("15.01.2015");
-        dto.setDiagnosetekst("Jeg er syk");
-        Response response = tjeneste.leggTilDiagnose("uuid1", dto);
-        assertNotNull(response);
-        
-        pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
-        assertNotNull(pasientjournalDTO);
-        pasientjournalDTO.getPersondata().setFodt("1990");
-        tjeneste.oppdaterPasientjournal(pasientjournalDTO);
-    }
-
-    // DELETE
-    @Test
-    public void delete_finnerIkkeEntitet_404() {
-        try {
-            tjeneste.delete("tull");
-        } catch (EJBException e) {
-            assertEquals(NoResultException.class, e.getCause().getClass());
-        }
-    }
-
-    @Test
-    public void delete_sletterEntitet_200() {
-        Pasientjournal rsp = tjeneste.delete("uuid1");
-        assertNotNull(rsp);
-    }
-
-    private UriInfo getUriInfoTom() {
-        return new UriInfo() {
-
-            public String getPath() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public String getPath(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<PathSegment> getPathSegments() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<PathSegment> getPathSegments(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI getRequestUri() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public UriBuilder getRequestUriBuilder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI getAbsolutePath() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public UriBuilder getAbsolutePathBuilder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI getBaseUri() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public UriBuilder getBaseUriBuilder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public MultivaluedMap<String, String> getPathParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public MultivaluedMap<String, String> getPathParameters(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public MultivaluedMap<String, String> getQueryParameters() {
-                return new MultivaluedHashMap<String, String>();
-            }
-
-            public MultivaluedMap<String, String> getQueryParameters(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<String> getMatchedURIs() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<String> getMatchedURIs(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<Object> getMatchedResources() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI resolve(URI uri) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI relativize(URI uri) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-    }
-
-    private UriInfo getUriInfo() {
-        return new UriInfo() {
-
-            public String getPath() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public String getPath(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<PathSegment> getPathSegments() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<PathSegment> getPathSegments(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI getRequestUri() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public UriBuilder getRequestUriBuilder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI getAbsolutePath() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public UriBuilder getAbsolutePathBuilder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI getBaseUri() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public UriBuilder getBaseUriBuilder() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public MultivaluedMap<String, String> getPathParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public MultivaluedMap<String, String> getPathParameters(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public MultivaluedMap<String, String> getQueryParameters() {
+    public void getActiveWithPaging_henterEnFraSideTo_andreElementIListen() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                //Henter alle pasientjournaler i databasen for test av paging
                 MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
-                map.add("side", "2");
-                map.add("antall", "1");
-                return map;
-            }
+                List<Pasientjournal> pasientjournaler = tjeneste.getAll(map);
 
-            public MultivaluedMap<String, String> getQueryParameters(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
+                ListeObjekt listeObjekt = tjeneste.getActiveWithPaging(pasientjournaler, new MockUriInfoQPFilled());
+                assertEquals(2, listeObjekt.getTotal());
+                assertEquals(1, listeObjekt.getAntall());
+                List<PasientjournalSokeresultatDTO> resultatListe
+                    = (List<PasientjournalSokeresultatDTO>) listeObjekt.getListe();
+                assertEquals("uuid1", resultatListe.get(0).getUuid());
 
-            public List<String> getMatchedURIs() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                return null;
             }
-
-            public List<String> getMatchedURIs(boolean bln) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public List<Object> getMatchedResources() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI resolve(URI uri) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            public URI relativize(URI uri) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+        });
     }
+
+    @Test
+    public void getSingleInstance_henterForsteObjekt_returnererDTO() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
+
+                assertEquals("Hunden Fido", pasientjournalDTO.getPersondata().getNavn());
+                assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+                assertFalse(pasientjournalDTO.getDiagnoser().isEmpty());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void leggTilDiagnose_nyDiagnose_skalOkeDiagnoseMedEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                Pasientjournal pasientjournal = tjeneste.hent("uuid1");
+                assertNotNull(pasientjournal);
+                assertNotNull(pasientjournal.getDiagnose());
+
+                // Henter antall diagnoser før.
+                int antallDiagnoser = pasientjournal.getDiagnose().size();
+
+                // Henter antall lagringsenheter før.
+                assertNotNull(pasientjournal.getLagringsenhet());
+                int antallLagringsenheter = pasientjournal.getLagringsenhet().size();
+
+                // Legger til diagnose.
+                DiagnoseDTO dto = new DiagnoseDTO();
+                dto.setDiagnosedato("15.01.2005");
+                dto.setDiagnosetekst("Jeg er syk");
+                dto.setDiagnosekode("Code0");
+                try {
+                    Response response = tjeneste.leggTilDiagnose("uuid1", dto);
+                    assertEquals(200, response.getStatus());
+                } catch (ValideringsfeilException vfe) {
+                    Valideringsfeil valideringsfeil = vfe.getValideringsfeil().get(0);
+                    log.error(valideringsfeil.getConstraint());
+                    log.error(valideringsfeil.getAttribute());
+                    assert false;
+                }
+
+
+                // Sjekker at antall diagnoser har økt med 1.
+                pasientjournal = tjeneste.hent("uuid1");
+                assertNotNull(pasientjournal);
+                assertNotNull(pasientjournal.getDiagnose());
+                assertEquals(antallDiagnoser + 1, pasientjournal.getDiagnose().size());
+
+                // Sjekker at antall lagringsenheter er det samme
+                assertNotNull(pasientjournal.getLagringsenhet());
+                assertEquals(antallLagringsenheter, pasientjournal.getLagringsenhet().size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void fjernDiagnose_fjernEksisterendeDiagnose_skalMinskeDiagnoserMedEn() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                Pasientjournal pasientjournal = tjeneste.hent("uuid1");
+
+                assertNotNull(pasientjournal);
+                assertNotNull(pasientjournal.getDiagnose());
+                assertFalse(pasientjournal.getDiagnose().isEmpty());
+
+                int antallDiagnoser = pasientjournal.getDiagnose().size();
+                DiagnoseDTO diagnoseDTO = new DiagnoseDTO();
+                diagnoseDTO.setUuid(pasientjournal.getDiagnose().iterator().next().getUuid());
+                Response response = tjeneste.fjernDiagnose("uuid1", diagnoseDTO);
+                assertNotNull(response);
+                assertEquals(200, response.getStatus());
+
+                pasientjournal = tjeneste.hent("uuid1");
+                assertNotNull(pasientjournal);
+                assertNotNull(pasientjournal.getDiagnose());
+                assertEquals(antallDiagnoser - 1, pasientjournal.getDiagnose().size());
+
+                return null;
+            }
+        });
+    }
+
+    @Test(expected = ValideringsfeilException.class)
+    public void leggTilDiagnose_nullDto_skalGiValideringsFeil() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() throws ValideringsfeilException {
+                tjeneste.leggTilDiagnose("uuid1", null);
+            
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void oppdaterPasientjournal_setterNyttJournalnummer_skalIkkeKasteException() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() throws ParseException {
+                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
+                pasientjournalDTO.getPersondata().setJournalnummer("12345");
+                tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void oppdaterPasientjournal_nyBeskrivelse_skalBliOppdatert() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() throws ParseException {
+                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
+                log.info(pasientjournalDTO.getPersondata());
+                assertNotNull(pasientjournalDTO);
+
+                log.info(pasientjournalDTO.getAvleveringBeskrivelse());
+                final String beskrivelse = "ny beskrivelse";
+                pasientjournalDTO.setAvleveringBeskrivelse(beskrivelse);
+                log.info(pasientjournalDTO.getAvleveringBeskrivelse());
+                Response response = tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+
+                assertEquals(200, response.getStatus());
+
+                pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
+                log.info(pasientjournalDTO.getAvleveringBeskrivelse());
+                assertNotNull(pasientjournalDTO);
+                assertEquals(beskrivelse, pasientjournalDTO.getAvleveringBeskrivelse());
+
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void oppdaterPasientjournal_skalIkkeEndreAntallLagringsenheter() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() throws ParseException {
+                final String id = "uuid1";
+                Pasientjournal pasientjournal = tjeneste.hent(id);
+                assertNotNull(pasientjournal);
+                assertNotNull(pasientjournal.getLagringsenhet());
+                assertEquals(3, pasientjournal.getLagringsenhet().size());
+
+                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
+                assertNotNull(pasientjournalDTO);
+                assertNotNull(pasientjournalDTO.getPersondata());
+                assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
+                assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+
+                // Gjør en oppdatering.
+                tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+
+                // Sjekker antall diagnoser som er lagret
+                pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
+                assertNotNull(pasientjournalDTO);
+                assertNotNull(pasientjournalDTO.getPersondata());
+                assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
+                assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+                
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void leggTilDiagnose_nyDiagnoseOgOppdatertFodtDato_skalHaNyFodtDato() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() throws ParseException {
+                // Oppretter diagnoser uten diagnosekoder, men med tekst og lagrer.
+                // Tar opp igjen pasientjournalen og endrer f.eks. dato.
+                // Resultatet er at de registrerte diagnosetekstene er forsvunnet.
+                final String id = "uuid1";
+                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
+                assertNotNull(pasientjournalDTO);
+        
+                // Legger til diagnose.
+                DiagnoseDTO diagnoseDTO = new DiagnoseDTO();
+                diagnoseDTO.setDiagnosedato("15.01.2005");
+                diagnoseDTO.setDiagnosetekst("Jeg er syk");
+                Response response = tjeneste.leggTilDiagnose(id, diagnoseDTO);
+                assertNotNull(response);
+                assertEquals(200, response.getStatus());
+        
+                final String fodt = "1990";
+                pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
+                assertNotNull(pasientjournalDTO);
+                pasientjournalDTO.getPersondata().setFodt(fodt);
+                // Oppdater
+                response = tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+                assertEquals(200, response.getStatus());
+                
+                pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
+                assertEquals(fodt, pasientjournalDTO.getPersondata().getFodt());
+                
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void delete_ugyldigId_skalKasteNoResultException() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                try {
+                    tjeneste.delete("tull");
+                } catch (EJBException e) {
+                    assertEquals(NoResultException.class, e.getCause().getClass());
+                }
+                
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void delete_gyldigId_skalSetteSlettetTilTrue() throws Exception {
+        userHandler.call(new Callable<Object>() {
+            @Override
+            public Object call() {
+                Pasientjournal pasientjournal = tjeneste.delete("uuid1");
+                assertNotNull(pasientjournal);
+                assertEquals(true, pasientjournal.isSlettet());
+                
+                return null;
+            }
+        });
+    }
+
 }

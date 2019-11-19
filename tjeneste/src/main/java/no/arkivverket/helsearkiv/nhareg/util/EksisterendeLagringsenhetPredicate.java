@@ -1,10 +1,14 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import org.apache.commons.collections4.Predicate;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.LagringsenhetTjeneste;
-import org.apache.commons.collections4.Predicate;
 
 /**
  * Predicate som evaluerer om lagringenheten finnes eller ikke.
@@ -12,6 +16,7 @@ import org.apache.commons.collections4.Predicate;
  * @author arnfinns
  */
 @Stateless
+@RolesAllowed({Roller.ROLE_BRUKER, Roller.ROLE_ADMIN})
 public class EksisterendeLagringsenhetPredicate implements Predicate<Lagringsenhet> {
 
     @Inject
@@ -25,5 +30,4 @@ public class EksisterendeLagringsenhetPredicate implements Predicate<Lagringsenh
     public boolean evaluate(Lagringsenhet lagringsenhet) {
         return lagringsenhetTjeneste.hentLagringsenhetMedIdentifikator(lagringsenhet.getIdentifikator()) != null;
     }
-
 }

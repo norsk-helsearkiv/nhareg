@@ -36,7 +36,7 @@ public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
     private SessionContext sessionContext;
 
     public DiagnoseTjeneste() {
-        super(Diagnose.class, String.class, "uuid");
+        super(Diagnose.class, "uuid");
 
     }
 

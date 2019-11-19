@@ -10,8 +10,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
  */
 @Stateless
 public class EntitetsTjenesteMock extends EntitetsTjeneste<Avtale, String> {
-
     public EntitetsTjenesteMock() {
-        super(Avtale.class, String.class, "avtaleidentifikator");
+        super(Avtale.class, "avtaleidentifikator");
     }
 }

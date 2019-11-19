@@ -1,4 +1,4 @@
-package no.arkivverket.helsearvik.nhareg.web;
+package no.arkivverket.helsearkiv.nhareg.web;
 import java.io.IOException;
 
 import javax.servlet.ServletException;

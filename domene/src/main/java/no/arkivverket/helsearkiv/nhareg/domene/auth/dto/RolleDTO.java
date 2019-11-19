@@ -8,13 +8,14 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 public class RolleDTO {
     private String navn;
 
-    public RolleDTO(){
-
+    public RolleDTO() {
     }
-    public RolleDTO(final Rolle rolle){
+    
+    public RolleDTO(final Rolle rolle) {
         this.navn = rolle.getNavn();
     }
-    public RolleDTO(final String navn){
+    
+    public RolleDTO(final String navn) {
         this.navn = navn;
     }
 

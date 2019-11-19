@@ -13,9 +13,10 @@ public class PasientjournalDTO implements Serializable {
     private List<DiagnoseDTO> diagnoser;
     private String virksomhet;
     private String avtaleBeskrivelse;
-
-
     private String avleveringBeskrivelse;
+    private String lagringsenhetformat;
+    private String avleveringsidentifikator;
+    private boolean avleveringLaast;
 
     public String getLagringsenhetformat() {
         return lagringsenhetformat;
@@ -25,8 +26,6 @@ public class PasientjournalDTO implements Serializable {
         this.lagringsenhetformat = lagringsenhetformat;
     }
 
-    private String lagringsenhetformat;
-
     public boolean isAvleveringLaast() {
         return avleveringLaast;
     }
@@ -34,8 +33,6 @@ public class PasientjournalDTO implements Serializable {
     public void setAvleveringLaast(boolean avleveringLaast) {
         this.avleveringLaast = avleveringLaast;
     }
-
-    private boolean avleveringLaast;
 
     public String getVirksomhet() {
         return virksomhet;
@@ -68,9 +65,6 @@ public class PasientjournalDTO implements Serializable {
     public void setAvleveringsidentifikator(String avleveringsidentifikator) {
         this.avleveringsidentifikator = avleveringsidentifikator;
     }
-
-    private String avleveringsidentifikator;
-
 
     public PersondataDTO getPersondata() {
         return persondata;

@@ -1,0 +1,103 @@
+
+variables:
+  vmImage: 'ubuntu-latest'
+  javaHome: 'JDKVersion'
+  mavenOptions: '-Xmx3072m'
+  jdkVersion: '1.7'
+  pomFilePath: 'pom.xml'
+  webFolder: klient-web/src/main
+
+stages:
+### BUILD ###
+- stage: Build
+  pool:
+      vmImage: $(vmImage)
+  jobs:
+# COMPILE WEB COMPONENTS
+  - job: compile_web
+    displayName: compile web components
+    steps:
+    - task: Npm@1
+      name: npm_install
+      displayName: NPM Install
+      inputs:
+        workingDir: $(webFolder)
+        command: install
+    - task: CmdLine@2
+      name: bower_install
+      displayName: Bower Install
+      inputs:
+        script: 'bower install'
+        workingDirectory: $(webFolder)
+    - task: Grunt@0
+      name: grunt_compile
+      displayName: Grunt build and compile
+      inputs:
+        gruntFile: $(webFolder)/Gruntfile.js
+        targets: build compile
+        gruntCli: 'node_modules/grunt-cli/bin/grunt'
+    - task: PublishPipelineArtifact@1
+      name: publish_web_artifact
+      displayName: Publish Web Pipeline Artifact
+      inputs:
+        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
+        artifact: 'webCompileArtifact'
+        publishLocation: 'pipeline'
+# TEST
+  - job: verify
+    displayName: maven verify
+    condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
+    dependsOn: compile_web
+    steps:
+    - task: DownloadPipelineArtifact@2
+      name: download_web_artifact
+      displayName: Download Web Pipeline Artifact
+      inputs:
+        buildType: 'current'
+        artifactName: 'webCompileArtifact'
+        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
+    - task: Maven@3
+      name: maven_verify
+      displayName: Maven verify
+      inputs:
+        mavenPomFile: $(pomFilePath)
+        mavenOptions: $(mavenOptions)
+        javaHomeOption: $(javaHome)
+        jdkVersionOption: $(jdkVersion)
+        jdkArchitectureOption: 'x64'
+        publishJUnitResults: false
+        goals: verify
+### STAGING ###
+- stage: Staging
+  dependsOn: Build
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
+  jobs:
+  - job: package_and_stage
+    displayName: Package and Stage
+    pool:
+      vmImage: $(vmImage)
+    steps:
+    - task: DownloadPipelineArtifact@2
+      name: download_web_artifact
+      displayName: Download Web Pipeline Artifact
+      inputs:
+        buildType: 'current'
+        artifactName: 'webCompileArtifact'
+        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)' 
+    - task: Maven@3
+      displayName: Maven Package
+      inputs:
+        mavenPomFile: $(pomFilePath)
+        mavenOptions: $(mavenOptions)
+        javaHomeOption: $(javaHome)
+        jdkVersionOption: $(jdkVersion)
+        publishJUnitResults: false
+        goals: package -DskipTests
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Agent.BuildDirectory)
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        ArtifactName: 'nhareg_artifact'

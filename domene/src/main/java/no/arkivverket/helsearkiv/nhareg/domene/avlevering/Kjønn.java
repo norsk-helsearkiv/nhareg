@@ -29,6 +29,4 @@ public class Kjønn
     extends CS
     implements Serializable
 {
-
-
 }
