@@ -300,8 +300,8 @@
                     <authentication>
                         <login-module code="Database" flag="required">
                             <module-option name="dsJndiName" value="java:jboss/datasources/NharegTestDS" />
-                            <module-option name="principalsQuery" value="select passord as 'Password' form Bruker where brukernavn=?" />
-                            <module-option name="rolesQuery" value="select rollenavn as 'role', 'Roles' from Bruker where brukernavn=?" />
+                            <module-option name="principalsQuery" value="SELECT passord AS 'Password' FROM bruker WHERE brukernavn=?" />
+                            <module-option name="rolesQuery" value="SELECT rollenavn AS 'role', 'Roles' FROM bruker WHERE brukernavn=?" />
                             <module-option name="hashAlgorithm" value="SHA-256" />
                             <module-option name="hashEncoding" value="base64" />
                         </login-module>

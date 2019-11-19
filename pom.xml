@@ -12,6 +12,7 @@
 
         <!-- Versions -->
         <arquillian.version>1.1.5.Final</arquillian.version>
+        <mysqlconnector.version>5.1.48</mysqlconnector.version>
     </properties>
     
     <build>
@@ -92,11 +93,11 @@
                 <scope>provided</scope>
             </dependency>
 
-            <!-- MySQL for testmiljo -->
+            <!-- MySQL for deployment -->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>5.1.26</version>
+                <version>${mysqlconnector.version}</version>
                 <scope>runtime</scope>
             </dependency>
 
@@ -143,18 +144,6 @@
                 <version>2.1.1.Final</version>
                 <scope>test</scope>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.wildfly</groupId>-->
-<!--                <artifactId>wildfly-arquillian-container-embedded</artifactId>-->
-<!--                <version>8.2.0.Final</version>-->
-<!--                <scope>test</scope>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.wildfly</groupId>-->
-<!--                <artifactId>wildfly-embedded</artifactId>-->
-<!--                <version>8.2.0.Final</version>-->
-<!--                <scope>test</scope>-->
-<!--            </dependency>-->
 
             <!-- TESTNG -->
             <dependency>
