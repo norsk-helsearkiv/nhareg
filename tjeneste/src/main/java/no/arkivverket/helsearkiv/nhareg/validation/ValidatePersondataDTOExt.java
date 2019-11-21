@@ -1,7 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.validation;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import org.apache.commons.lang3.StringUtils;
+
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 
 /**
  * Created by haraldk on 20.03.15.

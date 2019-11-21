@@ -1,0 +1,5 @@
+**/target/
+**/build/
+**/distr/
+**/vendor/
+**/node_modules/
