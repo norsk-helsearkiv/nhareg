@@ -1,9 +1,0 @@
-# Dockerfile for MySQL
-FROM mysql:8.0.18
-
-ENV MYSQL_ROOT_PASSWORD admin
-ENV MYSQL_DATABASE nhareg
-ENV MYSQL_USER nhareg
-ENV MYSQL_PASSWORD nhareg
-
-EXPOSE 3306
