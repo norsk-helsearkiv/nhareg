@@ -4,14 +4,16 @@ angular.module('nha.home', [
         'nha.common.error-service',
         'nha.common.list-service',
         'nha.common.modal-service',
-        'nha.registrering.registrering-service'
+        'nha.register.register-service'
     ])
+
     .filter('parseCustomDate', function(){
         return function(date){
             var d = new Date(date);
             return d.getTime();
         };
     })
+
     .config(function config($stateProvider) {
         $stateProvider.state('home', {
             url: '/',
@@ -22,7 +24,7 @@ angular.module('nha.home', [
                 }
             }
         });
-        $stateProvider.state('homeLagringsenheter', {
+        $stateProvider.state('storageUnits', {
             url: '/lagringsenheter',
             views: {
                 "main": {
@@ -31,7 +33,7 @@ angular.module('nha.home', [
                 }
             }
         });
-        $stateProvider.state('homeBrukere', {
+        $stateProvider.state('userAdmin', {
             url: '/brukere',
             views: {
                 "main": {
@@ -43,13 +45,15 @@ angular.module('nha.home', [
 
     })
 
-    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registreringService, stateService, $modal, $window, $cookies) {
+    .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registerService, stateService, $modal, $window) {
 
-
+        //Displays the correct template based on current state/path
         $scope.$on('$stateChangeSuccess', function () {
+
             $scope.sokVisible = false;
             $scope.lagringsenheterVisible = false;
             $scope.brukereVisible = false;
+
             var path = $location.path();
 
             if (path === '/') {
@@ -63,37 +67,34 @@ angular.module('nha.home', [
         });
 
 
-        httpService.brukerRolle().success(function (data) {
+        httpService.userRole().success(function (data) {
             $rootScope.userrole = data;
 
-        }).error(function (status) {
+        }).error(function () {
             $scope.loggUt();
         });
 
-        httpService.brukerNavn().success(function (data) {
+        httpService.userName().success(function (data) {
             $rootScope.username = data;
+        }).error(function (status) {});
 
-        }).error(function (status) {
-        });
-
-        httpService.hentAlle("admin/roller", false).success(function (data) {
+        httpService.getAll("admin/roller", false).success(function (data) {
             $scope.roller = data;
-        }).error(function (status) {
-        });
+        }).error(function (status) {});
+
         $scope.endrePassord = function () {
             var modal = modalService.endrePassord();
             modal.result.then(function () {
-                //TODO
             });
         };
-        httpService.hent("admin/resetPassord", false).success(function (data) {
+
+        httpService.get("admin/resetPassord", false).success(function (data) {
             if (data === 'true') {
                 $scope.endrePassord();
             }
         });
 
-
-        var antall = 15;
+        $scope.antall = 15;
 
         //Tekster i vinduet lastet fra kontroller
         $scope.text = {
@@ -104,7 +105,7 @@ angular.module('nha.home', [
                 return $filter('translate')('konfig.ANTALL');
             },
             function (newval) {
-                antall = Number(newval);
+                $scope.antall = Number(newval);
             }
         );
         $scope.$watch(
@@ -212,19 +213,17 @@ angular.module('nha.home', [
             }
         );
 
-
-        $scope.sok = stateService.sokState;
-
         $scope.defaultAvlevering = null;
-        
-        httpService.hentAlle("avtaler", false)
-            .success(function (data, status, headers, config) {
+
+        httpService.getAll("avtaler", false)
+            .success(function (data) {
                 $scope.avtaler = data;
-                httpService.hent("avtaler/default", false)
-                    .success(function(avtaleIdent, status){
+
+                httpService.get("avtaler/default", false)
+                    .success(function(avtaleIdent){
                         if (avtaleIdent){
                             $scope.defaultAvlevering = avtaleIdent;
-                            //TODO må testes litt....
+
                             for (var i = 0; i < data.length; i++) {
                                 if (data[i].avtaleidentifikator === avtaleIdent){
                                     $scope.setValgtAvtale(data[i]);
@@ -234,74 +233,31 @@ angular.module('nha.home', [
                         }else{
                             $scope.setValgtAvtale(data[0]);
                         }
-                }).error(function (data, status, headers, config) {
+                }).error(function (data, status) {
                     errorService.errorCode(status);
                 });
 
-            }).error(function (data, status, headers, config) {
-            errorService.errorCode(status);
-        });
-        httpService.hent("avtaler/virksomhet", false)
-            .success(function (data, status, headers, config) {
-                $scope.virksomhet = data;
-            }).error(function (data, status, headers, config) {
-            errorService.errorCode(status);
-        });
-
-        $scope.sok = {};
-        $scope.actionRensSok = function () {
-            $scope.sok.lagringsenhet = '';
-            $scope.sok.fanearkId = '';
-            $scope.sok.fodselsnummer = '';
-            $scope.sok.navn = '';
-            $scope.sok.fodt = '';
-            $scope.sok.oppdatertAv = '';
-            $scope.sok.sistOppdatert = '';
-        };
-        $scope.actionSok = function (sokestring) {
-            var txt = $scope.text.sokeresultat;
-            var viser = $scope.text.viser;
-            registreringService.setAvlevering(undefined);
-            var sok = {
-                sokLagringsenhet: $scope.sok.lagringsenhet,
-                sokFanearkId: $scope.sok.fanearkId,
-                sokFodselsnummer: $scope.sok.fodselsnummer,
-                sokNavn: $scope.sok.navn,
-                sokFodt: $scope.sok.fodt,
-                sokOppdatertAv: $scope.sok.oppdatertAv,
-                sokSistOppdatert: $scope.sok.sistOppdatert
-            };
-
-            listService.setSok(sok);
-            stateService.sokState = $scope.sok;
-
-            httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
-                .success(function (data, status, headers, config) {
-
-                    var tittel = {
-                        "tittel": txt,
-                        "underTittel": viser + " " + data.antall + " / " + data.total + " " + txt.toLowerCase()
-                    };
-                    listService.init(tittel, data);
-                    listService.setSok(sok);
-                    $location.path('/list');
-
-
-                }).error(function (data, status, headers, config) {
+            }).error(function (data, status) {
                 errorService.errorCode(status);
             });
-        };
+
+        httpService.get("avtaler/virksomhet", false)
+            .success(function (data) {
+                $scope.virksomhet = data;
+            }).error(function (data, status) {
+                errorService.errorCode(status);
+            });
 
         //Avtale
         $scope.setValgtAvtale = function (avtale) {
             if (avtale === undefined) {
                 return;
             }
-            httpService.hentAlle("avtaler/" + avtale.avtaleidentifikator + "/avleveringer", false)
-                .success(function (data, status, headers, config) {
+            httpService.getAll("avtaler/" + avtale.avtaleidentifikator + "/avleveringer", false)
+                .success(function (data) {
                     $scope.avleveringer = data;
                     $scope.valgtAvtale = avtale;
-                }).error(function (data, status, headers, config) {
+                }).error(function (data, status) {
                 errorService.errorCode(status);
             });
         };
@@ -309,12 +265,12 @@ angular.module('nha.home', [
         $scope.actionDeleteAvtale = function (elementType, id, element) {
             modalService.deleteModal(elementType, id, function () {
                 httpService.deleteElement("avtaler/" + id)
-                    .success(function (data, status, headers, config) {
+                    .success(function () {
                         fjern($scope.avtaler, element);
                         $scope.setValgtAvtale($scope.avtaler[0]);
-                    }).error(function (data, status, headers, config) {
-                    errorService.errorCode(status);
-                });
+                    }).error(function (data, status) {
+                        errorService.errorCode(status);
+                    });
             });
         };
 
@@ -343,11 +299,11 @@ angular.module('nha.home', [
         };
 
         $scope.actionLeggTilAvtale = function () {
-            modalService.nyModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
+            modalService.nyModal('common/modal-service/new-agreement.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
         };
 
         $scope.actionEndreAvtale = function (avtale) {
-            modalService.endreModal('common/modal-service/ny-avtale.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
+            modalService.endreModal('common/modal-service/new-agreement.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
         };
 
         //Avlevering
@@ -367,28 +323,29 @@ angular.module('nha.home', [
             return success;
 
         };
+
         $scope.actionLeggTilAvlevering = function () {
-            modalService.nyModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer/ny", validering);
+            modalService.nyModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering);
         };
 
         $scope.actionEndreAvlevering = function (avlevering) {
-            modalService.endreModal('common/modal-service/ny-avlevering.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering);
+            modalService.endreModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering);
         };
 
         $scope.actionFjernAvlevering = function (elementType, id, element) {
             modalService.deleteModal(elementType, id, function () {
                 httpService.deleteElement("avleveringer/" + id)
-                    .success(function (data, status, headers, config) {
+                    .success(function () {
                         fjern($scope.avleveringer, element);
-                    }).error(function (data, status, headers, config) {
-                    errorService.errorCode(status);
-                });
+                    }).error(function (data, status) {
+                        errorService.errorCode(status);
+                    });
             });
         };
 
         $scope.actionSettDefaultAvlevering = function(avlevering){
-            httpService.hent("avleveringer/"+avlevering.avleveringsidentifikator+"/aktiv")
-                .success(function(data, status){
+            httpService.get("avleveringer/" + avlevering.avleveringsidentifikator + "/aktiv")
+                .success(function(){
                     $scope.setValgtAvtale($scope.valgtAvtale);
                 }).error(function(data, status){
                     errorService.errorCode(status);
@@ -396,24 +353,25 @@ angular.module('nha.home', [
         };
 
         $scope.actionVisAvlevering = function (avlevering) {
-            registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
-            //TODO sjekk at dette ikke medfører feil
-            //registreringService.setAvlevering(undefined);
-            registreringService.setAvlevering(avlevering);
-            httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + "&avlevering=" + avlevering.avleveringsidentifikator)
-                .success(function (data, status, headers, config) {
+            registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
+            registerService.setAvlevering(avlevering);
+
+            httpService.getAll("pasientjournaler?side=1&antall=" + $scope.antall + "&avlevering=" + avlevering.avleveringsidentifikator)
+                .success(function (data) {
 
                     var tittel = {
-                        "tittel": avlevering.avtale.virksomhet.foretaksnavn + " / " + avlevering.avtale.avtalebeskrivelse + " / " + avlevering.avleveringsbeskrivelse,
+                        "tittel": avlevering.avtale.virksomhet.navn + " / " + avlevering.avtale.avtalebeskrivelse + " / " + avlevering.avleveringsbeskrivelse,
                         "underTittel": avlevering.arkivskaper
                     };
+
                     listService.init(tittel, data);
-                    listService.setAvlevering(avlevering.avleveringsidentifikator);
+                    listService.setAvlevering(avlevering);
+
                     $location.path('/list');
 
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
+                }).error(function (data, status) {
+                    errorService.errorCode(status);
+                });
         };
 
         $scope.actionAvleveringLeveranse = function (avlevering) {
@@ -427,14 +385,15 @@ angular.module('nha.home', [
         };
 
         $scope.actionLeggTilPasientjournald = function (avlevering) {
-            registreringService.setAvlevering(avlevering);
-            registreringService.setPasientjournalDTO(null);
-            registreringService.setVirksomhet($scope.virksomhet.foretaksnavn);
-            registreringService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
-            registreringService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-            registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
+            registerService.setAvlevering(avlevering);
+            registerService.setPasientjournalDTO(null);
+            registerService.setVirksomhet($scope.virksomhet.navn);
+            registerService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
+            registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
+            registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
             $location.path('/registrer');
         };
+
         $scope.actionLaasAvlevering = function (avlevering) {
             var tpl = 'common/modal-service/warning-modal.tpl.html';
             var url = "avleveringer/" + avlevering.avleveringsidentifikator + "/laas";
@@ -445,6 +404,7 @@ angular.module('nha.home', [
                 $scope.setValgtAvtale($scope.valgtAvtale);
             });
         };
+
         $scope.actionLaasOppAvlevering = function (avlevering) {
             var tpl = 'common/modal-service/warning-modal.tpl.html';
             var url = "avleveringer/" + avlevering.avleveringsidentifikator + "/laasOpp";
@@ -454,6 +414,7 @@ angular.module('nha.home', [
                 $scope.setValgtAvtale($scope.valgtAvtale);
             });
         };
+
         //Hjelpe metode for å fjerne fra liste
         var fjern = function (list, element) {
             for (var i = 0; i < list.length; i++) {
@@ -462,188 +423,5 @@ angular.module('nha.home', [
                 }
             }
         };
-        $scope.lagringsenheter = {};
-        $scope.lagrSok = {};
-        $scope.lagrPasientjournaler = [];
 
-        $scope.lagrActionSok = function () {
-
-            httpService.hentAlle("lagringsenheter/sok?identifikatorSok=" + $scope.lagrSok.lagringsenhet, false)
-                .success(function (data) {
-                    $scope.lagringsenheter = data;
-                }).error(function (data, status) {
-                    errorService.errorCode(status);
-            });
-        };
-
-        $scope.selectedRow = null;// initialize our variable to null
-        $scope.selectedRowIndex = null;
-        $scope.selectedRowViewIndex = null;
-        $scope.setClickedRow = function (item, index) {  //function that sets the value of selectedRow to current item.uuid
-            if (item === $scope.selectedRow) {
-                $scope.selectedRow = null;
-                $scope.selectedRowIndex = null;
-                $scope.selectedRowViewIndex = null;
-            } else {
-                for (var i=0;i<$scope.lagringsenheter.length;i++){
-                    if ($scope.lagringsenheter[i].uuid === item){
-                        $scope.selectedRowIndex = i;
-                        break;
-                    }
-                }
-                $scope.selectedRow = item;
-                $scope.selectedRowViewIndex = index;
-            }
-        };
-
-        $scope.lagrActionEndreLagringsenhet = function (lagringsenhet) {
-            var uuid = lagringsenhet.uuid;
-            httpService.hent("lagringsenheter/"+uuid+"/maske", false)
-                .success(function (data, status, headers, config) {
-                    var maske = data;
-                    var modal = modalService.endreLagringsenhet('common/modal-service/endre-lagringsenhet-modal.tpl.html',
-                        'lagringsenheter/',
-                        lagringsenhet,
-                        maske
-                    );
-                    modal.result.then(function () {
-                        //TODO
-                    });
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
-
-
-        };
-        $scope.lagrActionHentPasientjournaler = function () {
-            if ($scope.selectedRowIndex > -1) {
-                var valgtLagringsenhet = $scope.lagringsenheter[$scope.selectedRowIndex];
-                httpService.hentAlle("lagringsenheter/" + valgtLagringsenhet.identifikator + "/pasientjournaler", false)
-                    .success(function (data, status, headers, config) {
-                        $scope.lagrPasientjournaler = data;
-                    }).error(function (data, status, headers, config) {
-                    errorService.errorCode(status);
-                });
-            }
-        };
-
-        $scope.lagrSelection = {
-            allSelected: false
-        };
-        $scope.lagrToggleAll = function () {
-            var toggleStatus = !$scope.lagrSelection.allSelected;
-            angular.forEach($scope.lagrPasientjournaler, function (itm) {
-                itm.selected = toggleStatus;
-            });
-        };
-        $scope.lagrOptionToggled = function () {
-            $scope.lagrSelection.allSelected = $scope.lagrPasientjournaler.every(function (itm) {
-                return itm.selected;
-            });
-        };
-
-
-        $scope.lagrFlytt = {
-            lagringsenhet: ""
-        };
-
-        $scope.lagrActionFlytt = function () {
-            var selectedPasientjournaler = [];
-            angular.forEach($scope.lagrPasientjournaler, function (pasientjournal) {
-                if (pasientjournal.selected) {
-                    selectedPasientjournaler.push(pasientjournal.uuid);
-                }
-            });
-
-            var tpl = 'common/modal-service/warning-modal.tpl.html';
-            var url = "lagringsenheter/flytt";
-            var identifikator = $scope.lagrFlytt.lagringsenhet;
-            var tittel = $filter('translate')('modal.warning_flytt.TITTEL');
-            var beskrivelse = $filter('translate')('modal.warning_flytt.BESKRIVELSE');
-            modalService.warningFlyttLagringsenheter(tpl, url, '', tittel, beskrivelse,
-                function (removedUuids) {
-                    $scope.lagrActionHentPasientjournaler();
-                },
-                selectedPasientjournaler,
-                identifikator
-            );
-        };
-
-        $scope.bruker = {};
-        $scope.bruker.printerzpl = '127.0.0.1';
-        $scope.brukere = [];
-
-        $scope.selectedBrukerRow = null;  // initialize our variable to null
-
-        $scope.velgBruker = function (valgtBruker, index) {
-            if (index === $scope.selectedBrukerRow) {
-                $scope.selectedBrukerRow = null;
-                $scope.bruker.brukernavn = null;
-                $scope.bruker.rolle = null;
-                $scope.bruker.printerzpl = null;
-            } else {
-                var rolleIndex = $scope.roller.map(function (e) {
-                    return e.navn;
-                }).indexOf(valgtBruker.rolle.navn);
-                $scope.selectedBrukerRow = index;
-                $scope.bruker.brukernavn = valgtBruker.brukernavn;
-                $scope.bruker.printerzpl = valgtBruker.printerzpl;
-                $scope.bruker.rolle = $scope.roller[rolleIndex];
-            }
-        };
-
-        $scope.hentBrukere = function () {
-
-            httpService.hentAlle("admin/brukere", false)
-                .success(function (data, status, headers, config) {
-                    $scope.brukere = data;
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
-        };
-
-        var resetBruker = function () {
-            $scope.bruker = {};
-        };
-
-        var sjekkPassord = function () {
-            return $scope.bruker.password === $scope.bruker.passwordConfirm;
-        };
-
-        $scope.oppdaterBruker = function () {
-            $scope.error = [];
-            if (!sjekkPassord()) {
-                $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_ULIKT');
-                return;
-            }
-
-            httpService.ny("admin/brukere", $scope.bruker)
-                .success(function (data, status, headers, config) {
-                    $scope.hentBrukere();
-                    resetBruker();
-
-                }).error(function (data, status, headers, config) {
-                if (status != 400) {
-                    errorService.errorCode(status);
-                    return;
-                } else {
-                    if (data[0].attributt === 'passord') {
-                        $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_FEIL');
-                    }
-                }
-            });
-        };
-        $scope.error = [];
-        $scope.checkError = function (attributt) {
-            var err = $scope.error[attributt] !== undefined;
-            return err;
-        };
-
-        var setFeilmeldinger = function (data, status) {
-
-
-            angular.forEach(data, function (element) {
-                $scope.error[element.attributt] = element.constriant;
-            });
-        };
     });

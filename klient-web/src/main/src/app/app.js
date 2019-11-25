@@ -1,36 +1,36 @@
 angular.module('nha', [
-        'templates-app',
-        'templates-common',
-        'ui.router',
-        'cfp.hotkeys',
-        'tableSort',
-        'underscore',
-        'pascalprecht.translate',
-        'nha.common.error-service',
-        'nha.common.http-service',
-        'nha.common.modal-service',
-        'nha.common.list-service',
-        'nha.common.list-view',
-        'nha.common.diagnose-service',
-        'nha.home',
-        'nha.state',
-        'nha.registrering',
-        'nha.registrering.registrering-service',
-        'ngCookies',
-        'ngIdle'
-    ])
+    'templates-app',
+    'templates-common',
+    'ui.router',
+    'cfp.hotkeys',
+    'tableSort',
+    'underscore',
+    'pascalprecht.translate',
+    'nha.common.error-service',
+    'nha.common.http-service',
+    'nha.common.modal-service',
+    'nha.common.list-service',
+    'nha.common.list-view',
+    'nha.common.diagnosis-service',
+    'nha.home',
+    'nha.state',
+    'nha.register',
+    'nha.register.register-service',
+    'ngCookies',
+    'ngIdle'
+])
 
     .config(function myAppConfig($stateProvider, $urlRouterProvider, $translateProvider, $httpProvider, IdleProvider, KeepaliveProvider) {
+
         $urlRouterProvider.otherwise('/');
+        $httpProvider.defaults.withCredentials = true;
 
         $translateProvider.useStaticFilesLoader({
             prefix: 'assets/i18n/',
             suffix: '.json'
         });
-
-        $httpProvider.defaults.withCredentials = true;
-
         $translateProvider.preferredLanguage('nb');
+
         IdleProvider.idle(10); //idle starts after 10 seconds.
         IdleProvider.timeout(30*60); //after 30 minutes idle, time the user out
         KeepaliveProvider.interval(30); //10 sec ping interval for keep-alive ping
@@ -134,78 +134,78 @@ angular.module('nha', [
     }])
 
     .directive('fixedHeader', function fixedHeader($timeout) {
-    return {
-        restrict: 'A',
-        link: function link($scope, $elem, $attrs, $ctrl) {
-            var elem = $elem[0];
+        return {
+            restrict: 'A',
+            link: function link($scope, $elem, $attrs, $ctrl) {
+                var elem = $elem[0];
 
-            // wait for data to load and then transform the table
-            $scope.$watch(tableDataLoaded, function(isTableDataLoaded) {
-                if (isTableDataLoaded) {
-                    transformTable();
-                }
-            });
-
-            function tableDataLoaded() {
-                // first cell in the tbody exists when data is loaded but doesn't have a width
-                // until after the table is transformed
-                var firstCell = elem.querySelector('tbody tr:first-child td:first-child');
-                return firstCell && !firstCell.style.width;
-            }
-
-            function transformTable() {
-                // reset display styles so column widths are correct when measured below
-                angular.element(elem.querySelectorAll('thead, tbody, tfoot')).css('display', '');
-
-                // wrap in $timeout to give table a chance to finish rendering
-                $timeout(function () {
-                    // set widths of columns
-                    angular.forEach(elem.querySelectorAll('tr:first-child th'), function (thElem, i) {
-
-                        var tdElems = elem.querySelector('tbody tr:first-child td:nth-child(' + (i + 1) + ')');
-                        var tfElems = elem.querySelector('tfoot tr:first-child td:nth-child(' + (i + 1) + ')');
-
-                        var columnWidth = tdElems ? tdElems.offsetWidth : thElem.offsetWidth;
-                        if (tdElems) {
-                            tdElems.style.width = columnWidth + 'px';
-                        }
-                        if (thElem) {
-                            thElem.style.width = columnWidth + 'px';
-                        }
-                        if (tfElems) {
-                            tfElems.style.width = columnWidth + 'px';
-                        }
-                    });
-
-                    // set css styles on thead and tbody
-                    angular.element(elem.querySelectorAll('thead, tfoot')).css('display', 'block');
-
-                    angular.element(elem.querySelectorAll('tbody')).css({
-                        'display': 'block',
-                        'height': $attrs.tableHeight || 'inherit',
-                        'overflow': 'auto'
-                    });
-
-                    // reduce width of last column by width of scrollbar
-                    var tbody = elem.querySelector('tbody');
-                    var scrollBarWidth = tbody.offsetWidth - tbody.clientWidth;
-                    if (scrollBarWidth > 0) {
-                        // for some reason trimming the width by 2px lines everything up better
-                        scrollBarWidth -= 2;
-                        var lastColumn = elem.querySelector('tbody tr:first-child td:last-child');
-                        lastColumn.style.width = (lastColumn.offsetWidth - scrollBarWidth) + 'px';
+                // wait for data to load and then transform the table
+                $scope.$watch(tableDataLoaded, function(isTableDataLoaded) {
+                    if (isTableDataLoaded) {
+                        transformTable();
                     }
                 });
+
+                function tableDataLoaded() {
+                    // first cell in the tbody exists when data is loaded but doesn't have a width
+                    // until after the table is transformed
+                    var firstCell = elem.querySelector('tbody tr:first-child td:first-child');
+                    return firstCell && !firstCell.style.width;
+                }
+
+                function transformTable() {
+                    // reset display styles so column widths are correct when measured below
+                    angular.element(elem.querySelectorAll('thead, tbody, tfoot')).css('display', '');
+
+                    // wrap in $timeout to give table a chance to finish rendering
+                    $timeout(function () {
+                        // set widths of columns
+                        angular.forEach(elem.querySelectorAll('tr:first-child th'), function (thElem, i) {
+
+                            var tdElems = elem.querySelector('tbody tr:first-child td:nth-child(' + (i + 1) + ')');
+                            var tfElems = elem.querySelector('tfoot tr:first-child td:nth-child(' + (i + 1) + ')');
+
+                            var columnWidth = tdElems ? tdElems.offsetWidth : thElem.offsetWidth;
+                            if (tdElems) {
+                                tdElems.style.width = columnWidth + 'px';
+                            }
+                            if (thElem) {
+                                thElem.style.width = columnWidth + 'px';
+                            }
+                            if (tfElems) {
+                                tfElems.style.width = columnWidth + 'px';
+                            }
+                        });
+
+                        // set css styles on thead and tbody
+                        angular.element(elem.querySelectorAll('thead, tfoot')).css('display', 'block');
+
+                        angular.element(elem.querySelectorAll('tbody')).css({
+                            'display': 'block',
+                            'height': $attrs.tableHeight || 'inherit',
+                            'overflow': 'auto'
+                        });
+
+                        // reduce width of last column by width of scrollbar
+                        var tbody = elem.querySelector('tbody');
+                        var scrollBarWidth = tbody.offsetWidth - tbody.clientWidth;
+                        if (scrollBarWidth > 0) {
+                            // for some reason trimming the width by 2px lines everything up better
+                            scrollBarWidth -= 2;
+                            var lastColumn = elem.querySelector('tbody tr:first-child td:last-child');
+                            lastColumn.style.width = (lastColumn.offsetWidth - scrollBarWidth) + 'px';
+                        }
+                    });
+                }
             }
-        }
-    };
+        };
     })
 
     .run(function(Idle){
         // start watching when the app runs. also starts the Keepalive service by default.
         Idle.watch();
     })
-    .controller('AppCtrl', function AppCtrl($http, $scope, $location, diagnoseService, httpService, $window, $cookies) {
+    .controller('AppCtrl', function AppCtrl($http, $scope, $location, diagnosisService, httpService, $window) {
         $scope.events = [];
 
         $scope.$on('IdleStart', function() {

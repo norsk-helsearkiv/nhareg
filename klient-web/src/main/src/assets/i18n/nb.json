@@ -1,44 +1,43 @@
 {
 	"common" : {
-		"APP_TITTEL": "Registreringstøtte for pasientjournaler",
+		"APP_TITLE": "Registreringstøtte for pasientjournaler",
+        "USER": "Bruker",
 		"OK": "Ok",
 		"SEARCH": "Søk",
         "CLEAR_SEARCH": "Rens søkefelt",
-		"AVBRYT": "Avbryt",
-		"LEGG_TIL" : "Ny",
-        "NY_LAGRINGSENHET": "Ny lagringsenhet",
-        "LAGRE": "Lagre og lukk",
-        "UTSKRIFT" :"Utskrift",
+		"CANCEL": "Avbryt",
+		"ADD" : "Ny",
+        "NEW_STORAGE_UNIT": "Ny lagringsenhet",
+        "SAVE": "Lagre og lukk",
+        "PRINT" :"Utskrift",
         "tooltip" :{
-          "NY_LAGRINGSENHET" : "Legger til inntastet lagringsenhet i registreringen",
-          "LAGRE" :"Lagrer valgte lagringsenhet(er) på registreringen",
-          "LAGRE_LAGRINGSENHET" : "Lagrer ny identifikator på lagringsenheten",
-          "UTSKRIFT" : "Skriver ut etikett til boksen",
-          "AVBRYT" : "Avbryter registreringen",
+          "NEW_STORAGE_UNIT" : "Legger til inntastet lagringsenhet i registreringen",
+          "SAVE" :"Lagrer valgte lagringsenhet(er) på registreringen",
+          "SAVE_STORAGE_UNIT" : "Lagrer ny identifikator på lagringsenheten",
+          "PRINT" : "Skriver ut etikett til boksen",
+          "CANCEL" : "Avbryter registreringen",
           "LAGRE_PASSORD":"Lagrer nytt passord på brukeren"
         },
-
-
 		"VIS_HURTIGTASTER" : "Vis hurtigtaster",
 		"table" : {
-			"ARKIVSKAPER" : "Arkivskaper",
-			"BESKRIVELSE" : "Beskrivelse",
-			"ID" : "ID",
-            "AVTALE_ID":"Avtaleidentifikator",
+          "ARKIVSKAPER" : "Arkivskaper",
+          "BESKRIVELSE" : "Beskrivelse",
+          "ID" : "ID",
+          "AVTALE_ID":"Avtaleidentifikator",
           "AVTALE_BESKRIVELSE":"Avtalebeskrivelse",
           "AVTALE_DATO":"Avtaledato",
           "AVLEVERING_ID":"Avleveringsidentifikator",
           "AVLEVERING_SKAPER":"Avleveringsarkivskaper",
           "AVLEVERING_BESKRIVELSE":"Avleveringsbeskrivelse",
-			"NAVN" : "Navn",
-			"DATO" : "Dato",
-			"VERSJON" : "Versjon",
-			"KODE_SYSTEM" : "Kodesett",
-			"LAGRINGSENHET_FORMAT" : "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
-            "LAGRINGSENHET": "Lagringsenhet, format: ",
-            "UUID" : "UUID",
-            "BRUKERNAVN" : "Brukernavn",
-            "ROLLENAVN" : "Rolle",
+          "NAVN" : "Navn",
+          "DATO" : "Dato",
+          "VERSJON" : "Versjon",
+          "KODE_SYSTEM" : "Kodesett",
+          "STORAGE_UNIT_FORMAT" : "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
+          "STORAGE_UNIT": "Lagringsenhet, format: ",
+          "UUID" : "UUID",
+          "USERNAME" : "Brukernavn",
+          "ROLLENAVN" : "Rolle",
           "PRINTER" : "Printer-IP"
 		},
 		"PASIENTJOURNAL" : "Pasientjournal",
@@ -107,25 +106,28 @@
           "LAAST" : "Avleveringen er låst, kan kun åpnes av administrator"
 		}
 	},
-	"registrer" : {
-		"kjonn" : {
-			"MANN" : "Mann",
-			"KVINNE" : "Kvinne",
-			"IKKE_KJENT" : "Ikke kjent",
-			"IKKE_SPESIFISERT" : "Ikke spesifisert"
+	"register" : {
+        "REGISTRATION": "Registrering",
+		"gender" : {
+			"MALE" : "Mann",
+			"FEMALE" : "Kvinne",
+			"UNKNOWN" : "Ikke kjent",
+			"NOT_SPECIFIED" : "Ikke spesifisert"
 		},
-		"NAVN" : "Navn",
-        "DIAG_AAR" :"År/dato",
-        "DIAGNOSEKODEVERK" :"Diagnosekodeverk",
-        "DIAGNOSEKODE" : "Diagnosekode",
-        "DIAGNOSEKODEVERK_KORT" :"Kodeverk",
-        "DIAGNOSEKODE_KORT" : "Kode",
-        "DIAGNOSETEKST": "Diagnosetekst",
-        "MERKNAD": "Merknad"
+		"NAME" : "Navn",
+        "DIAGNOSIS_YEAR" :"År/dato",
+        "DIAGNOSIS_CODE_SYSTEM_VERSION" :"Diagnosekodeverk",
+        "DIAGNOSIS_CODE_SYSTEM" : "Diagnosekode",
+        "DIAGNOSIS_CODE_SYSTEM_VERSION_SHORT" :"Kodeverk",
+        "DIAGNOSIS_CODE_SYSTEM_SHORT" : "Kode",
+        "DIAGNOSIS_DISPLAY_NAME": "Diagnosetekst",
+        "NOTE": "Merknad",
+        "VALIDATION_ERRORS": "Valideringsfeil",
+        "STORAGE_UNITS": "Lagringsenheter (klikk for å endre)"
 	},
 	"login" : {
 		"TITTEL" : "Logg inn",
-		"BRUKERNAVN" : "Brukernavn",
+		"USERNAME" : "Brukernavn",
 		"PASSORD": "Passord",
 		"HUSK_MEG": "Husk meg",
 		"LOGG_UT" : "Logg ut",
@@ -133,17 +135,17 @@
 	},
 	"modal" : {
 		"delete" : {
-			"TITTEL" : "Er du sikker på at du vil slette?",
-			"SIKKER" : "Er du sikker på at du vil slette",
-			"MED_ID" : ", "
+			"TITLE" : "Er du sikker på at du vil slette?",
+			"CONFIRM" : "Er du sikker på at du vil slette",
+			"WITH_ID" : ", "
 		},
-        "lagringsenhet" : {
-            "TITTEL" : "Lagringsenhet"
+        "storage_unit" : {
+            "TITLE" : "Lagringsenhet"
         },
-        "endre_lagringsenhet" : {
-            "TITTEL" : "Endre lagringsenhet",
-            "IDENTIFIKATOR" : "Identifikator",
-            "NY_IDENTIFIKATOR" : "Ny identifikator"
+        "change_storage_unit" : {
+            "TITLE" : "Endre lagringsenhet",
+            "IDENTIFICATION" : "Identifikator",
+            "NEW_IDENTIFICATION" : "Ny identifikator"
         },
 		"legg_til" : {
 			"TITTEL" : "Opprett ny",
@@ -205,7 +207,7 @@
     	"FodtEtterDodt" : "Fødsel kan ikke være etter død",
         "UtenforGyldigPeriode" : "Dato/år utenfor gyldighetsområde",
         "UkjentDiagnosekode" : "Ukjent diagnosekode",
-      "FeilFodselsnummer" : "Fødselsnr (alt. H/D-nummer) er ugyldig",
+        "FeilFodselsnummer" : "Fødselsnr (alt. H/D-nummer) er ugyldig",
     	"fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
     	"sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
     	"fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
@@ -216,10 +218,10 @@
         "DiagEtterDod" : "Diagnosedato kan ikke være etter død",
         "DiagForFodt" : "Diagnosedato kan ikke være før fødsel",
         "DiagFormatFeil" : "Feltet krever gyldig dato/årstall, vennligst korriger",
-      "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-      "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-      "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn"
-
+        "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
+        "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
+        "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn",
+        "identity" : "Fødselsnummer er ugyldig"
     },
     "konfig" : {
     	"ANTALL" : "15"

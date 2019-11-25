@@ -22,8 +22,7 @@ public class PersonnummerValiderer {
                 return null;
             }
 
-            return new Valideringsfeil("fodselsnummer", "FeilFodselsnummer",
-                                       "National identity number is invalid.");
+            return new Valideringsfeil("fodselsnummer", "FeilFodselsnummer");
         }
 
         return null;

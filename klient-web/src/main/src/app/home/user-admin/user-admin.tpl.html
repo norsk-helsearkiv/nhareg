@@ -1,4 +1,4 @@
-<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<div ng-controller="UserAdminCtrl" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <a href="#/" class="btn btn-default">{{'home.TILBAKE' | translate }}</a>
     <h2>{{ 'home.ADM_BRUKERE' | translate }}</h2>
     <br>
@@ -12,7 +12,7 @@
                     <table class="table" ts-wrapper>
                         <thead>
                         <tr>
-                            <th ts-criteria="brukernavn">{{ 'common.table.BRUKERNAVN' | translate }}</th>
+                            <th ts-criteria="brukernavn">{{ 'common.table.USERNAME' | translate }}</th>
                             <th ts-criteria="rollenavn">{{ 'common.table.ROLLENAVN' | translate }}</th>
                         </tr>
                         </thead>
@@ -34,7 +34,7 @@
     <form class="row input-group form-group">
         <div class="row">
             <div class="span span4 padding-bottom">
-                <label>{{'common.table.BRUKERNAVN' | translate}}</label>
+                <label>{{'common.table.USERNAME' | translate}}</label>
                 <input type="text" data-ng-model="bruker.brukernavn" class="form-control" placeholder="Brukernavn">
             </div>
         </div>
