@@ -3,11 +3,8 @@ services:
   db:
     container_name: "nha-db"
     image: mysql:latest
-    environment:
-      - MYSQL_ROOT_PASSWORD=admin
-      - MYSQL_DATABASE=nhareg
-      - MYSQL_USER=nhareg
-      - MYSQL_PASSWORD=nhareg
+    env_file:
+      - ./nha-init/env.properties
     volumes:
       - ./mysql-storage/:/var/lib/mysql/
       - ./nha-db/:/docker-entrypoint-initdb.d/
@@ -21,7 +18,7 @@ services:
     depends_on:
       - db
     image: nhareg:latest
-    command: ./init-nha.sh
+    entrypoint: /docker-entrypoint-initnha.d/init-nha.sh
     ports:
       - 9990:9990
       - 8080:8080
