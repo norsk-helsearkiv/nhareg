@@ -214,7 +214,7 @@ angular.module('nha', [
         });
 
         $scope.$on('IdleWarn', function(e, countdown) {
-            //console.log("User is ideling");
+            //console.log("User is idling");
             // follows after the IdleStart event, but includes a countdown until the user is considered timed out
             // the countdown arg is the number of seconds remaining until then.
             // you can change the title or display a warning dialog from here.

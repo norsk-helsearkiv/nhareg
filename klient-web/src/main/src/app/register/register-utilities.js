@@ -296,8 +296,6 @@ angular.module('nha.register')
                 if (felt !== undefined) {
                     if (element.message !== undefined && element.message !== "may not be null"){ //sett inn variabler i feilmeldingen
                         var predefined = 'feltfeil.' + element.constraint;
-                        console.log("predefined: " + predefined);
-                        console.log("element.message: " + element.message);
                         var errorMessage = $filter('translate')(predefined, element.message);
                         $scope.feilTekster[element.constraint] = errorMessage;
                     }

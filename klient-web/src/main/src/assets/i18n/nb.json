@@ -220,8 +220,7 @@
         "DiagFormatFeil" : "Feltet krever gyldig dato/årstall, vennligst korriger",
         "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
         "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-        "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn",
-        "identity" : "Fødselsnummer er ugyldig"
+        "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn"
     },
     "konfig" : {
     	"ANTALL" : "15"
