@@ -18,6 +18,10 @@ function listService($http) {
         sok = null;
     }
 
+    function getAvlevering() {
+        return avlevering;
+    }
+
     function setSok(s) {
         sok = s;
         avlevering = null;
@@ -33,8 +37,9 @@ function listService($http) {
 
     function getQuery() {
         if (avlevering !== null && avlevering !== undefined) {
-            return "&avlevering=" + avlevering;
+            return "&avlevering=" + avlevering.avleveringsidentifikator;
         }
+
         if (sok !== null && sok !== undefined) {
             return "&sokLagringsenhet=" + (sok.sokLagringsenhet?sok.sokLagringsenhet:"") +
             "&sokFanearkId=" + (sok.sokFanearkId?sok.sokFanearkId:"") +
@@ -43,19 +48,16 @@ function listService($http) {
             "&sokFodt=" + (sok.sokFodt?sok.sokFodt:"") +
             "&sokOppdatertAv=" + (sok.sokOppdatertAv?sok.sokOppdatertAv:"") +
             "&sokSistOppdatert=" + (sok.sokSistOppdatert?sok.sokSistOppdatert:"");
-
-
-            //return "&sokestring=" + sok;
         }
+
         return '';
     }
 
     return {
         init: init,
-
         setAvlevering: setAvlevering,
+        getAvlevering: getAvlevering,
         setSok: setSok,
-
         getTittel: getTittel,
         getData: getData,
         getQuery: getQuery

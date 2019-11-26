@@ -14,13 +14,14 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
     };
 
     /*
-        Sletter et element
-        elementType: Typen av elementet som skal slettes
-        id: iden til elementet
-        okFunction: overskrevet metoden for å kunne validere på OK knappen
+        Deletes an element
+        elementType: the type of the element that is to be deleted
+        id: the id of the element
+        okFunction: method for validation
     */
     function deleteModal(elementType, id, okFunction) {
         template.templateUrl = 'common/modal-service/delete-modal.tpl.html';
+
         template.controller = function ($scope, $modalInstance) {
             $scope.elementType = elementType;
             $scope.id = id;
@@ -30,17 +31,19 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 $modalInstance.close();
             };
 
-            $scope.avbryt = function() {
+            $scope.cancel = function() {
                 $modalInstance.close();
             };
         };
+
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
     /*
         Modal for å opprette ny
-        
+
         tpl: link til tpl.html som skal brukes
         list: liste over elementer som det skal legges til et element i scope
         valideringFunction: overskrevet metode for validering, returnerer boolean om det
@@ -51,16 +54,16 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
-              "error" : {}
+                "error" : {}
             };
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
                 if(success) {
-                    httpService.ny(relativUrl, $scope.formData)
-                    .success(function(data, status, headers, config) {
-                        list.push(data);
-                    }).error(function(data, status, headers, config) {
+                    httpService.create(relativUrl, $scope.formData)
+                        .success(function(data, status, headers, config) {
+                            list.push(data);
+                        }).error(function(data, status, headers, config) {
                         errorService.errorCode(status);
                     });
                     $modalInstance.close();
@@ -103,13 +106,13 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
             $scope.ok = function() {
                 if (relativeUrl){
-                    httpService.ny(relativeUrl, $scope.formData)
+                    httpService.create(relativeUrl, $scope.formData)
                         .success(function(data, status, headers, config) {
                             $modalInstance.close();
                             okFunction();
                         }).error(function(data, status, headers, config) {
-                            errorService.errorCode(status);
-                        });
+                        errorService.errorCode(status);
+                    });
                 }else{
                     $modalInstance.close();
                     okFunction();
@@ -133,10 +136,10 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
                 if(success) {
-                    httpService.oppdater(relativUrl, $scope.formData)
-                    .error(function(data, status, headers, config) {
-                        errorService.errorCode(status);
-                    });
+                    httpService.update(relativUrl, $scope.formData)
+                        .error(function(data, status, headers, config) {
+                            errorService.errorCode(status);
+                        });
                     $modalInstance.close();
                 }
             };
@@ -154,32 +157,32 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         template.controller = function($scope, $modalInstance) {
 
             hotkeys.bindTo($scope)
-            .add({
-                combo: 'down',
-                callback: function() {
-                    if(valgtIndex === $scope.modalListe.length - 1) {
-                        $scope.oppdaterValg($scope.modalListe[valgtIndex]);
-                        return;
+                .add({
+                    combo: 'down',
+                    callback: function() {
+                        if(valgtIndex === $scope.modalListe.length - 1) {
+                            $scope.oppdaterValg($scope.modalListe[valgtIndex]);
+                            return;
+                        }
+                        $scope.oppdaterValg($scope.modalListe[++valgtIndex]);
                     }
-                    $scope.oppdaterValg($scope.modalListe[++valgtIndex]);
-                }
-            })
-            .add({
-                combo: 'up',
-                callback: function() {
-                    if(valgtIndex === 0) {
-                        $scope.oppdaterValg($scope.modalListe[valgtIndex]);
-                        return;
+                })
+                .add({
+                    combo: 'up',
+                    callback: function() {
+                        if(valgtIndex === 0) {
+                            $scope.oppdaterValg($scope.modalListe[valgtIndex]);
+                            return;
+                        }
+                        $scope.oppdaterValg($scope.modalListe[--valgtIndex]);
                     }
-                    $scope.oppdaterValg($scope.modalListe[--valgtIndex]);
-                }
-            })
-            .add({
-                combo: 'enter',
-                callback: function() {
-                    $scope.ok();
-                }
-            });
+                })
+                .add({
+                    combo: 'enter',
+                    callback: function() {
+                        $scope.ok();
+                    }
+                });
 
             $scope.modalListe = list;
             var valgtIndex = 0;
@@ -210,56 +213,63 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
             $scope.avbryt = function() {
                 $modalInstance.dismiss('cancel');
-            }; 
+            };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
         return $modal.open(template);
     }
 
-    function endreLagringsenhet(tpl, relativUrl, lagringsenhet, lagringsenhetmaske){
-        template.templateUrl = tpl;
+    function changeStorageUnit(templateUrl, relativeUrl, storageUnit, storageUnitFormat){
+        template.templateUrl = templateUrl;
+
         template.controller = function( $scope, $modalInstance) {
-            $scope.txtMaske = lagringsenhetmaske;
+            $scope.storageUnitFormat = storageUnitFormat;
+
             $scope.formData = {
                 "error" : {},
-                "lagringsenhet": lagringsenhet
+                "storageUnit": storageUnit
             };
-            $scope.lagre = function(){
-                var lagr = $scope.formData.lagringsenhet;
-                if (lagr.nyIdentifikator === undefined || lagr.nyIdentifikator === '') {
+
+            $scope.save = function(){
+                var input = $scope.formData.storageUnit;
+
+                if (input.newIdentification === undefined || input.newIdentification === '') {
                     return;
                 }
-                var nyLagringsenhet = {
-                    uuid :lagr.uuid,
-                    identifikator : lagr.nyIdentifikator
+
+                var newStorageUnit = {
+                    uuid : input.uuid,
+                    identifikator : input.newIdentification
                 };
 
-                var regexp = new RegExp("(" + lagringsenhetmaske + ")$");
-                if (!regexp.test($scope.formData.lagringsenhet.nyIdentifikator)) {
-                    $scope.feilFormat = "(Feil format i lagringsenhet)";
+                var regexp = new RegExp("(" + storageUnitFormat + ")$");
+
+                if (!regexp.test($scope.formData.storageUnit.newIdentification)) {
+                    $scope.wrongFormat = "(Feil format i storageUnit)";
                     return false;
                 }
 
-                httpService.oppdater(relativUrl, nyLagringsenhet)
-                    .success(function(data, status, headers, config) {
-                        $scope.formData.lagringsenhet.identifikator = nyLagringsenhet.identifikator;
-                        $scope.formData.lagringsenhet.nyIdentifikator = '';
+                httpService.update(relativeUrl, newStorageUnit)
+                    .success(function() {
+                        $scope.formData.storageUnit.identification = newStorageUnit.identification;
+                        $scope.formData.storageUnit.newIdentification = '';
+
                         $modalInstance.close();
-                    }).error(function(data, status, headers, config) {
-                        if (status==400){
-                            if (data.length>0){
-                                var attr = data[0].attributt;
-                                if (attr === 'identifikator'){
-                                    $scope.formData.error.identifikator = data[0].constriant;
-                                }
+                    }).error(function(data, status) {
+                    if (status == 400){
+                        if (data.length > 0){
+                            var attribute = data[0].attribute;
+                            if (attribute === 'identifikator'){
+                                $scope.formData.error.identification = data[0].constraint;
                             }
-                        }else{
-                            errorService.errorCode(status);
                         }
-                    });
+                    }else{
+                        errorService.errorCode(status);
+                    }
+                });
             };
 
-            $scope.avbryt = function(){
+            $scope.cancel = function(){
                 $modalInstance.close();
             };
         };
@@ -282,12 +292,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     pasientjournalUuids : uuids,
                     lagringsenhetIdentifikator : identifikator
                 };
-                httpService.ny(relativeUrl, data)
+                httpService.create(relativeUrl, data)
                     .success(function(data, status, headers, config) {
                         $modalInstance.close();
                         okFunction();
                     }).error(function(data, status, headers, config) {
-                    if (data[0].attributt==='identifikator'){
+                    if (data[0].attribute==='identifikator'){
                         $modalInstance.close();
                         var msg = $filter('translate')('modal.FlyttLagringsenhetFeil.msg');
                         var title = $filter('translate')('modal.FlyttLagringsenhetFeil.title');
@@ -309,7 +319,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
     }
 
     function endrePassord(){
-        template.templateUrl = 'common/modal-service/endre-passord-modal.tpl.html';
+        template.templateUrl = 'common/modal-service/change-password-modal.tpl.html';
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
                 "error" : {}
@@ -321,7 +331,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     $scope.formData.error.passord= $filter('translate')('home.brukere.PASSORD_ULIKT');
                     return;
                 }
-                httpService.ny("admin/oppdaterPassord", $scope.formData.passord)
+                httpService.create("admin/oppdaterPassord", $scope.formData.passord)
                     .success(function(data, status, headers, config) {
                         $modalInstance.close();
                     }).error(function(data, status, headers, config) {
@@ -337,71 +347,80 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function velgLagringsenhet(tpl, callback, lagringsenhetmaske, lagringsenheter){
-        template.templateUrl = tpl;
+    function manageStorageUnits(templateUrl, callback, storageUnitFormat, storageUnits){
+        template.templateUrl = templateUrl;
+
         template.controller = function( $scope, $modalInstance){
-            $scope.txtMaske = lagringsenhetmaske;
+            $scope.storageUnitFormat = storageUnitFormat;
 
             $scope.formData = {
                 "error" : {},
-                "lagringsenheter": lagringsenheter
+                "storageUnits": storageUnits
             };
-            $scope.lagre = function(){
-                if ($scope.nyLagringsenhet()){
+
+            $scope.save = function(){
+                if ($scope.newStorageUnit()){
                     callback($scope.formData);
                     $modalInstance.close();
                 }
-
             };
-            $scope.actionFjernLagringsenhet = function(enhet){
-                for (var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
-                    if (enhet === $scope.formData.lagringsenheter[i]) {
-                        $scope.formData.lagringsenheter.splice(i, 1);
+
+            $scope.removeStorageUnit = function(unit){
+                for (var i = 0; i < $scope.formData.storageUnits.length; i++) {
+                    if (unit === $scope.formData.storageUnits[i]) {
+                        $scope.formData.storageUnits.splice(i, 1);
                         document.getElementById("lagringsenhet").focus();
                     }
                 }
             };
 
-            $scope.nyLagringsenhet = function() { //legger til en ny lagringsenhet i listen..
-                $scope.feilFormat = undefined;
-                if ($scope.formData.lagringsenhet === undefined || $scope.formData.lagringsenhet === '') {
+            $scope.newStorageUnit = function() {
+                $scope.wrongFormat = undefined;
+
+                if ($scope.formData.storageUnit === undefined || $scope.formData.storageUnit === '') {
                     return true;
                 }
-                if (lagringsenhetmaske) {
-                    var regexp = new RegExp("(" + lagringsenhetmaske + ")$");
-                    if (!regexp.test($scope.formData.lagringsenhet)) {
-                        $scope.feilFormat = "(Feil format i lagringsenhet)";
+
+                if (storageUnitFormat) {
+                    var regexp = new RegExp("(" + storageUnitFormat + ")$");
+
+                    if (!regexp.test($scope.formData.storageUnit)) {
+                        $scope.wrongFormat = "(Feil format i lagringsenhet)";
                         return false;
                     }
                 }
-                for (var i = 0; i < $scope.formData.lagringsenheter.length; i++) {
-                    if ($scope.formData.lagringsenhet === $scope.formData.lagringsenheter[i]) {
-                        $scope.formData.lagringsenhet = "";
+
+                for (var i = 0; i < $scope.formData.storageUnits.length; i++) {
+                    if ($scope.formData.storageUnit === $scope.formData.storageUnits[i]) {
+                        $scope.formData.storageUnit = "";
                         return true;
                     }
                 }
-                $scope.formData.lagringsenheter.push($scope.formData.lagringsenhet);
-                $scope.formData.lagringsenhet = "";
+
+                $scope.formData.storageUnits.push($scope.formData.storageUnit);
+                $scope.formData.storageUnit = "";
                 return true;
             };
-            $scope.utskrift = function(){
-                if ($scope.nyLagringsenhet()){
+
+            $scope.print = function(){
+                if ($scope.newStorageUnit()){
                     callback($scope.formData);
-                    httpService.hent("lagringsenheter/"+$scope.formData.lagringsenheter[0]+"/print")
-                        .success(function(data, status, headers, config) {
+                    httpService.get("lagringsenheter/" + $scope.formData.lagringsenheter[0] + "/print")
+                        .success(function() {
                             $modalInstance.close();
-                        }).error(function(data, status, headers, config) {
+                        }).error(function(data, status) {
                         errorService.errorCode(status);
                     });
                 }
-
             };
 
-            $scope.avbryt = function(){
+            $scope.cancel = function(){
                 $modalInstance.close();
             };
         };
+
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
@@ -413,9 +432,9 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         warningModal : warningModal,
         warningMessageModal : warningMessageModal,
         velgModal : velgModal,
-        velgLagringsenhet : velgLagringsenhet,
+        manageStorageUnits : manageStorageUnits,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
-        endreLagringsenhet : endreLagringsenhet,
+        changeStorageUnit : changeStorageUnit,
         endrePassord : endrePassord
 
     };

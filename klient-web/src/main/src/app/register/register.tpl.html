@@ -1,8 +1,8 @@
 <nav class="navbar navbar-fixed-top">
     <div class="navbar-header row">
-        <a class="navbar-brand" href="#">{{ 'common.APP_TITTEL' | translate }}</a>
+        <a class="navbar-brand" href="#">{{ 'common.APP_TITLE' | translate }}</a>
         <div style="padding-top: 15px; padding-bottom: 15px; padding-right:15px">
-            <a class="pull-right" disabled>Bruker: {{username}}</a>
+            <a class="pull-right" disabled>{{ 'common.USER' | translate }}: {{username}}</a>
         </div>
     </div>
 </nav>
@@ -13,35 +13,36 @@
     </a>
 </script>
 
-
 <div class="content">
-    <!-- Feilmeldinger -->
+
+    <!-- Validation error messages -->
     <div class="col-sm-3 col-md-2 sidebar">
-        <h4>Valideringsfeil</h4>
+        <h4>{{ 'register.VALIDATION_ERRORS' | translate }}</h4>
         <ul class="nav nav-sidebar">
             <li data-ng-repeat="feil in feilmeldinger">
-                <span class="error error-tittel">{{feil.felt}}</span><br/>
-                <span class="error-beskrivelse">{{feil.feilmelding}}</span>
+                <span class="error error-title">{{ feil.felt }}</span><br/>
+                <span class="error-description">{{ feil.feilmelding }}</span>
             </li>
         </ul>
     </div>
-    <!-- Legg til Diagnoser -->
+
+    <!-- Add patient journal -->
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         <h1>
-            Registrering
-            <small> {{ virksomhet}} &#x2F {{ valgtAvtale }} &#x2F {{avleveringsbeskrivelse}}</small>
+            {{ 'register.REGISTRATION' | translate }}
+            <small> {{ virksomhet }} &#x2F {{ valgtAvtale }} &#x2F {{ avleveringsbeskrivelse }}</small>
         </h1>
 
         <div class="well">
-            <!-- Lagringsenhet -->
+            <!-- Add storage units -->
             <div>
                 <label id="labelLagringsenhet" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
-                    Lagringsenheter (klikk for å endre)
+                    {{ 'register.STORAGE_UNITS' | translate }}
                 </label>
                 <p data-ng-show="state === 1">
-                    <span data-ng-repeat="enhet in formData.lagringsenheter">{{enhet}} </span>
+                    <span data-ng-repeat="enhet in formData.lagringsenheter">{{ enhet }} </span>
                 </p>
-                <label id="lagringsenhet" class="form-control" data-ng-click="velgLagringsenhet()">{{formData.lagringsenheter.join(', ')}}</label>
+                <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()">{{ formData.lagringsenheter.join(', ') }}</label>
             </div>
             <hr/>
             <div class="row">
@@ -70,7 +71,7 @@
             <div class="row">
                 <!-- Navn -->
                 <div class="span span43 padding-bottom">
-                    <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'registrer.NAVN' | translate }}</label>
+                    <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'register.NAME' | translate }}</label>
                     <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
                 </div>
                 <div class="span span4">
@@ -108,7 +109,7 @@
             <div class="row">
                 <!-- Merknad -->
                 <div>
-                    <label id="merknad" data-ng-class="{error: error['merknad'] !== undefined }">{{ 'registrer.MERKNAD' | translate }}</label>
+                    <label id="merknad" data-ng-class="{error: error['merknad'] !== undefined }">{{ 'register.NOTE' | translate }}</label>
                     <input type="text" class="form-control" placeholder="Merknad..." data-ng-model="formData.merknad" data-ng-enter="nyEllerOppdater()">
                 </div>
             </div>
@@ -123,7 +124,7 @@
         <div class="well" data-ng-show="state === 0">
             <label>Diagnoser</label>
         </div>
-        <div class="well" data-ng-show="state !== 0">
+        <div ng-controller="RegisterDiagnosisCtrl" class="well" data-ng-show="state !== 0">
             <div class="row">
                 <!-- Diagnosedato -->
                 <div class="span span4">
@@ -162,7 +163,7 @@
 
                 </div>
                 <div class="span span4">
-                    <button id="btn-diagnose" class="btn btn-diagnose" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose
+                    <button id="btn-diagnosis" class="btn btn-diagnosis" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose
                     </button>
                 </div>
             </div>
@@ -171,12 +172,12 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th id="diagnosedato_table" ts-criteria="diagnosedato|parseCustomDate">{{ 'registrer.DIAG_AAR' | translate }}</th>
-                    <th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'registrer.DIAGNOSEKODE_KORT' | translate }}</th>
-                    <th ts-criteria="diagnosekodeverk">{{ 'registrer.DIAGNOSEKODEVERK_KORT' | translate }}</th>
-                    <th ts-criteria="diagnosetekst">{{ 'registrer.DIAGNOSETEKST' | translate }}</th>
-                    <th ts-criteria="oppdatertAv">{{'common.OPPDATERT_AV'| translate}}</th>
-                    <th ts-criteria="oppdatertDato">{{'common.OPPDATERT_DATO'| translate}}</th>
+                    <th id="diagnosedato_table" ts-criteria="diagnosedato|parseCustomDate">{{ 'register.DIAGNOSIS_YEAR' | translate }}</th>
+                    <th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'register.DIAGNOSIS_CODE_SYSTEM_SHORT' | translate }}</th>
+                    <th ts-criteria="diagnosekodeverk">{{ 'register.DIAGNOSIS_CODE_SYSTEM_VERSION_SHORT' | translate }}</th>
+                    <th ts-criteria="diagnosetekst">{{ 'register.DIAGNOSIS_DISPLAY_NAME' | translate }}</th>
+                    <th ts-criteria="oppdatertAv">{{ 'common.OPPDATERT_AV'| translate }}</th>
+                    <th ts-criteria="oppdatertDato">{{ 'common.OPPDATERT_DATO'| translate }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -212,10 +213,9 @@
 
         <label></label>
         <button class="right icon-padding-right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
-            {{ 'common.LEGG_TIL' | translate }}
+            {{ 'common.ADD' | translate }}
         </button>
         <button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
 
     </div>
-</div>
 </div>
