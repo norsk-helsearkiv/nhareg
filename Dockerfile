@@ -42,8 +42,25 @@ RUN cd $HOME \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME}
 
+# Get and configure JasperServer
+WORKDIR /usr/src
+COPY --from=build /root/.m2/repository/mysql/mysql-connector-java/$MYSQL_CONNECTOR/mysql-connector-java-$MYSQL_CONNECTOR.jar .
+COPY src/main/resources/default_master.properties .
+
+RUN curl -O https://iweb.dl.sourceforge.net/project/jasperserver/JasperServer/JasperReports%20Server%20Community%20Edition%206.4.3/TIB_js-jrs-cp_6.4.3_bin.zip \
+    && unzip -q TIB_js-jrs-cp_6.4.3_bin.zip \
+    && rm -f TIB_js-jrs-cp_6.4.3_bin.zip \
+    && mv jasperreports-server-cp-6.4.3-bin jasperreports-server \
+    && mv mysql-connector-java-$MYSQL_CONNECTOR.jar jasperreports-server/buildomatic/conf_source/db/mysql/jdbc/ \
+    && mv default_master.properties jasperreports-server/buildomatic/ \
+    && chown -R jboss:0 jasperreports-server \
+    && chmod -R g+w jasperreports-server \
+    && cd jasperreports-server/buildomatic \
+    && sed -i 's/<resources>/<resources><resource-root path="WEB-INF\/lib\/mysql-connector-java-5.1.48.jar" use-physical-code-source="true"\/>/' install_resources/jboss7/wildfly/jboss-deployment-structure.xml \
+    && sed -i 's|appServerDir = .*|appServerDir = '"$JBOSS_HOME"'|' default_master.properties
+
 # Copy necessery files for configuration
-COPY tjeneste/src/main/resources/server.keystore $JBOSS_HOME/standalone/configuration/
+COPY src/main/resources/server.keystore $JBOSS_HOME/standalone/configuration/
 
 # Deploy apps
 COPY --from=build /root/.m2/repository/mysql/mysql-connector-java/$MYSQL_CONNECTOR/mysql-connector-java-$MYSQL_CONNECTOR.jar $JBOSS_HOME/standalone/deployments/

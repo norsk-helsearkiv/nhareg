@@ -5,7 +5,7 @@ connect
 data-source add \
     --name=NharegDS \
     --jndi-name=java:jboss/datasources/NharegDS \
-    --connection-url=jdbc:mysql://nha-db:3306/${MYSQL_DATABASE:nhareg} \
+    --connection-url=jdbc:mysql://host.docker.internal:3306/${MYSQL_DATABASE:nhareg} \
     --driver-name=mysql-connector-java-5.1.48.jar_com.mysql.jdbc.Driver_5_1 \
     --driver-class=com.mysql.jdbc.Driver \
     --user-name="${MYSQL_USER:nhareg}" \

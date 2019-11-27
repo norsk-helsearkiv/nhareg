@@ -26,12 +26,17 @@ To fully shut it down, else there will be issues when starting it up again.
 ## Configurations
 There are some configurations that should be checked before deploying the program to any
 non-dev environments. The file `env.properties` in the `nha-init` folder needs to be updated
-with username and passwords.  
+with username and passwords.
+
 To populate the database or recover a database dump, simply add it to the `nha-db` folder as a 
 .sql file. It will automatically be run by MySQL at startup, in alphabetical order.
 If you have a database dump it might be a good idea to remove the `_populateTables.sql` file.  
 When the database starts up it will mirror the `/var/lib/mysql/` from the docker container to
 a `mysql-storage` folder locally. **Be aware removing this folder will reset the database.**  
+
+Changing which ports Wildfly should expose to the host can be done by changing the `docker-compose.yml` file.
+They are specified under the `ports:` section and are of the `HOST : CONTAINER` format. So to map port 9999 from
+the host to the containers port 8443 change the line: `"8443":"8443"` to `"9999":"8443"`.
 
 ## Dump or restore database
 To dump or restore the database from Docker run:
