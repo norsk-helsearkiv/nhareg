@@ -582,84 +582,84 @@ angular.module('nha.registrering', [
             }
 
             angular.forEach(data, function (element) {
-                $scope.error[element.attributt] = element.constriant;
+                $scope.error[element.attribute] = element.constraint;
 
                 var index;
                 var felt;
                 var feil;
 
                 //Konverter attributt
-                if (element.attributt === 'lagringsenheter') {
+                if (element.attribute === 'lagringsenheter') {
                     index = 0;
                     felt = document.getElementById('labelLagringsenhet').innerHTML;
                 }
-                if (element.attributt === 'journalnummer') {
+                if (element.attribute === 'journalnummer') {
                     index = 1;
                     felt = document.getElementById('journalnummer').innerHTML;
                 }
-                if (element.attributt === 'lopenummer') {
+                if (element.attribute === 'lopenummer') {
                     index = 2;
                     felt = document.getElementById('lopenummer').innerHTML;
                 }
-                if (element.attributt === 'fodselsnummer') {
+                if (element.attribute === 'fodselsnummer') {
                     index = 3;
                     felt = document.getElementById('fodselsnummer').innerHTML;
                 }
-                if (element.attributt === 'navn') {
+                if (element.attribute === 'navn') {
                     index = 4;
                     felt = document.getElementById('navn').innerHTML;
                 }
-                if (element.attributt === 'kjonn') {
+                if (element.attribute === 'kjonn') {
                     index = 5;
                     felt = document.getElementById('kjonn').innerHTML;
                 }
-                if (element.attributt === 'fodt') {
+                if (element.attribute === 'fodt') {
                     index = 6;
                     felt = document.getElementById('fodt').innerHTML;
                 }
-                if (element.attributt === 'dod') {
+                if (element.attribute === 'dod') {
                     index = 7;
                     felt = document.getElementById('dod').innerHTML;
                 }
-                if (element.attributt === 'fKontakt') {
+                if (element.attribute === 'fKontakt') {
                     index = 8;
                     felt = document.getElementById('fKontakt').innerHTML;
                 }
-                if (element.attributt === 'sKontakt') {
+                if (element.attribute === 'sKontakt') {
                     index = 9;
                     felt = document.getElementById('sKontakt').innerHTML;
                 }
-                if (element.attributt === 'diagnosedato') {
+                if (element.attribute === 'diagnosedato') {
                     index = 10;
                     felt = document.getElementById('diagnosedato').innerHTML;
                 }
-                if (element.attributt === 'diagnosedatotab') {
+                if (element.attribute === 'diagnosedatotab') {
                     index = 10;
                     felt = document.getElementById('diagnosedato_table').innerHTML;
                 }
-                if (element.attributt === 'diagnosekodetab') {
+                if (element.attribute === 'diagnosekodetab') {
                     index = 12;
                     felt = document.getElementById('diagnosekode_table').innerHTML;
                 }
-                if (element.attributt === 'diagnosekode') {
+                if (element.attribute === 'diagnosekode') {
                     index = 13;
                     felt = document.getElementById('diagnosekode').innerHTML;
                 }
-                if (element.attributt === 'diagnosetekst') {
+                if (element.attribute === 'diagnosetekst') {
                     index = 14;
                     felt = document.getElementById('diagnosetekst').innerHTML;
                 }
-                if (element.attributt === 'fanearkid') {
+                if (element.attribute === 'fanearkid') {
                     index = 15;
                     felt = document.getElementById('fanearkid').innerHTML;
                 }
                 if (felt !== undefined) {
-                    if (element.message !== undefined){ //sett inn variabler i feilmeldingen
-                        var predefined = 'feltfeil.'+element.constriant;
+                    if (element.message !== undefined && element.message !== "may not be null"){ //sett inn variabler i feilmeldingen
+                        var predefined = 'feltfeil.' + element.constraint;
                         var fm = $filter('translate')(predefined,element.message);
-                        $scope.feilTekster[element.constriant] = fm;
+                        $scope.feilTekster[element.constraint] = fm;
                     }
-                    var txt = $scope.feilTekster[element.constriant];
+                    var txt = $scope.feilTekster[element.constraint];
                     var elm = {indeks:index,  feilmelding:txt, felt:felt };
                     var pos = $scope.feilmeldinger.map(function(e) { return e.indeks; }).indexOf(elm.index);
 
