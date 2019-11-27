@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{ 'modal.change_storage_unit.TITLE' | translate }}</h3>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+
+            <label>{{ 'modal.change_storage_unit.IDENTIFICATION' | translate }}</label>
+
+            <label class="label-error" data-ng-show="formData.error.identification">{{ formData.error.identification }}</label>
+            <input type="text" class="form-control" ng-model="formData.storageUnit.identification">
+
+            <label data-ng-class="{ error: wrongFormat !== undefined }">{{ 'modal.change_storage_unit.NEW_IDENTIFICATION' | translate }} {{ storageUnitFormat }} {{ wrongFormat }}</label>
+            <input type="text" class="form-control" ng-model="formData.storageUnit.newIdentification">
+
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="save()" tooltip="{{ 'common.tooltip.SAVE_STORAGE_UNIT' | translate }}">{{ 'common.SAVE' | translate }}</button>
+    <button class="btn btn-default btn-danger" ng-click="cancel()" tooltip="{{ 'common.tooltip.CANCEL' | translate }}">{{ 'common.CANCEL' | translate }}</button>
+</div>

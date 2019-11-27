@@ -4,7 +4,7 @@ angular.module('nha.common.list-view', [
         'nha.common.http-service',
         'nha.common.error-service',
         'nha.common.modal-service',
-        'nha.registrering.registrering-service',
+        'nha.register.register-service',
         'ui.router'
     ])
 
@@ -20,8 +20,9 @@ angular.module('nha.common.list-view', [
         });
     })
 
-    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registreringService, stateService, pagerService) {
+    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registerService, stateService, pagerService) {
         var antall = 15;
+
         $scope.$watch(
             function () {
                 return $filter('translate')('konfig.ANTALL');
@@ -97,7 +98,7 @@ angular.module('nha.common.list-view', [
             $scope.sortDirection = direction;
             $scope.sortColumn = column;
 
-            httpService.hentAlle("pasientjournaler?side=" + $scope.pager.currentPage + "&antall=" + antall + listService.getQuery() + "&orderBy=" + $scope.sortColumn + "&sortDirection=" + $scope.sortDirection)
+            httpService.getAll("pasientjournaler?side=" + $scope.pager.currentPage + "&antall=" + antall + listService.getQuery() + "&orderBy=" + $scope.sortColumn + "&sortDirection=" + $scope.sortDirection)
                 .success(function (data, status, headers, config) {
 
                     setTittel(data);
@@ -118,7 +119,7 @@ angular.module('nha.common.list-view', [
             $scope.sok.oppdatertAv = '';
             $scope.sok.sistOppdatert = '';
         };
-        
+
         $scope.actionSok = function (sokestring) {
             var txt = $scope.tekster.sokeresultat;
             var viser = $scope.tekster.viser;
@@ -132,7 +133,7 @@ angular.module('nha.common.list-view', [
                 sokSistOppdatert: $scope.sok.sistOppdatert
             };
             listService.setSok(sok);
-            httpService.hentAlle("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
+            httpService.getAll("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
                 .success(function (data, status, headers, config) {
 
                     setTittel(data);
@@ -173,12 +174,12 @@ angular.module('nha.common.list-view', [
                 ordering += "&sortDirection=" + $scope.sortDirection;
             }
 
-            httpService.hentAlle("pasientjournaler?side=" + page + "&antall=" + $scope.pager.pageSize + listService.getQuery() + ordering)
-                .success(function (data, status, headers, config) {
+            httpService.getAll("pasientjournaler?side=" + page + "&antall=" + $scope.pager.pageSize + listService.getQuery() + ordering)
+                .success(function (data) {
                     setTittel(data);
                     $scope.data = data;
 
-                }).error(function (data, status, headers, config) {
+                }).error(function (data, status) {
                 errorService.errorCode(status);
             });
         };
@@ -186,66 +187,58 @@ angular.module('nha.common.list-view', [
         $scope.actionFjernPasientjournal = function (pasientjournal) {
             modalService.deleteModal($scope.tekster.pasientjournal, pasientjournal.navn + " (" + pasientjournal.fodselsnummer + ") ", function () {
                 httpService.deleteElement("pasientjournaler/" + pasientjournal.uuid)
-                    .success(function (data, status, headers, config) {
+                    .success(function () {
                         fjern($scope.data.liste, pasientjournal);
                         --$scope.data.antall;
                         --$scope.data.total;
                         setTittel($scope.data);
-                    }).error(function (data, status, headers, config) {
+                    }).error(function (data, status) {
                     errorService.errorCode(status);
                 });
             });
         };
+
         $scope.actionLeggTilPasientjournal = function () {
-            httpService.hent("avtaler/virksomhet", false)
-                .success(function (data, status, headers, config) {
-                    var foretaksnavn = data.foretaksnavn;
-                    registreringService.setVirksomhet(foretaksnavn);
-                    //TODO må også ha med følgende data
-                    /*registreringService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
-                     registreringService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-                     registreringService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
-                     */
-                    var first = $scope.data.liste[0];
-                    registreringService.setAvleveringsidentifikator(first.avleveringsidentifikator);
-                    //TODO hente resten av dataene....
 
-                    httpService.hent("pasientjournaler/" + first.uuid)
-                        .success(function (data, status, headers, config) {
-                            //registreringService.setAvlevering(data.avleveringsidentifikator);
-                            registreringService.setVirksomhet(data.virksomhet);
-                            registreringService.setPasientjournalDTO(null);
-                            registreringService.setValgtAvtale(data.avtaleBeskrivelse);
-                            registreringService.setAvleveringsidentifikator(data.avleveringsidentifikator);
-                            registreringService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);
-                            $location.path('/registrer');
-                        }).error(function (data, status, headers, config) {
-                        errorService.errorCode(status);
-                    });
+            var first = $scope.data.liste[0];
 
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
+            httpService.get("pasientjournaler/" + first.uuid)
+                .success(function (data) {
+                    registerService.setVirksomhet(data.virksomhet);
+                    registerService.setPasientjournalDTO(null);
+                    registerService.setValgtAvtale(data.avtaleBeskrivelse);
+                    registerService.setAvleveringsidentifikator(data.avleveringsidentifikator);
+                    registerService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);
+
+                    $location.path('/registrer');
+                }).error(function (data, status) {
+                    errorService.errorCode(status);
+                });
+
         };
 
-        $scope.allEqualAvleveringid = function () {
+        $scope.showAddPatientJournalBtn = function () {
             var first = $scope.data.liste[0];
+
+            if (first === undefined) {
+                return false;
+            }
+
             return $scope.data.liste.every(function (element) {
                 return element.avleveringsidentifikator === first.avleveringsidentifikator;
             });
         };
 
-
         $scope.actionVisJournal = function (pasientjournal) {
-            httpService.hent("pasientjournaler/" + pasientjournal)
+            httpService.get("pasientjournaler/" + pasientjournal)
                 .success(function (data, status, headers, config) {
-                    registreringService.setPasientjournalDTO(data);
+                    registerService.setPasientjournalDTO(data);
                     var avlevering = {lagringsenhetformat:data.lagringsenhetformat};
-                    registreringService.setAvlevering(avlevering);
-                    registreringService.setVirksomhet(data.virksomhet);
-                    registreringService.setValgtAvtale(data.avtaleBeskrivelse);
-                    registreringService.setAvleveringsidentifikator(data.avleveringsidentifikator);
-                    registreringService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);
+                    registerService.setAvlevering(avlevering);
+                    registerService.setVirksomhet(data.virksomhet);
+                    registerService.setValgtAvtale(data.avtaleBeskrivelse);
+                    registerService.setAvleveringsidentifikator(data.avleveringsidentifikator);
+                    registerService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);
                     $location.path('/registrer');
                 }).error(function (data, status, headers, config) {
                 errorService.errorCode(status);

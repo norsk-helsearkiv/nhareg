@@ -7,8 +7,8 @@ mod.factory('journalService', ['$modal', '$location', journalService]);
 function journalService() {
     var data;
 
-    function setData(d) {
-        data = d;
+    function setData(newData) {
+        data = newData;
     }
 
     function getData() {

@@ -1,8 +1,8 @@
 <nav class="navbar navbar-fixed-top">
     <div class="navbar-header row">
-        <a class="navbar-brand" href="" data-ng-click="navHome()">{{ 'common.APP_TITTEL' | translate }}</a>
+        <a class="navbar-brand" href="" data-ng-click="navHome()">{{ 'common.APP_TITLE' | translate }}</a>
         <div style="padding-top: 15px; padding-bottom: 15px; padding-right:15px">
-            <a class="pull-right" disabled>Bruker: {{username}}</a>
+            <a class="pull-right" disabled>{{ 'common.USER' | translate }}: {{ username }}</a>
         </div>
     </div>
 </nav>
@@ -13,11 +13,11 @@
 
             <!-- Avtaleliste -->
             <div class="col-sm-3 col-md-2 sidebar">
-                <small> {{ 'home.VIRKSOMHET' | translate }} {{ virksomhet.foretaksnavn}}</small>
+                <small> {{ 'home.VIRKSOMHET' | translate }} {{ virksomhet.navn}}</small>
                 <h4>
                     {{ 'home.AVTALER' | translate }}
                     <button class="right btn btn-small btn-success" data-ng-click="actionLeggTilAvtale()" data-access-level-admin>{{
-                        'common.LEGG_TIL' | translate }}
+                        'common.ADD' | translate }}
                     </button>
                 </h4>
 
@@ -60,9 +60,9 @@
                 <button class="btn btn-default" data-ng-click="loggUt()">Logg ut</button>
             </div>
 
-            <div ng-include src="'home/home.pasientsok.tpl.html'" data-ng-show="sokVisible"></div>
-            <div ng-include src="'home/home.lagringsenheter.tpl.html'" data-ng-show="lagringsenheterVisible && userrole === 'admin'"></div>
-            <div ng-include src="'home/home.brukeradmin.tpl.html'" data-ng-show="brukereVisible && userrole === 'admin'"></div>
+            <div ng-include src="'home/patient-search/patient-search.tpl.html'" data-ng-show="sokVisible"></div>
+            <div ng-include src="'home/storage-units/storage-units.tpl.html'" data-ng-show="lagringsenheterVisible && userrole === 'admin'"></div>
+            <div ng-include src="'home/user-admin/user-admin.tpl.html'" data-ng-show="brukereVisible && userrole === 'admin'"></div>
 
         </div>
     </div>

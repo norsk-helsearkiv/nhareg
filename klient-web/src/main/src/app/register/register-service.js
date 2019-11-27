@@ -1,9 +1,9 @@
-var mod = angular.module('nha.registrering.registrering-service', [
+var mod = angular.module('nha.register.register-service', [
 ]);
 
-mod.factory('registreringService', [registreringService]);
+mod.factory('registerService', [registerService]);
 
-function registreringService() {
+function registerService() {
 
     var avlevering;
     var pasientjournalDTO;
@@ -73,6 +73,6 @@ function registreringService() {
         setAvleveringsbeskrivelse : setAvleveringsbeskrivelse,
         getAvleveringsbeskrivelse : getAvleveringsbeskrivelse
 
-};
+    };
 
 }

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-fixed-top">
     <div class="navbar-header row">
-        <a class="navbar-brand" href="" data-ng-click="navHome()">{{ 'common.APP_TITTEL' | translate }}</a>
+        <a class="navbar-brand" href="" data-ng-click="navHome()">{{ 'common.APP_TITLE' | translate }}</a>
         <div style="padding-top: 15px; padding-bottom: 15px; padding-right:15px">
             <a class="pull-right" disabled>Bruker: {{username}}</a>
         </div>
@@ -59,7 +59,7 @@
         <h3>{{ tittel.tittel }}
             <small> {{ tittel.underTittel }}</small>
         </h3>
-        <button class="right icon icon-padding-left icon-add-journal" data-ng-show="allEqualAvleveringid()" data-ng-click="actionLeggTilPasientjournal()" tooltip="{{'home.tooltip.ADD' | translate}}"></button>
+        <button class="right icon icon-padding-left icon-add-journal" data-ng-show="showAddPatientJournalBtn()" data-ng-click="actionLeggTilPasientjournal()" tooltip="{{'home.tooltip.ADD' | translate}}"></button>
         <!--TODO endre synlighet til å være kun vise om det finnes en enkelt avlevering i søkelisten-->
 
         <div class="table-responsive">
@@ -75,6 +75,7 @@
                     <th><a href="" data-ng-click="faarAsc=!faarAsc; actionSort('faar', faarAsc);">{{'home.FAAR' | translate}}</a></th>
                     <th><a href="" data-ng-click="daarAsc=!daarAsc; actionSort('daar', daarAsc);">{{'home.DAAR' | translate}}</a></th>
                     <th><a href="" data-ng-click="oppdatertAvAsc=!oppdatertAvAsc; actionSort('oppdatertAv', oppdatertAvAsc);">{{'common.OPPDATERT_AV'| translate}}</a></th>
+                    <th></th>
                     <th></th>
                 </tr>
                 </thead>
@@ -104,25 +105,25 @@
         <div class="container">
             <div class="row">
                 <div ng-view class="col-xs-2"></div>
-                    <div ng-view class="col-xs-8">
-                        <ul class="pagination">
-                            <li data-ng-class="{disabled:pager.currentPage === 1}">
-                                <a data-ng-click="setPage(1)">Første</a>
-                            </li>
-                            <li data-ng-class="{disabled:pager.currentPage === 1}">
-                                <a data-ng-click="setPage(pager.currentPage - 1)">Forrige</a>
-                            </li>
-                            <li data-ng-repeat="page in pager.pages" data-ng-class="{active:pager.currentPage === page}">
-                                <a href="" data-ng-click="setPage(page)">{{page}}</a>
-                            </li>
-                            <li data-ng-class="{disabled:pager.currentPage === pager.totalPages}">
-                                <a data-ng-click="setPage(pager.currentPage + 1)">Neste</a>
-                            </li>
-                            <li data-ng-class="{disabled:pager.currentPage === pager.totalPages}">
-                                <a data-ng-click="setPage(pager.totalPages)">Siste</a>
-                            </li>
-                        </ul>
-                    </div>
+                <div ng-view class="col-xs-8 text-center">
+                    <ul class="pagination">
+                        <li data-ng-class="{disabled:pager.currentPage === 1}">
+                            <a data-ng-click="setPage(1)">Første</a>
+                        </li>
+                        <li data-ng-class="{disabled:pager.currentPage === 1}">
+                            <a data-ng-click="setPage(pager.currentPage - 1)">Forrige</a>
+                        </li>
+                        <li data-ng-repeat="page in pager.pages" data-ng-class="{active:pager.currentPage === page}">
+                            <a href="" data-ng-click="setPage(page)">{{page}}</a>
+                        </li>
+                        <li data-ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a data-ng-click="setPage(pager.currentPage + 1)">Neste</a>
+                        </li>
+                        <li data-ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                            <a data-ng-click="setPage(pager.totalPages)">Siste</a>
+                        </li>
+                    </ul>
+                </div>
                 <div ng-view class="col-xs-2"></div>
             </div>
         </div>
