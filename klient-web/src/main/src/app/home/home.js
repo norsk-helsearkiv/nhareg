@@ -627,7 +627,7 @@ angular.module('nha.home', [
                     errorService.errorCode(status);
                     return;
                 } else {
-                    if (data[0].attributt === 'passord') {
+                    if (data[0].attribute === 'passord') {
                         $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_FEIL');
                     }
                 }

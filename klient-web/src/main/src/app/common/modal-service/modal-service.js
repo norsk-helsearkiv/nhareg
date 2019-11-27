@@ -248,9 +248,9 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     }).error(function(data, status, headers, config) {
                         if (status==400){
                             if (data.length>0){
-                                var attr = data[0].attributt;
+                                var attr = data[0].attribute;
                                 if (attr === 'identifikator'){
-                                    $scope.formData.error.identifikator = data[0].constriant;
+                                    $scope.formData.error.identifikator = data[0].constraint;
                                 }
                             }
                         }else{
@@ -287,7 +287,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                         $modalInstance.close();
                         okFunction();
                     }).error(function(data, status, headers, config) {
-                    if (data[0].attributt==='identifikator'){
+                    if (data[0].attribute==='identifikator'){
                         $modalInstance.close();
                         var msg = $filter('translate')('modal.FlyttLagringsenhetFeil.msg');
                         var title = $filter('translate')('modal.FlyttLagringsenhetFeil.title');
