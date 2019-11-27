@@ -17,7 +17,7 @@ FROM library/maven:3.6.1-jdk-7-slim as build
 WORKDIR /usr/src/
 COPY . .
 COPY --from=web-build /usr/src/klient-web/src/main klient-web/src/main
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # Get Wildfly 8.2.0.Final
 FROM jboss/wildfly:8.2.0.Final

@@ -21,9 +21,9 @@ services:
     image: nhareg:latest
     entrypoint: /docker-entrypoint-initnha.d/entrypoint.sh
     ports:
-      - "9990":"9990"
-      - "8080":"8080"
-      - "8443":"8443"
+      - 9990:9990
+      - 8080:8080
+      - 8443:8443
 
 #networks:
 #  default:
