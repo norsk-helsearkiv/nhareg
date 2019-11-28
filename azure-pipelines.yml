@@ -96,6 +96,7 @@ stages:
     - task: CopyFiles@2
       inputs:
         sourceFolder: $(Agent.BuildDirectory)
+        Contents: '*.war'
         TargetFolder: $(Build.ArtifactStagingDirectory)
     - task: PublishBuildArtifacts@1
       inputs:
