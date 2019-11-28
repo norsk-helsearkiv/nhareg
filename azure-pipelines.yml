@@ -97,6 +97,7 @@ stages:
       inputs:
         sourceFolder: $(Agent.BuildDirectory)
         contents: '**/*.war'
+        flattenFolders: true
         targetFolder: $(Build.ArtifactStagingDirectory)
     - task: PublishBuildArtifacts@1
       inputs:
