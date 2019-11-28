@@ -61,11 +61,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 var success = valideringFunction($scope.formData);
                 if(success) {
                     httpService.create(relativUrl, $scope.formData)
-                        .success(function(data, status, headers, config) {
+                        .success(function(data) {
+                            data.lagringsenhetformat = $scope.formData.lagringsenhetformat;
                             list.push(data);
-                        }).error(function(data, status, headers, config) {
-                        errorService.errorCode(status);
-                    });
+                        }).error(function(data, status) {
+                            errorService.errorCode(status);
+                        });
                     $modalInstance.close();
                 }
             };
