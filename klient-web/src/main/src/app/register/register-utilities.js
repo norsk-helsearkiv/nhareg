@@ -233,65 +233,65 @@ angular.module('nha.register')
                     index = 0;
                     felt = document.getElementById('labelLagringsenhet').innerHTML;
                 }
-                if (element.attribute === 'journalnummer') {
+                if (element.attribute === 'fanearkid') {
                     index = 1;
+                    felt = document.getElementById('fanearkid').innerHTML;
+                }
+                if (element.attribute === 'journalnummer') {
+                    index = 2;
                     felt = document.getElementById('journalnummer').innerHTML;
                 }
                 if (element.attribute === 'lopenummer') {
-                    index = 2;
+                    index = 3;
                     felt = document.getElementById('lopenummer').innerHTML;
                 }
                 if (element.attribute === 'fodselsnummer') {
-                    index = 3;
+                    index = 4;
                     felt = document.getElementById('fodselsnummer').innerHTML;
                 }
                 if (element.attribute === 'navn') {
-                    index = 4;
+                    index = 5;
                     felt = document.getElementById('navn').innerHTML;
                 }
                 if (element.attribute === 'kjonn') {
-                    index = 5;
+                    index = 6;
                     felt = document.getElementById('kjonn').innerHTML;
                 }
                 if (element.attribute === 'fodt') {
-                    index = 6;
+                    index = 7;
                     felt = document.getElementById('fodt').innerHTML;
                 }
                 if (element.attribute === 'dod') {
-                    index = 7;
+                    index = 8;
                     felt = document.getElementById('dod').innerHTML;
                 }
                 if (element.attribute === 'fKontakt') {
-                    index = 8;
+                    index = 9;
                     felt = document.getElementById('fKontakt').innerHTML;
                 }
                 if (element.attribute === 'sKontakt') {
-                    index = 9;
+                    index = 10;
                     felt = document.getElementById('sKontakt').innerHTML;
                 }
                 if (element.attribute === 'diagnosedato') {
-                    index = 10;
-                    felt = document.getElementById('diagnosedato').innerHTML;
+                    index = 11;
+                    felt = document.getElementById('diagnosedatoLbl').innerHTML;
                 }
                 if (element.attribute === 'diagnosedatotab') {
-                    index = 10;
+                    index = 12;
                     felt = document.getElementById('diagnosedato_table').innerHTML;
                 }
                 if (element.attribute === 'diagnosekodetab') {
-                    index = 12;
+                    index = 13;
                     felt = document.getElementById('diagnosekode_table').innerHTML;
                 }
                 if (element.attribute === 'diagnosekode') {
-                    index = 13;
+                    index = 14;
                     felt = document.getElementById('diagnosekode').innerHTML;
                 }
                 if (element.attribute === 'diagnosetekst') {
-                    index = 14;
-                    felt = document.getElementById('diagnosetekst').innerHTML;
-                }
-                if (element.attribute === 'fanearkid') {
                     index = 15;
-                    felt = document.getElementById('fanearkid').innerHTML;
+                    felt = document.getElementById('diagnosetekst').innerHTML;
                 }
                 if (felt !== undefined) {
                     if (element.message !== undefined && element.message !== "may not be null"){ //sett inn variabler i feilmeldingen
