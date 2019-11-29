@@ -13,7 +13,9 @@ mvn clean verify -Dhttps.protocols=TLSv1.2
 ```
 
 ## Running
-The project can be run by using Docker:
+The project runs on Linux containers, be sure to configure Docker to use the right containers for this project.
+
+Run by using Docker:
 ```
 docker run -e <env var> -e <env var> -p <port> -p <port> nhareg
 ```
