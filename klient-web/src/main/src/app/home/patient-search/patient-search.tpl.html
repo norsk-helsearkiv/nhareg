@@ -1,7 +1,5 @@
-<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-    <!--<div ng-controller="HomePasientsokCtrl">
-        {{hellow}}
-    </div>-->
+<div ng-controller="PatientSearchCtrl" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
     <h2>{{ text.pasientsok }}</h2>
 
     <form class="input-group">
@@ -49,12 +47,11 @@
 
     </form>
 
-
     <h2 class="sub-header">
         {{ 'home.AVLEVERINGER' | translate }}
         <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn}} &#x2F {{valgtAvtale.avtalebeskrivelse }}</small>
         <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale" data-access-level-admin>
-            {{ 'common.LEGG_TIL' | translate }}
+            {{ 'common.ADD' | translate }}
         </button>
     </h2>
 

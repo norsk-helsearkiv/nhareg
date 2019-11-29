@@ -4,76 +4,70 @@ var mod = angular.module('nha.common.http-service', [
 mod.factory('httpService', ['$http', httpService]);
 
 function httpService($http) {
+
 	var url = "../api/";
-    function logout(){
-        return $http({
-           accept: "application/json",
-            method: "GET",
-            url: url+"auth/logout"
-        });
-    }
 
 	//CREATE
-	function ny(relativUrl, data) {
+	function create(relativeUrl, data) {
 		return $http({
 			accept: "application/json",
 			method: "POST",
-			url: url + relativUrl,
+			url: url + relativeUrl,
 			data: data
 		});
 	}
 
 	//READ
-	function hentAlle(relativUrl, cache) {
+	function getAll(relativeUrl, cache) {
 		return $http({
 			cache: cache,
 			accept: "application/json",
 			method: "GET",
-			url: url + relativUrl
+			url: url + relativeUrl
 		});
 	}
 
-	function hent(relativUrl) {
+	function get(relativeUrl) {
 		return $http({
 			accept: "application/json",
 			method: "GET",
-			url: url + relativUrl
-		});	
-	}
-
-	//UPDATE
-	function oppdater(relativUrl, data) {
-		return $http({
-			accept: "application/json",
-			method: "PUT",
-			url: url + relativUrl,
-			data: data
-		});	
-	}
-
-	//DELETE
-	function deleteElement(relativUrl) {
-		return $http({
-			accept: "application/json",
-			method: "DELETE",
-			url: url + relativUrl
+			url: url + relativeUrl
 		});
 	}
 
-	function slett(relativUrl, data) {
+	//UPDATE
+	function update(relativeUrl, data) {
+		return $http({
+			accept: "application/json",
+			method: "PUT",
+			url: url + relativeUrl,
+			data: data
+		});
+	}
+
+	//DELETE
+	function deleteElement(relativeUrl) {
+		return $http({
+			accept: "application/json",
+			method: "DELETE",
+			url: url + relativeUrl
+		});
+	}
+
+	function deleteData(relativeUrl, data) {
 		return $http({
 			accept: "application/json",
 			headers: {
 				"Content-Type" : "application/json"
 			},
 			method: "DELETE",
-			url: url + relativUrl,
+			url: url + relativeUrl,
 			data: data
 		});
 	}
 
-	//ANDRE
-	function genererAvlevering(id) {
+	//OTHER
+	function generateDelivery(id) {
 		return $http({
 			accept: "application/xml",
 			method: "GET",
@@ -81,7 +75,7 @@ function httpService($http) {
 		});
 	}
 
-	function sistBrukteLagringsenhet(){
+	function lastUsedStorageUnit(){
 		return $http({
 			accept: "application/xml",
 			method: "GET",
@@ -89,7 +83,7 @@ function httpService($http) {
 		});
 	}
 
-	function brukerRolle(){
+	function userRole(){
 		return $http({
 			cache : false,
 			accept: "application/json",
@@ -98,7 +92,7 @@ function httpService($http) {
 		});
 	}
 
-	function brukerNavn(){
+	function userName(){
 		return $http({
 			cache : false,
 			accept: "application/json",
@@ -106,11 +100,19 @@ function httpService($http) {
 			url: url + "admin/bruker"
 		});
 	}
-	function getSokeresultat(sokestring) {
+	function getSearchResult(searchString) {
 		return $http({
 			accept: "application/json",
 			method: "GET",
-			url: url + "sok?sokestring=" + sokestring
+			url: url + "sok?sokestring=" + searchString
+		});
+	}
+
+	function logout(){
+		return $http({
+			accept: "application/json",
+			method: "GET",
+			url: url + "auth/logout"
 		});
 	}
 
@@ -119,19 +121,18 @@ function httpService($http) {
 	}
 
 	return {
-        logout: logout,
-		ny: ny,
-		hentAlle: hentAlle,
-		hent: hent,
-		oppdater: oppdater,
+		create: create,
+		getAll: getAll,
+		get: get,
+		update: update,
 		deleteElement: deleteElement,
-		slett: slett,
-
-		sistBrukteLagringsenhet: sistBrukteLagringsenhet,
-		genererAvlevering: genererAvlevering,
-		getSokeresultat: getSokeresultat,
-		brukerRolle : brukerRolle,
-		brukerNavn : brukerNavn,
+		deleteData: deleteData,
+		generateDelivery: generateDelivery,
+		lastUsedStorageUnit: lastUsedStorageUnit,
+		userRole : userRole,
+		userName : userName,
+		getSearchResult: getSearchResult,
+		logout: logout,
 		getRoot: getRoot
 	};
 }

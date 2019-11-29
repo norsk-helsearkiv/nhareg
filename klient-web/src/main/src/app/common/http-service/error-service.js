@@ -4,7 +4,7 @@ var mod = angular.module('nha.common.error-service', [
 
 mod.factory('errorService', ['$modal', '$location', errorService]);
 
-function errorService($modal, $location) {
+function errorService($modal) {
     var template = {
         backdrop: 'static',
         windowClass: "modal-center"
@@ -12,95 +12,119 @@ function errorService($modal, $location) {
 
     return {
 
+        //ERROR 400 BAD REQUEST
         badRequest: function () {
             template.templateUrl = 'common/http-service/error-modal-400.tpl.html';
+
             template.controller = function ($scope, $modalInstance) {
                 $scope.ok = function () {
                     $modalInstance.close();
                 };
             };
+
             template.controller.$inject = ['$scope', '$modalInstance'];
+
             return $modal.open(template);
         },
 
-        notFound: function (message) {
-            template.templateUrl = 'common/http-service/error-modal-404.tpl.html';
-            template.controller = function ($scope, $modalInstance) {
-                $scope.message = message;
-                $scope.ok = function () {
-                    $modalInstance.close();
-                };
-            };
-            template.controller.$inject = ['$scope', '$modalInstance'];
-            return $modal.open(template);
-        },
-
-        resourceConflict: function () {
-            template.templateUrl = 'common/http-service/error-modal-409.tpl.html';
-            template.controller = function ($scope, $modalInstance) {
-                $scope.ok = function () {
-                    $modalInstance.close();
-                };
-            };
-            template.controller.$inject = ['$scope', '$modalInstance'];
-            return $modal.open(template);
-        },
-
-        serverError: function () {
-            template.templateUrl = 'common/http-service/error-modal-500.tpl.html';
-            template.controller = function ($scope, $modalInstance) {
-                $scope.ok = function () {
-                    $modalInstance.close();
-                };
-            };
-            template.controller.$inject = ['$scope', '$modalInstance'];
-            return $modal.open(template);
-        },
-
+        //ERROR 401 UNAUTHORIZED ERROR
         unauthorizedError: function(message) {
             template.templateUrl = 'common/http-service/error-modal-401.tpl.html';
+
             template.controller = function ($scope, $modalInstance) {
                 $scope.message = message;
                 $scope.ok = function () {
                     $modalInstance.close();
                 };
             };
+
             template.controller.$inject = ['$scope', '$modalInstance'];
+
             return $modal.open(template);
         },
-        expectationFailed: function (message) {
-            template.templateUrl = 'common/http-service/error-modal-417.tpl.html';
+
+        //ERROR 404 NOT FOUND
+        notFound: function (message) {
+            template.templateUrl = 'common/http-service/error-modal-404.tpl.html';
+
             template.controller = function ($scope, $modalInstance) {
                 $scope.message = message;
                 $scope.ok = function () {
                     $modalInstance.close();
                 };
             };
+
             template.controller.$inject = ['$scope', '$modalInstance'];
+
+            return $modal.open(template);
+        },
+
+        //ERROR 409 RESOURCE CONFLICT
+        resourceConflict: function () {
+            template.templateUrl = 'common/http-service/error-modal-409.tpl.html';
+
+            template.controller = function ($scope, $modalInstance) {
+                $scope.ok = function () {
+                    $modalInstance.close();
+                };
+            };
+
+            template.controller.$inject = ['$scope', '$modalInstance'];
+
+            return $modal.open(template);
+        },
+
+        //ERROR 417 EXPECTATION FAILED
+        expectationFailed: function (message) {
+            template.templateUrl = 'common/http-service/error-modal-417.tpl.html';
+
+            template.controller = function ($scope, $modalInstance) {
+                $scope.message = message;
+                $scope.ok = function () {
+                    $modalInstance.close();
+                };
+            };
+
+            template.controller.$inject = ['$scope', '$modalInstance'];
+
+            return $modal.open(template);
+        },
+
+        //ERROR 500 SERVER ERROR
+        serverError: function () {
+            template.templateUrl = 'common/http-service/error-modal-500.tpl.html';
+
+            template.controller = function ($scope, $modalInstance) {
+                $scope.ok = function () {
+                    $modalInstance.close();
+                };
+            };
+
+            template.controller.$inject = ['$scope', '$modalInstance'];
+
             return $modal.open(template);
         },
 
         errorCode: function (status) {
             switch(status){
-
                 case 400:
                     return this.badRequest();
-                case 404:
-                    return this.notFound();
-                case 422:
-                    return this.notFound();
                 case 401:
                     return this.unauthorizedError();
+                case 403:
+                    return this.unauthorizedError();
+                case 404:
+                    return this.notFound();
                 case 409:
                     return this.resourceConflict();
                 case 417:
                     return this.expectationFailed();
-                case 403:
-                    return this.unauthorizedError();
+                case 422:
+                    return this.notFound();
                 default:
                     return this.serverError();
             }
         }
-        
+
     };
 }

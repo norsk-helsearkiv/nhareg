@@ -1,27 +1,26 @@
 <div class="modal-header">
-    <h3 class="modal-title">{{'modal.lagringsenhet.TITTEL' | translate}}</h3>
+    <h3 class="modal-title">{{ 'modal.storage_unit.TITLE' | translate }}</h3>
 </div>
 
 <div class="modal-body">
     <form>
         <div class="form-group">
-            <label data-ng-class="{error: feilFormat !== undefined }">{{ 'common.table.LAGRINGSENHET' | translate }} {{txtMaske}} {{feilFormat}}</label>
-            <input type="text" class="form-control" ng-model="formData.lagringsenhet" ng-enter="nyLagringsenhet()" focus-on-show>
-            <label class="label-error" data-ng-show="formData.error.lagringsenhet">{{formData.error.lagringsenhet}}</label>
-            <ul id="lagringsenhet-liste">
-                <li data-ng-repeat="enhet in formData.lagringsenheter" data-ng-show="state !== 1">
-                    <button type="button" class="btn" data-ng-click="actionFjernLagringsenhet(enhet)"></button>
-                    {{ enhet }}
+            <label data-ng-class="{ error: wrongFormat !== undefined }">{{ 'common.table.STORAGE_UNIT' | translate }} {{ storageUnitFormat }} {{ wrongFormat }}</label>
+            <input type="text" class="form-control" ng-model="formData.storageUnit" ng-enter="newStorageUnit()" focus-on-show>
+            <label class="label-error" data-ng-show="formData.error.storageUnit">{{ formData.error.storageUnit }}</label>
+            <ul id="storage-unit-list">
+                <li data-ng-repeat="unit in formData.storageUnits" data-ng-show="state !== 1">
+                    <button type="button" class="btn" data-ng-click="removeStorageUnit(unit)"></button>
+                    {{ unit }}
                 </li>
             </ul>
         </div>
     </form>
-
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default btn-primary" ng-click="nyLagringsenhet()" tooltip="{{'common.tooltip.NY_LAGRINGSENHET' | translate}}">{{'common.NY_LAGRINGSENHET' | translate}}</button>
-    <button class="btn btn-default btn-primary" ng-click="lagre()" tooltip="{{'common.tooltip.LAGRE' | translate}}">{{'common.LAGRE' | translate}}</button>
-    <button class="btn btn-default btn-primary" ng-click="utskrift()" tooltip="{{'common.tooltip.UTSKRIFT' | translate}}">{{'common.UTSKRIFT' | translate}}</button>
-    <button class="btn btn-default btn-danger" ng-click="avbryt()" tooltip="{{'common.tooltip.AVBRYT' | translate}}">{{'common.AVBRYT' | translate}}</button>
+    <button class="btn btn-default btn-primary" ng-click="newStorageUnit()" tooltip="{{ 'common.tooltip.NEW_STORAGE_UNIT' | translate }}">{{ 'common.NEW_STORAGE_UNIT' | translate }}</button>
+    <button class="btn btn-default btn-primary" ng-click="save()" tooltip="{{ 'common.tooltip.SAVE' | translate }}">{{ 'common.SAVE' | translate }}</button>
+    <button class="btn btn-default btn-primary" ng-click="print()" tooltip="{{ 'common.tooltip.PRINT' | translate }}">{{ 'common.PRINT' | translate }}</button>
+    <button class="btn btn-default btn-danger" ng-click="cancel()" tooltip="{{ 'common.tooltip.CANCEL' | translate }}">{{ 'common.CANCEL' | translate }}</button>
 </div>
