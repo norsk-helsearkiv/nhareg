@@ -103,18 +103,26 @@ stages:
     - task: CopyFiles@2
       inputs:
         Contents: nhareg.tar
-        SourceFolder: $(Agent.BuildDirectory)
+        SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
       inputs:
-        Contents: '**/docker-compose.yml'
-        SourceFolder: $(Agent.BuildDirectory)
+        Contents: 'docker-compose.yml'
+        SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
+        flattenFolders: true
     - task: CopyFiles@2
       inputs:
-        Contents: '**/readme.md'
-        SourceFolder: $(Agent.BuildDirectory)
+        Contents: 'readme.md'
+        SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
+        flattenFolders: true
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/nha-db/*.sql'
+        SourceFolder: $(Agent.BuildDirectory)
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/SQL/'
+        flattenFolders: true
     # ZIP files for artifact
     - task: ArchiveFiles@2
       name: zip_files
