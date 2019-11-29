@@ -15,6 +15,8 @@ mvn clean verify -Dhttps.protocols=TLSv1.2
 ## Running
 The project runs on Linux containers, be sure to configure Docker to use the right containers for this project.
 
+When running the image make sure that a MySQL database is running.
+
 Run by using Docker:
 ```
 docker run -e <env var> -e <env var> -p <port> -p <port> nhareg
