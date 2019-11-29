@@ -100,9 +100,12 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 # Expose the ports we're interested in
 EXPOSE 8080 8443 9990
 
+COPY src/main/resources/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && chown jboss:0 /entrypoint.sh
+
 USER jboss
 
 # Set the default command to run on boot
 # This will boot WildFly in the standalone mode and bind to all interface
-COPY src/main/resources/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
