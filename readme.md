@@ -56,3 +56,13 @@ It is possible to manually deploy applications to the running Wildfly image, exa
 docker cp ./tjeneste/target/api.war nha-app:/opt/jboss/wildfly/standalone/deployments
 ```
 It is however recommended to simply use the latest image.
+
+## Manual installation of image
+To save an image to a tar file:
+```
+docker save -o nhareg.tar
+```
+The you can load it with:
+```
+docker load -i nhareg.tar
+```
