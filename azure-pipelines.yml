@@ -89,9 +89,10 @@ stages:
       inputs:
         command: 'build'
         Dockerfile: '**/Dockerfile'
+        arguments: '-t nhareg'
         tags: |
-          $(Build.BuildId)
-          latest
+          nhareg:$(Build.BuildId)
+          nhareg:latest
     - task: CmdLine@2
       name: docker_save
       displayName: Save Docker image
