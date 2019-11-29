@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +34,6 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class AvleveringTjenesteTest {
-
-    private static Logger log = Logger.getLogger(AvleveringTjenesteTest.class);
 
     @Deployment
     public static WebArchive deployment() {

@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.logging.Logger;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,8 +44,6 @@ public class PasientjournalTjenesteTest {
     
     @Inject
     private AdminHandler adminHandler;
-
-    private static Logger log = Logger.getLogger(PasientjournalTjenesteTest.class);
 
     @Deployment
     public static WebArchive deployment() {
@@ -129,8 +126,6 @@ public class PasientjournalTjenesteTest {
                     assertEquals(200, response.getStatus());
                 } catch (ValideringsfeilException vfe) {
                     Valideringsfeil valideringsfeil = vfe.getValideringsfeil().get(0);
-                    log.error(valideringsfeil.getConstraint());
-                    log.error(valideringsfeil.getAttribute());
                     assert false;
                 }
 
@@ -210,19 +205,15 @@ public class PasientjournalTjenesteTest {
             @Override
             public Object call() throws ParseException {
                 PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-                log.info(pasientjournalDTO.getPersondata());
                 assertNotNull(pasientjournalDTO);
 
-                log.info(pasientjournalDTO.getAvleveringBeskrivelse());
                 final String beskrivelse = "ny beskrivelse";
                 pasientjournalDTO.setAvleveringBeskrivelse(beskrivelse);
-                log.info(pasientjournalDTO.getAvleveringBeskrivelse());
                 Response response = tjeneste.oppdaterPasientjournal(pasientjournalDTO);
 
                 assertEquals(200, response.getStatus());
 
                 pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-                log.info(pasientjournalDTO.getAvleveringBeskrivelse());
                 assertNotNull(pasientjournalDTO);
                 assertEquals(beskrivelse, pasientjournalDTO.getAvleveringBeskrivelse());
 
