@@ -31,7 +31,22 @@ angular.module('nha.register')
             }
         };
 
+        $scope.setFirstContactDate = function () {
+            if($scope.prevState === 0 || $scope.pasientjournalDTO.diagnoser.length === 1){
+                switch ($scope.formData.fKontakt) {
+                    case undefined:
+                    case null:
+                    case '':
+                        $scope.formData.fKontakt = $scope.formDiagnose.diagnosedato;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
         var prevDiagnose="";
+
         //Setter diagnoseteksten når koden er endret
         $scope.setDiagnoseTekst = function (laasDiagnosetekst) {
             //Hvis koden ikke er endret
@@ -104,20 +119,20 @@ angular.module('nha.register')
             }
 
             httpService.create("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.formDiagnose.uuid = data.uuid;
                     $scope.formDiagnose.oppdatertAv = data.oppdatertAv;
                     $scope.formDiagnose.oppdatertDato = data.oppdatertDato;
                     $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
-
+                    $scope.setFirstContactDate();
                     $scope.resetDiagnose(true);
-                }).error(function (data, status, headers, config) {
-                if (status === 400) {
-                    $scope.setFeilmeldinger(data, status);
-                } else {
-                    errorService.errorCode(status);
-                }
-            });
+                }).error(function (data, status) {
+                    if (status === 400) {
+                        $scope.setFeilmeldinger(data, status);
+                    } else {
+                        errorService.errorCode(status);
+                    }
+                });
         };
 
         $scope.sokDiagnoseDisplayNameLike = function (displayName) {

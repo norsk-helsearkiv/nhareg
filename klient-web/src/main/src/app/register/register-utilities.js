@@ -12,10 +12,6 @@ angular.module('nha.register')
                     document.getElementById("lagringsenhet").focus();
                 }
             }
-            //Adding diagnosis
-            else if ($scope.state === 1) {
-                document.getElementById("diagnosedato").focus();
-            }
             //Updating patient journal
             else if ($scope.state === 2) {
                 document.getElementById("diagnosedato").focus();

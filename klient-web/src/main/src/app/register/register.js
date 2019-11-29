@@ -67,9 +67,6 @@ angular.module('nha.register', [
 
         $scope.kjonn = [{kode: "M", tekst: ""}, {kode: "K", tekst: ""}, {kode: "U", tekst: ""}, {kode: "I", tekst: ""}];
 
-        $scope.state = 0; //0 = ny, 1 = legg til diagnoser, 2 = endre
-        $scope.prevState = 0;
-
         //Tekster fra i18n
         $scope.$watch(
             function () {
@@ -300,9 +297,9 @@ angular.module('nha.register', [
             var lagringsenhetmaske;
 
             if ($scope.avlevering.lagringsenhetformat) {
-                //TODO...
                 lagringsenhetmaske = $scope.avlevering.lagringsenhetformat;
-            } else if ($scope.pasientjournalDTO.lagringsenhetformat){
+            }
+            else if ($scope.pasientjournalDTO.lagringsenhetformat){
                 lagringsenhetmaske = $scope.pasientjournalDTO.lagringsenhetformat;
             }
 
@@ -332,15 +329,16 @@ angular.module('nha.register', [
         //Setter verdier fra registrering-service
         if ($scope.avlevering && !$scope.pasientjournalDTO) {
             //Ny pasientjouranl
+            $scope.prevState = 0;
             $scope.state = 0;
             $scope.manageStorageUnits();
 
         } else if ($scope.pasientjournalDTO !== undefined) {
             //Endre pasientjournal
+            $scope.prevState = 2;
             $scope.state = 2;
 
             $scope.formData = $scope.pasientjournalDTO.persondata;
-
 
             //Håndtering av kjønn - Sender kode til server, viser Tekst basert på i18n
             if ($scope.formData.kjonn !== undefined) {
@@ -439,6 +437,7 @@ angular.module('nha.register', [
                         $scope.pasientjournalDTO = data;
                         $scope.formData = data.persondata;
                         $scope.formData.kjonn = kjonn;
+                        $scope.prevState = $scope.state;
                         $scope.state = 2;
                     }).error(function (data, status) {
                         $scope.formData.kjonn = kjonn;
@@ -455,6 +454,7 @@ angular.module('nha.register', [
                         $scope.formData = data.persondata;
                         $scope.formData.kjonn = kjonn;
                         $scope.formData.lagringsenheter = lagringsenheter;
+                        $scope.prevState = $scope.state;
                         $scope.state = 2;
                         $scope.setFocus();
                     }).error(function (data, status) {
@@ -464,13 +464,13 @@ angular.module('nha.register', [
             }
             //start en ny journal
             if ($scope.state === 3) {
-                $scope.state = $scope.prevState;
                 if (!$scope.pasientjournalDTO) {
                     return;
                 }
                 httpService.update("pasientjournaler/", $scope.pasientjournalDTO)
                     .success(function () {
                         var lagringsenheter = $scope.formData.lagringsenheter;
+                        $scope.prevState = $scope.state;
                         $scope.state = 0;
                         $scope.formData = {
                             lagringsenheter: lagringsenheter
