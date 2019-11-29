@@ -1,1 +1,0 @@
-insert into  Virksomhet (organisasjonsnummer, navn) VALUES ('100', 'Testorganisasjon');

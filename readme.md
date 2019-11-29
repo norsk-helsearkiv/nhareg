@@ -49,3 +49,10 @@ or pass the variables through a file, containing variables of format <variable>=
 ```
 docker run --env-file ./env.list nhareg
 ```
+
+## Manual deployment
+It is possible to manually deploy applications to the running Wildfly image, example:
+```
+docker cp ./tjeneste/target/api.war nha-app:/opt/jboss/wildfly/standalone/deployments
+```
+It is however recommended to simply use the latest image.
