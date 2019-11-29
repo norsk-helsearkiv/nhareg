@@ -89,7 +89,7 @@ stages:
       inputs:
         command: 'build'
         Dockerfile: '**/Dockerfile'
-        arguments: '-t nhareg'
+        arguments: $(DOCKER_ARGS)
         tags: |
           nhareg:$(Build.BuildId)
           nhareg:latest
