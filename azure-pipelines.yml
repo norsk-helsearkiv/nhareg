@@ -6,6 +6,7 @@ variables:
   jdkVersion: '1.7'
   pomFilePath: 'pom.xml'
   webFolder: klient-web/src/main
+  dockerVersion: '17.09.0-ce'
 
 stages:
 ### BUILD ###
@@ -77,29 +78,65 @@ stages:
     pool:
       vmImage: $(vmImage)
     steps:
-    - task: DownloadPipelineArtifact@2
-      name: download_web_artifact
-      displayName: Download Web Pipeline Artifact
+    - task: DockerInstaller@0
+      name: docker_install
+      displayName: Install Docker CLI
       inputs:
-        buildType: 'current'
-        artifactName: 'webCompileArtifact'
-        targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)' 
-    - task: Maven@3
-      displayName: Maven Package
+        dockerVersion: $(dockerVersion)
+    - task: Docker@2
+      name: docker_build
+      displayName: Build Docker file
       inputs:
-        mavenPomFile: $(pomFilePath)
-        mavenOptions: $(mavenOptions)
-        javaHomeOption: $(javaHome)
-        jdkVersionOption: $(jdkVersion)
-        publishJUnitResults: false
-        goals: package -DskipTests
+        command: 'build'
+        Dockerfile: '**/Dockerfile'
+        arguments: $(DOCKER_ARGS)
+        tags: |
+          nhareg:$(Build.BuildId)
+          nhareg:latest
+    - task: CmdLine@2
+      name: docker_save
+      displayName: Save Docker image
+      inputs:
+        script: 'docker save nhareg -o nhareg.tar'
+        workingDirectory: '$(Agent.BuildDirectory)'
+    # COPY FILES TO STAGING DIRECTORY 
     - task: CopyFiles@2
       inputs:
-        sourceFolder: $(Agent.BuildDirectory)
-        contents: '**/*.war'
-        flattenFolders: true
-        targetFolder: $(Build.ArtifactStagingDirectory)
-    - task: PublishBuildArtifacts@1
+        Contents: nhareg.tar
+        SourceFolder: $(Agent.BuildDirectory)
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+    - task: CopyFiles@2
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        Contents: 'docker-compose.yml'
+        SourceFolder: $(System.DefaultWorkingDirectory)
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+        flattenFolders: true
+    - task: CopyFiles@2
+      inputs:
+        Contents: 'readme.md'
+        SourceFolder: $(System.DefaultWorkingDirectory)
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+        flattenFolders: true
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/nha-db/*.sql'
+        SourceFolder: $(Agent.BuildDirectory)
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/SQL/'
+        flattenFolders: true
+    # ZIP files for artifact
+    - task: ArchiveFiles@2
+      name: zip_files
+      displayName: ZIP files
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/nhareg-$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    # Publish Artifact
+    - task: PublishBuildArtifacts@1
+      name: publish_artifact
+      displayName: Publishing artifact
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/nhareg-$(Build.BuildId).zip
         ArtifactName: 'nhareg_artifact'

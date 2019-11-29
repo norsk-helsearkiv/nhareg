@@ -21,7 +21,7 @@
             <label class="label-error" data-ng-show="formData.error.avleveringsbeskrivelse">{{formData.error.avleveringsbeskrivelse}}</label>
         </div>
         <div class="form-group">
-            <label>{{ 'common.table.LAGRINGSENHET_FORMAT' | translate }}</label>
+            <label>{{ 'common.table.STORAGE_UNIT_FORMAT' | translate }}</label>
             <input type="text" class="form-control" ng-model="formData.lagringsenhetformat">
             <label class="label-error" data-ng-show="formData.error.lagringsenhetformat">{{formData.error.lagringsenhetformat}}</label>
         </div>
@@ -31,5 +31,5 @@
 
 <div class="modal-footer">
     <button class="btn btn-default btn-primary" ng-click="ok()">{{'common.OK' | translate}}</button>
-    <button class="btn btn-default btn-danger" ng-click="avbryt()">{{'common.AVBRYT' | translate}}</button>
+    <button class="btn btn-default btn-danger" ng-click="avbryt()">{{'common.CANCEL' | translate}}</button>
 </div>

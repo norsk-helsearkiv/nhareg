@@ -1,15 +1,14 @@
 <div class="modal-header">
-    <h3 class="modal-title">{{'modal.delete.TITTEL' | translate}}</h3>
+    <h3 class="modal-title">{{ 'modal.delete.TITLE' | translate }}</h3>
 </div>
 
 <div class="modal-body">
     <p>
-        {{'modal.delete.SIKKER' | translate}} <strong>{{ elementType }}</strong> {{'modal.delete.MED_ID' | translate}} <strong>{{ id }}</strong> ?
+        {{ 'modal.delete.CONFIRM' | translate }} <strong>{{ elementType }}</strong>{{ 'modal.delete.WITH_ID' | translate }} <strong>{{ id }}</strong>?
     </p>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default btn-primary" ng-click="ok()">{{'common.OK' | translate}}</button>
-    <button class="btn btn-default btn-danger" ng-click="avbryt()">{{'common.AVBRYT' | translate}}</button>
-
+    <button class="btn btn-default btn-primary" ng-click="ok()">{{ 'common.OK' | translate }}</button>
+    <button class="btn btn-default btn-danger" ng-click="cancel()">{{ 'common.CANCEL' | translate }}</button>
 </div>

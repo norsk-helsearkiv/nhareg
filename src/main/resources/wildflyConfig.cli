@@ -1,0 +1,48 @@
+# Connect to Wildfly
+connect
+
+# Add datasource
+data-source add \
+    --name=NharegDS \
+    --jndi-name=java:jboss/datasources/NharegDS \
+    --connection-url=jdbc:mysql://${MYSQL_HOST:host.docker.internal}:3306/${MYSQL_DATABASE:nhareg} \
+    --driver-name=mysql-connector-java-5.1.48.jar_com.mysql.jdbc.Driver_5_1 \
+    --driver-class=com.mysql.jdbc.Driver \
+    --user-name="${MYSQL_USER:nhareg}" \
+    --password="${MYSQL_PASSWORD:nhareg}" \
+    --use-ccm=true \
+    --use-java-context=true
+
+/subsystem=datasources/data-source=NharegDS/connection-properties=useSSL:add(value=false)
+/subsystem=datasources/data-source=NharegDS/connection-properties=allowPublicKeyRetrieval:add(value=true)
+
+# Add Security Domain
+/subsystem=security/security-domain=secureDomain:add(cache-type=default)
+/subsystem=security/security-domain=secureDomain/authentication=classic:add( \
+    login-modules=[ \
+        { \
+            "code" => "Database", \
+            "flag" => "required", \
+            "module-options" => [ \
+                ("dsJndiName" => "java:jboss/datasources/NharegDS"), \
+                ("principalsQuery" => "SELECT passord AS 'Password' FROM Bruker WHERE brukernavn=?"), \
+                ("rolesQuery" => "SELECT rollenavn AS 'role', 'Roles' FROM Bruker WHERE brukernavn=?"), \
+                ("hashAlgorithm" => "SHA-256"), \
+                ("hashEncoding" => "base64") \
+            ] \
+        } \
+    ] \
+)
+
+# Add SSL Realm
+/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:add(keystore-path=server.keystore, \
+                                                                                 keystore-password=NHAREG, \
+                                                                                 key-password=NHAREG, \
+                                                                                 alias=server, \
+                                                                                 keystore-relative-to=jboss.server.config.dir)
+
+# Add HTTPS
+/subsystem=undertow/server=default-server/https-listener=default-https:add(security-realm=ApplicationRealm, socket-binding=https, verify-client=REQUESTED)
+/subsystem=undertow/server=default-server/host=default-host/setting=single-sign-on:add(path=/)
+
+:shutdown

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="nha" ng-controller="AppCtrl">
   <head>
-    <title>{{ 'common.APP_TITTEL' | translate }}</title>
+    <title>{{ 'common.APP_TITLE' | translate }}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
@@ -9,8 +9,38 @@
     <!-- compiled CSS --><% styles.forEach( function ( file ) { %>
     <link rel="stylesheet" type="text/css" href="<%= file %>" /><% }); %>
 
-    <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
-    <script type="text/javascript" src="<%= file %>"></script><% }); %>
+    <!-- compiled JavaScript -->
+    <script type="text/javascript" src="vendor/angular/angular.js"></script>
+    <script type="text/javascript" src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script type="text/javascript" src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+    <script type="text/javascript" src="vendor/angular-translate/angular-translate.js"></script>
+    <script type="text/javascript" src="vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+    <script type="text/javascript" src="vendor/angular-cookies/angular-cookies.js"></script>
+    <script type="text/javascript" src="vendor/angular-underscore-module/angular-underscore-module.js"></script>
+    <script type="text/javascript" src="vendor/angular-hotkeys/build/hotkeys.js"></script>
+    <script type="text/javascript" src="vendor/angular-tablesort/js/angular-tablesort.js"></script>
+    <script type="text/javascript" src="vendor/ng-idle/angular-idle.js"></script>
+    <script type="text/javascript" src="vendor/ngkookies/ngKookies.js"></script>
+    <script type="text/javascript" src="src/app/app.js"></script>
+    <script type="text/javascript" src="src/app/common/diagnosis-service.js"></script>
+    <script type="text/javascript" src="src/app/common/http-service/error-service.js"></script>
+    <script type="text/javascript" src="src/app/common/http-service/http-service.js"></script>
+    <script type="text/javascript" src="src/app/common/journal-service.js"></script>
+    <script type="text/javascript" src="src/app/common/list-view/list-service.js"></script>
+    <script type="text/javascript" src="src/app/common/list-view/list-view.js"></script>
+    <script type="text/javascript" src="src/app/common/list-view/pager-service.js"></script>
+    <script type="text/javascript" src="src/app/common/modal-service/modal-service.js"></script>
+    <script type="text/javascript" src="src/app/home/home.js"></script>
+    <script type="text/javascript" src="src/app/home/state.js"></script>
+    <script type="text/javascript" src="src/app/home/patient-search/patient-search.js"></script>
+    <script type="text/javascript" src="src/app/home/storage-units/storage-units.js"></script>
+    <script type="text/javascript" src="src/app/home/user-admin/user-admin.js"></script>
+    <script type="text/javascript" src="src/app/register/register-service.js"></script>
+    <script type="text/javascript" src="src/app/register/register.js"></script>
+    <script type="text/javascript" src="src/app/register/register-utilities.js"></script>
+    <script type="text/javascript" src="src/app/register/register-diagnosis.js"></script>
+    <script type="text/javascript" src="templates-common.js"></script>
+    <script type="text/javascript" src="templates-app.js"></script>
   </head>
   <body>
     <div ui-view="main">

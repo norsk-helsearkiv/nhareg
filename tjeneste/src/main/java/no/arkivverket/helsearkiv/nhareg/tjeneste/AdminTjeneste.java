@@ -1,14 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -18,19 +16,21 @@ import javax.ejb.Stateless;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+
+import no.arkivverket.helsearkiv.nhareg.auth.Roller;
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 /**
  * Created by haraldk on 15.04.15.
@@ -49,7 +49,6 @@ public class AdminTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/rolle")
     public String getRolle() {
         final String username = sessionContext.getCallerPrincipal().getName();
@@ -58,7 +57,6 @@ public class AdminTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/bruker")
     public String getBruker() {
         return sessionContext.getCallerPrincipal().getName();
@@ -66,7 +64,6 @@ public class AdminTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/century")
     public String getCentury() {
         return konfigparam.getVerdi(KonfigparamTjeneste.KONFIG_AARHUNDRE);
@@ -74,7 +71,6 @@ public class AdminTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/resetPassord")
     public Boolean checkPassordReset() {
         final String username = sessionContext.getCallerPrincipal().getName();
@@ -84,7 +80,6 @@ public class AdminTjeneste {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/oppdaterPassord")
     public Response oppdaterPassord(final String nyttPassord) {
         final String username = sessionContext.getCallerPrincipal().getName();
@@ -103,7 +98,6 @@ public class AdminTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/roller")
     public List<Rolle> getRoller() {
         return userService.getRoller();
@@ -111,7 +105,7 @@ public class AdminTjeneste {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Path("/brukere")
     public List<BrukerDTO> getBrukere() {
         List<BrukerDTO> dtos = new ArrayList<BrukerDTO>();
@@ -125,7 +119,7 @@ public class AdminTjeneste {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin"})
+    @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Path("/brukere")
     public Response oppdaterBruker(BrukerDTO brukerDTO) {
         Bruker bruker = brukerDTO.toBruker();
@@ -193,7 +187,6 @@ public class AdminTjeneste {
     }
 
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {"admin", "bruker"})
     @Path("/sistBrukte")
     public String getSistBrukteLagringsenhet() {
         final String username = sessionContext.getCallerPrincipal().getName();

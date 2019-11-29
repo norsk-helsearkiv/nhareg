@@ -1,13 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import org.apache.commons.collections4.Transformer;
+
 import java.util.Calendar;
 import java.util.Date;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import org.apache.commons.collections4.Transformer;
 
 /**
  *
@@ -34,8 +33,7 @@ public class StringTilDatoEllerAarTransformer implements Transformer<String, Dat
         }
         cal.setTime(dato);
         dea.setDato(cal);
+
         return dea;
-
     }
-
 }

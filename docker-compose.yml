@@ -1,0 +1,15 @@
+version: '3'
+services:
+  nha:
+    container_name: "nha-app"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=admin
+#      - MYSQL_USER=username
+#      - MYSQL_PASSWORD=password
+#      - WILDFLY_PASSWORD=admin_password
+    build: .
+    image: nhareg:latest
+    ports:
+      - 9990:9990
+      - 8080:8080
+      - 8443:8443
