@@ -107,12 +107,12 @@ stages:
         TargetFolder: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
       inputs:
-        Contents: docker-compose.yml
+        Contents: '**/docker-compose.yml'
         SourceFolder: $(Agent.BuildDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
       inputs:
-        Contents: readme.md
+        Contents: '**readme.md'
         SourceFolder: $(Agent.BuildDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
     # ZIP files for artifact
@@ -123,12 +123,12 @@ stages:
         rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/nhareg-$(Build.BuildId).zip'
         replaceExistingArchive: true
     # Publish Artifact
     - task: PublishBuildArtifacts@1
       name: publish_artifact
       displayName: Publishing artifact
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/nhareg-$(Build.BuildId).zip
         ArtifactName: 'nhareg_artifact'
