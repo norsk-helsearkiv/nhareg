@@ -14,10 +14,16 @@ RUN cd klient-web/src/main/ \
 # Get maven with jdk 7
 FROM library/maven:3.6.1-jdk-7-slim as build
 
+ARG MAVEN_ARGS=""
+
 WORKDIR /usr/src/
-COPY . .
+COPY domene domene
+COPY klient-web/ klient-web
+COPY tjeneste/ tjeneste
+COPY pom.xml .
 COPY --from=web-build /usr/src/klient-web/src/main klient-web/src/main
-RUN mvn clean package -DskipTests
+
+RUN mvn clean package $MAVEN_ARGS
 
 # Get Wildfly 8.2.0.Final
 FROM jboss/wildfly:8.2.0.Final
@@ -34,7 +40,7 @@ USER root
 # Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
 # Make sure the distribution is available from a well-known place
 RUN cd $HOME \
-    && curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \ 
+    && curl -O https://download.jboss.org/wildfly/$WILDFLY_VERSION/wildfly-$WILDFLY_VERSION.tar.gz \
     && sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
@@ -44,10 +50,11 @@ RUN cd $HOME \
 
 # Get and configure JasperServer
 WORKDIR /usr/src
+
 COPY --from=build /root/.m2/repository/mysql/mysql-connector-java/$MYSQL_CONNECTOR/mysql-connector-java-$MYSQL_CONNECTOR.jar .
 COPY src/main/resources/default_master.properties .
 
-RUN curl -O https://iweb.dl.sourceforge.net/project/jasperserver/JasperServer/JasperReports%20Server%20Community%20Edition%206.4.3/TIB_js-jrs-cp_6.4.3_bin.zip \
+RUN curl -L -O https://iweb.dl.sourceforge.net/project/jasperserver/JasperServer/JasperReports%20Server%20Community%20Edition%206.4.3/TIB_js-jrs-cp_6.4.3_bin.zip \
     && unzip -q TIB_js-jrs-cp_6.4.3_bin.zip \
     && rm -f TIB_js-jrs-cp_6.4.3_bin.zip \
     && mv jasperreports-server-cp-6.4.3-bin jasperreports-server \
@@ -62,8 +69,28 @@ RUN curl -O https://iweb.dl.sourceforge.net/project/jasperserver/JasperServer/Ja
 # Copy necessery files for configuration
 COPY src/main/resources/server.keystore $JBOSS_HOME/standalone/configuration/
 
-# Deploy apps
+# Configure Wildfly
+# Allow properties to be used when running Jboss CLI
+RUN sed -i "s/<resolve-parameter-values>false<\/resolve-parameter-values>/\<resolve-parameter-values>true<\/resolve-parameter-values>/" $JBOSS_HOME/bin/jboss-cli.xml
+
+# Add admin user
+RUN $JBOSS_HOME/bin/add-user.sh -u admin -p admin --silent
+
+COPY src/main/resources/env.properties /usr/src/
+COPY src/main/resources/wildflyConfig.cli /usr/src/
+COPY src/main/resources/update-datasource-credentials.cli /
 COPY --from=build /root/.m2/repository/mysql/mysql-connector-java/$MYSQL_CONNECTOR/mysql-connector-java-$MYSQL_CONNECTOR.jar $JBOSS_HOME/standalone/deployments/
+
+# Add Wildfly configurations
+RUN echo "Configuring Wildfly" \
+    && bash -c '$JBOSS_HOME/bin/standalone.sh &' \
+    && bash -c 'until `$JBOSS_CLI -c ":read-attribute(name=server-state)" 2> /dev/null | grep -q running`; do echo `$JBOSS_CLI -c ":read-attribute(name=server-state)" 2> /dev/null`; sleep 1; done' \
+    && $JBOSS_CLI --file=/usr/src/wildflyConfig.cli --properties=/usr/src/env.properties \
+    && chown -R jboss:0 ${JBOSS_HOME} \
+    && chmod -R g+rw ${JBOSS_HOME} \
+    && rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/*
+
+# Deploy apps
 COPY --from=build /usr/src/klient-web/target/web.war $JBOSS_HOME/standalone/deployments/
 COPY --from=build /usr/src/tjeneste/target/api.war $JBOSS_HOME/standalone/deployments/
 
@@ -77,4 +104,5 @@ USER jboss
 
 # Set the default command to run on boot
 # This will boot WildFly in the standalone mode and bind to all interface
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+COPY src/main/resources/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

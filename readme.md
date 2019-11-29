@@ -15,38 +15,37 @@ mvn clean verify -Dhttps.protocols=TLSv1.2
 ## Running
 The project can be run by using Docker:
 ```
-docker-compose up -d
+docker run -e <env var> -e <env var> -p <port> -p <port> nhareg
 ```
-It is important that when stopping the project you should use:
+or Docker compose:
+```
+docker-compose up
+```
+Then to shut it down run:
+```
+docker kill <container id>
+```
+or with Docker compose:
 ```
 docker-compose down
 ```
-To fully shut it down, else there will be issues when starting it up again.
 
 ## Configurations
-There are some configurations that should be checked before deploying the program to any
-non-dev environments. The file `env.properties` in the `nha-init` folder needs to be updated
-with username and passwords.
+The image comes with several default configurations that should be changed. To do so you need to pass these
+environment variables when you launch the image:
+- MYSQL_ROOT_PASSWORD: password to the *root* account on the database
+- MYSQL_USER: user with access to the nhareg database.
+- MYSQL_PASSWORD: password of the MYSQL_USER.
+- WILDFLY_PASSWORD: password you want to set for the Wildfly admin console.
 
-To populate the database or recover a database dump, simply add it to the `nha-db` folder as a 
-.sql file. It will automatically be run by MySQL at startup, in alphabetical order.
-If you have a database dump it might be a good idea to remove the `_populateTables.sql` file.  
-When the database starts up it will mirror the `/var/lib/mysql/` from the docker container to
-a `mysql-storage` folder locally. **Be aware removing this folder will reset the database.**  
-
-Changing which ports Wildfly should expose to the host can be done by changing the `docker-compose.yml` file.
-They are specified under the `ports:` section and are of the `HOST : CONTAINER` format. So to map port 9999 from
-the host to the containers port 8443 change the line: `"8443":"8443"` to `"9999":"8443"`.
-
-## Dump or restore database
-To dump or restore the database from Docker run:
+Given these variables the image automatically configure the applications on startup. There are several ways
+to pass these variables:
+1. docker-compose.yml - this file contains the necessary setup, simply uncomment and fill in the info.
+2. pass the variables through the commandline:
 ```
-# Backup
-docker exec nha-db /usr/bin/mysqldump -u root --password=ROOT_PW DATABASE > backup.sql
-
-# Restore
-cat backup.sql | docker exec -i nha-db /usr/bin/mysql -u root --password=ROOT_PW DATABASE
+docker run --env MYSQL_USER=nhareg --env MYSQL_PASSWORD=pass --env MYSQL_ROOT_PASSWORD=pass --env WILDFLY_PASSWORD=pass nhareg
 ```
-
-Where DATABASE is the database you want to restore or dump and ROOT_PW is the root password set
-in `env.properties`.
+or pass the variables through a file, containing variables of format <variable>=value:
+```
+docker run --env-file ./env.list nhareg
+```

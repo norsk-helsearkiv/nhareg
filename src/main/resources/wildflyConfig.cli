@@ -5,7 +5,7 @@ connect
 data-source add \
     --name=NharegDS \
     --jndi-name=java:jboss/datasources/NharegDS \
-    --connection-url=jdbc:mysql://host.docker.internal:3306/${MYSQL_DATABASE:nhareg} \
+    --connection-url=jdbc:mysql://${MYSQL_HOST:host.docker.internal}:3306/${MYSQL_DATABASE:nhareg} \
     --driver-name=mysql-connector-java-5.1.48.jar_com.mysql.jdbc.Driver_5_1 \
     --driver-class=com.mysql.jdbc.Driver \
     --user-name="${MYSQL_USER:nhareg}" \
@@ -36,10 +36,11 @@ data-source add \
 
 # Add SSL Realm
 /core-service=management/security-realm=ApplicationRealm/server-identity=ssl:add(keystore-path=server.keystore, \
-                                                                                 keystore-password="${KEYSTORE_PASSWORD:NHAREG}", \
-                                                                                 key-password="${KEY_PASSWORD:NHAREG}", \
+                                                                                 keystore-password=NHAREG, \
+                                                                                 key-password=NHAREG, \
                                                                                  alias=server, \
                                                                                  keystore-relative-to=jboss.server.config.dir)
+
 # Add HTTPS
 /subsystem=undertow/server=default-server/https-listener=default-https:add(security-realm=ApplicationRealm, socket-binding=https, verify-client=REQUESTED)
 /subsystem=undertow/server=default-server/host=default-host/setting=single-sign-on:add(path=/)

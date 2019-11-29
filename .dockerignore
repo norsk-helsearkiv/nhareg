@@ -3,3 +3,8 @@
 **/distr/
 **/vendor/
 **/node_modules/
+mysql-storage/
+nha-db/
+.idea/
+nhareg.iml
+.git/
