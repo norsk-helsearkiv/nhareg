@@ -112,7 +112,7 @@ stages:
         TargetFolder: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
       inputs:
-        Contents: '**readme.md'
+        Contents: '**/readme.md'
         SourceFolder: $(Agent.BuildDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
     # ZIP files for artifact
