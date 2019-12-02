@@ -324,16 +324,14 @@ angular.module('nha.register', [
                         $scope.formData.lagringsenheter);
 
                     modal.result.then(function () {
-                        if($scope.state === 0){
-                            switch ($scope.formData.fanearkid) {
-                                case undefined:
-                                case null:
-                                case '':
-                                    document.getElementById("fanearkidInput").focus();
-                                    break;
-                                default:
-                                    break;
-                            }
+                        switch ($scope.formData.fanearkid) {
+                            case undefined:
+                            case null:
+                            case '':
+                                document.getElementById("fanearkidInput").focus();
+                                break;
+                            default:
+                                break;
                         }
                     });
                 });
