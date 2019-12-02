@@ -2,11 +2,11 @@ version: '3'
 services:
   nha:
     container_name: "nha-app"
-    environment:
-      - MYSQL_ROOT_PASSWORD=mysqladmin
-      - MYSQL_USER=nhareg
-      - MYSQL_PASSWORD=nhareg
-      - WILDFLY_PASSWORD=admin
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=admin
+#      - MYSQL_USER=username
+#      - MYSQL_PASSWORD=password
+#      - WILDFLY_PASSWORD=admin_password
     build: .
     image: nhareg:latest
     ports:
