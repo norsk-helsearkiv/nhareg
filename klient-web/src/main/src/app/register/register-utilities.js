@@ -218,77 +218,13 @@ angular.module('nha.register')
                 return;
             }
 
+            var index = 0 ;
+
             angular.forEach(data, function (element) {
                 $scope.error[element.attribute] = element.constraint;
 
-                var index;
-                var felt;
+                var felt = document.getElementById(element.attribute).innerHTML;
 
-                //Konverter attributt
-                if (element.attribute === 'lagringsenheter') {
-                    index = 0;
-                    felt = document.getElementById('labelLagringsenhet').innerHTML;
-                }
-                if (element.attribute === 'fanearkid') {
-                    index = 1;
-                    felt = document.getElementById('fanearkid').innerHTML;
-                }
-                if (element.attribute === 'journalnummer') {
-                    index = 2;
-                    felt = document.getElementById('journalnummer').innerHTML;
-                }
-                if (element.attribute === 'lopenummer') {
-                    index = 3;
-                    felt = document.getElementById('lopenummer').innerHTML;
-                }
-                if (element.attribute === 'fodselsnummer') {
-                    index = 4;
-                    felt = document.getElementById('fodselsnummer').innerHTML;
-                }
-                if (element.attribute === 'navn') {
-                    index = 5;
-                    felt = document.getElementById('navn').innerHTML;
-                }
-                if (element.attribute === 'kjonn') {
-                    index = 6;
-                    felt = document.getElementById('kjonn').innerHTML;
-                }
-                if (element.attribute === 'fodt') {
-                    index = 7;
-                    felt = document.getElementById('fodt').innerHTML;
-                }
-                if (element.attribute === 'dod') {
-                    index = 8;
-                    felt = document.getElementById('dod').innerHTML;
-                }
-                if (element.attribute === 'fKontakt') {
-                    index = 9;
-                    felt = document.getElementById('fKontakt').innerHTML;
-                }
-                if (element.attribute === 'sKontakt') {
-                    index = 10;
-                    felt = document.getElementById('sKontakt').innerHTML;
-                }
-                if (element.attribute === 'diagnosedato') {
-                    index = 11;
-                    felt = document.getElementById('diagnosedatoLbl').innerHTML;
-                }
-                if (element.attribute === 'diagnosedatotab') {
-                    index = 12;
-                    felt = document.getElementById('diagnosedato_table').innerHTML;
-                }
-                if (element.attribute === 'diagnosekodetab') {
-                    index = 13;
-                    felt = document.getElementById('diagnosekode_table').innerHTML;
-                }
-                if (element.attribute === 'diagnosekode') {
-                    index = 14;
-                    felt = document.getElementById('diagnosekode').innerHTML;
-                }
-                if (element.attribute === 'diagnosetekst') {
-                    index = 15;
-                    felt = document.getElementById('diagnosetekst').innerHTML;
-                }
                 if (felt !== undefined) {
                     if (element.message !== undefined && element.message !== "may not be null"){ //sett inn variabler i feilmeldingen
                         var predefined = 'feltfeil.' + element.constraint;
@@ -303,7 +239,10 @@ angular.module('nha.register')
                         $scope.feilmeldinger.push(elm);
                     }
                 }
+
+                index++;
             });
+
             $scope.feilmeldinger.sort(compare);
         };
 

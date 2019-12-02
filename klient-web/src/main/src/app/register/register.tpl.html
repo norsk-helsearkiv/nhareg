@@ -36,7 +36,7 @@
         <div class="well">
             <!-- Add storage units -->
             <div>
-                <label id="labelLagringsenhet" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
+                <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
                     {{ 'register.STORAGE_UNITS' | translate }}
                 </label>
                 <p data-ng-show="state === 1">
@@ -172,8 +172,8 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th id="diagnosedato_table" ts-criteria="diagnosedato|parseCustomDate">{{ 'register.DIAGNOSIS_YEAR' | translate }}</th>
-                    <th id="diagnosekode_table" ts-criteria="diagnosekode">{{ 'register.DIAGNOSIS_CODE_SYSTEM_SHORT' | translate }}</th>
+                    <th id="diagnosedatotab" ts-criteria="diagnosedato|parseCustomDate">{{ 'register.DIAGNOSIS_YEAR' | translate }}</th>
+                    <th id="diagnosekodetab" ts-criteria="diagnosekode">{{ 'register.DIAGNOSIS_CODE_SYSTEM_SHORT' | translate }}</th>
                     <th ts-criteria="diagnosekodeverk">{{ 'register.DIAGNOSIS_CODE_SYSTEM_VERSION_SHORT' | translate }}</th>
                     <th ts-criteria="diagnosetekst">{{ 'register.DIAGNOSIS_DISPLAY_NAME' | translate }}</th>
                     <th ts-criteria="oppdatertAv">{{ 'common.OPPDATERT_AV'| translate }}</th>
