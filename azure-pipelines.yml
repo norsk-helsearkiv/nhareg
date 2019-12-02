@@ -8,7 +8,6 @@ variables:
   webFolder: klient-web/src/main
   dockerVersion: '17.09.0-ce'
   archiveName: 'nhareg-$(MajorVersion).$(MinorVersion).$(PatchVersion).$(Build.BuildId)'
-  archiveNameRelease: 'nhareg-$(MajorVersion).$(MinorVersion).$(PatchVersion)'
 
 stages:
 ### BUILD ###
@@ -151,31 +150,28 @@ stages:
       inputs:
         workingDirectory: '$(Build.ArtifactStagingDirectory)'
         script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
+    # Update archive name if master
+    - task: Bash@3
+      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+      inputs:
+        targetType: 'inline'
+        script: |
+          #!/bin/bash
+          echo "##vso[task.setvariable variable=artifactName]nhareg-$(MajorVersion).$(MinorVersion).$(PatchVersion)"
     # ZIP files for artifact
     - task: ArchiveFiles@2
-      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'dev'))
-      name: zip_dev_files
-      displayName: ZIP dev files
+      name: zip_files
+      displayName: ZIP files
       inputs:
         rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(archiveName).zip'
         replaceExistingArchive: true
-    - task: ArchiveFiles@2
-      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
-      name: zip_prod_files
-      displayName: ZIP prod files
-      inputs:
-        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(archiveNameRelease).zip'
-        replaceExistingArchive: true
     # Publish Artifact
     - task: PublishBuildArtifacts@1
       name: publish_artifact
       displayName: Publishing artifact
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/*.zip
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(archiveName).zip
         ArtifactName: 'nhareg_artifact'
