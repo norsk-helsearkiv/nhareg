@@ -322,9 +322,17 @@ angular.module('nha.register', [
                         },
                         lagringsenhetmaske,
                         $scope.formData.lagringsenheter);
+
                     modal.result.then(function () {
-                        var formdata = $scope.formData;
-                        //TODO finish this!!
+                        switch ($scope.formData.fanearkid) {
+                            case undefined:
+                            case null:
+                            case '':
+                                document.getElementById("fanearkidInput").focus();
+                                break;
+                            default:
+                                break;
+                        }
                     });
                 });
         };
@@ -340,7 +348,6 @@ angular.module('nha.register', [
             $scope.state = 2;
 
             $scope.formData = $scope.pasientjournalDTO.persondata;
-
 
             //Håndtering av kjønn - Sender kode til server, viser Tekst basert på i18n
             if ($scope.formData.kjonn !== undefined) {
