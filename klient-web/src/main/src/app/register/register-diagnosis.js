@@ -31,20 +31,6 @@ angular.module('nha.register')
             }
         };
 
-        $scope.setFirstContactDate = function () {
-            if($scope.prevState === 0 || $scope.pasientjournalDTO.diagnoser.length === 1){
-                switch ($scope.formData.fKontakt) {
-                    case undefined:
-                    case null:
-                    case '':
-                        $scope.formData.fKontakt = $scope.formDiagnose.diagnosedato;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
         var prevDiagnose="";
 
         //Setter diagnoseteksten når koden er endret
@@ -124,8 +110,8 @@ angular.module('nha.register')
                     $scope.formDiagnose.oppdatertAv = data.oppdatertAv;
                     $scope.formDiagnose.oppdatertDato = data.oppdatertDato;
                     $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
-                    $scope.setFirstContactDate();
                     $scope.resetDiagnose(true);
+                    $scope.setFirstContactDate();
                 }).error(function (data, status) {
                     if (status === 400) {
                         $scope.setFeilmeldinger(data, status);
@@ -133,6 +119,21 @@ angular.module('nha.register')
                         errorService.errorCode(status);
                     }
                 });
+        };
+
+        $scope.setFirstContactDate = function () {
+            if($scope.pasientjournalDTO.diagnoser.length === 1){
+                switch ($scope.formData.fKontakt) {
+                    case undefined:
+                    case null:
+                    case '':
+                        $scope.formData.fKontakt = $scope.formDiagnose.diagnosedato;
+                        $scope.nyEllerOppdater();
+                        break;
+                    default:
+                        break;
+                }
+            }
         };
 
         $scope.sokDiagnoseDisplayNameLike = function (displayName) {
