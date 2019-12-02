@@ -7,6 +7,8 @@ variables:
   pomFilePath: 'pom.xml'
   webFolder: klient-web/src/main
   dockerVersion: '17.09.0-ce'
+  archiveName: 'nhareg-$(MajorVersion).$(MinorVersion).$(PatchVersion).$(Build.BuildId)'
+  archiveNameRelease: 'nhareg-$(MajorVersion).$(MinorVersion).$(PatchVersion)'
 
 stages:
 ### BUILD ###
@@ -101,42 +103,79 @@ stages:
         workingDirectory: '$(Agent.BuildDirectory)'
     # COPY FILES TO STAGING DIRECTORY 
     - task: CopyFiles@2
+      name: copy_image
+      displayName: Copying tar image
       inputs:
         Contents: nhareg.tar
         SourceFolder: $(Agent.BuildDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
+      name: copy_docker_compose
+      displayName: Copying docker-compose
       inputs:
         Contents: 'docker-compose.yml'
         SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
     - task: CopyFiles@2
+      name: copy_readme
+      displayName: Copying Readme
       inputs:
         Contents: 'readme.md'
         SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
     - task: CopyFiles@2
+      name: copy_sql
+      displayName: Copying SQL files
       inputs:
         Contents: '**/nha-db/*.sql'
         SourceFolder: $(Agent.BuildDirectory)
         TargetFolder: '$(Build.ArtifactStagingDirectory)/SQL/'
         flattenFolders: true
+    - task: CmdLine@2
+      name: fetch_docker_installer
+      displayName: Fetching Docker Installer
+      inputs:
+        workingDirectory: '$(Build.ArtifactStagingDirectory)'
+        script: 'curl -L -O https://download.docker.com/win/stable/Docker%20Desktop%20Installer.exe'
+    - task: CmdLine@2
+      name: fetch_docker_toolbox
+      displayName: Fetching Docker Toolbox
+      inputs:
+        workingDirectory: '$(Build.ArtifactStagingDirectory)'
+        script: 'curl -L -O https://github.com/docker/toolbox/releases/download/v19.03.1/DockerToolbox-19.03.1.exe'
+    - task: CmdLine@2
+      name: fetch_mysql_server
+      displayName: Fetching MySQL Server
+      inputs:
+        workingDirectory: '$(Build.ArtifactStagingDirectory)'
+        script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
     # ZIP files for artifact
     - task: ArchiveFiles@2
-      name: zip_files
-      displayName: ZIP files
+      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'dev'))
+      name: zip_dev_files
+      displayName: ZIP dev files
       inputs:
         rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
         includeRootFolder: false
         archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/nhareg-$(Build.BuildId).zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(archiveName).zip'
+        replaceExistingArchive: true
+    - task: ArchiveFiles@2
+      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
+      name: zip_prod_files
+      displayName: ZIP prod files
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(archiveNameRelease).zip'
         replaceExistingArchive: true
     # Publish Artifact
     - task: PublishBuildArtifacts@1
       name: publish_artifact
       displayName: Publishing artifact
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/nhareg-$(Build.BuildId).zip
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/*.zip
         ArtifactName: 'nhareg_artifact'
