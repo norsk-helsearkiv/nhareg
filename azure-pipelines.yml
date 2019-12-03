@@ -176,7 +176,7 @@ stages:
         PathtoPublish: $(Build.ArtifactStagingDirectory)/$(archiveName).zip
         ArtifactName: 'nhareg_artifact'
 ### GIT MIRRORING ###
-- stage: Git mirroring
+- stage: Git_mirroring
   dependsOn: Staging
   condition: succeeded()
   # condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
