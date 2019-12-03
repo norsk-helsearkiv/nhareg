@@ -33,7 +33,7 @@
             <small> {{ virksomhet }} &#x2F {{ valgtAvtale }} &#x2F {{ avleveringsbeskrivelse }}</small>
         </h1>
 
-        <div class="well">
+        <form class="well" name="patientForm">
             <!-- Add storage units -->
             <div>
                 <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
@@ -46,20 +46,23 @@
             </div>
             <hr/>
             <div class="row">
-                <!-- Journalnummer -->
-                <div class="span span4">
+
+                <!-- Fanearkid -->
+                <div class="span span4 form-group" ng-class="{ 'has-error' : patientForm.fanearkid.$invalid && !patientForm.fanearkid.$pristine }">
                     <label id="fanearkid" data-ng-class="{error: error['fanearkid'] !== undefined }">Fanearkid</label>
-                    <input type="text" id="fanearkidInput" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" id="fanearkidInput" name="fanearkid" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()" ng-maxlength="12">
+                    <p ng-show="patientForm.fanearkid.$error.maxlength" class="help-block">Fanearkid har feil lengde, konfigurasjon er satt til feltlengde 12.</p>
                 </div>
+
                 <!-- Journalnummer -->
                 <div class="span span4">
                     <label id="journalnummer" data-ng-class="{error: error['journalnummer'] !== undefined }">Journalnummer</label>
-                    <input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()" ng-maxlength=12>
                 </div>
                 <!-- Løpenummer -->
                 <div class="span span4">
                     <label id="lopenummer" data-ng-class="{error: error['lopenummer'] !== undefined }">Løpenummer</label>
-                    <input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()" maxlength=12>
                 </div>
                 <!-- Fødelsnummer -->
                 <div class="span span4">
@@ -74,8 +77,8 @@
                     <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'register.NAME' | translate }}</label>
                     <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
                 </div>
+                <!-- Kjønn -->
                 <div class="span span4">
-                    <!-- Kjønn -->
                     <label id="kjonn" data-ng-class="{error: error['kjonn'] !== undefined }">Kjønn</label>
                     <select class="form-control" data-ng-model="formData.kjonn" ng-options="item as item.tekst for item in kjonn">
                         <option value="" disabled selected>Kjønn...</option>
@@ -114,7 +117,7 @@
                 </div>
             </div>
 
-        </div>
+        </form>
 
         <div class="row">
             <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
