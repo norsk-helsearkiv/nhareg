@@ -175,3 +175,23 @@ stages:
       inputs:
         PathtoPublish: $(Build.ArtifactStagingDirectory)/$(archiveName).zip
         ArtifactName: 'nhareg_artifact'
+### GIT MIRRORING ###
+- stage: Git mirroring
+  dependsOn: Staging
+  condition: succeeded()
+  # condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
+  jobs:
+  - job: git_mirroring
+    displayName: Git mirroring
+    variables:
+    - group: git-mirror-tokens
+    steps:
+    # CLONE SOURCE GIT REPOSITORY AND PUSH TO DESTINATION GIT REPOSITORY
+    - task: swellaby.mirror-git-repository.mirror-git-repository-vsts-task.mirror-git-repository-vsts-task@1
+      displayName: Mirror Git Repository
+      inputs:
+        sourceGitRepositoryUri: 'https://amc-no@dev.azure.com/amc-no/Norsk%20Helsearkiv/_git/NHAREG'
+        sourceGitRepositoryPersonalAccessToken: $sourceGitRepositoryToken
+        destinationGitRepositoryUri: 'https://github.com/norsk-helsearkiv/nhareg.git'
+        destinationGitRepositoryPersonalAccessToken: $destGitRepositoryToken
+
