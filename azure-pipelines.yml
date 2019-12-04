@@ -14,7 +14,7 @@ stages:
       displayName: Mirror Git Repository
       inputs:
         sourceGitRepositoryUri: 'https://dev.azure.com/amc-no/Norsk%20Helsearkiv/_git/NHAREG'
-        sourceGitRepositoryPersonalAccessToken: $sourceGitRepositoryToken
+        sourceGitRepositoryPersonalAccessToken: $(sourceGitRepositoryToken)
         destinationGitRepositoryUri: 'https://github.com/norsk-helsearkiv/nhareg.git'
-        destinationGitRepositoryPersonalAccessToken: $destGitRepositoryToken
+        destinationGitRepositoryPersonalAccessToken: $(destGitRepositoryToken)
 
