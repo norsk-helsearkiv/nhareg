@@ -1,3 +1,4 @@
+stages:
 ### GIT MIRRORING ###
 - stage: Git_mirroring
   # dependsOn: Staging
