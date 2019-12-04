@@ -1,13 +1,22 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
-import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.*;
+
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 /**
  * Created by haraldk on 16/03/2017.
@@ -24,6 +33,7 @@ public class PasientjournalExtractPredicates {
             value = "%" + value + "%";
             predicates.add(criteriaBuilder.like(root.<String>get(key), value));
         }
+        
         key = "lagringsenhet";
         value = queryParameters.getFirst(key);
         if (!StringUtils.isEmpty(value)) {

@@ -21,7 +21,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
@@ -37,7 +37,7 @@ public class RESTDeployment {
         return NharegDeployment.deployment()
             //model
             .addPackage(Avtale.class.getPackage())
-            .addPackage(ListeObjekt.class.getPackage())
+            .addPackage(ListObject.class.getPackage())
             .addPackage(PersondataDTO.class.getPackage())
             .addPackage(DatoEllerAar.class.getPackage())
             .addPackage(GyldigeDatoformater.class.getPackage())

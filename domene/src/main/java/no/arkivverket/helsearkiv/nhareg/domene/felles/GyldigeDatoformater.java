@@ -2,6 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.domene.felles;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,6 +39,24 @@ public class GyldigeDatoformater {
         }
 
         return null;
+    }
+    
+    public static LocalDate getLocalDate(final String date) {
+        DateTimeFormatterBuilder formatterBuilder = new DateTimeFormatterBuilder().parseCaseInsensitive();
+
+        String pattern = "[";
+        pattern += String.join("][", formater);
+        pattern += "]";
+
+        formatterBuilder.appendPattern(pattern)
+            .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+            .parseDefaulting(ChronoField.DAY_OF_MONTH, 1);
+        
+        try {
+            return LocalDate.parse(date, formatterBuilder.toFormatter());
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
     }
 
     public static Date getDateFromYear(Integer year) {
@@ -80,5 +103,18 @@ public class GyldigeDatoformater {
         calendar.roll(Calendar.YEAR, years);
 
         return calendar.getTime();
+    }
+
+    /**
+     * Converts from LocalDate to legacy Date format, uses system default zone id.
+     * @param localDate LocalDate to convert into Date. 
+     * @return LocalDate converted to Date.
+     */
+    public static Date asLegacyDate(final LocalDate localDate) {
+        if (localDate != null) {
+            return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
+
+        return null;
     }
 }

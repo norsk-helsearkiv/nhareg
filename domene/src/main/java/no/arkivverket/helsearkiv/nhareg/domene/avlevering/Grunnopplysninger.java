@@ -2,10 +2,13 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import lombok.Data;
 
 
 /**
@@ -44,196 +47,26 @@ import javax.xml.bind.annotation.XmlType;
     "kontakt",
     "kj\u00f8nn"
 })
-public class Grunnopplysninger implements Serializable
-{
+@Data
+public class Grunnopplysninger implements Serializable {
 
     protected Identifikator identifikator;
+    
     @XmlElement(required = true)
     protected String pnavn;
+    
     @XmlElement(required = true)
     protected DatoEllerAar født;
-    protected Boolean dødsdatoUkjent;
-    protected Boolean fodtdatoUkjent;
-    protected DatoEllerAar død;
-    protected Kontakt kontakt;
+
     @XmlElement(required = true)
     protected Kjønn kjønn;
 
-    /**
-     * Gets the value of the identifikator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Identifikator }
-     *     
-     */
-    public Identifikator getIdentifikator() {
-        return identifikator;
-    }
+    protected Boolean dødsdatoUkjent;
 
-    /**
-     * Sets the value of the identifikator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Identifikator }
-     *     
-     */
-    public void setIdentifikator(Identifikator value) {
-        this.identifikator = value;
-    }
+    protected Boolean fodtdatoUkjent;
 
-    /**
-     * Gets the value of the pnavn property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPnavn() {
-        return pnavn;
-    }
+    protected DatoEllerAar død;
 
-    /**
-     * Sets the value of the pnavn property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPnavn(String value) {
-        this.pnavn = value;
-    }
-
-    /**
-     * Gets the value of the født property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public DatoEllerAar getFødt() {
-        return født;
-    }
-
-    /**
-     * Sets the value of the født property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public void setFødt(DatoEllerAar value) {
-        this.født = value;
-    }
-
-    /**
-     * Gets the value of the dødsdatoUkjent property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isDødsdatoUkjent() {
-        return dødsdatoUkjent;
-    }
-
-    /**
-     * Sets the value of the dødsdatoUkjent property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setDødsdatoUkjent(Boolean value) {
-        this.dødsdatoUkjent = value;
-    }
-
-    public Boolean isFodtdatoUkjent() {
-        return fodtdatoUkjent;
-    }
-
-
-    public void setFodtdatoUkjent(Boolean fodtdatoUkjent) {
-        this.fodtdatoUkjent = fodtdatoUkjent;
-    }
-
-    /**
-     * Gets the value of the død property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public DatoEllerAar getDød() {
-        return død;
-    }
-
-    /**
-     * Sets the value of the død property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public void setDød(DatoEllerAar value) {
-        this.død = value;
-    }
-
-    /**
-     * Gets the value of the kontakt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Kontakt }
-     *     
-     */
-    public Kontakt getKontakt() {
-        return kontakt;
-    }
-
-    /**
-     * Sets the value of the kontakt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Kontakt }
-     *     
-     */
-    public void setKontakt(Kontakt value) {
-        this.kontakt = value;
-    }
-
-    /**
-     * Gets the value of the kjønn property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Kjønn }
-     *     
-     */
-    public Kjønn getKjønn() {
-        return kjønn;
-    }
-
-    /**
-     * Sets the value of the kjønn property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Kjønn }
-     *     
-     */
-    public void setKjønn(Kjønn value) {
-        this.kjønn = value;
-    }
+    protected Kontakt kontakt;
 
 }

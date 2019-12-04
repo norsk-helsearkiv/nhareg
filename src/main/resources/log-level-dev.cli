@@ -2,13 +2,9 @@
 connect
 batch
 #
-# Endrer root-log-level
+# Change root-log-level
 #
 /subsystem=logging/root-logger=ROOT:change-root-log-level(level=TRACE)
-#
-# Endrer log-level for våre klasser.
-#
-#/subsystem=logging/logger=no.arkivverket.helsearkiv:write-attribute(name=level,value=DEBUG)
 #
 # Execute and reload
 #

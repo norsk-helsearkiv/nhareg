@@ -135,8 +135,8 @@ public class Konverterer {
                 resultat.setFaar(trans.transform(fodt));
             }
 
-            if (pasientjournal.getGrunnopplysninger().isFodtdatoUkjent() != null &&
-                pasientjournal.getGrunnopplysninger().isFodtdatoUkjent()) {
+            if (pasientjournal.getGrunnopplysninger().getFodtdatoUkjent() != null &&
+                pasientjournal.getGrunnopplysninger().getFodtdatoUkjent()) {
                 resultat.setFaar("ukjent");
             }
 
@@ -144,8 +144,8 @@ public class Konverterer {
             if (dod != null) {
                 resultat.setDaar(trans.transform(dod));
             }
-            if (pasientjournal.getGrunnopplysninger().isDødsdatoUkjent() != null &&
-                pasientjournal.getGrunnopplysninger().isDødsdatoUkjent()) {
+            if (pasientjournal.getGrunnopplysninger().getDødsdatoUkjent() != null &&
+                pasientjournal.getGrunnopplysninger().getDødsdatoUkjent()) {
                 resultat.setDaar("mors");
             }
         }
@@ -218,11 +218,11 @@ public class Konverterer {
                 person.setDod(tilString(pasientjournal.getGrunnopplysninger().getDød()));
             }
             
-            if (grn.isDødsdatoUkjent() != null && grn.isDødsdatoUkjent()) {
+            if (grn.getDødsdatoUkjent() != null && grn.getDødsdatoUkjent()) {
                 person.setDod("mors");
             }
             
-            if (grn.isFodtdatoUkjent() != null && grn.isFodtdatoUkjent()) {
+            if (grn.getFodtdatoUkjent() != null && grn.getFodtdatoUkjent()) {
                 person.setFodt("ukjent");
             }
             

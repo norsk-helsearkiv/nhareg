@@ -43,7 +43,7 @@ if [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ]; then
   echo "Updating datasource credentials"
   until $JBOSS_CLI -c ":read-attribute(name=server-state)" 2> /dev/null | grep -q running; do echo "$JBOSS_CLI -c ':read-attribute(name=server-state)' 2" > /dev/null; sleep 1; done
   printf "MYSQL_USER=%s\nMYSQL_PASSWORD=%s" "$MYSQL_USER" "$MYSQL_PASSWORD" > /tmp/db.properties
-  $JBOSS_CLI --connect --file=/update-datasource-credentials.cli --properties=/tmp/db.properties
+  $JBOSS_CLI --connect --file=/cli/update-datasource-credentials.cli --properties=/tmp/db.properties
   rm /tmp/db.properties
 fi
 

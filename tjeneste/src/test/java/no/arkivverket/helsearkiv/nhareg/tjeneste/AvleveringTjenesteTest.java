@@ -20,7 +20,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
@@ -140,7 +140,7 @@ public class AvleveringTjenesteTest {
         adminHandler.call(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                ListeObjekt pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", new MockUriInfo());
+                ListObject pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", new MockUriInfo());
                 assertNotNull(pasientjournaler);
         
                 List<PasientjournalSokeresultatDTO> liste = (List<PasientjournalSokeresultatDTO>) pasientjournaler.getListe();

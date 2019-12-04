@@ -39,10 +39,10 @@ public class DatoValiderer {
         Grunnopplysninger grunnopplysninger = pasientjournal.getGrunnopplysninger();
 
         //ta diagnosedato som god fisk ettersom både mors og født er ukjent...
-        if (grunnopplysninger.isFodtdatoUkjent() != null &&
-            grunnopplysninger.isFodtdatoUkjent() &&
-            grunnopplysninger.isDødsdatoUkjent() != null &&
-            grunnopplysninger.isDødsdatoUkjent()) {
+        if (grunnopplysninger.getFodtdatoUkjent() != null &&
+            grunnopplysninger.getFodtdatoUkjent() &&
+            grunnopplysninger.getDødsdatoUkjent() != null &&
+            grunnopplysninger.getDødsdatoUkjent()) {
             return feil;
         }
 
@@ -56,7 +56,7 @@ public class DatoValiderer {
         }
 
         //fødtdatoår kjent
-        if (grunnopplysninger.isFodtdatoUkjent() == null || !grunnopplysninger.isFodtdatoUkjent()) {
+        if (grunnopplysninger.getFodtdatoUkjent() == null || !grunnopplysninger.getFodtdatoUkjent()) {
             DatoEllerAar fodt = grunnopplysninger.getFødt();
             String fodtString = tilStringTransformer.transform(fodt);
             if ((compareDateString(fodtString, diagnoseDatoString) == DateCompareResult.AFTER)) {
@@ -64,7 +64,7 @@ public class DatoValiderer {
             }
         }
 
-        if (grunnopplysninger.isDødsdatoUkjent() == null || !grunnopplysninger.isDødsdatoUkjent()) {
+        if (grunnopplysninger.getDødsdatoUkjent() == null || !grunnopplysninger.getDødsdatoUkjent()) {
             DatoEllerAar dod = grunnopplysninger.getDød();
             String dodString = tilStringTransformer.transform(dod);
             if ((compareDateString(dodString, diagnoseDatoString) == DateCompareResult.BEFORE)) {
