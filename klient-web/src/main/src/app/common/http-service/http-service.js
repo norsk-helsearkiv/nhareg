@@ -18,15 +18,16 @@ function httpService($http) {
 	}
 
 	//READ
-	function getAll(relativeUrl, cache) {
+	function getAll(relativeUrl, cache, params) {
 		return $http({
 			cache: cache,
 			accept: "application/json",
 			method: "GET",
-			url: url + relativeUrl
+			url: url + relativeUrl,
+			params: params
 		});
 	}
-
+	
 	function get(relativeUrl) {
 		return $http({
 			accept: "application/json",
@@ -75,7 +76,7 @@ function httpService($http) {
 		});
 	}
 
-	function lastUsedStorageUnit(){
+	function lastUsedStorageUnit() {
 		return $http({
 			accept: "application/xml",
 			method: "GET",
@@ -83,7 +84,7 @@ function httpService($http) {
 		});
 	}
 
-	function userRole(){
+	function userRole() {
 		return $http({
 			cache : false,
 			accept: "application/json",
@@ -92,7 +93,7 @@ function httpService($http) {
 		});
 	}
 
-	function userName(){
+	function userName() {
 		return $http({
 			cache : false,
 			accept: "application/json",
@@ -100,6 +101,7 @@ function httpService($http) {
 			url: url + "admin/bruker"
 		});
 	}
+	
 	function getSearchResult(searchString) {
 		return $http({
 			accept: "application/json",
@@ -108,7 +110,7 @@ function httpService($http) {
 		});
 	}
 
-	function logout(){
+	function logout() {
 		return $http({
 			accept: "application/json",
 			method: "GET",

@@ -1,8 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -11,6 +8,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Map;
 
 public abstract class EntityDAO<T> {
 
@@ -40,7 +39,7 @@ public abstract class EntityDAO<T> {
      * @param id Primary key for the entity.
      * @return The entity, or null if it does not exist.
      */
-    public T getById(@NotNull final String id) {
+    public T fetchById(@NotNull final String id) {
         return entityManager.find(entityClass, id);
     }
 
@@ -49,52 +48,43 @@ public abstract class EntityDAO<T> {
      * @param queryParameters Map of queries to filter entities by.
      * @return A list of results of type T.
      */
-    public List<T> getAll(final Map<String, String> queryParameters) {
-        return getAllQuery(queryParameters).getResultList();
+    public List<T> fetchAll(final Map<String, String> queryParameters) {
+        return fetchAllPaged(queryParameters, 0, 0);
     }
 
     /**
-     * Gets a number of results from a given page.
+     * Gets a number of results from a given page. If page and size is < 0, it does no paging.
      * @param queryParameters Parameters to filter search result.
      * @param page Page to start fetching results from.
-     * @param number Maximum number of results to fetch.
+     * @param size Maximum number of results to fetch.
      * @return A list of a given max number of results, filtered by the given parameters, from the given page.
      */
-    public List<T> getAllPaged(final Map<String, String> queryParameters,
-                               final int page,
-                               final int number) {
-        TypedQuery<T> query = getAllQuery(queryParameters);
-
-        query.setFirstResult((page - 1) * number);
-        query.setMaxResults(number);
-        
-        return query.getResultList();
-    }
-  
-    /**
-     * Create a query from the parameters given.
-     * @param queryParameters Filters the query result on these parameters, if extractPredicates is overriden.
-     * @return TypedQuery to return.
-     */
-    private TypedQuery<T> getAllQuery(final Map<String, String> queryParameters) {
+    public List<T> fetchAllPaged(final Map<String, String> queryParameters, final int page, final int size) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         final Root<T> root = criteriaQuery.from(entityClass);
         final Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
 
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-        
+
         if (orderByName != null && !orderByName.isEmpty()) {
             criteriaQuery.orderBy(criteriaBuilder.desc(root.get(orderByName)));
-        } 
+        }
 //        final String order = queryParameters.get("orderBy");
 //        else if (order != null && !order.isEmpty()) {
 //            // TODO 
 //        }
 
-        return entityManager.createQuery(criteriaQuery);
-    }
+        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);;
 
+        if (page > 0 && size > 0) {
+            query.setFirstResult((page - 1) * size);
+            query.setMaxResults(size);
+        }
+        
+        return query.getResultList();
+    }
+  
     /**
      * Handle extracting predicates for entity queries. This may be expanded by subclasses by overriding the method.
      * @param queryParameters Map of HTTP query parameters received by the endpoint.

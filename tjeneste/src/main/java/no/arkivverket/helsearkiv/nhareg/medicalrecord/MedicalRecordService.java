@@ -1,22 +1,22 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
+
+import javax.inject.Inject;
+import javax.ws.rs.core.MultivaluedMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.MultivaluedMap;
-
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-
 
 public class MedicalRecordService implements MedicalRecordServiceInterface {
 
-    private static final String NUMBER = "antall";
-    private static final String PAGE = "side";
+    private static final String SIZE = "size";
+    private static final String PAGE = "page";
 
     @Inject
     private MedicalRecordDAO medicalRecordDAO;
@@ -26,35 +26,52 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public Pasientjournal getById(final String id) {
-        return medicalRecordDAO.getById(id);
+        return medicalRecordDAO.fetchById(id);
     }
 
     @Override
     public ListObject getAll(final MultivaluedMap<String, String> queryParameters) {
-        List<Pasientjournal> medicalRecordList;
+        final List<Pasientjournal> medicalRecordList;
         int page = 0;
-        int number = 0;
+        int size = 0;
         
         Map<String, String> mappedQueries = mapQueryParameters(queryParameters);
-        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(NUMBER)) {
+        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
             page = Integer.parseInt(queryParameters.getFirst(PAGE));
-            number = Integer.parseInt(queryParameters.getFirst(NUMBER));
-            medicalRecordList = medicalRecordDAO.getAllPaged(mappedQueries, page, number);
+            size = Integer.parseInt(queryParameters.getFirst(SIZE));
+            medicalRecordList = medicalRecordDAO.fetchAllPaged(mappedQueries, page, size);
         } else {
-            medicalRecordList = medicalRecordDAO.getAll(mappedQueries);
+            medicalRecordList = medicalRecordDAO.fetchAll(mappedQueries);
         }
 
         List<PasientjournalSokeresultatDTO> medicalRecordSearchResultList = medicalRecordMapper
             .mapToSearchResultDTOList(medicalRecordList);
         // TODO SORT RESULTS
-        return new ListObject<>(medicalRecordSearchResultList, medicalRecordSearchResultList.size(), page, number);
+        return new ListObject<>(medicalRecordSearchResultList, medicalRecordSearchResultList.size(), page, size);
     }
 
     @Override
-    public String getDeliveryIdFromMedicalRecord(final String id) {
-        return String.valueOf(medicalRecordDAO.getDeliveryIdFromMedicalRecord(id));
+    public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters) {
+        final List<RecordTransferDTO> recordTransferDTOList;
+        int page = 0;
+        int size  = 0;
+        
+        Map<String, String> mappedQueries = mapQueryParameters(queryParameters);
+        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
+            page = Integer.parseInt(queryParameters.getFirst(PAGE));
+            size = Integer.parseInt(queryParameters.getFirst(SIZE));
+        }
+        
+        recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
+
+        return new ListObject<>(recordTransferDTOList, recordTransferDTOList.size(), page, size);
     }
-    
+
+    @Override
+    public String getTransferIdFromMedicalRecord(final String id) {
+        return String.valueOf(medicalRecordDAO.fetchTransferIdFromMedicalRecord(id));
+    }
+
     /**
      * Map the query parameters to names that can be used when querying. Also converts from MultivaluedMap to HashMap.
      * @param queryParameters HTTP query parameters passed to the endpoint.

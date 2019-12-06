@@ -1,8 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
-import java.io.Serializable;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+
+import java.io.Serializable;
 
 /**
  *
@@ -28,7 +29,7 @@ public class AvleveringDTO implements Serializable{
         this.avtale = avlevering.getAvtale();
         this.arkivskaper = avlevering.getArkivskaper();
         this.antallPasientjournaler = avlevering.getPasientjournal().size();
-        this.laast = avlevering.isLaast();
+        this.laast = avlevering.getLaast();
         this.lagringsenhetformat = avlevering.getLagringsenhetformat();
     }
 

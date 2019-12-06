@@ -1,32 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.arkivverket.helsearkiv.nhareg.delivery.DeliveryServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Journalidentifikator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
 
 
 public class MedicalRecordMapper {
     
-    private MedicalRecordServiceInterface medicalRecordService;
-
-    private DeliveryServiceInterface deliveryService;
-
     public MedicalRecordMapper() {}
     
-    public MedicalRecordMapper(
-        final MedicalRecordServiceInterface medicalRecordService,
-        final DeliveryServiceInterface deliveryService) {
-        this.medicalRecordService = medicalRecordService;
-        this.deliveryService = deliveryService;
-    }
-
     public PasientjournalSokeresultatDTO mapToSearchResultDTO(Pasientjournal pasientjournal) {
         PasientjournalSokeresultatDTO searchResultDTO = new PasientjournalSokeresultatDTO();
 
@@ -54,7 +38,7 @@ public class MedicalRecordMapper {
                 final String yearDied = String.valueOf(dead.getYear());
                 searchResultDTO.setDaar(yearDied);
             }
-            
+
             if (baseInformation.getDødsdatoUkjent() != null &&
                 baseInformation.getDødsdatoUkjent()) {
                 searchResultDTO.setDaar("mors");
@@ -76,7 +60,7 @@ public class MedicalRecordMapper {
 
         if (pasientjournal.getOppdateringsinfo() != null) {
             searchResultDTO.setOppdatertAv(pasientjournal.getOppdateringsinfo().getOppdatertAv());
-            
+
             if (pasientjournal.getOppdateringsinfo().getSistOppdatert() != null) {
                 try {
                     searchResultDTO.setOpprettetDato(pasientjournal.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
@@ -86,17 +70,8 @@ public class MedicalRecordMapper {
             }
         }
 
-//        final String deliveryId = medicalRecordService.getDeliveryIdFromMedicalRecord(pasientjournal.getUuid());
-//        if (deliveryId != null && !deliveryId.isEmpty()) {
-//            Avlevering delivery = deliveryService.getAvlevering(deliveryId);
-//            if (delivery != null) {
-//                searchResultDTO.setAvleveringLaast(delivery.isLaast());
-//            }
-//            searchResultDTO.setAvleveringsidentifikator(deliveryId);
-//        }
-
         searchResultDTO.setUuid(pasientjournal.getUuid());
-        
+
         return searchResultDTO;
     }
 

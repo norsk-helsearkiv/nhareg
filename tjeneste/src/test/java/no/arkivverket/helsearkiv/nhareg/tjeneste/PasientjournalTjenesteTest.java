@@ -1,19 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.text.ParseException;
-import java.util.concurrent.Callable;
-
-import javax.ejb.EJBException;
-import javax.inject.Inject;
-import javax.persistence.NoResultException;
-import javax.ws.rs.core.Response;
-
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
@@ -22,10 +8,20 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
 import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import javax.ejb.EJBException;
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.util.concurrent.Callable;
+
+import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class PasientjournalTjenesteTest {
@@ -64,7 +60,7 @@ public class PasientjournalTjenesteTest {
 //            public Object call() {
 //                //Henter alle pasientjournaler i databasen for test av paging
 //                MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
-//                List<Pasientjournal> pasientjournaler = tjeneste.getAll(map);
+//                List<Pasientjournal> pasientjournaler = tjeneste.fetchAll(map);
 //
 //                ListObject listObject = tjeneste.getActiveWithPaging(pasientjournaler, new MockUriInfoQPFilled());
 //                assertEquals(2, listObject.getTotal());

@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
+
+import javax.ws.rs.core.MultivaluedMap;
 
 public interface MedicalRecordServiceInterface {
 
@@ -11,5 +11,8 @@ public interface MedicalRecordServiceInterface {
 
     ListObject getAll(MultivaluedMap<String, String> queryParameters);
 
-    String getDeliveryIdFromMedicalRecord(String id);
+    ListObject getAllWithTransfers(MultivaluedMap<String, String> queryParameters);
+    
+    String getTransferIdFromMedicalRecord(String id);
+
 }

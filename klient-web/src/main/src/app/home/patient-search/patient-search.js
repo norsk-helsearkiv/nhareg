@@ -1,7 +1,6 @@
 angular.module('nha.home')
 
-    .controller('PatientSearchCtrl', function($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registerService, stateService){
-
+    .controller('PatientSearchCtrl', function($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registerService, stateService) {
         //$scope.sok = stateService.sokState;
         $scope.sok = {};
 
@@ -20,7 +19,7 @@ angular.module('nha.home')
             var viser = $scope.text.viser;
 
             registerService.setAvlevering(undefined);
-
+            
             var sok = {
                 sokLagringsenhet: $scope.sok.lagringsenhet,
                 sokFanearkId: $scope.sok.fanearkId,
@@ -34,21 +33,19 @@ angular.module('nha.home')
             listService.setSok(sok);
             stateService.sokState = $scope.sok;
 
-            httpService.getAll("pasientjournaler?side=1&antall=" + $scope.antall + listService.getQuery())
+            httpService.getAll("pasientjournaler?page=1&size=" + $scope.size + listService.getQuery())
                 .success(function (data, status, headers, config) {
-
                     var tittel = {
                         "tittel": sokeresultat,
-                        "underTittel": viser + " " + data.antall + " / " + data.total + " " + sokeresultat.toLowerCase()
+                        "underTittel": viser + " " + data.size + " / " + data.total + " " + sokeresultat.toLowerCase()
                     };
 
                     listService.init(tittel, data);
                     listService.setSok(sok);
 
                     $location.path('/list');
-
                 }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
+                    errorService.errorCode(status);
             });
         };
-});
+    });
