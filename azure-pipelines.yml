@@ -135,7 +135,7 @@ stages:
         flattenFolders: true
   - job: fetch_installers
     displayName: Fetching installers
-    condition: and(succeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
+    condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
     steps:
     - task: CmdLine@2
       name: fetch_docker_installer
@@ -163,7 +163,7 @@ stages:
   jobs:
   - job: publish_installer
     displayName: Stage installer zip
-    condition: and(succeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
+    condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
     steps:
     - task: Bash@3
       condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
