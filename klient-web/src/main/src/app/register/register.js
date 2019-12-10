@@ -378,7 +378,7 @@ angular.module('nha.register', [
             diagnosekode = "";
 
             if (keepDate){
-                document.getElementById("diagnosedato").focus();
+                document.getElementById("diagnosedato-input").focus();
                 $scope.formDiagnose.diagnosedato = oldDiagnosedato;
             }
 

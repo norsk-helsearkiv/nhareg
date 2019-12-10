@@ -33,38 +33,33 @@
             <small> {{ virksomhet }} &#x2F {{ valgtAvtale }} &#x2F {{ avleveringsbeskrivelse }}</small>
         </h1>
 
-        <form class="well" name="patientForm">
+        <div class="well">
             <!-- Add storage units -->
             <div>
-                <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">
-                    {{ 'register.STORAGE_UNITS' | translate }}
-                </label>
-                <p data-ng-show="state === 1">
-                    <span data-ng-repeat="enhet in formData.lagringsenheter">{{ enhet }} </span>
-                </p>
+                <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">{{ 'register.STORAGE_UNITS' | translate }}</label>
                 <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()">{{ formData.lagringsenheter.join(', ') }}</label>
             </div>
             <hr/>
             <div class="row">
-
                 <!-- Fanearkid -->
-                <div class="span span4 form-group" ng-class="{ 'has-error' : patientForm.fanearkid.$invalid && !patientForm.fanearkid.$pristine }">
+                <div class="span span4">
                     <label id="fanearkid" data-ng-class="{error: error['fanearkid'] !== undefined }">Fanearkid</label>
-                    <input type="text" id="fanearkidInput" name="fanearkid" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()" ng-maxlength="12">
-                    <p ng-show="patientForm.fanearkid.$error.maxlength" class="help-block">Fanearkid har feil lengde, konfigurasjon er satt til feltlengde 12.</p>
+                    <input type="text" id="fanearkidInput" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()" maxlength="12">
                 </div>
 
                 <!-- Journalnummer -->
                 <div class="span span4">
                     <label id="journalnummer" data-ng-class="{error: error['journalnummer'] !== undefined }">Journalnummer</label>
-                    <input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()" ng-maxlength=12>
+                    <input type="text" id="journalnummerInput" class="form-control" placeholder="Journalnummer..." data-ng-model="formData.journalnummer" data-ng-enter="nyEllerOppdater()">
                 </div>
+
                 <!-- Løpenummer -->
                 <div class="span span4">
                     <label id="lopenummer" data-ng-class="{error: error['lopenummer'] !== undefined }">Løpenummer</label>
-                    <input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()" maxlength=12>
+                    <input type="text" class="form-control" placeholder="Løpenummer..." data-ng-model="formData.lopenummer" data-ng-enter="nyEllerOppdater()">
                 </div>
-                <!-- Fødelsnummer -->
+
+                <!-- Fødselsnummer -->
                 <div class="span span4">
                     <label id="fodselsnummer" data-ng-class="{error: error['fodselsnummer'] !== undefined }">Fødselsnummer</label>
                     <input type="text" class="form-control" placeholder="Fødselsnummer..." data-ng-model="formData.fodselsnummer" data-ng-focus="setFnr()" data-ng-blur="populerFelt()" data-ng-enter="nyEllerOppdater()">
@@ -90,22 +85,22 @@
                 <!-- Født dato -->
                 <div class="span span4">
                     <label id="fodt" data-ng-class="{error: error['fodt'] !== undefined }">Født</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fodt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fodt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
                 </div>
                 <!-- Død dato -->
                 <div class="span span4">
                     <label id="dod" data-ng-class="{error: error['dod'] !== undefined }">Død</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
                 </div>
                 <!-- første kontakt dato -->
                 <div class="span span4">
                     <label id="fKontakt" data-ng-class="{error: error['fKontakt'] !== undefined }">Første kontakt</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
                 </div>
                 <!-- Siste kontakt dato -->
                 <div class="span span4">
                     <label id="sKontakt" data-ng-class="{error: error['sKontakt'] !== undefined }">Siste kontakt</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)">
+                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.sKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
                 </div>
             </div>
             <hr/>
@@ -117,7 +112,7 @@
                 </div>
             </div>
 
-        </form>
+        </div>
 
         <div class="row">
             <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
@@ -131,10 +126,10 @@
             <div class="row">
                 <!-- Diagnosedato -->
                 <div class="span span4">
-                    <label id="diagnosedatoLbl" data-ng-class="{error: error['diagnosedato'] !== undefined }">
+                    <label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
                         Diagnosedato
                     </label>
-                    <input type="text" id="diagnosedato" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-enter="leggTilDiagnose()" data-ng-show="state !== 0" focus-on-show>
+                    <input type="text" id="diagnosedato-input" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-enter="leggTilDiagnose()" data-ng-show="state !== 0" maxlength="10" focus-on-show>
                 </div>
                 <div class="span span4">
                     <label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
@@ -163,11 +158,9 @@
                            typeahead-loading="Laster"
                            typeahead-focus-first="false"
                            typeahead-on-select='onSelectDiagnose($item, $model, $label)'>
-
                 </div>
                 <div class="span span4">
-                    <button id="btn-diagnosis" class="btn btn-diagnosis" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose
-                    </button>
+                    <button id="btn-diagnosis" class="btn btn-diagnosis" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose</button>
                 </div>
             </div>
 
@@ -213,12 +206,8 @@
             </table>
         </div>
 
-
-        <label></label>
-        <button class="right icon-padding-right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
-            {{ 'common.ADD' | translate }}
-        </button>
         <button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
+        <button class="right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">{{ 'common.ADD' | translate }}</button>
 
     </div>
 </div>
