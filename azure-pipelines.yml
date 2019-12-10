@@ -27,7 +27,7 @@ stages:
       name: bower_install
       displayName: Bower Install
       inputs:
-        script: 'npm install -g bower && bower install --allow-root'
+        script: 'npm install bower && node_modules/bower/bin/bower install --allow-root'
         workingDirectory: $(webFolder)
     - task: Grunt@0
       name: grunt_compile
