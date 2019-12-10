@@ -22,6 +22,7 @@ public class GyldigeDatoformater {
 
     public static Date getDate(final String dato) {
         Date date;
+        
         for (String format : formater) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(format);
             ParsePosition parsePosition = new ParsePosition(0);

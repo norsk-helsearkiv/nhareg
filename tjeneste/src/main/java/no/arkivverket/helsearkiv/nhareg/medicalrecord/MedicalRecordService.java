@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     private static final String SIZE = "size";
@@ -75,10 +74,11 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     /**
      * Map the query parameters to names that can be used when querying. Also converts from MultivaluedMap to HashMap.
      * @param queryParameters HTTP query parameters passed to the endpoint.
-     * @return HashMap with filter parameters from the query parameters.
+     * @return HashMap with filter parameters from the query parameters, with all empty params removed.
      */
     private Map<String, String> mapQueryParameters(final MultivaluedMap<String, String> queryParameters) {
         Map<String, String> mappedQueryParameters = new HashMap<String, String>();
+        
         mappedQueryParameters.put("fanearkid", queryParameters.getFirst("sokFanearkId"));
         mappedQueryParameters.put("lagringsenhet", queryParameters.getFirst("sokLagringsenhet"));
         mappedQueryParameters.put("fodselsnummer", queryParameters.getFirst("sokFodselsnummer"));
@@ -87,6 +87,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         mappedQueryParameters.put("oppdatertAv", queryParameters.getFirst("sokOppdatertAv"));
         mappedQueryParameters.put("sistOppdatert", queryParameters.getFirst("sokSistOppdatert"));
 
+        mappedQueryParameters.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         return mappedQueryParameters;
     }
 }
