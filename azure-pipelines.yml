@@ -2,7 +2,7 @@ variables:
   vmImage: 'ubuntu-latest'
   javaHome: 'JDKVersion'
   mavenOptions: '-Xmx3072m'
-  jdkVersion: '1.7'
+  jdkVersion: '1.8'
   pomFilePath: 'pom.xml'
   webFolder: klient-web/src/main
   dockerVersion: '17.09.0-ce'
@@ -14,7 +14,6 @@ stages:
   pool:
       vmImage: $(vmImage)
   jobs:
-# COMPILE WEB COMPONENTS
   - job: compile_web
     displayName: compile web components
     steps:
@@ -44,11 +43,15 @@ stages:
         targetPath: '$(System.DefaultWorkingDirectory)/$(webFolder)'
         artifact: 'webCompileArtifact'
         publishLocation: 'pipeline'
-# TEST
+### TEST ###
+- stage: Test
+  condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
+  dependsOn: Build
+  pool:
+    vmImage: $(vmImage)
+  jobs:
   - job: verify
     displayName: maven verify
-    condition: and(succeeded(), ne(variables['SKIP_TESTS'], 'true'))
-    dependsOn: compile_web
     steps:
     - task: DownloadPipelineArtifact@2
       name: download_web_artifact
@@ -68,13 +71,13 @@ stages:
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
         goals: verify
-### STAGING ###
-- stage: Staging
+### Package ###
+- stage: Package
   dependsOn: Build
   condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
   jobs:
-  - job: package_and_stage
-    displayName: Package and Stage
+  - job: package
+    displayName: Package
     pool:
       vmImage: $(vmImage)
     steps:
@@ -99,7 +102,6 @@ stages:
       inputs:
         script: 'docker save nhareg -o nhareg.tar'
         workingDirectory: '$(Agent.BuildDirectory)'
-    # COPY FILES TO STAGING DIRECTORY 
     - task: CopyFiles@2
       name: copy_image
       displayName: Copying tar image
@@ -131,6 +133,10 @@ stages:
         SourceFolder: $(Agent.BuildDirectory)
         TargetFolder: '$(Build.ArtifactStagingDirectory)/SQL/'
         flattenFolders: true
+  - job: fetch_installers
+    displayName: Fetching installers
+    condition: and(succeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
+    steps:
     - task: CmdLine@2
       name: fetch_docker_installer
       displayName: Fetching Docker Installer
@@ -149,7 +155,16 @@ stages:
       inputs:
         workingDirectory: '$(Build.ArtifactStagingDirectory)'
         script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
-    # Update archive name if master
+
+### STAGE ###
+- stage: Stage
+  dependsOn: Package
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
+  jobs:
+  - job: publish_installer
+    displayName: Stage installer zip
+    condition: and(succeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
+    steps:
     - task: Bash@3
       condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
       inputs:
@@ -157,7 +172,6 @@ stages:
         script: |
           #!/bin/bash
           echo "##vso[task.setvariable variable=artifactName]nhareg-$(MajorVersion).$(MinorVersion).$(PatchVersion)"
-    # ZIP files for artifact
     - task: ArchiveFiles@2
       name: zip_files
       displayName: ZIP files
@@ -167,13 +181,21 @@ stages:
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(archiveName).zip'
         replaceExistingArchive: true
-    # Publish Artifact
     - task: PublishBuildArtifacts@1
-      name: publish_artifact
-      displayName: Publishing artifact
+      name: stage_installer_artifact
+      displayName: Stage install artifact
       inputs:
         PathtoPublish: $(Build.ArtifactStagingDirectory)/$(archiveName).zip
-        ArtifactName: 'nhareg_artifact'
+        ArtifactName: 'nhareg_install_artifact'
+  - job: publish_image
+    displayName: Publish image
+    steps:
+    - task: PublishBuildArtifacts@1
+      name: stage_image_artifact
+      displayName: Stage image artifact
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/nhareg.tar
+        ArtifactName: 'nhareg_image_artifact'
 ### GIT MIRRORING ###
 - stage: Git_mirroring
   dependsOn: Staging
