@@ -156,8 +156,8 @@ stages:
         workingDirectory: '$(Build.ArtifactStagingDirectory)'
         script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
 
-### STAGE ###
-- stage: Stage
+### STAGING ###
+- stage: Staging
   dependsOn: Package
   condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
   jobs:
