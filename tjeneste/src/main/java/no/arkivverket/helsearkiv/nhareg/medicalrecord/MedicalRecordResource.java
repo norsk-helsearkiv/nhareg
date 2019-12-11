@@ -49,9 +49,15 @@ public class MedicalRecordResource {
         return pasientjournalTjeneste.delete(id);
     }
     
+    // @GET
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public ListObject getAll(@Context UriInfo uriInfo) {
+    //     return medicalRecordServiceInterface.getAll(uriInfo.getQueryParameters());
+    // }
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ListObject getAll(@Context UriInfo uriInfo) {
+    public ListObject getAllWithTransfers(@Context UriInfo uriInfo) {
         return medicalRecordServiceInterface.getAllWithTransfers(uriInfo.getQueryParameters());
     }
 

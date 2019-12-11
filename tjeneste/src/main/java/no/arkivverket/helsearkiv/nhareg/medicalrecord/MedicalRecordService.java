@@ -62,7 +62,6 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
         
         recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
-
         return new ListObject<>(recordTransferDTOList, recordTransferDTOList.size(), page, size);
     }
 

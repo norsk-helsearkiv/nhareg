@@ -41,13 +41,15 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         put("fanearkid", "(fanearkid LIKE :fanearkid)");
         put("lagringsenhet", "(lagringsenhetformat LIKE :lagringsenhet)");
         put("fodselsnummer", "(pid LIKE :fodselsnummer)");
-        put("navn", "(pnavn LIKE :navn)");
         put("oppdatertAv", "(ps.oppdatertAv LIKE :oppdatertAv)");
         put("sistOppdatert", "(ps.sistOppdatert BETWEEN :sistOppdatert AND :sistOppdatertEnd)");
         put("fodt", "(fdato BETWEEN :fodt AND :fodtEnd)");
         put("fodtYear", "(faar BETWEEN :fodt AND :fodtEnd)");
     }};
     
+    private static final List<String> DATE_PREDICATES = Arrays.asList("sistOppdatert", "sistOppdatertEnd", "fodt", 
+                                                                      "fodtEnd");
+
     public MedicalRecordDAO() {
         super(Pasientjournal.class, "uuid");
     }
@@ -63,17 +65,22 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
                                                            final int page,
                                                            final int size) {
         final Query query = createQueryWithPredicates(queryParameters, GET_RECORD_TRANSFER_RESULTS);
-    
+        final List<Object[]> queryResults;
+
         if (page > 0 && size >= 0) {
             // Remove 1 from the page as results are 0 indexed, but given page is not.
             query.setFirstResult(page - 1);
             query.setMaxResults(size);
         }
 
-        List<Object[]> queryResults = query.getResultList();
-        List<RecordTransferDTO> recordTransferDTOList = new ArrayList<>();
+        try {
+            queryResults = query.getResultList();
+        } catch (IllegalArgumentException iae) {
+            return new ArrayList<>();
+        }
 
         // Map each row into a RecordTransferDTO object and add it to a list.
+        List<RecordTransferDTO> recordTransferDTOList = new ArrayList<>();
         queryResults.forEach(objects -> recordTransferDTOList.add(mapFromObjectsToRecordTransferDTO(objects)));
         return recordTransferDTOList;
     }
@@ -154,7 +161,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         return predicates.toArray(new Predicate[0]);
     }
 
-    
+
     /**
      * Creates a native query to the database based on the given query string. Converts the given query parameters to
      * SQL WHERE statements.
@@ -165,48 +172,64 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
     private Query createQueryWithPredicates(final Map<String, String> queryParameters, final String queryString) {
         final StringBuilder predicateStringBuilder = new StringBuilder(queryString);
         final Map<String, String> parameters = new HashMap<>();
+        
+        if (queryParameters.size() <= 0) {
+            return getEntityManager().createNativeQuery(queryString);
+        }
 
+        predicateStringBuilder.insert(queryString.length(), " WHERE ");
+        buildPredicateStringAndParameters(queryParameters, predicateStringBuilder, parameters);
+
+        // Replace parameters that were set
+        final Query query = getEntityManager().createNativeQuery(predicateStringBuilder.toString());
+        replaceQueryParameters(parameters, query);
+
+        return query;
+    }
+
+    private void buildPredicateStringAndParameters(final Map<String, String> queryParameters,
+                                                   final StringBuilder predicateStringBuilder,
+                                                   final Map<String, String> parameters) {
         queryParameters.forEach((key, value) -> {
             if (value != null && !value.isEmpty()) {
                 if (parameters.size() > 0) {
                     predicateStringBuilder.append(" AND ");
                 }
-                
-                if ("sistOppdatert".equals(key) || "fodt".equals(key)) {
+
+                if (DATE_PREDICATES.contains(key)) {
                     final String datePredicateNativeQuery = createDatePredicateNativeQuery(key, value, parameters);
                     predicateStringBuilder.append(datePredicateNativeQuery);
+                } else if ("navn".equals(key)) {
+                    final String namePredicateNativeQuery = createNamePredicateNativeQuery(value, parameters);
+                    predicateStringBuilder.append(namePredicateNativeQuery);
                 } else {
                     parameters.put(key, "%" + queryParameters.get(key) + "%");
                     predicateStringBuilder.append(PREDICATE_NATIVE_MAP.get(key));
                 }
             }
         });
+    }
 
-        // Add the WHERE statement if any predicates were set.
-        if (parameters.size() > 0) {
-            predicateStringBuilder.insert(queryString.length(), " WHERE ");
-        }
-
-        // Replace parameters that were set
-        final Query query = getEntityManager().createNativeQuery(predicateStringBuilder.toString());
+    private void replaceQueryParameters(final Map<String, String> parameters, final Query query) {
         parameters.forEach((key, value) -> {
-            // Dates needs to be set as DATE temporal type.
-            if ("sistOppdatert".equals(key) || "sistOppdatertEnd".equals(key) ||
-                "fodt".equals(key) || "fodtEnd".equals(key)) {
+            try {
                 if (value == null || value.isEmpty()) {
                     query.setParameter(key, "");
                 } else {
-                    final Date date = GyldigeDatoformater.getDate(value);
-                    query.setParameter(key, date, TemporalType.DATE);
+                    // Dates needs to be set as DATE temporal type.
+                    if (DATE_PREDICATES.contains(key)) {
+                        final Date date = GyldigeDatoformater.getDate(value);
+                        query.setParameter(key, date, TemporalType.DATE);
+                    } else {
+                        query.setParameter(key, value);
+                    }
                 }
-            } else {
-                query.setParameter(key, value);
+            } catch (IllegalArgumentException iae) {
+                iae.printStackTrace();
             }
         });
-
-        return query;
     }
-
+    
     private List<Predicate> createDatePredicates(final CriteriaBuilder criteriaBuilder,
                                                  final Path<Date> path,
                                                  final String value) {
@@ -219,6 +242,46 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
     }
 
     /**
+     * Creates a predicate for pnavn column. For each name separated by a space it will create a query that matches
+     * name% OR %name OR % name %. It will also convert any * characters to SQL wildcard characters.
+     * @param value Names that will be split by space character.
+     * @param parameters Map of parameters that will be updated with the keys and values for each given name.
+     * @return A string to be inserted in a query behind a WHERE statement.
+     */
+    private String createNamePredicateNativeQuery(final String value, final Map<String, String> parameters) {
+        final String[] valueArray = value.split(" ");
+        final StringBuilder namesPredicate = new StringBuilder("(");
+
+        Arrays.stream(valueArray).forEach(name -> {
+            if (namesPredicate.length() > 2) {
+                namesPredicate.append(" AND ");
+            }
+            
+            // Replace * as it does not work with setParameter
+            final String nameParameter = name.replace("*", "");
+            // Matches name% OR %name OR % Name %
+            namesPredicate.append("( pnavn LIKE :name")
+                          .append(nameParameter)
+                          .append(" OR pnavn LIKE :name")
+                          .append(nameParameter)
+                          .append("End")
+                          .append(" OR pnavn LIKE :name")
+                          .append(nameParameter)
+                          .append("Middle )");
+
+            // Replace * with SQL wildcard
+            final String nameValue = name.replace('*', '%');
+            parameters.put("name" + nameParameter, "%" + nameValue);
+            parameters.put("name" + nameParameter+ "End", nameValue + "%");
+            parameters.put("name" + nameParameter + "Middle", "% " + nameValue + " %");
+        });
+
+        namesPredicate.append(")");
+
+        return namesPredicate.toString();
+    }
+
+    /**
      * Creates a date predicate to be used in a WHERE ... BETWEEN statement. Adds start and end date to parameters.
      * @param key Key used to index PREDICATE_NATIVE_MAP. Is also used as key in parameters, key + End is used for 
      *            end date
@@ -227,26 +290,24 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
      *                   if the date could not be converted.
      * @return The {@link #PREDICATE_NATIVE_MAP} value for the given key.
      */
-    private String createDatePredicateNativeQuery(final String key, 
-                                                  final String value, 
-                                                  final Map<String, String> parameters) {
+    private String createDatePredicateNativeQuery(final String key, final String value, final Map<String, String> parameters) {
         final LocalDate date = GyldigeDatoformater.getLocalDate(value);
-        
+
         if (date == null) {
             parameters.put(key, null);
             parameters.put(key + "End", null);
-            
+
             if ("fodt".equals(key) && value.length() == 4) {
                 return PREDICATE_NATIVE_MAP.get("fodtYear");
             }
             return PREDICATE_NATIVE_MAP.get(key);
         }
-        
+
         // Handle years.
         if (value.length() == 4) {
             final int nextYear = date.plusYears(1).getYear();
             final int year = date.getYear();
-            
+
             parameters.put(key, String.valueOf(year));
             parameters.put(key + "End", String.valueOf(nextYear));
 
@@ -266,7 +327,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
             return PREDICATE_NATIVE_MAP.get(key);
         }
     }
-    
+
     /**
      * Maps a result row from the database into a RecordTransferDTO object. It is dependant on order being correct.
      * @param resultRow A row from the database with the columns in correct order.
