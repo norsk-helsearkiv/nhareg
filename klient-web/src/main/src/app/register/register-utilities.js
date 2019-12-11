@@ -14,7 +14,7 @@ angular.module('nha.register')
             }
             //Updating patient journal
             else if ($scope.state === 2) {
-                document.getElementById("diagnosedato-input").focus();
+                document.getElementById("diagnosisDate-input").focus();
             }
         };
 
