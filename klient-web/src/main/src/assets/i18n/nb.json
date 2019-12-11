@@ -198,7 +198,7 @@
         "EXPECTATION_FAILED_STATUS_CODE":"Entiteten finnes fra før",
         "EXPECTATION_FAILED":           "Det finnes en entitet med samme Id"
     },
-    "feltfeil" : {
+    "formError" : {
     	"DagEllerAar" : "Feil datoformat, eksempel på format (01.01.1990)",
     	"NotNull" : "Kan ikke være tom",
     	"Size" : "Kan ikke være tom",
