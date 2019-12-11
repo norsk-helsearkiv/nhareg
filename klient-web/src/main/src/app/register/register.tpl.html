@@ -44,7 +44,7 @@
                 <!-- Fanearkid -->
                 <div class="span span4">
                     <label id="fanearkid" data-ng-class="{error: error['fanearkid'] !== undefined }">Fanearkid</label>
-                    <input type="text" id="fanearkidInput" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()" maxlength="12">
+                    <input type="number" oninput="this.value = this.value.slice(0, this.maxLength)" min="0" maxlength="12" id="fanearkidInput" class="form-control" placeholder="Fanearkid..." data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()">
                 </div>
 
                 <!-- Journalnummer -->
