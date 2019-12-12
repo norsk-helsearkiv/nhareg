@@ -258,7 +258,6 @@
             <version>4.0.7.Final</version>
         </dependency>
 
-
         <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>

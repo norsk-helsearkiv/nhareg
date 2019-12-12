@@ -1,6 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
@@ -21,6 +20,7 @@ import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferService;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
+import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
@@ -49,7 +49,7 @@ public class RESTDeployment {
             .addPackage(Konfigparam.class.getPackage())
             .addPackage(KonfigparamTjeneste.class.getPackage())
             .addPackage(ValideringsfeilException.class.getPackage())
-            .addPackage(UserService.class.getPackage())
+            .addPackage(UserDAO.class.getPackage())
             .addPackage(Bruker.class.getPackage())
             .addPackage(BrukerDTO.class.getPackage())
             .addPackage(PasientjournalDTO.class.getPackage())

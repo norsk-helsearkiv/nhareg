@@ -1,11 +1,13 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
+import lombok.Data;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 
 /**
@@ -35,85 +37,14 @@ import javax.xml.bind.annotation.XmlType;
     "navn",
     "foretaksnavn"
 })
-public class Virksomhet implements Serializable
-{
+@Data
+public class Virksomhet implements Serializable {
 
     @XmlElement(required = true)
     protected String organisasjonsnummer;
+    
     @XmlElement(required = true)
     protected String navn;
+    
     protected String foretaksnavn;
-
-    /**
-     * Gets the value of the organisasjonsnummer property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getOrganisasjonsnummer() {
-        return organisasjonsnummer;
-    }
-
-    /**
-     * Sets the value of the organisasjonsnummer property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setOrganisasjonsnummer(String value) {
-        this.organisasjonsnummer = value;
-    }
-
-    /**
-     * Gets the value of the navn property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNavn() {
-        return navn;
-    }
-
-    /**
-     * Sets the value of the navn property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNavn(String value) {
-        this.navn = value;
-    }
-
-    /**
-     * Gets the value of the foretaksnavn property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getForetaksnavn() {
-        return foretaksnavn;
-    }
-
-    /**
-     * Sets the value of the foretaksnavn property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setForetaksnavn(String value) {
-        this.foretaksnavn = value;
-    }
-
 }

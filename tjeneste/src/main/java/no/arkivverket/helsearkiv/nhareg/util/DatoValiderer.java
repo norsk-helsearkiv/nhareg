@@ -1,11 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
@@ -15,6 +9,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfei
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
 import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
+
+import java.util.*;
 
 /**
  * Validerer konsistens på datofeltene til PersondataDTO
@@ -173,9 +169,9 @@ public class DatoValiderer {
     private ArrayList<Valideringsfeil> pasientjournaldatoerutenkjentfogmors(PersondataDTO person, Date lowLim, Date maxLim) {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         if (gyldigMors.contains(person.getDod())){
-            if (sjekk(person.getsKontakt()) && sjekk(person.getfKontakt())) {
-                Date sKontakt = getDate(person.getsKontakt());
-                if ((compareDateString(person.getfKontakt(), person.getsKontakt())) == DateCompareResult.AFTER) {
+            if (sjekk(person.getSKontakt()) && sjekk(person.getFKontakt())) {
+                Date sKontakt = getDate(person.getSKontakt());
+                if ((compareDateString(person.getFKontakt(), person.getSKontakt())) == DateCompareResult.AFTER) {
                     feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
                 }
 
@@ -265,43 +261,43 @@ public class DatoValiderer {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
 
         //første og siste kontaktdato registrert
-        if (sjekk(person.getfKontakt()) && sjekk(person.getsKontakt())) {
-            Date fKontakt = getDate(person.getfKontakt());
-            Date sKontakt = getDate(person.getsKontakt());
+        if (sjekk(person.getFKontakt()) && sjekk(person.getSKontakt())) {
+            Date fKontakt = getDate(person.getFKontakt());
+            Date sKontakt = getDate(person.getSKontakt());
 
-            if (compareDateString(person.getfKontakt(), person.getsKontakt()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getFKontakt(), person.getSKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
             }
 
             //første kan ikke være før født
-            if (compareDateString(person.getFodt(), person.getfKontakt()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
             }
 
-            if (compareDateString(person.getsKontakt(), person.getDod()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
             }
         }
         //bare siste kontaktdato registrert
-        else if (sjekk(person.getsKontakt())) {
-            Date sKontakt = getDate(person.getsKontakt());
-            if (compareDateString(person.getFodt(), person.getsKontakt()) == DateCompareResult.AFTER) {
+        else if (sjekk(person.getSKontakt())) {
+            Date sKontakt = getDate(person.getSKontakt());
+            if (compareDateString(person.getFodt(), person.getSKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("sKontakt", "sKontaktForFodt"));
             }
 
-            if (compareDateString(person.getsKontakt(), person.getDod()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
             }
         }
         //bare første kontaktdato registrert
-        else if (sjekk(person.getfKontakt())) {
-            Date fKontakt = getDate(person.getfKontakt());
+        else if (sjekk(person.getFKontakt())) {
+            Date fKontakt = getDate(person.getFKontakt());
             //første kan ikke være før født
-            if (compareDateString(person.getFodt(), person.getfKontakt()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
             }
 
-            if (compareDateString(person.getfKontakt(), person.getDod()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getFKontakt(), person.getDod()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktEtterDod"));
             }
         }
@@ -316,27 +312,27 @@ public class DatoValiderer {
     private List<Valideringsfeil> sjekkKontaktdatoFodt(PersondataDTO person){
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         //første og siste kontaktdato registrert
-        if (sjekk(person.getfKontakt()) && sjekk(person.getsKontakt())) {
-            if (compareDateString(person.getfKontakt(), person.getsKontakt()) == DateCompareResult.AFTER) {
+        if (sjekk(person.getFKontakt()) && sjekk(person.getSKontakt())) {
+            if (compareDateString(person.getFKontakt(), person.getSKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
             }
 
             //første kan ikke være før født
-            if (compareDateString(person.getFodt(), person.getfKontakt()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
             }
         }
         //bare siste kontaktdato registrert
-        else if (sjekk(person.getsKontakt())) {
-            if (compareDateString(person.getFodt(), person.getsKontakt()) == DateCompareResult.AFTER) {
+        else if (sjekk(person.getSKontakt())) {
+            if (compareDateString(person.getFodt(), person.getSKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("sKontakt", "sKontaktForFodt"));
             }
 
         }
         //bare første kontaktdato registrert
-        else if (sjekk(person.getfKontakt())) {
+        else if (sjekk(person.getFKontakt())) {
             //første kan ikke være før født
-            if (compareDateString(person.getFodt(), person.getfKontakt()) == DateCompareResult.AFTER) {
+            if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
             }
         }
@@ -353,27 +349,27 @@ public class DatoValiderer {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
         Date dod = getDate(person.getDod());
         //første og siste kontaktdato registrert
-        if (sjekk(person.getfKontakt()) && sjekk(person.getsKontakt())) {
-            if (compareDateString(person.getfKontakt(), person.getsKontakt()) == DateCompareResult.AFTER){
+        if (sjekk(person.getFKontakt()) && sjekk(person.getSKontakt())) {
+            if (compareDateString(person.getFKontakt(), person.getSKontakt()) == DateCompareResult.AFTER){
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
             }
 
             //siste kan ikke være etter død
-            if (compareDateString(person.getsKontakt(), person.getDod()) == DateCompareResult.AFTER){
+            if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER){
                 feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
             }
         }
         //bare siste kontaktdato registrert
-        else if (sjekk(person.getsKontakt())) {
-            if (compareDateString(person.getsKontakt(), person.getDod()) == DateCompareResult.AFTER){
+        else if (sjekk(person.getSKontakt())) {
+            if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER){
                 feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
             }
 
         }
         //bare første kontaktdato registrert
-        else if (sjekk(person.getfKontakt())) {
+        else if (sjekk(person.getFKontakt())) {
             //første kan ikke være etter død
-            if (compareDateString(person.getfKontakt(), person.getDod()) == DateCompareResult.AFTER){
+            if (compareDateString(person.getFKontakt(), person.getDod()) == DateCompareResult.AFTER){
                 feil.add(new Valideringsfeil("fKontakt", "fKontaktEtterDod"));
             }
         }

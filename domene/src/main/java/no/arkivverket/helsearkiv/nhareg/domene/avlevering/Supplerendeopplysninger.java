@@ -1,12 +1,12 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
+import lombok.Data;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
+import java.io.Serializable;
 
 /**
  * <p>Java class for Supplerendeopplysninger complex type.
@@ -33,60 +33,13 @@ import javax.xml.bind.annotation.XmlType;
     "hendelse",
     "henvisning"
 })
-public class Supplerendeopplysninger implements Serializable
-{
+@Data
+public class Supplerendeopplysninger implements Serializable {
 
     @XmlElement(required = true)
     protected Hendelse hendelse;
+    
     @XmlElement(required = true)
     protected Henvisning henvisning;
-
-    /**
-     * Gets the value of the hendelse property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Hendelse }
-     *     
-     */
-    public Hendelse getHendelse() {
-        return hendelse;
-    }
-
-    /**
-     * Sets the value of the hendelse property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Hendelse }
-     *     
-     */
-    public void setHendelse(Hendelse value) {
-        this.hendelse = value;
-    }
-
-    /**
-     * Gets the value of the henvisning property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Henvisning }
-     *     
-     */
-    public Henvisning getHenvisning() {
-        return henvisning;
-    }
-
-    /**
-     * Sets the value of the henvisning property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Henvisning }
-     *     
-     */
-    public void setHenvisning(Henvisning value) {
-        this.henvisning = value;
-    }
 
 }

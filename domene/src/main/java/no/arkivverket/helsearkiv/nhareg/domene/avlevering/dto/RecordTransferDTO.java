@@ -1,10 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Data
 @NoArgsConstructor
@@ -17,7 +15,7 @@ public class RecordTransferDTO {
 
     private String fodselsnummer;
 
-    private String fanearkid;
+    private long fanearkid;
 
     private String jnr;
 

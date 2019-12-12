@@ -1,9 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
-import java.util.ArrayList;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 
 public class ValidatorTest {
 
@@ -37,8 +39,8 @@ public class ValidatorTest {
         person.setKjonn("K");
         person.setFodt("1.1.1999");
         person.setDod("4.1.1999");
-        person.setfKontakt("1.1.1999");
-        person.setsKontakt("5.1.1999");
+        person.setFKontakt("1.1.1999");
+        person.setSKontakt("5.1.1999");
         
         ArrayList<Valideringsfeil> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, person).valider();

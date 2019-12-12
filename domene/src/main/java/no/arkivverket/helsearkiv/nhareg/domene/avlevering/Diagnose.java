@@ -1,13 +1,9 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import lombok.Data;
 
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 
 /**
  *
@@ -42,15 +38,19 @@ import javax.xml.bind.annotation.XmlType;
     "diagnosetekst",
     "oppdateringsinfo"
 })
-public class Diagnose implements Serializable
-{
+@Data
+public class Diagnose implements Serializable {
 
     protected DatoEllerAar diagdato;
+    
     protected Diagnosekode diagnosekode;
+    
     @XmlElement(required = true)
     protected String diagnosetekst;
+    
     @XmlElement(required = true)
     protected Oppdateringsinfo oppdateringsinfo;
+    
     @XmlAttribute(name = "uuid")
     protected String uuid;
 
@@ -61,134 +61,12 @@ public class Diagnose implements Serializable
 
         Diagnose diagnose = (Diagnose) o;
 
-        if (!uuid.equals(diagnose.uuid)) return false;
-
-        return true;
+        return uuid.equals(diagnose.uuid);
     }
 
     @Override
     public int hashCode() {
         return uuid.hashCode();
-    }
-
-    /**
-     * Gets the value of the diagdato property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public DatoEllerAar getDiagdato() {
-        return diagdato;
-    }
-
-    /**
-     * Sets the value of the diagdato property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public void setDiagdato(DatoEllerAar value) {
-        this.diagdato = value;
-    }
-
-    /**
-     * Gets the value of the diagnosekode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Diagnosekode }
-     *     
-     */
-    public Diagnosekode getDiagnosekode() {
-        return diagnosekode;
-    }
-
-    /**
-     * Sets the value of the diagnosekode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Diagnosekode }
-     *     
-     */
-    public void setDiagnosekode(Diagnosekode value) {
-        this.diagnosekode = value;
-    }
-
-    /**
-     * Gets the value of the diagnosetekst property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDiagnosetekst() {
-        return diagnosetekst;
-    }
-
-    /**
-     * Sets the value of the diagnosetekst property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDiagnosetekst(String value) {
-        this.diagnosetekst = value;
-    }
-
-    /**
-     * Gets the value of the oppdateringsinfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Oppdateringsinfo }
-     *     
-     */
-    public Oppdateringsinfo getOppdateringsinfo() {
-        return oppdateringsinfo;
-    }
-
-    /**
-     * Sets the value of the oppdateringsinfo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Oppdateringsinfo }
-     *     
-     */
-    public void setOppdateringsinfo(Oppdateringsinfo value) {
-        this.oppdateringsinfo = value;
-    }
-
-    /**
-     * Gets the value of the uuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUuid() {
-        return uuid;
-    }
-
-    /**
-     * Sets the value of the uuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUuid(String value) {
-        this.uuid = value;
     }
 
 }

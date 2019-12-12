@@ -1,13 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-
 import lombok.Data;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
 
 /**
  * Klassen er tatt ut av generering, skal det regenereres basert på XML må hashcode og equals legges inn på uuid feltet
@@ -76,27 +74,6 @@ public class Avlevering implements Serializable {
     
     public void setLaast(final boolean laast) { this.laast = laast; }
 
-    /**
-     * Gets the value of the pasientjournal property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the pasientjournal property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getPasientjournal().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Pasientjournal }
-     * 
-     */
     public Set<Pasientjournal> getPasientjournal() {
         if (pasientjournal == null) {
             pasientjournal = new HashSet<Pasientjournal>();

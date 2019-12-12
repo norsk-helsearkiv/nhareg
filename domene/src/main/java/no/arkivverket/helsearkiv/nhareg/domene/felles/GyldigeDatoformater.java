@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.felles;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -117,5 +118,9 @@ public class GyldigeDatoformater {
         }
 
         return null;
+    }
+    
+    public static LocalDate asLocalDate(final Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalDate();
     }
 }

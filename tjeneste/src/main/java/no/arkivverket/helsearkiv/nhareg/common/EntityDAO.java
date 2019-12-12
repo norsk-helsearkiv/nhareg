@@ -28,12 +28,6 @@ public abstract class EntityDAO<T> {
         this.idName = idName;
     }
 
-    public EntityDAO(final Class<T> entityClass, final String idName, final String orderByName) {
-        this.entityClass = entityClass;
-        this.idName = idName;
-        this.orderByName = orderByName;
-    }
-
     /**
      * Find an entity by its ID.
      * @param id Primary key for the entity.
@@ -70,12 +64,8 @@ public abstract class EntityDAO<T> {
         if (orderByName != null && !orderByName.isEmpty()) {
             criteriaQuery.orderBy(criteriaBuilder.desc(root.get(orderByName)));
         }
-//        final String order = queryParameters.get("orderBy");
-//        else if (order != null && !order.isEmpty()) {
-//            // TODO 
-//        }
 
-        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);;
+        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
 
         if (page > 0 && size > 0) {
             query.setFirstResult((page - 1) * size);

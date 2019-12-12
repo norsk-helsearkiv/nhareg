@@ -1,32 +1,31 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.transfer.AvleveringTjeneste;
+import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
+import no.arkivverket.helsearkiv.nhareg.utilities.MockUriInfo;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
-import javax.ws.rs.core.Response;
-
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
-import no.arkivverket.helsearkiv.nhareg.utilities.MockUriInfo;
-import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
-import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -51,45 +50,39 @@ public class AvleveringTjenesteTest {
 
     @Test
     public void validerLagringsenheter_nullFeil() throws Exception {
-        userHandler.call(new Callable() {
-            @Override
-            public Object call() {
-                List<Lagringsenhet> lagringsenhetListe = new ArrayList<Lagringsenhet>();
-                Lagringsenhet lagringsenhet = new Lagringsenhet();
-                final String avlevering = "Avlevering-1";
+        userHandler.call((Callable) () -> {
+            List<Lagringsenhet> lagringsenhetListe = new ArrayList<>();
+            Lagringsenhet lagringsenhet = new Lagringsenhet();
+            final String avlevering = "Avlevering-1";
 
-                lagringsenhet.setIdentifikator("boks1");
-                lagringsenhetListe.add(lagringsenhet);
+            lagringsenhet.setIdentifikator("boks1");
+            lagringsenhetListe.add(lagringsenhet);
 
-                assertNotNull(tjeneste);
-                List<Valideringsfeil> valideringsfeil = tjeneste.validerLagringsenheter(avlevering, lagringsenhetListe);
-                assertEquals(0, valideringsfeil.size());
+            assertNotNull(tjeneste);
+            List<Valideringsfeil> valideringsfeil = tjeneste.validerLagringsenheter(avlevering, lagringsenhetListe);
+            assertEquals(0, valideringsfeil.size());
 
-                return null;
-            }
+            return null;
         });
     }
 
     @Test
     public void validerLagringsenheter_enFeil() throws Exception {
-        userHandler.call(new Callable() {
-            @Override
-            public Object call() {
-                List<Lagringsenhet> lagringsenhetListe = new ArrayList<Lagringsenhet>();
-                Lagringsenhet lagringsenhet = new Lagringsenhet();
-                lagringsenhet.setIdentifikator("boks1");
-                lagringsenhetListe.add(lagringsenhet);
+        userHandler.call((Callable) () -> {
+            List<Lagringsenhet> lagringsenhetListe = new ArrayList<Lagringsenhet>();
+            Lagringsenhet lagringsenhet = new Lagringsenhet();
+            lagringsenhet.setIdentifikator("boks1");
+            lagringsenhetListe.add(lagringsenhet);
 
-                String avlevering = "Avlevering-1";
-                final List<Valideringsfeil> nullFeil = tjeneste.validerLagringsenheter(avlevering, lagringsenhetListe);
-                assertEquals(0, nullFeil.size());
+            String avlevering = "Avlevering-1";
+            final List<Valideringsfeil> nullFeil = tjeneste.validerLagringsenheter(avlevering, lagringsenhetListe);
+            assertEquals(0, nullFeil.size());
 
-                avlevering = "SkalFeile";
-                final List<Valideringsfeil> enFeil =  tjeneste.validerLagringsenheter(avlevering, lagringsenhetListe);
-                assertEquals(1, enFeil.size());
+            avlevering = "SkalFeile";
+            final List<Valideringsfeil> enFeil =  tjeneste.validerLagringsenheter(avlevering, lagringsenhetListe);
+            assertEquals(1, enFeil.size());
 
-                return null;
-            }
+            return null;
         });
     }
 
@@ -101,7 +94,7 @@ public class AvleveringTjenesteTest {
                 final String avleveringsid = "Avlevering-1";
                 final PersondataDTO persondataDTO = getPasient();
                 final Response response = tjeneste.nyPasientjournal(avleveringsid, persondataDTO);
-                final PasientjournalDTO nyPasient = (PasientjournalDTO) response.getEntity();
+                final MedicalRecordDTO nyPasient = (MedicalRecordDTO) response.getEntity();
 
                 assertNotNull(nyPasient.getPersondata().getUuid());
                 
@@ -143,7 +136,7 @@ public class AvleveringTjenesteTest {
                 ListObject pasientjournaler = tjeneste.getPasientjournaler("Avlevering-1", new MockUriInfo());
                 assertNotNull(pasientjournaler);
         
-                List<PasientjournalSokeresultatDTO> liste = (List<PasientjournalSokeresultatDTO>) pasientjournaler.getListe();
+                List<RecordTransferDTO> liste = (List<RecordTransferDTO>) pasientjournaler.getListe();
                 assertTrue(liste.size() > 0);
                 
                 return null;
@@ -194,8 +187,8 @@ public class AvleveringTjenesteTest {
         pasient.setKjonn("K");
         pasient.setFodt("1.1.1999");
         pasient.setDod("2000");
-        pasient.setfKontakt("1.1.1999");
-        pasient.setsKontakt("2000");
+        pasient.setFKontakt("1.1.1999");
+        pasient.setSKontakt("2000");
         pasient.setUuid("1234");
         
         return pasient;

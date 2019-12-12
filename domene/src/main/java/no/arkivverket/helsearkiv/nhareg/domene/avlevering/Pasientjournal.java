@@ -1,4 +1,3 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
@@ -6,7 +5,6 @@ import lombok.Data;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.*;
-
 
 /**
  * Klassen er tatt ut av generering, skal det regenereres basert på XML må hashcode og equals legges inn på uuid feltet
@@ -81,28 +79,6 @@ public class Pasientjournal implements Serializable {
     
     protected String fanearkid;
 
-    /**
-     * Gets the value of the diagnose property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the diagnose property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getDiagnose().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Diagnose }
-     * 
-     * 
-     */
     public Set<Diagnose> getDiagnose() {
         if (diagnose == null) {
             diagnose = new HashSet<Diagnose>();
@@ -111,28 +87,6 @@ public class Pasientjournal implements Serializable {
         return this.diagnose;
     }
 
-    /**
-     * Gets the value of the supplerendeopplysninger property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the supplerendeopplysninger property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getSupplerendeopplysninger().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Supplerendeopplysninger }
-     * 
-     * 
-     */
     public List<Supplerendeopplysninger> getSupplerendeopplysninger() {
         if (supplerendeopplysninger == null) {
             supplerendeopplysninger = new ArrayList<Supplerendeopplysninger>();
@@ -141,28 +95,6 @@ public class Pasientjournal implements Serializable {
         return this.supplerendeopplysninger;
     }
 
-    /**
-     * Gets the value of the lagringsenhet property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the lagringsenhet property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getLagringsenhet().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Lagringsenhet }
-     * 
-     * 
-     */
     public List<Lagringsenhet> getLagringsenhet() {
         if (lagringsenhet == null) {
             lagringsenhet = new ArrayList<Lagringsenhet>();

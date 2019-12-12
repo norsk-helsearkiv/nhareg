@@ -1,15 +1,16 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
-import java.util.Calendar;
+import lombok.Data;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 
 /**
@@ -46,62 +47,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "dato",
     "aar"
 })
-public class DatoEllerAar implements Serializable
-{
+@Data
+public class DatoEllerAar implements Serializable {
 
     @XmlElement(type = String.class)
     @XmlJavaTypeAdapter(Adapter2 .class)
     @XmlSchemaType(name = "date")
     protected Calendar dato;
     protected Integer aar;
-
-    /**
-     * Gets the value of the dato property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public Calendar getDato() {
-        return dato;
-    }
-
-    /**
-     * Sets the value of the dato property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDato(Calendar value) {
-        this.dato = value;
-    }
-
-    /**
-     * Gets the value of the aar property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    public Integer getAar() {
-        return aar;
-    }
-
-    /**
-     * Sets the value of the aar property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    public void setAar(Integer value) {
-        this.aar = value;
-    }
 
     /**
      * Transforms the value to string.
@@ -121,5 +74,14 @@ public class DatoEllerAar implements Serializable
         }
         
         return aar;
+    }
+    
+    public String getStringValue() {
+        if (dato != null) {
+            final LocalDate localDate = LocalDateTime.ofInstant(dato.toInstant(), ZoneId.systemDefault()).toLocalDate();
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return localDate.format(formatter);
+        }
+        return aar.toString();
     }
 }
