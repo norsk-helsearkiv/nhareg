@@ -1,8 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordMapper;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import org.junit.Test;
 
 import java.text.ParseException;
@@ -11,14 +12,10 @@ import java.util.Calendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-/**
- *
- * @author robing
- */
-public class KonvertererTransformerTest {
+public class DateOrYearConverterTransformerTest {
 
     @Test
-    public void tilPasientjournalTest() throws ParseException {
+    public void tilPasientjournalTest() {
         PersondataDTO dto = new PersondataDTO();
         dto.setDod("2009");
         dto.setFodselsnummer("01010942345");
@@ -33,7 +30,7 @@ public class KonvertererTransformerTest {
         dto.setFKontakt("2009");
         dto.setSKontakt("2009");
 
-        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(dto);
+        Pasientjournal pasientjournal = MedicalRecordConverter.convertFromPersonalDataDTO(dto);
 
         assertEquals(dto.getFodselsnummer(), pasientjournal.getGrunnopplysninger().getIdentifikator().getPID());
         int dod = pasientjournal.getGrunnopplysninger().getDød().getAar();
@@ -41,25 +38,16 @@ public class KonvertererTransformerTest {
     }
 
     @Test
-    public void tilPasientjournalSokeresultatDTOTest() {
-        PasientjournalSokeresultatDTO dto = Konverterer.tilPasientjournalSokeresultatDTO(getPasientjournal());
-
-        assertEquals("Natalie", dto.getNavn());
-        assertEquals("01010942345", dto.getFodselsnummer());
-        assertEquals("uuid1", dto.getUuid());
-    }
-
-    @Test
-    public void tilPasientjournalDTOTest() {
-        PasientjournalDTO dto = Konverterer.tilPasientjournalDTO(getPasientjournal());
-        assertEquals(1, dto.getPersondata().getLagringsenheter().length);
-        assertEquals("01010942345", dto.getPersondata().getFodselsnummer());
-        assertEquals("Natalie", dto.getPersondata().getNavn());
+    public void mapToPersonalDataDTOTest() {
+        final PersondataDTO persondataDTO = MedicalRecordConverter.convertToPersonalDataDTO(getPasientjournal());
+        assertEquals(1, persondataDTO.getLagringsenheter().length);
+        assertEquals("01010942345", persondataDTO.getFodselsnummer());
+        assertEquals("Natalie", persondataDTO.getNavn());
     }
 
     @Test
     public void tilDatoEllerAar() throws ParseException {
-        DatoEllerAar datoEllerAar = Konverterer.tilDatoEllerAar("15.03.2015");
+        DatoEllerAar datoEllerAar = DateOrYearConverter.tilDatoEllerAar("15.03.2015");
         assertNotNull(datoEllerAar);
         assertNotNull(datoEllerAar.getDato());
         assertEquals(15, datoEllerAar.getDato().get(Calendar.DAY_OF_MONTH));
@@ -70,14 +58,14 @@ public class KonvertererTransformerTest {
     @Test
     public void tilString() throws ParseException {
         String datoString = "15.03.2015";
-        DatoEllerAar datoEllerAar = Konverterer.tilDatoEllerAar(datoString);
+        DatoEllerAar datoEllerAar = DateOrYearConverter.tilDatoEllerAar(datoString);
         assertNotNull(datoEllerAar);
         assertNotNull(datoEllerAar.getDato());
         assertEquals(15, datoEllerAar.getDato().get(Calendar.DAY_OF_MONTH));
         assertEquals(Calendar.MARCH, datoEllerAar.getDato().get(Calendar.MONTH));
         assertEquals(2015, datoEllerAar.getDato().get(Calendar.YEAR));
         //
-        assertEquals(datoString,Konverterer.tilString(datoEllerAar));
+        assertEquals(datoString,datoEllerAar.getStringValue());
     }
 
     private Pasientjournal getPasientjournal() {

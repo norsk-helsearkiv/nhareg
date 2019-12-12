@@ -7,7 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.transfer.AvleveringTjeneste;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -22,20 +22,13 @@ import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * <p>
- * JAX-RS endepunkt for hÃƒÂ¥ndtering av {@link Avtale}r. Arver metodene fra
- * {@link EntitetsTjeneste}i tillegg til egne metoder.
- * </p>
- *
- */
 @Path("/avtaler")
 @Stateless
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
 
     @EJB
-    private AvleveringTjeneste avleveringTjeneste;
+    private TransferResource transferResource;
 
     public AvtaleTjeneste() {
         super(Avtale.class, "avtaleidentifikator");
@@ -51,7 +44,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
     public String getDefaultAvtale() {
-        Avlevering a = avleveringTjeneste.getDefaultAvlevering();
+        Avlevering a = transferResource.getDefaultAvlevering();
         if (a == null) {
             return null;
         }
@@ -75,7 +68,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         query.setParameter("avtaleidentifikator", avtaleidentifikator);
         List<Avlevering> avleveringer = query.getResultList();
 
-        Avlevering defaultAvlevering = avleveringTjeneste.getDefaultAvlevering();
+        Avlevering defaultAvlevering = transferResource.getDefaultAvlevering();
 
         List<AvleveringDTO> dtoListe = new ArrayList<AvleveringDTO>();
         for (Avlevering avlevering : avleveringer) {

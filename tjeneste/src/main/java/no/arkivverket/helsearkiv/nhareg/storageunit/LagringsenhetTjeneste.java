@@ -76,24 +76,25 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @PUT
     @RolesAllowed(value = {Roller.ROLE_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response oppdaterPasientjournal(Lagringsenhet lagringsenhet) throws ParseException {
+    public Response oppdaterPasientjournal(Lagringsenhet lagringsenhet) {
         String pasientjournalUuid = getPasientjournalUuid(lagringsenhet.getUuid());
         String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pasientjournalUuid);
-
-        //sjekk om lagringsenhet finnes i en annen avlevering
-        List<Valideringsfeil> valideringsfeil = avleveringTjeneste.validerLagringsenheter(avleveringsId, Collections.singletonList(lagringsenhet));
-        if (!valideringsfeil.isEmpty()) {
-            Valideringsfeil feil = new Valideringsfeil("identifikator",
-                    "Lagringsenhetens identifikator finnes i en annen avlevering, benytt en annen identifikator");
-            return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
-        }
-
-        Integer count = getLagringsenhetCount(lagringsenhet.getIdentifikator());
-        if (count > 0) {
-            Valideringsfeil feil = new Valideringsfeil("identifikator",
-                    "Lagringsenhetens identifikator er ikke unik, benytt en annen identifikator");
-            return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
-        }
+        
+        
+        // //sjekk om lagringsenhet finnes i en annen avlevering
+        // List<Valideringsfeil> valideringsfeil = avleveringTjeneste.validerLagringsenheter(avleveringsId, Collections.singletonList(lagringsenhet));
+        // if (!valideringsfeil.isEmpty()) {
+        //     Valideringsfeil feil = new Valideringsfeil("identifikator",
+        //             "Lagringsenhetens identifikator finnes i en annen avlevering, benytt en annen identifikator");
+        //     return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
+        // }
+        //
+        // Integer count = getLagringsenhetCount(lagringsenhet.getIdentifikator());
+        // if (count > 0) {
+        //     Valideringsfeil feil = new Valideringsfeil("identifikator",
+        //             "Lagringsenhetens identifikator er ikke unik, benytt en annen identifikator");
+        //     return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
+        // }
 
         Lagringsenhet updated = update(lagringsenhet);
         return Response.ok(updated).build();
@@ -112,7 +113,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         return String.valueOf(result.get(0));
     }
 
-    public final Integer getLagringsenhetCount(String lagringsenhetIdentifikator){
+    public final Integer getLagringsenhetCount(String lagringsenhetIdentifikator) {
         Query query = getEntityManager().createNativeQuery("select count(*) from Lagringsenhet where identifikator=?");
         query.setParameter(1, lagringsenhetIdentifikator);
 

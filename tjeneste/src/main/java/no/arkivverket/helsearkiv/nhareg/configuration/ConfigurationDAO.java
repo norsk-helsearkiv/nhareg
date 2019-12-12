@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.configuration;
 
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
 
@@ -9,9 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by haraldk on 09.10.15.
- */
 @Stateless
 public class KonfigparamTjeneste {
 

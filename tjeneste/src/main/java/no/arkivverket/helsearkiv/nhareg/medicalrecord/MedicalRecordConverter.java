@@ -3,14 +3,113 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisMapper;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
+import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static no.arkivverket.helsearkiv.nhareg.transformer.Konverterer.tilDatoEllerAar;
 
 public class MedicalRecordMapper {
     
-    public MedicalRecordMapper() {}
+    public static Pasientjournal mapFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
+        final Pasientjournal medicalRecord = new Pasientjournal();
+        final String uuid = personalDataDTO.getUuid();
+
+        medicalRecord.setUuid(uuid);
+        
+        final String[] storageUnits = personalDataDTO.getLagringsenheter();
+        final List<Lagringsenhet> storageUnitList = medicalRecord.getLagringsenhet();
+        if (storageUnits != null) {
+            // For each storage unit: create a new StorageUnit with random UUID, then add it to the list.
+            Arrays.stream(storageUnits).forEach(
+                unitId -> {
+                    final Lagringsenhet storageUnit = new Lagringsenhet(unitId, UUID.randomUUID().toString(), false);
+                    storageUnitList.add(storageUnit);
+                }
+            );
+        }
+        
+        final Journalidentifikator journalId = new Journalidentifikator();
+        medicalRecord.setJournalidentifikator(journalId);
+
+        final String recordNumber = personalDataDTO.getJournalnummer();
+        if (recordNumber != null) {
+            journalId.setJournalnummer(recordNumber);
+        }
+
+        final String serialNumber = personalDataDTO.getLopenummer();
+        if (serialNumber != null) {
+            journalId.setLøpenummer(serialNumber);
+        }
+
+        final String fanearkid = personalDataDTO.getFanearkid();
+        if (fanearkid != null) {
+            medicalRecord.setFanearkid(fanearkid);
+        }
+
+        final Grunnopplysninger baseProperties = new Grunnopplysninger();
+        final String pid = personalDataDTO.getFodselsnummer();
+        if (pid != null) {
+            final Identifikator identifikator = new Identifikator();
+            identifikator.setPID(pid);
+
+            if (PersonnummerValiderer.isHnummer(pid)) {
+                identifikator.setTypePID("H");
+            } else if (PersonnummerValiderer.isDnummer(pid)) {
+                identifikator.setTypePID("D");
+            } else if(PersonnummerValiderer.isFnummer(pid)) {
+                identifikator.setTypePID("F");
+            }
+            
+            baseProperties.setIdentifikator(identifikator);
+        }
+
+        final String name = personalDataDTO.getNavn();
+        if (name != null) {
+            baseProperties.setPnavn(name);
+        }
+
+        final String genderString = personalDataDTO.getKjonn();
+        if (genderString != null) {
+            final Kjønn gender = new Kjønn();
+            gender.setCode(genderString);
+            baseProperties.setKjønn(gender);
+        }
+
+        final String born = personalDataDTO.getFodt();
+        if (born != null) {
+            baseProperties.setFødt(tilDatoEllerAar(born));
+        }
+
+        final String dead = personalDataDTO.getDod();
+        if (dead != null) {
+            baseProperties.setDød(tilDatoEllerAar(dead));
+        }
+
+        baseProperties.setDødsdatoUkjent(baseProperties.getDød() == null);
+        baseProperties.setFodtdatoUkjent(baseProperties.getFødt() == null);
+
+        final Kontakt contact = new Kontakt();
+        final String firstContact = personalDataDTO.getFKontakt();
+        if (firstContact != null) {
+            contact.setFoerste(tilDatoEllerAar(firstContact));
+        }
+
+        final String lastContact = personalDataDTO.getSKontakt();
+        if (lastContact != null) {
+            contact.setSiste(tilDatoEllerAar(lastContact));
+        }
+
+        baseProperties.setKontakt(contact);
+        medicalRecord.setGrunnopplysninger(baseProperties);
+        medicalRecord.setMerknad(personalDataDTO.getMerknad());
+
+        return medicalRecord;
+    }
     
     public static PersondataDTO mapToPersonalDataDTO(Pasientjournal medicalRecord) {
         final PersondataDTO personalData = new PersondataDTO();
