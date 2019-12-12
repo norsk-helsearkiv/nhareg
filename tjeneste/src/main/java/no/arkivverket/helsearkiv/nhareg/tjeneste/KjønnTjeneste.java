@@ -1,11 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ws.rs.Path;
-
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
 
 /**
  * <p>

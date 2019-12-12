@@ -1,14 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import no.arkivverket.helsearkiv.nhareg.auth.AuthSecurityInterceptor;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.PasientjournalTjeneste;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * A class extending {@link Application} and annotated with @ApplicationPath is the Java EE 6

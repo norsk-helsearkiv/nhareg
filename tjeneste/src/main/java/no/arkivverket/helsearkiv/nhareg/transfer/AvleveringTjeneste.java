@@ -1,21 +1,24 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.common.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordMapper;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.PasientjournalTjeneste;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
+import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.StringUtils;
@@ -64,10 +67,9 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     private SessionContext sessionContext;
     @EJB
     private PasientjournalTjeneste pasientjournalTjeneste;
-    @EJB
-    private KjønnTjeneste kjønnTjeneste;
-    @EJB
-    private UserService userService;
+
+    @Inject
+    private UserDAO userDAO;
     
     @Inject
     private MedicalRecordServiceInterface medicalRecordService;
@@ -113,7 +115,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Produces(MediaType.APPLICATION_JSON)
     public Avlevering getDefaultAvlevering() {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final Bruker bruker = userService.findByUsername(username);
+        final Bruker bruker = userDAO.findByUsername(username);
         final String defaultUuid = bruker.getDefaultAvleveringsUuid();
         
         return defaultUuid == null || defaultUuid.isEmpty() ? null : getAvlevering(defaultUuid);
@@ -124,7 +126,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response setDefaultAvlevering(@PathParam("id") String avleveringsidentifikator) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        userService.updateDefaultAvlevering(username, avleveringsidentifikator);
+        userDAO.updateDefaultAvlevering(username, avleveringsidentifikator);
 
         return Response.ok().build();
     }
@@ -246,7 +248,7 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
         Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
         final String username = sessionContext.getCallerPrincipal().getName();
         if (StringUtils.isNotBlank(lagringsenhet.getIdentifikator())) {
-            userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+            userDAO.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
         }
 
         return Response.ok().entity(dto).build();

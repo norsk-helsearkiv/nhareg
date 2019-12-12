@@ -1,7 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.Calendar;
-import java.util.UUID;
+import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
+
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
@@ -9,10 +11,8 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.Path;
-
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
+import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * <p>

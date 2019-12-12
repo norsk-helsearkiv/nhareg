@@ -1,14 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.LagringsenhetTjeneste;
 import org.apache.commons.collections4.Predicate;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.LagringsenhetTjeneste;
 
 /**
  * Predicate som evaluerer om lagringenheten finnes eller ikke.

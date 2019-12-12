@@ -1,5 +1,32 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.PasientjournalTjeneste;
+import no.arkivverket.helsearkiv.nhareg.transfer.AvleveringTjeneste;
+import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
+import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
+import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
+
+import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.Query;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -7,41 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import javax.annotation.Resource;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.persistence.Query;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
-import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
 /**
  * <p>
@@ -65,8 +57,8 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @Resource
     private SessionContext sessionContext;
     
-    @EJB
-    private UserService userTjeneste;
+    @Inject
+    private UserDAO userDAO;
     
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
@@ -142,7 +134,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @Path("/sistBrukte")
     public String getSistBrukteLagringsenhet() {
         final String username = sessionContext.getCallerPrincipal().getName();
-        return userTjeneste.getLagringsenhet(username);
+        return userDAO.getLagringsenhet(username);
     }
 
     @GET
@@ -271,7 +263,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
         Avlevering avl = avleveringTjeneste.getAvlevering(avlId);
 
         final String username = sessionContext.getCallerPrincipal().getName();
-        Bruker bruker = userTjeneste.findByUsername(username);
+        Bruker bruker = userDAO.findByUsername(username);
 
         String printerIp = bruker.getPrinterzpl();
         if (printerIp == null) {

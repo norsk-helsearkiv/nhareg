@@ -1,20 +1,18 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
+import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
 import org.apache.commons.collections4.Transformer;
-
-import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
-
-import no.arkivverket.helsearkiv.nhareg.auth.Roller;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
+import java.util.List;
 
 /**
  *

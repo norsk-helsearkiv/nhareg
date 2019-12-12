@@ -7,6 +7,7 @@ function listService() {
     var data;
     var avlevering = null;
     var sok = null;
+    var size = 15;
 
     function init(t, d) {
         tittel = t;
@@ -37,22 +38,23 @@ function listService() {
 
     function getQuery() {
         if (sok !== null && sok !== undefined) {
-            return "&sokLagringsenhet=" + (sok.sokLagringsenhet ? sok.sokLagringsenhet : "") +
-            "&sokFanearkId=" + (sok.sokFanearkId ? sok.sokFanearkId : "") +
-            "&sokFodselsnummer=" + (sok.sokFodselsnummer ? sok.sokFodselsnummer : "") +
-            "&sokNavn=" + (sok.sokNavn ? sok.sokNavn : "") +
-            "&sokFodt=" + (sok.sokFodt ? sok.sokFodt : "") +
-            "&sokOppdatertAv=" + (sok.sokOppdatertAv ? sok.sokOppdatertAv : "") +
-            "&sokSistOppdatert=" + (sok.sokSistOppdatert ? sok.sokSistOppdatert : "");
+            return "&lagringsenhet=" + (sok.sokLagringsenhet ? sok.sokLagringsenhet : "") +
+              "&fanearkid=" + (sok.sokFanearkId ? sok.sokFanearkId : "") +
+              "&fodselsnummer=" + (sok.sokFodselsnummer ? sok.sokFodselsnummer : "") +
+              "&navn=" + (sok.sokNavn ? sok.sokNavn : "") +
+              "&fodt=" + (sok.sokFodt ? sok.sokFodt : "") +
+              "&oppdatertAv=" + (sok.sokOppdatertAv ? sok.sokOppdatertAv : "") +
+              "&sistOppdatert=" + (sok.sokSistOppdatert ? sok.sokSistOppdatert : "") + 
+              "&transferId=" + (avlevering ? avlevering : "");
         }
 
         return '';
     }
-    
+
     function getSize() {
         return size;
     }
-    
+
     function setSize(newSize) {
         size = newSize;
     }

@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.auth;
+package no.arkivverket.helsearkiv.nhareg.common;
 
 /**
  * Created by haraldk on 24.04.15.

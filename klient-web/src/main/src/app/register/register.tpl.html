@@ -117,7 +117,7 @@
         </div>
 
         <div class="row">
-            <button type="submit" class="btn btn-primary right" ng-hide="pasientjournalDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
+            <button type="submit" class="btn btn-primary right" ng-hide="medicalRecordDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
         </div>
         <br>
         <!-- Diagnoser -->
@@ -163,7 +163,7 @@
 
                 </div>
                 <div class="span span4">
-                    <button id="btn-diagnosis" class="btn btn-diagnosis" type="submit" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose
+                    <button id="btn-diagnosis" class="btn btn-diagnosis" type="submit" ng-hide="medicalRecordDTO.avleveringLaast" data-ng-click="leggTilDiagnose()" data-ng-enter="leggTilDiagnose()">Legg til diagnose
                     </button>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-ng-repeat="diagnose in pasientjournalDTO.diagnoser" ts-repeat>
+                <tr data-ng-repeat="diagnose in medicalRecordDTO.diagnoser" ts-repeat>
                     <td>
                         <button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)" tooltip="{{text.tooltip.deleteElement}}"></button>
                     </td>
@@ -202,7 +202,7 @@
                     <td>{{diagnose.oppdatertAv}}</td>
                     <td>{{diagnose.oppdatertDato}}</td>
                     <td>
-                        <button class="icon icon-edit" ng-hide="pasientjournalDTO.avleveringLaast" ng-click="modify(diagnose)"/>
+                        <button class="icon icon-edit" ng-hide="medicalRecordDTO.avleveringLaast" ng-click="modify(diagnose)"/>
                         <button class="btn btn-primary right" ng-show="editingData[diagnose.uuid]" ng-click="update(diagnose)">Lagre</button>
                     </td>
                 </tr>
@@ -212,7 +212,7 @@
 
 
         <label></label>
-        <button class="right icon-padding-right btn btn-success" ng-hide="pasientjournalDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
+        <button class="right icon-padding-right btn btn-success" ng-hide="medicalRecordDTO.avleveringLaast" data-ng-click="nyJournal()" data-ng-show="state !== 0">
             {{ 'common.ADD' | translate }}
         </button>
         <button class="btn btn-default" data-ng-click="navHome()">Tilbake</button>
