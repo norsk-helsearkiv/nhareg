@@ -20,7 +20,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     private MedicalRecordDAO medicalRecordDAO;
     
     @Inject
-    private MedicalRecordMapper medicalRecordMapper;
+    private TransferDAO transferDAO;
 
     @Override
     public Pasientjournal getById(final String id) {
@@ -50,17 +50,17 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters) {
-        final List<RecordTransferDTO> recordTransferDTOList;
         int page = 0;
         int size  = 0;
-        
-        Map<String, String> mappedQueries = mapQueryParameters(queryParameters);
+
         if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
             page = Integer.parseInt(queryParameters.getFirst(PAGE));
             size = Integer.parseInt(queryParameters.getFirst(SIZE));
         }
-        
-        recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
+
+        final Map<String, String> mappedQueries = convertToMap(queryParameters);
+        final List<RecordTransferDTO> recordTransferDTOList = 
+            medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
         return new ListObject<>(recordTransferDTOList, recordTransferDTOList.size(), page, size);
     }
 
@@ -70,23 +70,21 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     }
 
     /**
-     * Map the query parameters to names that can be used when querying. Also converts from MultivaluedMap to HashMap.
+     * Filter out empty entries and convert to map.
      * @param queryParameters HTTP query parameters passed to the endpoint.
-     * @return HashMap with filter parameters from the query parameters, with all empty params removed.
+     * @return HashMap all empty params removed.
      */
-    private Map<String, String> mapQueryParameters(final MultivaluedMap<String, String> queryParameters) {
-        Map<String, String> mappedQueryParameters = new HashMap<String, String>();
-        
-        mappedQueryParameters.put("fanearkid", queryParameters.getFirst("sokFanearkId"));
-        mappedQueryParameters.put("lagringsenhet", queryParameters.getFirst("sokLagringsenhet"));
-        mappedQueryParameters.put("fodselsnummer", queryParameters.getFirst("sokFodselsnummer"));
-        mappedQueryParameters.put("navn", queryParameters.getFirst("sokNavn"));
-        mappedQueryParameters.put("fodt", queryParameters.getFirst("sokFodt"));
-        mappedQueryParameters.put("oppdatertAv", queryParameters.getFirst("sokOppdatertAv"));
-        mappedQueryParameters.put("sistOppdatert", queryParameters.getFirst("sokSistOppdatert"));
-
-        mappedQueryParameters.entrySet().removeIf(entry -> entry.getValue().isEmpty());
-        return mappedQueryParameters;
+    private Map<String, String> convertToMap(final MultivaluedMap<String, String> queryParameters) {
+        Map<String, String> mappedQueries = new HashMap<>();
+        // Convert to map
+        queryParameters.forEach((key, value) -> mappedQueries.put(key, value.get(0)));
+        // Remove all empty entries, as well as page and size
+        mappedQueries.entrySet().removeIf(entry ->
+                                              entry.getValue() == null ||
+                                              entry.getValue().isEmpty() ||
+                                              SIZE.equals(entry.getKey()) ||
+                                              PAGE.equals(entry.getKey()));
+        return mappedQueries;
     }
+    
 }
-

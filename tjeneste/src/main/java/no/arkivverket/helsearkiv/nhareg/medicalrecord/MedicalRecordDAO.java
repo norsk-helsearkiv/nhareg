@@ -30,12 +30,8 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
             + "JOIN avlevering_pasientjournal aps "
             + "ON ps.uuid = aps.pasientjournal_uuid "
             + "JOIN avlevering a "
-            + "ON a.avleveringsidentifikator = aps.Avlevering_avleveringsidentifikator";
-
-    private final static String GET_TRANSFER_ID_FROM_RECORD =
-        "SELECT Avlevering_avleveringsidentifikator "
-            + "FROM Avlevering_Pasientjournal "
-            + "WHERE pasientjournal_uuid=?";
+            + "ON a.avleveringsidentifikator = aps.Avlevering_avleveringsidentifikator " 
+            + "WHERE (ps.slettet IS NULL) ";
 
     private static final HashMap<String, String> PREDICATE_NATIVE_MAP = new HashMap<String, String>() {{
         put("fanearkid", "(fanearkid LIKE :fanearkid)");
@@ -45,9 +41,10 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         put("sistOppdatert", "(ps.sistOppdatert BETWEEN :sistOppdatert AND :sistOppdatertEnd)");
         put("fodt", "(fdato BETWEEN :fodt AND :fodtEnd)");
         put("fodtYear", "(faar BETWEEN :fodt AND :fodtEnd)");
+        put("transferId", "(aps.Avlevering_avleveringsidentifikator = :transferId)");
     }};
     
-    private static final List<String> DATE_PREDICATES = Arrays.asList("sistOppdatert", "sistOppdatertEnd", "fodt", 
+    private static final List<String> DATE_PREDICATES = Arrays.asList("sistOppdatert", "sistOppdatertEnd", "fodt",
                                                                       "fodtEnd");
 
     public MedicalRecordDAO() {
@@ -55,7 +52,9 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
     }
 
     @Override
-    public List<Pasientjournal> fetchAllPaged(final Map<String, String> queryParameters, final int page, final int size) {
+    public List<Pasientjournal> fetchAllPaged(final Map<String, String> queryParameters, 
+                                              final int page, 
+                                              final int size) {
         List<Pasientjournal> pagedResultList = super.fetchAllPaged(queryParameters, page, size);
         forceLoadStorageUnits(pagedResultList);
         return pagedResultList;
@@ -69,7 +68,8 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
 
         if (page > 0 && size >= 0) {
             // Remove 1 from the page as results are 0 indexed, but given page is not.
-            query.setFirstResult(page - 1);
+            final int index = (page - 1) * size;
+            query.setFirstResult(index);
             query.setMaxResults(size);
         }
 
@@ -82,6 +82,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         // Map each row into a RecordTransferDTO object and add it to a list.
         List<RecordTransferDTO> recordTransferDTOList = new ArrayList<>();
         queryResults.forEach(objects -> recordTransferDTOList.add(mapFromObjectsToRecordTransferDTO(objects)));
+        
         return recordTransferDTOList;
     }
 
@@ -191,21 +192,20 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
                                                    final StringBuilder predicateStringBuilder,
                                                    final Map<String, String> parameters) {
         queryParameters.forEach((key, value) -> {
-            if (value != null && !value.isEmpty()) {
-                if (parameters.size() > 0) {
-                    predicateStringBuilder.append(" AND ");
-                }
+            predicateStringBuilder.append(" AND ");
 
-                if (DATE_PREDICATES.contains(key)) {
-                    final String datePredicateNativeQuery = createDatePredicateNativeQuery(key, value, parameters);
-                    predicateStringBuilder.append(datePredicateNativeQuery);
-                } else if ("navn".equals(key)) {
-                    final String namePredicateNativeQuery = createNamePredicateNativeQuery(value, parameters);
-                    predicateStringBuilder.append(namePredicateNativeQuery);
-                } else {
-                    parameters.put(key, "%" + queryParameters.get(key) + "%");
-                    predicateStringBuilder.append(PREDICATE_NATIVE_MAP.get(key));
-                }
+            if (DATE_PREDICATES.contains(key)) {
+                final String datePredicateNativeQuery = createDatePredicateNativeQuery(key, value, parameters);
+                predicateStringBuilder.append(datePredicateNativeQuery);
+            } else if ("navn".equals(key)) {
+                final String namePredicateNativeQuery = createNamePredicateNativeQuery(value, parameters);
+                predicateStringBuilder.append(namePredicateNativeQuery);
+            } else if ("transferId".equals(key)) {
+                parameters.put(key, queryParameters.get(key));
+                predicateStringBuilder.append(PREDICATE_NATIVE_MAP.get(key));
+            } else {
+                parameters.put(key, "%" + queryParameters.get(key) + "%");
+                predicateStringBuilder.append(PREDICATE_NATIVE_MAP.get(key));
             }
         });
     }
@@ -335,7 +335,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
      */
     private RecordTransferDTO mapFromObjectsToRecordTransferDTO(final Object[] resultRow) {
         final String uuid = Objects.toString(resultRow[0], null);
-        final String fanearkid = Objects.toString(resultRow[1], null);
+        final long fanearkid = Long.parseLong(Objects.toString(resultRow[1], "0"));
         final String daar = Objects.toString(resultRow[2], null);
         final String faar = Objects.toString(resultRow[3], null);
         final String pid = Objects.toString(resultRow[4], null);

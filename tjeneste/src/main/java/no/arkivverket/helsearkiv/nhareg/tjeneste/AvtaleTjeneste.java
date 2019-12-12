@@ -41,7 +41,6 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
         super(Avtale.class, "avtaleidentifikator");
     }
 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Avtale> getAll(@Context UriInfo uriInfo) {

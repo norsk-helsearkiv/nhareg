@@ -25,15 +25,15 @@ import java.text.ParseException;
 public class MedicalRecordResource {
 
     @Inject
-    private MedicalRecordServiceInterface medicalRecordServiceInterface;
+    private MedicalRecordServiceInterface medicalRecordService;
     
     @Inject
     private PasientjournalTjeneste pasientjournalTjeneste;
 
     @GET
     @Path("/{id}")
-    public Pasientjournal get(@PathParam("id") String id) {
-        return medicalRecordServiceInterface.getById(id);
+    public MedicalRecordDTO get(@PathParam("id") String id) {
+        return medicalRecordService.getByIdWithTransfer(id);
     }
     
     @POST
@@ -48,28 +48,16 @@ public class MedicalRecordResource {
         return pasientjournalTjeneste.delete(id);
     }
     
-    // @GET
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public ListObject getAll(@Context UriInfo uriInfo) {
-    //     return medicalRecordServiceInterface.getAll(uriInfo.getQueryParameters());
-    // }
-    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public ListObject getAllWithTransfers(@Context UriInfo uriInfo) {
-        return medicalRecordServiceInterface.getAllWithTransfers(uriInfo.getQueryParameters());
-    }
-
-    @GET
-    @Path("/{id}")
-    public PasientjournalDTO getMedicalRecordDTO(@PathParam("id") String id) {
-        return pasientjournalTjeneste.getPasientjournalDTO(id);
+        return medicalRecordService.getAllWithTransfers(uriInfo.getQueryParameters());
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateMedicalRecord(PasientjournalDTO pasientjournalDTO) throws ParseException {
-        return pasientjournalTjeneste.oppdaterPasientjournal(pasientjournalDTO);
+    public Response updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) throws ParseException {
+        return pasientjournalTjeneste.oppdaterPasientjournal(medicalRecordDTO);
     }
 
     @GET
