@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 

@@ -24,6 +24,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -62,8 +63,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
     @EJB
     private DiagnosekodeTjeneste diagnosekodeTjeneste;
     
-    @EJB
-    private UserService userService;
+    @Inject
+    private UserDAO userDAO;
 
     @EJB(name = "DiagnoseFraDTOTransformer")
     private Transformer<DiagnoseDTO, Diagnose> diagnoseFraDTOTransformer;
@@ -97,7 +98,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return pasientjournal;
     }
 
-    public PasientjournalDTO getPasientjournalDTO(String id) {
+    public MedicalRecordDTO getPasientjournalDTO(String id) {
         Pasientjournal pasientjournal = super.hent(id);
         if (pasientjournal == null) {
             throw new NoResultException(id);
@@ -106,32 +107,33 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         return tilPasientjournalDTO(pasientjournal);
     }
 
-    private PasientjournalDTO tilPasientjournalDTO(Pasientjournal pasientjournal) {
-        PasientjournalDTO pasientjournalDTO = Konverterer.tilPasientjournalDTO(pasientjournal);
-        pasientjournalDTO.setAvleveringsidentifikator(avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid()));
-
-        // Legger til diagnoser.
-        Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
-        pasientjournalDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
-
-        //TODO legger til headerinfo
-        Virksomhet virksomhet = avtaleTjeneste.getVirksomhet();
-
-        Avlevering avlevering = avleveringTjeneste.getAvlevering(pasientjournalDTO.getAvleveringsidentifikator());
-        pasientjournalDTO.setAvleveringBeskrivelse(avlevering.getAvleveringsbeskrivelse());
-        pasientjournalDTO.setAvtaleBeskrivelse(avlevering.getAvtale().getAvtalebeskrivelse());
-        pasientjournalDTO.setVirksomhet(virksomhet.getForetaksnavn());
-        pasientjournalDTO.setAvleveringLaast(avlevering.getLaast());
-        pasientjournalDTO.setLagringsenhetformat(avlevering.getLagringsenhetformat());
-        //pasientjournal -> avlevering -> virksomhet
-
-        return pasientjournalDTO;
+    private MedicalRecordDTO tilPasientjournalDTO(Pasientjournal pasientjournal) {
+        // MedicalRecordDTO medicalRecordDTO = MedicalRecordMapper.mapToMedicalRecordDTO(pasientjournal);
+        // medicalRecordDTO.setAvleveringsidentifikator(avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid()));
+        //
+        // // Legger til diagnoser.
+        // Collection<DiagnoseDTO> diagnoseCollection = CollectionUtils.collect(pasientjournal.getDiagnose(), diagnoseTilDTOTransformer);
+        // medicalRecordDTO.setDiagnoser(new ArrayList<DiagnoseDTO>(diagnoseCollection));
+        //
+        // //TODO legger til headerinfo
+        // Virksomhet virksomhet = avtaleTjeneste.getVirksomhet();
+        //
+        // Avlevering avlevering = avleveringTjeneste.getAvlevering(medicalRecordDTO.getAvleveringsidentifikator());
+        // medicalRecordDTO.setAvleveringBeskrivelse(avlevering.getAvleveringsbeskrivelse());
+        // medicalRecordDTO.setAvtaleBeskrivelse(avlevering.getAvtale().getAvtalebeskrivelse());
+        // medicalRecordDTO.setVirksomhet(virksomhet.getForetaksnavn());
+        // medicalRecordDTO.setAvleveringLaast(avlevering.getLaast());
+        // medicalRecordDTO.setLagringsenhetformat(avlevering.getLagringsenhetformat());
+        // //pasientjournal -> avlevering -> virksomhet
+        //
+        // return medicalRecordDTO;
+        return null;
     }
 
     //får ikke brukt super sin update, for det er DTO som valideres, ikke Pasientjournal
-    public Response oppdaterPasientjournal(PasientjournalDTO pasientjournalDTO) throws ParseException {
+    public Response oppdaterPasientjournal(MedicalRecordDTO medicalRecordDTO) throws ParseException {
         // VALIDERING - Persondata
-        List<Valideringsfeil> valideringsfeil = validerGrunnopplysningerPasientjournal(pasientjournalDTO.getPersondata());
+        List<Valideringsfeil> valideringsfeil = validerGrunnopplysningerPasientjournal(medicalRecordDTO.getPersondata());
         if (!valideringsfeil.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(valideringsfeil).build();
         }
@@ -140,7 +142,7 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         //Coming soon (tm)
         
         //KONVERTERING
-        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(pasientjournalDTO);
+        Pasientjournal pasientjournal = Konverterer.tilPasientjournal(medicalRecordDTO);
 
         String avleveringsId = avleveringTjeneste.getAvleveringsidentifikator(pasientjournal.getUuid());
         valideringsfeil.addAll(avleveringTjeneste.validerLagringsenheter(avleveringsId, pasientjournal.getLagringsenhet()));
@@ -156,8 +158,8 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         
         //pasientjournal.getDiagnose().addAll(CollectionUtils.collect(pasientjournalDTO.getDiagnoser(), diagnoseFraDTOTransformer));
         //Setter verdier
-        if (pasientjournalDTO.getPersondata().getKjonn() != null) {
-            Kjønn kjonn = kjonnTjeneste.getSingleInstance(pasientjournalDTO.getPersondata().getKjonn());
+        if (medicalRecordDTO.getPersondata().getKjonn() != null) {
+            Kjønn kjonn = kjonnTjeneste.getSingleInstance(medicalRecordDTO.getPersondata().getKjonn());
             pasientjournal.getGrunnopplysninger().setKjønn(kjonn);
         }
         
@@ -165,17 +167,17 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
         Lagringsenhet lagringsenhet = pasientjournal.getLagringsenhet().get(0);
         final String username = sessionContext.getCallerPrincipal().getName();
         if (StringUtils.isNotBlank(lagringsenhet.getIdentifikator())) {
-            userService.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+            userDAO.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
         }
 
         // Update avlevering
-        Avlevering avlevering = avleveringTjeneste.getAvlevering(pasientjournalDTO.getAvleveringsidentifikator());
-        final String beskrivelse = pasientjournalDTO.getAvleveringBeskrivelse();
+        Avlevering avlevering = avleveringTjeneste.getAvlevering(medicalRecordDTO.getAvleveringsidentifikator());
+        final String beskrivelse = medicalRecordDTO.getAvleveringBeskrivelse();
         if (beskrivelse != null && !beskrivelse.isEmpty()) {
             avlevering.setAvleveringsbeskrivelse(beskrivelse);
         }
         
-        final String lagringsenhetFormat = pasientjournalDTO.getLagringsenhetformat();
+        final String lagringsenhetFormat = medicalRecordDTO.getLagringsenhetformat();
         if (lagringsenhetFormat != null && !lagringsenhetFormat.isEmpty()) {
             avlevering.setLagringsenhetformat(lagringsenhetFormat);
         }
@@ -411,13 +413,13 @@ public class PasientjournalTjeneste extends EntitetsTjeneste<Pasientjournal, Str
      * @param identifikator
      * @return
      */
-    public List<PasientjournalSokeresultatDTO> hentPasientjournalerForLagringsenhet(String identifikator) {
+    public List<RecordTransferDTO> hentPasientjournalerForLagringsenhet(String identifikator) {
         List<Pasientjournal> res = sokPasientjournalerForLagringsenhet(identifikator);
-        List<PasientjournalSokeresultatDTO> finalList = new ArrayList<PasientjournalSokeresultatDTO>();
+        List<RecordTransferDTO> finalList = new ArrayList<>();
         
         for (Pasientjournal pasientjournal : res) {
             if (pasientjournal.getSlettet() == null || !pasientjournal.getSlettet()) {
-                PasientjournalSokeresultatDTO sokeresultatDTO = Konverterer.tilPasientjournalSokeresultatDTO(pasientjournal);
+                RecordTransferDTO sokeresultatDTO = MedicalRecordMapper.mapToRecordTransferDTO(pasientjournal);
                 finalList.add(sokeresultatDTO);
             }
         }

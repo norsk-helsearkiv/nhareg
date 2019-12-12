@@ -7,6 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.transfer.AvleveringTjeneste;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -32,8 +33,7 @@ import java.util.List;
 @Stateless
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
-    @EJB
-    private UserService userService;
+
     @EJB
     private AvleveringTjeneste avleveringTjeneste;
 

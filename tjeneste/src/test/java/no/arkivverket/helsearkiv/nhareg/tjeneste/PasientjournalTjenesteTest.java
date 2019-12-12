@@ -2,9 +2,10 @@ package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.PasientjournalTjeneste;
 import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
@@ -40,50 +41,16 @@ public class PasientjournalTjenesteTest {
         return RESTDeployment.deployment();
     }
 
-//    @Test
-//    public void getAll_tomInfo_skalGiTo() throws Exception {
-//        userHandler.call(new Callable<Object>() {
-//            @Override
-//            public Object call() {
-//                ListObject listeObjekt = tjeneste.hentAlle(new MockUriInfo());
-//                assertEquals(2, listeObjekt.getTotal());
-//
-//                return null;
-//            }
-//        });
-//    }
-
-//    @Test
-//    public void getActiveWithPaging_henterEnFraSideTo_andreElementIListen() throws Exception {
-//        userHandler.call(new Callable<Object>() {
-//            @Override
-//            public Object call() {
-//                //Henter alle pasientjournaler i databasen for test av paging
-//                MultivaluedHashMap<String, String> map = new MultivaluedHashMap<String, String>();
-//                List<Pasientjournal> pasientjournaler = tjeneste.fetchAll(map);
-//
-//                ListObject listObject = tjeneste.getActiveWithPaging(pasientjournaler, new MockUriInfoQPFilled());
-//                assertEquals(2, listObject.getTotal());
-//                assertEquals(1, listObject.getNumber());
-//                List<PasientjournalSokeresultatDTO> resultatListe
-//                    = (List<PasientjournalSokeresultatDTO>) listObject.getListe();
-//                assertEquals("uuid1", resultatListe.get(0).getUuid());
-//
-//                return null;
-//            }
-//        });
-//    }
-
     @Test
     public void getSingleInstance_henterForsteObjekt_returnererDTO() throws Exception {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
-                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
+                MedicalRecordDTO medicalRecordDTO = tjeneste.getPasientjournalDTO("uuid1");
 
-                assertEquals("Hunden Fido", pasientjournalDTO.getPersondata().getNavn());
-                assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
-                assertFalse(pasientjournalDTO.getDiagnoser().isEmpty());
+                assertEquals("Hunden Fido", medicalRecordDTO.getPersondata().getNavn());
+                assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
+                assertFalse(medicalRecordDTO.getDiagnoser().isEmpty());
 
                 return null;
             }
@@ -180,9 +147,9 @@ public class PasientjournalTjenesteTest {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() throws ParseException {
-                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-                pasientjournalDTO.getPersondata().setJournalnummer("12345");
-                tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+                MedicalRecordDTO medicalRecordDTO = tjeneste.getPasientjournalDTO("uuid1");
+                medicalRecordDTO.getPersondata().setJournalnummer("12345");
+                tjeneste.oppdaterPasientjournal(medicalRecordDTO);
 
                 return null;
             }
@@ -194,18 +161,18 @@ public class PasientjournalTjenesteTest {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() throws ParseException {
-                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-                assertNotNull(pasientjournalDTO);
+                MedicalRecordDTO medicalRecordDTO = tjeneste.getPasientjournalDTO("uuid1");
+                assertNotNull(medicalRecordDTO);
 
                 final String beskrivelse = "ny beskrivelse";
-                pasientjournalDTO.setAvleveringBeskrivelse(beskrivelse);
-                Response response = tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+                medicalRecordDTO.setAvleveringBeskrivelse(beskrivelse);
+                Response response = tjeneste.oppdaterPasientjournal(medicalRecordDTO);
 
                 assertEquals(200, response.getStatus());
 
-                pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-                assertNotNull(pasientjournalDTO);
-                assertEquals(beskrivelse, pasientjournalDTO.getAvleveringBeskrivelse());
+                medicalRecordDTO = tjeneste.getPasientjournalDTO("uuid1");
+                assertNotNull(medicalRecordDTO);
+                assertEquals(beskrivelse, medicalRecordDTO.getAvleveringBeskrivelse());
 
                 return null;
             }
@@ -223,21 +190,21 @@ public class PasientjournalTjenesteTest {
                 assertNotNull(pasientjournal.getLagringsenhet());
                 assertEquals(3, pasientjournal.getLagringsenhet().size());
 
-                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
-                assertNotNull(pasientjournalDTO);
-                assertNotNull(pasientjournalDTO.getPersondata());
-                assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
-                assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+                MedicalRecordDTO medicalRecordDTO = tjeneste.getPasientjournalDTO(id);
+                assertNotNull(medicalRecordDTO);
+                assertNotNull(medicalRecordDTO.getPersondata());
+                assertNotNull(medicalRecordDTO.getPersondata().getLagringsenheter());
+                assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
 
                 // Gjør en oppdatering.
-                tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+                tjeneste.oppdaterPasientjournal(medicalRecordDTO);
 
                 // Sjekker antall diagnoser som er lagret
-                pasientjournalDTO = tjeneste.getPasientjournalDTO("uuid1");
-                assertNotNull(pasientjournalDTO);
-                assertNotNull(pasientjournalDTO.getPersondata());
-                assertNotNull(pasientjournalDTO.getPersondata().getLagringsenheter());
-                assertEquals(3, pasientjournalDTO.getPersondata().getLagringsenheter().length);
+                medicalRecordDTO = tjeneste.getPasientjournalDTO("uuid1");
+                assertNotNull(medicalRecordDTO);
+                assertNotNull(medicalRecordDTO.getPersondata());
+                assertNotNull(medicalRecordDTO.getPersondata().getLagringsenheter());
+                assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
                 
                 return null;
             }
@@ -253,8 +220,8 @@ public class PasientjournalTjenesteTest {
                 // Tar opp igjen pasientjournalen og endrer f.eks. dato.
                 // Resultatet er at de registrerte diagnosetekstene er forsvunnet.
                 final String id = "uuid1";
-                PasientjournalDTO pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
-                assertNotNull(pasientjournalDTO);
+                MedicalRecordDTO medicalRecordDTO = tjeneste.getPasientjournalDTO(id);
+                assertNotNull(medicalRecordDTO);
         
                 // Legger til diagnose.
                 DiagnoseDTO diagnoseDTO = new DiagnoseDTO();
@@ -265,15 +232,15 @@ public class PasientjournalTjenesteTest {
                 assertEquals(200, response.getStatus());
         
                 final String fodt = "1990";
-                pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
-                assertNotNull(pasientjournalDTO);
-                pasientjournalDTO.getPersondata().setFodt(fodt);
+                medicalRecordDTO = tjeneste.getPasientjournalDTO(id);
+                assertNotNull(medicalRecordDTO);
+                medicalRecordDTO.getPersondata().setFodt(fodt);
                 // Oppdater
-                response = tjeneste.oppdaterPasientjournal(pasientjournalDTO);
+                response = tjeneste.oppdaterPasientjournal(medicalRecordDTO);
                 assertEquals(200, response.getStatus());
                 
-                pasientjournalDTO = tjeneste.getPasientjournalDTO(id);
-                assertEquals(fodt, pasientjournalDTO.getPersondata().getFodt());
+                medicalRecordDTO = tjeneste.getPasientjournalDTO(id);
+                assertEquals(fodt, medicalRecordDTO.getPersondata().getFodt());
                 
                 return null;
             }
@@ -309,5 +276,4 @@ public class PasientjournalTjenesteTest {
             }
         });
     }
-
 }

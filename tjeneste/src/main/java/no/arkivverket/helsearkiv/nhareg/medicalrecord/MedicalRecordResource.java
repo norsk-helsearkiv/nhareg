@@ -3,7 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.PasientjournalTjeneste;
 

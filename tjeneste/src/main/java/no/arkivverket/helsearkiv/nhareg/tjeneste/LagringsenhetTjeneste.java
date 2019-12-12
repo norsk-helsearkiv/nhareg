@@ -141,7 +141,7 @@ public class LagringsenhetTjeneste extends EntitetsTjeneste<Lagringsenhet, Strin
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
     @Path("/{id}/pasientjournaler")
-    public List<PasientjournalSokeresultatDTO> getPasientjournaler(@PathParam("id") final String id) {
+    public List<RecordTransferDTO> getPasientjournaler(@PathParam("id") final String id) {
         return pasientjournalTjeneste.hentPasientjournalerForLagringsenhet(id);
     }
 

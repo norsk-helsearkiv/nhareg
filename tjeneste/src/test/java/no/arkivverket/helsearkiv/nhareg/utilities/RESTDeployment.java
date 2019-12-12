@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;

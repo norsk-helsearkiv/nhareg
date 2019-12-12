@@ -1,20 +1,15 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordMapper;
+import org.junit.Test;
+
 import java.text.ParseException;
 import java.util.Calendar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Identifikator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Journalidentifikator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kontakt;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalSokeresultatDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
@@ -35,8 +30,8 @@ public class KonvertererTransformerTest {
         dto.setLopenummer("234");
         dto.setNavn("Natalie");
         dto.setUuid("uuid1");
-        dto.setfKontakt("2009");
-        dto.setsKontakt("2009");
+        dto.setFKontakt("2009");
+        dto.setSKontakt("2009");
 
         Pasientjournal pasientjournal = Konverterer.tilPasientjournal(dto);
 
