@@ -194,7 +194,7 @@
     "EXPECTATION_FAILED_STATUS_CODE":"Entiteten finnes fra før",
     "EXPECTATION_FAILED":           "Det finnes en entitet med samme Id"
   },
-  "feltfeil" : {
+  "formError" : {
     "DagEllerAar" : "Feil datoformat, eksempel på format (01.01.1990)",
     "NotNull" : "Kan ikke være tom",
     "Size" : "Kan ikke være tom",
@@ -217,6 +217,11 @@
     "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
     "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
     "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn",
+    "NotIdentical" : "Passordene er ikke like",
+    "Empty printer IP" : "Printer-IP kan ikke være tom",
+    "Error in IP address length" : "Feil lengde på printer-IP",
+    "Error in IP format" : "Feil format på printer-IP",
+    "Error with integers in IP" : "Printer-IP kan kun inneholde tall",
     "NationalIdentityDoesNotExist" : "Fødselsnummeret finnes ikke i LMR"
   },
   "attributes" :  {
