@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -150,6 +151,8 @@ public class AdminTjeneste {
             }
         }
 
+        validatePrinterIP(bruker.getPrinterzpl());
+
         String b64Pwd = passordToHash(bruker.getPassord());
         bruker.setPassord(b64Pwd);
 
@@ -184,6 +187,38 @@ public class AdminTjeneste {
         }
 
         return feilList;
+    }
+
+    private void validatePrinterIP(final String printerIP) {
+        final List<Valideringsfeil> errorList = new ArrayList<>();
+
+        if (printerIP == null || printerIP.isEmpty()) {
+            final Valideringsfeil emptyPrinterError =new Valideringsfeil("printer", "Empty printer IP");
+            errorList.add(emptyPrinterError);
+        } else {
+            final String[] ipGroups = printerIP.split("\\.");
+            if (ipGroups.length != 4) {
+                errorList.add(new Valideringsfeil("printer", "Error in IP address length"));
+            }
+
+            try {
+                boolean correctFormat = Arrays.stream(ipGroups)
+                        .filter(group -> group.length() > 1 && group.startsWith("0"))
+                        .map(Integer::parseInt)
+                        .filter(group -> (group >= 0 && group <= 255))
+                        .count() == 4;
+                if (!correctFormat) {
+                    errorList.add(new Valideringsfeil("printer", "Error in IP format"));
+                }
+            } catch (NumberFormatException nfe) {
+                nfe.printStackTrace();
+                errorList.add(new Valideringsfeil("printer", "Error with integers in IP"));
+            }
+        }
+
+        if (errorList.size() > 0) {
+            throw new ValideringsfeilException(errorList);
+        }
     }
 
     @Produces(MediaType.APPLICATION_JSON)

@@ -1,4 +1,4 @@
-# Get node 
+# Get node
 FROM node:latest as web-build
 
 WORKDIR /usr/src
@@ -11,8 +11,8 @@ RUN cd klient-web/src/main/ \
     && npm install -g grunt-cli \
     && grunt
 
-# Get maven with jdk 7
-FROM library/maven:3.6.1-jdk-7-slim as build
+# Get maven with jdk 8
+FROM library/maven:3.6.3-jdk-8-slim as build
 
 ARG MAVEN_ARGS=""
 

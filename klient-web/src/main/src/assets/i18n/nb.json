@@ -75,8 +75,6 @@
           "ROLLE" : "Rolle",
           "PASSORD" : "Passord",
           "PASSORD_BEKREFT" : "Bekreft passord",
-          "PASSORD_FEIL" : "Passordet har feil lengde, må være 5 tegn eller mer",
-          "PASSORD_ULIKT" : "Passordene er ikke like",
           "NYTT_PASSORD" :"Nytt passord",
           "ENDRE_PASSORD" : "Endre passordet mitt",
           "NYTTPASSORD" : "Sett nytt passord ved neste pålogging",
@@ -220,7 +218,12 @@
         "DiagFormatFeil" : "Feltet krever gyldig dato/årstall, vennligst korriger",
         "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
         "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-        "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn"
+        "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn",
+        "NotIdentical" : "Passordene er ikke like",
+        "Empty printer IP" : "Printer-IP kan ikke være tom",
+        "Error in IP address length" : "Feil lengde på printer-IP",
+        "Error in IP format" : "Feil format på printer-IP",
+        "Error with integers in IP" : "Printer-IP kan kun inneholde tall"
     },
     "konfig" : {
     	"ANTALL" : "15"

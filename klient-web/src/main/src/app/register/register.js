@@ -106,7 +106,7 @@ angular.module('nha.register', [
 
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.NotNull');
+                return $filter('translate')('formError.NotNull');
             },
             function (newval) {
                 $scope.feilTekster['NotNull'] = newval;
@@ -114,7 +114,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.DagEllerAar');
+                return $filter('translate')('formError.DagEllerAar');
             },
             function (newval) {
                 $scope.feilTekster['DagEllerAar'] = newval;
@@ -122,7 +122,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.NotUnique');
+                return $filter('translate')('formError.NotUnique');
             },
             function (newval) {
                 $scope.feilTekster['NotUnique'] = newval;
@@ -130,7 +130,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.Size');
+                return $filter('translate')('formError.Size');
             },
             function (newval) {
                 $scope.feilTekster['Size'] = newval;
@@ -138,7 +138,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.FodtEtterDodt');
+                return $filter('translate')('formError.FodtEtterDodt');
             },
             function (newval) {
                 $scope.feilTekster['FodtEtterDodt'] = newval;
@@ -146,7 +146,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.FeilFodselsnummer');
+                return $filter('translate')('formError.FeilFodselsnummer');
             },
             function (newval) {
                 $scope.feilTekster['FeilFodselsnummer'] = newval;
@@ -155,7 +155,7 @@ angular.module('nha.register', [
 
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.FeilFanearkid');
+                return $filter('translate')('formError.FeilFanearkid');
             },
             function (newval) {
                 $scope.feilTekster['FeilFanearkid'] = newval;
@@ -163,7 +163,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.FeilFanearkidNull');
+                return $filter('translate')('formError.FeilFanearkidNull');
             },
             function (newval) {
                 $scope.feilTekster['FeilFanearkidNull'] = newval;
@@ -171,7 +171,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.EnObligatorisk');
+                return $filter('translate')('formError.EnObligatorisk');
             },
             function (newval) {
                 $scope.feilTekster['EnObligatorisk'] = newval;
@@ -179,7 +179,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.fKontaktForFodt');
+                return $filter('translate')('formError.fKontaktForFodt');
             },
             function (newval) {
                 $scope.feilTekster['fKontaktForFodt'] = newval;
@@ -187,7 +187,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.sKontaktForFodt');
+                return $filter('translate')('formError.sKontaktForFodt');
             },
             function (newval) {
                 $scope.feilTekster['sKontaktForFodt'] = newval;
@@ -195,7 +195,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.fKontaktEtterDod');
+                return $filter('translate')('formError.fKontaktEtterDod');
             },
             function (newval) {
                 $scope.feilTekster['fKontaktEtterDod'] = newval;
@@ -203,7 +203,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.sKontaktEtterDod');
+                return $filter('translate')('formError.sKontaktEtterDod');
             },
             function (newval) {
                 $scope.feilTekster['sKontaktEtterDod'] = newval;
@@ -211,7 +211,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.fKontaktEttersKontakt');
+                return $filter('translate')('formError.fKontaktEttersKontakt');
             },
             function (newval) {
                 $scope.feilTekster['fKontaktEttersKontakt'] = newval;
@@ -219,7 +219,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.UtenforGyldigPeriode');
+                return $filter('translate')('formError.UtenforGyldigPeriode');
             },
             function (newval) {
                 $scope.feilTekster['UtenforGyldigPeriode'] = newval;
@@ -227,7 +227,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.UkjentDiagnosekode');
+                return $filter('translate')('formError.UkjentDiagnosekode');
             },
             function (newval) {
                 $scope.feilTekster['UkjentDiagnosekode'] = newval;
@@ -235,7 +235,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.manglermors');
+                return $filter('translate')('formError.manglermors');
             },
             function (newval) {
                 $scope.feilTekster['manglermors'] = newval;
@@ -243,7 +243,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.DiagEtterDod');
+                return $filter('translate')('formError.DiagEtterDod');
             },
             function (newval) {
                 $scope.feilTekster['DiagEtterDod'] = newval;
@@ -251,7 +251,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.DiagForFodt');
+                return $filter('translate')('formError.DiagForFodt');
             },
             function (newval) {
                 $scope.feilTekster['DiagForFodt'] = newval;
@@ -259,7 +259,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.DiagFormatFeil');
+                return $filter('translate')('formError.DiagFormatFeil');
             },
             function (newval) {
                 $scope.feilTekster['DiagFormatFeil'] = newval;
@@ -267,7 +267,7 @@ angular.module('nha.register', [
         );
         $scope.$watch(
             function () {
-                return $filter('translate')('feltfeil.sKontaktNotNull');
+                return $filter('translate')('formError.sKontaktNotNull');
             },
             function (newval) {
                 $scope.feilTekster['sKontaktNotNull'] = newval;
@@ -378,7 +378,7 @@ angular.module('nha.register', [
             diagnosekode = "";
 
             if (keepDate){
-                document.getElementById("diagnosedato-input").focus();
+                document.getElementById("diagnosisDate-input").focus();
                 $scope.formDiagnose.diagnosedato = oldDiagnosedato;
             }
 
