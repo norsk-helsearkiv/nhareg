@@ -1,13 +1,9 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
+import lombok.Data;
 
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 
 /**
  * 
@@ -49,134 +45,18 @@ import javax.xml.bind.annotation.XmlType;
 @XmlSeeAlso({
     Diagnosekode.class
 })
-public class CV implements Serializable
-{
+@Data
+public class CV implements Serializable {
 
     protected String code;
+    
     protected String displayName;
+    
     @XmlElement(required = true)
     protected String codeSystem;
+    
     protected String codeSystemVersion;
+    
     protected String originalText;
-
-    /**
-     * Gets the value of the code property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * Sets the value of the code property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCode(String value) {
-        this.code = value;
-    }
-
-    /**
-     * Gets the value of the displayName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * Sets the value of the displayName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDisplayName(String value) {
-        this.displayName = value;
-    }
-
-    /**
-     * Gets the value of the codeSystem property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCodeSystem() {
-        return codeSystem;
-    }
-
-    /**
-     * Sets the value of the codeSystem property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCodeSystem(String value) {
-        this.codeSystem = value;
-    }
-
-    /**
-     * Gets the value of the codeSystemVersion property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCodeSystemVersion() {
-        return codeSystemVersion;
-    }
-
-    /**
-     * Sets the value of the codeSystemVersion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCodeSystemVersion(String value) {
-        this.codeSystemVersion = value;
-    }
-
-    /**
-     * Gets the value of the originalText property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getOriginalText() {
-        return originalText;
-    }
-
-    /**
-     * Sets the value of the originalText property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setOriginalText(String value) {
-        this.originalText = value;
-    }
 
 }

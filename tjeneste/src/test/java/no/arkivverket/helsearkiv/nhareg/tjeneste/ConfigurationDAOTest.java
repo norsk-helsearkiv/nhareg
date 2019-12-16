@@ -1,17 +1,15 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import no.arkivverket.helsearkiv.nhareg.configuration.KonfigparamTjeneste;
+import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
-
 import javax.inject.Inject;
-
-import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
  * Names tested must match those inserted into the database in import.sql
  */
 @RunWith(Arquillian.class)
-public class KonfigparamTjenesteTest {
+public class ConfigurationDAOTest {
 
     @Deployment
     public static WebArchive deployment() {
@@ -30,23 +28,23 @@ public class KonfigparamTjenesteTest {
     }
 
     @Inject
-    private KonfigparamTjeneste konfigparamTjeneste;
+    private ConfigurationDAO configurationDAO;
 
     @Test
     public void testHentingAvStringVerdi() {
-        String dato = konfigparamTjeneste.getVerdi("LowLim");
+        String dato = configurationDAO.getValue("LowLim");
         assertNotNull(dato);
     }
 
     @Test
     public void testHentingAvDato(){
-        Date date = konfigparamTjeneste.getDate("LowLim");
+        Date date = configurationDAO.getDate("LowLim");
         assertNotNull(date);
     }
 
     @Test
     public void testHentingAvHeltall(){
-        Integer integer = konfigparamTjeneste.getInt("MaxAge");
+        Integer integer = configurationDAO.getInt("MaxAge");
         assertEquals(Integer.valueOf(200), integer);
     }
 }

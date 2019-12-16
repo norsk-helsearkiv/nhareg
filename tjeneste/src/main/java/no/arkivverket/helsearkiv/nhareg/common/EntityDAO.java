@@ -1,6 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -28,6 +31,52 @@ public abstract class EntityDAO<T> {
         this.idName = idName;
     }
 
+    public T create(@NotNull final T entity) {
+        new Validator<T>(entityClass).validerMedException(entity);
+
+        entityManager.persist(entity);
+
+        return entity;
+    }
+
+    public T update(T entity) {
+        // Validerer.
+        new Validator<T>(entityClass).validerMedException(entity);
+
+        // Oppdaterer.
+        getEntityManager().merge(entity);
+
+        return entity;
+    }
+
+    public T delete(@NotNull final String id) {
+        T entity = fetchSingleInstance(id);
+        getEntityManager().remove(entity);
+
+        return entity;
+    }
+        
+    /**
+     * Fetches a single instance of the entity.
+     * @param id Key for the entity.
+     * @return The entity matching the id, if any
+     * @throws NoResultException If no entity with the given id could be found.
+     */
+    public T fetchSingleInstance(@NotNull final String id) throws NoResultException {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<T> root = criteriaQuery.from(entityClass);
+        final Predicate condition = criteriaBuilder.equal(root.get(idName), id);
+
+        criteriaQuery.select(criteriaBuilder.createQuery(entityClass).getSelection()).where(condition);
+
+        try {
+            return entityManager.createQuery(criteriaQuery).getSingleResult();
+        } catch (NoResultException nre) {
+            throw new NoResultException(id);
+        }
+    }
+    
     /**
      * Find an entity by its ID.
      * @param id Primary key for the entity.
@@ -89,4 +138,5 @@ public abstract class EntityDAO<T> {
     }
     
     protected EntityManager getEntityManager() { return this.entityManager; }
+
 }

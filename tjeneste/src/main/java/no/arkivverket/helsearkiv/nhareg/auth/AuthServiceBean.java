@@ -17,7 +17,7 @@ public class AuthServiceBean implements AuthService {
     private UserDAO userDAO;
 
     public boolean isAuthorized(String name, Set<String> rolesAllowed){
-        Bruker user = userDAO.findByUsername(name);
+        Bruker user = userDAO.fetchByUsername(name);
         return rolesAllowed.contains(user.getRolle().getNavn());
     }
 }

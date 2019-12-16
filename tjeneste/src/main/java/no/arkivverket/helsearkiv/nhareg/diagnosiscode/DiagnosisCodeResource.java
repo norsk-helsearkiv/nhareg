@@ -15,7 +15,7 @@ import java.util.List;
 
 @Path("/diagnosekoder")
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-public class DiagnosekodeTjeneste {
+public class DiagnosisCodeResource {
 
     @Inject
     private DiagnosisCodeServiceInterface diagnosisCodeService;

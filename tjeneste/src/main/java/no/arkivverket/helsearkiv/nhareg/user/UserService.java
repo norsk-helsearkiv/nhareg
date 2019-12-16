@@ -69,7 +69,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public void updatePassword(final String newPassword) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final Bruker bruker = userDAO.findByUsername(username);
+        final Bruker bruker = userDAO.fetchByUsername(username);
         final String b64pwd = passordToHash(newPassword);
 
         final List<Valideringsfeil> feil = validerNyEndreBruker(newPassword);
@@ -99,9 +99,19 @@ public class UserService implements UserServiceInterface {
     @Override
     public Boolean checkPasswordReset() {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final Bruker user = userDAO.findByUsername(username);
+        final Bruker user = userDAO.fetchByUsername(username);
 
         return "Y".equals(user.getResetPassord());
+    }
+
+    @Override
+    public Bruker getByUsername(String username) {
+        return userDAO.fetchByUsername(username);
+    }
+
+    @Override 
+    public void updateDefaultTransferForUser(final String username, final String transferId) {
+        userDAO.updateDefaultAvlevering(username, transferId);
     }
 
     @Override
@@ -119,7 +129,7 @@ public class UserService implements UserServiceInterface {
     @Override
     public String getLastUsedStorageUnit() {
         final String username = sessionContext.getCallerPrincipal().getName();
-        return userDAO.getLagringsenhet(username);
+        return userDAO.fetchStorageUnitByUsername(username);
     }
 
     private List<Valideringsfeil> validerNyEndreBruker(final String passord) {

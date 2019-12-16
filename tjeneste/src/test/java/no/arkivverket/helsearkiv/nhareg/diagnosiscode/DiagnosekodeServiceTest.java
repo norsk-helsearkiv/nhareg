@@ -1,7 +1,7 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
 import org.junit.Test;
 
 import javax.inject.Inject;

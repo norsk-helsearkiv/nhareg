@@ -1,49 +1,24 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-
-import static org.junit.Assert.assertNotNull;
-
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
+import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Kjønn;
-import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
-import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
+import static org.junit.Assert.assertNotNull;
 
-@RunWith(Arquillian.class)
 public class KjonnTjenesteTest {
 
-    @Deployment
-    public static WebArchive deployment() {
-        return RESTDeployment.deployment();
-    }
-
     @Inject
-    private KjønnTjeneste tjeneste;
+    private GenderDAO genderDAO;
 
-    @Inject
-    private UserHandler userHandler;
-    
     @Test
-    public void create_gyldigKjonn_skalIkkeGiNull() throws Exception {
-        userHandler.call(new Callable<Object>() {
-            @Override
-            public Object call() {
-                Kjønn kjonn = new Kjønn();
-                kjonn.setCode("I");
-                kjonn.setDisplayName("Intetkjønn");
-                Kjønn result = tjeneste.create(kjonn);
-                assertNotNull(result);
-                
-                return null;
-            }
-        });
+    public void create_gyldigKjonn_skalIkkeGiNull() {
+        final Kjønn kjonn = new Kjønn();
+        kjonn.setCode("I");
+        kjonn.setDisplayName("Intetkjønn");
+        final Kjønn result = genderDAO.create(kjonn);
+        assertNotNull(result);
     }
 }

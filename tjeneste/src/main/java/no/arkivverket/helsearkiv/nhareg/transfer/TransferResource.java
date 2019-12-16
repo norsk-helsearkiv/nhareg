@@ -1,7 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
@@ -27,7 +26,7 @@ import java.util.List;
 @Path("/avleveringer")
 @Stateless
 @RolesAllowed({Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-public class AvleveringTjeneste {
+public class TransferResource {
 
     @Resource
     private SessionContext sessionContext;
@@ -73,11 +72,7 @@ public class AvleveringTjeneste {
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
     public Avlevering getDefaultAvlevering() {
-        final String username = userService.getUser();
-        final Bruker bruker = userService.getByUsername(username);
-        final String defaultUuid = bruker.getDefaultAvleveringsUuid();
-
-        return defaultUuid == null || defaultUuid.isEmpty() ? null : transferService.getById(defaultUuid);
+        return transferService.getDefaultTransfer();
     }
 
     @GET

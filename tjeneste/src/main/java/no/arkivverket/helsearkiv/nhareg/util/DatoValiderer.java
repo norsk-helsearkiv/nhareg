@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
@@ -7,7 +8,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
 import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 
 import java.util.*;
@@ -17,7 +17,6 @@ import java.util.*;
  * Benyttes i POST og PUt
  * @author robing
  */
-//@SuppressWarnings("Since15")
 public class DatoValiderer {
 
     private final List<String> gyldigMors = Arrays.asList("mors", "m", "M");
@@ -72,7 +71,7 @@ public class DatoValiderer {
     }
 
     //Hjelpemetoder for validering
-    public ArrayList<Valideringsfeil> valider(PersondataDTO person, KonfigparamTjeneste konfig) {
+    public ArrayList<Valideringsfeil> valider(PersondataDTO person, ConfigurationDAO konfig) {
         ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
 
         if (person == null) {
@@ -95,10 +94,10 @@ public class DatoValiderer {
             return feil;
         }
 
-        Date lowLim = konfig.getDate(KonfigparamTjeneste.KONFIG_LOWLIM);
-        Integer waitLim = konfig.getInt(KonfigparamTjeneste.KONFIG_WAITLIM);
+        Date lowLim = konfig.getDate(ConfigurationDAO.KONFIG_LOWLIM);
+        Integer waitLim = konfig.getInt(ConfigurationDAO.KONFIG_WAITLIM);
         Date maxLim = GyldigeDatoformater.getDateRoll(new Date(), -waitLim);
-        Integer maxAge = konfig.getInt(KonfigparamTjeneste.KONFIG_MAXAGE);
+        Integer maxAge = konfig.getInt(ConfigurationDAO.KONFIG_MAXAGE);
         Date minLim = GyldigeDatoformater.getDateRoll(new Date(), -maxAge);
 
         //skjema 1

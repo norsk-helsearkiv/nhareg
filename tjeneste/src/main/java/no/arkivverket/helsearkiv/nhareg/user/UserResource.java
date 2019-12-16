@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
@@ -20,7 +20,7 @@ import java.util.List;
 public class UserResource {
 
     @EJB
-    private KonfigparamTjeneste konfigparam;
+    private ConfigurationDAO konfigparam;
     
     @Inject
     private UserServiceInterface adminService;
@@ -43,7 +43,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/century")
     public String getCentury() {
-        return konfigparam.getVerdi(KonfigparamTjeneste.KONFIG_AARHUNDRE);
+        return konfigparam.getValue(ConfigurationDAO.KONFIG_AARHUNDRE);
     }
 
     @GET

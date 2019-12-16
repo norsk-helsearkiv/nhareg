@@ -1,12 +1,10 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
+import java.io.Serializable;
 
 /**
  * 
@@ -33,10 +31,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "diagnosekode")
-public class Diagnosekode
-    extends CV
-    implements Serializable
-{
-
+public class Diagnosekode extends CV implements Serializable {
 
 }

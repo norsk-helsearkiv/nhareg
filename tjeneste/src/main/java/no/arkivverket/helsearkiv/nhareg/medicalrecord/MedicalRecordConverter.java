@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisMapper;
+import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
@@ -11,11 +11,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.arkivverket.helsearkiv.nhareg.transformer.Konverterer.tilDatoEllerAar;
+import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.tilDatoEllerAar;
 
-public class MedicalRecordMapper {
+public class MedicalRecordConverter {
     
-    public static Pasientjournal mapFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
+    public static Pasientjournal convertFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
         final Pasientjournal medicalRecord = new Pasientjournal();
         final String uuid = personalDataDTO.getUuid();
 
@@ -111,7 +111,7 @@ public class MedicalRecordMapper {
         return medicalRecord;
     }
     
-    public static PersondataDTO mapToPersonalDataDTO(Pasientjournal medicalRecord) {
+    public static PersondataDTO convertToPersonalDataDTO(Pasientjournal medicalRecord) {
         final PersondataDTO personalData = new PersondataDTO();
 
         personalData.setUuid(medicalRecord.getUuid());
@@ -175,10 +175,10 @@ public class MedicalRecordMapper {
         return personalData;
     }
     
-    public static MedicalRecordDTO mapToMedicalRecordDTO(final Pasientjournal medicalRecord, 
-                                                         final TransferDTO transferDTO,
-                                                         final String business) {
-        final PersondataDTO personalData = mapToPersonalDataDTO(medicalRecord);
+    public static MedicalRecordDTO convertToMedicalRecordDTO(final Pasientjournal medicalRecord,
+                                                             final TransferDTO transferDTO,
+                                                             final String business) {
+        final PersondataDTO personalData = convertToPersonalDataDTO(medicalRecord);
         final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO(); 
 
         medicalRecordDTO.setPersondata(personalData);
@@ -187,7 +187,7 @@ public class MedicalRecordMapper {
         medicalRecordDTO.setAvleveringLaast(transferDTO.isLocked());
         
         final Set<Diagnose> diagnosisSet = medicalRecord.getDiagnose();
-        final List<DiagnoseDTO> diagnoseDTOList = DiagnosisMapper.mapToDiagnosisDTOList(diagnosisSet);
+        final List<DiagnoseDTO> diagnoseDTOList = DiagnosisConverter.convertToDiagnosisDTOList(diagnosisSet);
         medicalRecordDTO.setDiagnoser(diagnoseDTOList);
         
         medicalRecordDTO.setVirksomhet(business);
@@ -195,10 +195,10 @@ public class MedicalRecordMapper {
         return medicalRecordDTO;
     }
     
-    public static RecordTransferDTO mapToRecordTransferDTO(Pasientjournal pasientjournal) {
+    public static RecordTransferDTO convertToRecordTransferDTO(Pasientjournal medicalRecord) {
         RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
 
-        final Grunnopplysninger baseInformation = pasientjournal.getGrunnopplysninger();
+        final Grunnopplysninger baseInformation = medicalRecord.getGrunnopplysninger();
         if (baseInformation != null) {
             recordTransferDTO.setNavn(baseInformation.getPnavn());
 
@@ -229,39 +229,39 @@ public class MedicalRecordMapper {
             }
         }
 
-        final Journalidentifikator journalId = pasientjournal.getJournalidentifikator();
+        final Journalidentifikator journalId = medicalRecord.getJournalidentifikator();
         if (journalId != null) {
             recordTransferDTO.setJnr(journalId.getJournalnummer());
             recordTransferDTO.setLnr(journalId.getLøpenummer());
         }
 
-        recordTransferDTO.setFanearkid(Integer.parseInt(pasientjournal.getFanearkid()));
+        recordTransferDTO.setFanearkid(Integer.parseInt(medicalRecord.getFanearkid()));
 
-        final List<Lagringsenhet> storageUnitList = pasientjournal.getLagringsenhet();
+        final List<Lagringsenhet> storageUnitList = medicalRecord.getLagringsenhet();
         if (storageUnitList != null && storageUnitList.size() > 0) {
             recordTransferDTO.setLagringsenhet(storageUnitList.get(0).getIdentifikator());
         }
 
-        if (pasientjournal.getOppdateringsinfo() != null) {
-            recordTransferDTO.setOppdatertAv(pasientjournal.getOppdateringsinfo().getOppdatertAv());
+        if (medicalRecord.getOppdateringsinfo() != null) {
+            recordTransferDTO.setOppdatertAv(medicalRecord.getOppdateringsinfo().getOppdatertAv());
 
-            if (pasientjournal.getOppdateringsinfo().getSistOppdatert() != null) {
+            if (medicalRecord.getOppdateringsinfo().getSistOppdatert() != null) {
                 try {
-                    recordTransferDTO.setOpprettetDato(pasientjournal.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
+                    recordTransferDTO.setOpprettetDato(medicalRecord.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
                 } catch (Throwable ignored) {}
             } else {
                 recordTransferDTO.setOpprettetDato(0L);
             }
         }
 
-        recordTransferDTO.setUuid(pasientjournal.getUuid());
+        recordTransferDTO.setUuid(medicalRecord.getUuid());
 
         return recordTransferDTO;
     }
 
-    public static List<RecordTransferDTO> mapToRecordTransferDTO(List<Pasientjournal> pasientjournalList) {
-        return pasientjournalList.stream()
-            .map(MedicalRecordMapper::mapToRecordTransferDTO)
+    public static List<RecordTransferDTO> convertToRecordTransferDTOList(List<Pasientjournal> medicalRecordList) {
+        return medicalRecordList.stream()
+            .map(MedicalRecordConverter::convertToRecordTransferDTO)
             .collect(Collectors.toList());
     }
 }

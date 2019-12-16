@@ -2,10 +2,9 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.PasientjournalTjeneste;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -16,8 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.File;
-import java.text.ParseException;
-
 
 @Singleton
 @Path("/pasientjournaler")
@@ -26,9 +23,6 @@ public class MedicalRecordResource {
 
     @Inject
     private MedicalRecordServiceInterface medicalRecordService;
-    
-    @Inject
-    private PasientjournalTjeneste pasientjournalTjeneste;
 
     @GET
     @Path("/{id}")
@@ -38,14 +32,25 @@ public class MedicalRecordResource {
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Pasientjournal create(Pasientjournal entity) {
-        return pasientjournalTjeneste.create(entity);
+    public Pasientjournal create(final Pasientjournal medicalRecord) {
+        return medicalRecordService.create(medicalRecord);
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response update(final MedicalRecordDTO medicalRecordDTO) {
+        try {
+            final MedicalRecordDTO updatedMedicalRecord = medicalRecordService.updateMedicalRecord(medicalRecordDTO);
+            return Response.ok(updatedMedicalRecord).build();
+        } catch (ValideringsfeilException ve) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ve.getValideringsfeil()).build();
+        }
     }
 
     @DELETE
     @Path("/{id}")
     public Pasientjournal delete(@PathParam("id") String id) {
-        return pasientjournalTjeneste.delete(id);
+        return medicalRecordService.delete(id);
     }
     
     @GET
@@ -54,38 +59,13 @@ public class MedicalRecordResource {
         return medicalRecordService.getAllWithTransfers(uriInfo.getQueryParameters());
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) throws ParseException {
-        return pasientjournalTjeneste.oppdaterPasientjournal(medicalRecordDTO);
-    }
-
     @GET
     @Path("/valider/{fnr}")
-    public Response validatePersonalIDNumber(@PathParam("fnr") String idNumber) {
-        return pasientjournalTjeneste.validerFnr(idNumber);
+    public Response validatePersonalIDNumber(@PathParam("fnr") String pid) {
+        medicalRecordService.validatePID(pid);
+        return Response.ok().build();
     }
 
-    @POST
-    @Path("/{id}/diagnoser")
-    public Response addDiagnosis(@PathParam("id") String id, DiagnoseDTO diagnoseDTO) {
-        return pasientjournalTjeneste.leggTilDiagnose(id, diagnoseDTO);
-    }
-
-    @PUT
-    @Path("/{id}/diagnoser")
-    public Response updateDiagnosis(@PathParam("id") String id, DiagnoseDTO diagnoseDTO) {
-        return pasientjournalTjeneste.oppdaterDiagnose(id, diagnoseDTO);
-    }
-    
-    @DELETE
-    @Path("/{id}/diagnoser")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeDiagnosis(@PathParam("id") String id, DiagnoseDTO diagnoseDTO) {
-        return pasientjournalTjeneste.fjernDiagnose(id, diagnoseDTO);
-    }
-    
     @POST
     @Path("/{id}/vedlegg")
     @Produces(MediaType.APPLICATION_JSON)

@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DiagnosisMapper {
+public class DiagnosisConverter {
     
-    public static DiagnoseDTO mapToDiagnosisDTO(final Diagnose diagnosis) {
+    public static DiagnoseDTO convertToDiagnosisDTO(final Diagnose diagnosis) {
         if (diagnosis == null) {
             return null;
         }
@@ -34,9 +34,9 @@ public class DiagnosisMapper {
                                updatedBy, updatedDate);
     }
     
-    public static List<DiagnoseDTO> mapToDiagnosisDTOList(final Collection<Diagnose> diagnosisList) {
+    public static List<DiagnoseDTO> convertToDiagnosisDTOList(final Collection<Diagnose> diagnosisList) {
         return diagnosisList.stream()
-            .map(DiagnosisMapper::mapToDiagnosisDTO)
+            .map(DiagnosisConverter::convertToDiagnosisDTO)
             .collect(Collectors.toList());
     }
 }

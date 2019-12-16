@@ -363,7 +363,7 @@ angular.module('nha.home', [
           registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
           registerService.setAvlevering(avlevering);
 
-          var endpoint = "transfer/" + avlevering.avleveringsidentifikator + "/records";
+          var endpoint = "avleveringer/" + avlevering.avleveringsidentifikator + "/pasientjournaler";
           var params = {
               "page": "1",
               "size": $scope.size

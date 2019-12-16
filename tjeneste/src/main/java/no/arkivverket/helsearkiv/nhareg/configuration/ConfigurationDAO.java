@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Stateless
-public class KonfigparamTjeneste {
+public class ConfigurationDAO {
 
     public static final String KONFIG_LOWLIM = "LowLim";
     public static final String KONFIG_MAXAGE = "MaxAge";
@@ -20,19 +20,19 @@ public class KonfigparamTjeneste {
     public static final String KONFIG_PRINTER_PORT = "printerPort";
 
     @PersistenceContext(name = "primary")
-    private EntityManager em;
+    private EntityManager entityManager;
 
-    public String getVerdi(String navn) {
-        Konfigparam param = em.find(Konfigparam.class, navn);
+    public String getValue(final String name) {
+        Konfigparam param = entityManager.find(Konfigparam.class, name);
         return param == null ? null : param.getVerdi();
     }
 
-    public Date getDate(final String navn) {
-        final String verdi = getVerdi(navn);
+    public Date getDate(final String name) {
+        final String value = getValue(name);
         Date date = null;
 
         try {
-            date = new SimpleDateFormat("dd.MM.yyyy").parse(verdi);
+            date = new SimpleDateFormat("dd.MM.yyyy").parse(value);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -40,11 +40,11 @@ public class KonfigparamTjeneste {
         return date;
     }
 
-    public Integer getInt(final String navn) {
-        final String tall = getVerdi(navn);
+    public Integer getInt(final String name) {
+        final String number = getValue(name);
 
         try {
-            return Integer.parseInt(tall);
+            return Integer.parseInt(number);
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }
@@ -52,11 +52,11 @@ public class KonfigparamTjeneste {
         return null;
     }
 
-    public Double getDouble(final String navn) {
-        final String tall = getVerdi(navn);
+    public Double getDouble(final String name) {
+        final String number = getValue(name);
 
         try {
-            return Double.parseDouble(tall);
+            return Double.parseDouble(number);
         } catch (NumberFormatException nfe) {
             nfe.printStackTrace();
         }

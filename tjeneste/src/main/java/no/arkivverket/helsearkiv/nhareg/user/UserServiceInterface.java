@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 
@@ -22,5 +23,9 @@ public interface UserServiceInterface {
     List<Rolle> getRoles();
 
     Boolean checkPasswordReset();
+
+    Bruker getByUsername(final String username);
+
+    void updateDefaultTransferForUser(final String username, final String transferId);
     
 }

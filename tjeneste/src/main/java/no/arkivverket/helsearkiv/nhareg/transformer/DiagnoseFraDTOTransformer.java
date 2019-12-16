@@ -1,10 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeResource;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.DiagnosekodeTjeneste;
 import org.apache.commons.collections4.Transformer;
 
 import javax.annotation.security.RolesAllowed;
@@ -14,16 +14,12 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 
-/**
- *
- * @author arnfinns
- */
 @Stateless
 @RolesAllowed({Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
 public class DiagnoseFraDTOTransformer implements Transformer<DiagnoseDTO, Diagnose> {
 
     @Inject
-    private DiagnosekodeTjeneste tjeneste;
+    private DiagnosisCodeResource tjeneste;
     private StringTilDatoEllerAarTransformer stringTilDatoEllerAarTransformer = new StringTilDatoEllerAarTransformer();
 
     public Diagnose transform(DiagnoseDTO input) {

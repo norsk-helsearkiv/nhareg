@@ -1,16 +1,10 @@
-package no.arkivverket.helsearkiv.nhareg.transformer;
+package no.arkivverket.helsearkiv.nhareg.common;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 public class DateOrYearConverter {
 

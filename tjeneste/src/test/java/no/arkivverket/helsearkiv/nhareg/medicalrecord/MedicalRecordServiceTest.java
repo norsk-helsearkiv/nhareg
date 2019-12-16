@@ -1,11 +1,7 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 
 import javax.inject.Inject;

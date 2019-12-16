@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
 @Stateless
 public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
 
@@ -51,6 +50,23 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         super(Pasientjournal.class, "uuid");
     }
 
+    public MedicalRecordDTO fetchRecordTransferById(final String id) {
+        final String queryString = 
+            "SELECT NEW no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO(" 
+            + "ps.fanearkid, ps.journalidentifikator, ps.grunnopplysninger, ps.lagringsenhet, ps.oppdateringsinfo, " 
+            + "ps.uuid, ps.merknad, ps.diagnose, " 
+            // + " a.avleveringsidentifikator, a.avleveringsbeskrivelse, a.avtale, a.lagringsenhetformat, "
+            + "v.foretaksnavn) "
+            + "FROM Pasientjournal ps, Virksomhet v "
+            // + "JOIN avlevering_pasientjournal aps ON ps.uuid = aps.pasientjournal_uuid "
+            // + "JOIN Avlevering a ON a.avleveringsidentifikator = aps.Avlevering_avleveringsidentifikator "
+            + "WHERE ps.uuid = :id";
+        
+        final Query query = getEntityManager().createQuery(queryString, MedicalRecordDTO.class);
+        query.setParameter("id", id);
+        return (MedicalRecordDTO) query.getResultList();
+    }
+    
     @Override
     public List<Pasientjournal> fetchAllPaged(final Map<String, String> queryParameters, 
                                               final int page, 
@@ -84,17 +100,6 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         queryResults.forEach(objects -> recordTransferDTOList.add(mapFromObjectsToRecordTransferDTO(objects)));
         
         return recordTransferDTOList;
-    }
-
-    /**
-     * Get the transfer id (avleverings id) associated with the medical record (pasientjournal) id.
-     * @param id Medical record id (pasientjournal id)
-     * @return the delivery id as an int
-     */
-    public int fetchTransferIdFromMedicalRecord(final String id) {
-        Query query = this.getEntityManager().createNativeQuery(GET_TRANSFER_ID_FROM_RECORD);
-        query.setParameter(1, id);
-        return query.getFirstResult();
     }
 
     @Override
@@ -178,7 +183,6 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
             return getEntityManager().createNativeQuery(queryString);
         }
 
-        predicateStringBuilder.insert(queryString.length(), " WHERE ");
         buildPredicateStringAndParameters(queryParameters, predicateStringBuilder, parameters);
 
         // Replace parameters that were set

@@ -1,4 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
-public class DiagnosisDAO {
+import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+
+public class DiagnosisDAO extends EntityDAO<Diagnose> {
+
+    public DiagnosisDAO() {
+        super(Diagnose.class, "uuid");
+    }
+
 }

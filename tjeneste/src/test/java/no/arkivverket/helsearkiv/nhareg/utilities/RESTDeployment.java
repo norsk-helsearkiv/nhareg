@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
+import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
@@ -13,8 +14,11 @@ import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
 import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
+import no.arkivverket.helsearkiv.nhareg.storageunit.LagringsenhetTjeneste;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitService;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferService;
@@ -47,17 +51,17 @@ public class RESTDeployment {
             .addPackage(DatoEllerAar.class.getPackage())
             .addPackage(GyldigeDatoformater.class.getPackage())
             .addPackage(Konfigparam.class.getPackage())
-            .addPackage(KonfigparamTjeneste.class.getPackage())
+            .addPackage(ConfigurationDAO.class.getPackage())
             .addPackage(ValideringsfeilException.class.getPackage())
             .addPackage(UserDAO.class.getPackage())
             .addPackage(Bruker.class.getPackage())
             .addPackage(BrukerDTO.class.getPackage())
-            .addPackage(PasientjournalDTO.class.getPackage())
+            .addPackage(MedicalRecordDTO.class.getPackage())
             .addPackage(EntityDAO.class.getPackage())
             // Medical Record classes
             .addPackage(MedicalRecordServiceInterface.class.getPackage())
             .addPackage(MedicalRecordService.class.getPackage())
-            .addPackage(MedicalRecordMapper.class.getPackage())
+            .addPackage(MedicalRecordConverter.class.getPackage())
             .addPackage(MedicalRecordResource.class.getPackage())
             .addPackage(MedicalRecordDAO.class.getPackage())
             // Transfer classes
@@ -65,6 +69,11 @@ public class RESTDeployment {
             .addPackage(TransferServiceInterface.class.getPackage())
             .addPackage(TransferResource.class.getPackage())
             .addPackage(TransferDAO.class.getPackage())
+            // Storage Units
+            .addPackage(LagringsenhetTjeneste.class.getPackage())
+            .addPackage(StorageUnitService.class.getPackage())
+            .addPackage(StorageUnitServiceInterface.class.getPackage())
+            .addPackage(StorageUnitDAO.class.getPackage())
             // exception
             .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
             // tjeneste

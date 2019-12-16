@@ -2,10 +2,14 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 import javax.ejb.Stateless;
-import java.util.Set;
+import javax.persistence.Query;
+import java.util.Collections;
+import java.util.List;
 
 @Stateless
 public class TransferDAO extends EntityDAO<Avlevering> {
@@ -14,15 +18,89 @@ public class TransferDAO extends EntityDAO<Avlevering> {
         super(Avlevering.class, "avleveringsidentifikator");
     }
 
-    public Set<Pasientjournal> getMedicalRecords(final String id) {
-        final Avlevering result = super.fetchById(id);
-        final Set<Pasientjournal> medicalRecords = result.getPasientjournal();
+    @Override
+    public Avlevering delete(final String id) {
+        final Avlevering transfer = fetchSingleInstance(id);
+
+        // Cannot delete non-empty transfers
+        if (!transfer.getPasientjournal().isEmpty()) {
+            final Valideringsfeil validationError = new Valideringsfeil("Avlevering", "HasChildren");
+            final List<Valideringsfeil> validationErrors = Collections.singletonList(validationError);
+            throw new ValideringsfeilException(validationErrors);
+        }
+
+        return super.delete(id);
+    }
+
+    @Override
+    public Avlevering fetchById(String id) {
+         Avlevering transfer = super.fetchById(id);
+         
+         // Force load 
+         transfer.getPasientjournal().forEach(record -> {
+             record.getLagringsenhet().size();
+             record.getDiagnose().size();
+         });
+         
+         return transfer;
+    }
+
+    public String fetchTransferIdFromRecordId(final String medicalRecordId) {
+        final String queryString =  
+            "SELECT Avlevering_avleveringsidentifikator "
+            + "FROM Avlevering_Pasientjournal "
+            + "WHERE pasientjournal_uuid = :id";
         
-        // Force load of lazy resources
-        for (Pasientjournal record: medicalRecords) {
-            record.toString();
+        final Query query = getEntityManager().createNativeQuery(queryString);
+        query.setParameter("id", medicalRecordId);
+        final Object result = query.getSingleResult();
+
+        return String.valueOf(result);
+    }
+
+    public TransferDTO fetchTransferFromRecordId(final String recordId) {
+        final String queryString = "SELECT * " 
+            + "FROM avlevering a " 
+            + "JOIN avlevering_pasientjournal aps ON aps.avleverings_identifikator = a.avleveringsidentifikator " 
+            + "WHERE aps.pasientjournal_uuid = :id";
+        
+        Query query = getEntityManager().createNativeQuery(queryString, TransferDTO.class);
+        query.setParameter("id", recordId);
+        
+        return (TransferDTO) query.getResultList();
+    }
+    
+    public Avlevering fetchTransferForStorageUnit(final String id) {
+        final String select = "SELECT distinct a "
+            + "FROM Avlevering a "
+            + "INNER JOIN a.pasientjournal p "
+            + "INNER JOIN p.lagringsenhet l "
+            + "WHERE l.identifikator = :id ";
+        
+        final Query query = getEntityManager().createQuery(select);
+        query.setParameter("id", id);
+
+        return (Avlevering) query.getSingleResult();
+    }
+
+    public final String fetchFirstTransferIdFromStorageUnit(String storageUnitId) {
+        final String queryString = 
+            "SELECT Avlevering_avleveringsidentifikator " 
+            + "FROM Avlevering_Pasientjournal "
+            + "WHERE pasientjournal_uuid "
+            + "IN " 
+                + "(SELECT pasientjournal_uuid " 
+                + "FROM pasientjournal_lagringsenhet " 
+                + "WHERE lagringsenhet_uuid = :id)";
+        final Query query = getEntityManager().createNativeQuery(queryString);
+        query.setParameter("id", storageUnitId);
+        List<String> result = query.getResultList();
+        
+        if (result.isEmpty()) {
+            return null;
         }
         
-        return medicalRecords;
+        return result.get(0);
     }
+
 }

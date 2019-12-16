@@ -1,21 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import javax.ejb.EJBException;
-import javax.ejb.EJBTransactionRolledbackException;
-import javax.inject.Inject;
-import javax.persistence.NoResultException;
-import javax.ws.rs.core.Response;
-
+import no.arkivverket.helsearkiv.nhareg.agreement.AvtaleTjeneste;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
@@ -23,6 +8,20 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilExcept
 import no.arkivverket.helsearkiv.nhareg.utilities.AdminHandler;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import javax.ejb.EJBException;
+import javax.ejb.EJBTransactionRolledbackException;
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.ws.rs.core.Response;
+import java.util.Calendar;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -49,7 +48,7 @@ public class AvtaleTjenesteTest {
         userHandler.call(new Callable<Object>() {
             @Override
             public Object call() {
-                Response response = tjeneste.getAvleveringer("Avtale1");
+                Response response = tjeneste.getTransfers("Avtale1");
                 
                 assertEquals(200, response.getStatus());
         

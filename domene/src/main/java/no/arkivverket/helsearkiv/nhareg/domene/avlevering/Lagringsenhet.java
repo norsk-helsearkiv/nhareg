@@ -1,7 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
@@ -34,9 +37,12 @@ import java.io.Serializable;
     "identifikator"
 })
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lagringsenhet implements Serializable {
 
     @XmlElement(required = true)
+    @Column(unique = true)
     protected String identifikator;
 
     @XmlAttribute(name = "uuid")

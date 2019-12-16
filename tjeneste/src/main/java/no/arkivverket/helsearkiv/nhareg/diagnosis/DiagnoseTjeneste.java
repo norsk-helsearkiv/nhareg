@@ -1,77 +1,58 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.ws.rs.Path;
-import java.util.Calendar;
-import java.util.UUID;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-/**
- * <p>
- * JAX-RS endepunkt for håndtering av {@link Diagnose}r. Arver metodene fra
- * {@link EntitetsTjeneste}i tillegg til egne metoder.
- * </p>
- *
- */
 @Path("/diagnoser")
-/**
- * <p>
- * Dette er en stateless service, vi deklarer den som EJB for å få
- * transaksjonsstøtte.
- * </p>
- */
-@Stateless
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-public class DiagnoseTjeneste extends EntitetsTjeneste<Diagnose, String> {
+public class DiagnoseTjeneste {
 
-    @Resource
-    private SessionContext sessionContext;
+    @Inject
+    private DiagnosisServiceInterface diagnosisService;
 
-    public DiagnoseTjeneste() {
-        super(Diagnose.class, "uuid");
+    @POST
+    @Path("/{id}")
+    public Response create(@PathParam("id") String id, final DiagnoseDTO diagnoseDTO) {
+        final DiagnoseDTO responseDTO = diagnosisService.create(id, diagnoseDTO);
 
-    }
-
-    @Override
-    public Diagnose create(Diagnose entity) {
-        if (entity != null) {
-            entity.setUuid(UUID.randomUUID().toString());
+        if (responseDTO == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        entity.setOppdateringsinfo(konstruerOppdateringsinfo());
-        return super.create(entity);
-    }
-    
 
-    /**
-     * NB! Det er tvilsomt/feil at denne skal brukes i noen sammenhenger.
-     * 
-     * @param kode
-     * @return 
-     */
-    public Diagnose hentDiagnoseMedKode(String kode) {
-        String jpql = "SELECT d FROM Diagnose d WHERE d.diagnosekode.code = :kode";
-        Query q = getEntityManager().createQuery(jpql);
-        q.setParameter("kode", kode);
-        try {
-            return (Diagnose) q.getResultList().get(0);
-        } catch (NoResultException nre) {
-            return null;
+        return Response.ok(responseDTO).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    public Response update(@PathParam("id") String id, final DiagnoseDTO diagnoseDTO) {
+        final Diagnose updatedDiagnosis = diagnosisService.update(id, diagnoseDTO);
+
+        if (updatedDiagnosis == null) {
+            Response.status(Response.Status.NOT_FOUND).build();
         }
+
+        return Response.ok(updatedDiagnosis).build();
     }
 
-    private Oppdateringsinfo konstruerOppdateringsinfo() {
-        Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
-        oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
-        oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
-        return oppdateringsinfo;
+    @DELETE
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@PathParam("id") String id, final DiagnoseDTO diagnoseDTO) {
+        final boolean removed = diagnosisService.delete(id, diagnoseDTO);
+
+        if (!removed) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok().build();
     }
 
 }

@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.tjeneste;
+package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roller;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
@@ -8,10 +8,11 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.Query;
 import javax.ws.rs.*;
@@ -23,65 +24,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Path("/avtaler")
-@Stateless
 @RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
+public class AvtaleTjeneste {
 
+    @Inject
+    private AgreementServiceInterface agreementService;
+    
+    @Inject
+    private TransferServiceInterface transferService;
+    
     @EJB
     private TransferResource transferResource;
-
-    public AvtaleTjeneste() {
-        super(Avtale.class, "avtaleidentifikator");
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Avtale> getAll(@Context UriInfo uriInfo) {
-        return getAll(uriInfo.getQueryParameters());
+        return agreementService.getAll(uriInfo.getQueryParameters());
     }
 
     @GET
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getDefaultAvtale() {
-        Avlevering a = transferResource.getDefaultAvlevering();
-        if (a == null) {
+    public String getDefaultAgreementId() {
+        final Avlevering transfer = transferService.getDefaultTransfer();
+        
+        if (transfer == null) {
             return null;
         }
         
-        return a.getAvtale().getAvtaleidentifikator();
+        return transfer.getAvtale().getAvtaleidentifikator();
     }
 
-    /**
-     * Henter avleveringer for en avtale.
-     *
-     * @param avtaleidentifikator
-     * @return
-     */
     @GET
     @Path("/{id}/avleveringer")
-    public Response getAvleveringer(@PathParam("id") String avtaleidentifikator) {
-        String select = "select object(o)"
-                + " from Avlevering as o"
-                + " where o.avtale.avtaleidentifikator = :avtaleidentifikator";
-        final Query query = getEntityManager().createQuery(select);
-        query.setParameter("avtaleidentifikator", avtaleidentifikator);
-        List<Avlevering> avleveringer = query.getResultList();
-
-        Avlevering defaultAvlevering = transferResource.getDefaultAvlevering();
-
-        List<AvleveringDTO> dtoListe = new ArrayList<AvleveringDTO>();
-        for (Avlevering avlevering : avleveringer) {
-            AvleveringDTO dto = new AvleveringDTO(avlevering);
-            if (defaultAvlevering != null) {
-                if (avlevering.getAvleveringsidentifikator().equals(defaultAvlevering.getAvleveringsidentifikator())) {
-                    dto.setDefaultAvlevering(true);
-                }
-            }
-            dtoListe.add(dto);
-        }
-        
-        return Response.ok(dtoListe).build();
+    public Response getTransfers(@PathParam("id") String id) {
+        final List<AvleveringDTO> transferDTOList = agreementService.getTransfersById(id);
+        return Response.ok(transferDTOList).build();
     }
     
     @GET

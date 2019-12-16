@@ -1,24 +1,22 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.storageunit.LagringsenhetTjeneste;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
-
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
-import no.arkivverket.helsearkiv.nhareg.utilities.UserHandler;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class LagringsenhetTjenesteTest {

@@ -1,11 +1,9 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-
+import java.io.Serializable;
 
 /**
  * <p>Java class for Kjønn complex type.
@@ -25,8 +23,5 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Kj\u00f8nn")
-public class Kjønn
-    extends CS
-    implements Serializable
-{
+public class Kjønn extends CS implements Serializable {
 }
