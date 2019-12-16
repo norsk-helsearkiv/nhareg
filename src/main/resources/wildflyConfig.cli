@@ -11,7 +11,10 @@ data-source add \
     --user-name="${MYSQL_USER:nhareg}" \
     --password="${MYSQL_PASSWORD:nhareg}" \
     --use-ccm=true \
-    --use-java-context=true
+    --use-java-context=true \
+    --check-valid-connection-sql="select 1" \
+    --background-validation=true \
+    --background-validation-millis=30000
 
 /subsystem=datasources/data-source=NharegDS/connection-properties=useSSL:add(value=false)
 /subsystem=datasources/data-source=NharegDS/connection-properties=allowPublicKeyRetrieval:add(value=true)

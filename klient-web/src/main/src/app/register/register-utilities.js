@@ -14,7 +14,7 @@ angular.module('nha.register')
             }
             //Updating patient journal
             else if ($scope.state === 2) {
-                document.getElementById("diagnosedato").focus();
+                document.getElementById("diagnosisDate-input").focus();
             }
         };
 
@@ -227,7 +227,7 @@ angular.module('nha.register')
 
                 if (felt !== undefined) {
                     if (element.message !== undefined && element.message !== "may not be null"){ //sett inn variabler i feilmeldingen
-                        var predefined = 'feltfeil.' + element.constraint;
+                        var predefined = 'formError.' + element.constraint;
                         var errorMessage = $filter('translate')(predefined, element.message);
                         $scope.feilTekster[element.constraint] = errorMessage;
                     }
