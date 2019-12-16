@@ -1,5 +1,27 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
+import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
+import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
+import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferService;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
+import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
@@ -14,30 +36,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
-import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
-import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-
 public class RESTDeployment {
 
     public static WebArchive deployment() {
         return NharegDeployment.deployment()
             //model
             .addPackage(Avtale.class.getPackage())
-            .addPackage(ListeObjekt.class.getPackage())
+            .addPackage(ListObject.class.getPackage())
             .addPackage(PersondataDTO.class.getPackage())
             .addPackage(DatoEllerAar.class.getPackage())
             .addPackage(GyldigeDatoformater.class.getPackage())
@@ -48,6 +53,18 @@ public class RESTDeployment {
             .addPackage(Bruker.class.getPackage())
             .addPackage(BrukerDTO.class.getPackage())
             .addPackage(PasientjournalDTO.class.getPackage())
+            .addPackage(EntityDAO.class.getPackage())
+            // Medical Record classes
+            .addPackage(MedicalRecordServiceInterface.class.getPackage())
+            .addPackage(MedicalRecordService.class.getPackage())
+            .addPackage(MedicalRecordMapper.class.getPackage())
+            .addPackage(MedicalRecordResource.class.getPackage())
+            .addPackage(MedicalRecordDAO.class.getPackage())
+            // Transfer classes
+            .addPackage(TransferService.class.getPackage())
+            .addPackage(TransferServiceInterface.class.getPackage())
+            .addPackage(TransferResource.class.getPackage())
+            .addPackage(TransferDAO.class.getPackage())
             // exception
             .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
             // tjeneste

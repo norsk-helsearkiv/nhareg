@@ -16,6 +16,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -47,9 +48,10 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListeObjekt;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.transformer.Konverterer;
 
 /**
@@ -75,6 +77,9 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     private KjønnTjeneste kjønnTjeneste;
     @EJB
     private UserService userService;
+    
+    @Inject
+    private MedicalRecordServiceInterface medicalRecordService;
 
     @EJB(name = "EksisterendeLagringsenhetPredicate")
     private Predicate<Lagringsenhet> eksisterendeLagringsenhetPredicate;
@@ -202,10 +207,10 @@ public class AvleveringTjeneste extends EntitetsTjeneste<Avlevering, String> {
     @GET
     @Path("/{id}/pasientjournaler")
     @Produces(MediaType.APPLICATION_JSON)
-    public ListeObjekt getPasientjournaler(@PathParam("id") String avleveringsidentifikator, @Context UriInfo uriInfo) {
+    public ListObject getPasientjournaler(@PathParam("id") String avleveringsidentifikator, @Context UriInfo uriInfo) {
         Avlevering avlevering = getSingleInstance(avleveringsidentifikator);
 
-        return pasientjournalTjeneste.getActiveWithPaging(avlevering.getPasientjournal(), uriInfo);
+        return medicalRecordService.getAll(uriInfo.getQueryParameters());
     }
 
     /**

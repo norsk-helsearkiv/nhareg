@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Data;
+
 
 /**
  * 
@@ -39,70 +41,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Lagringsenhet", propOrder = {
     "identifikator"
 })
-public class Lagringsenhet implements Serializable
-{
+@Data
+public class Lagringsenhet implements Serializable {
 
     @XmlElement(required = true)
     protected String identifikator;
+
     @XmlAttribute(name = "uuid")
     protected String uuid;
+
     @XmlTransient
     private boolean utskrift;
-
-    public boolean isUtskrift() {
-        return utskrift;
-    }
-
-    public void setUtskrift(boolean utskrift) {
-        this.utskrift = utskrift;
-    }
-
-    /**
-     * Gets the value of the identifikator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdentifikator() {
-        return identifikator;
-    }
-
-    /**
-     * Sets the value of the identifikator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdentifikator(String value) {
-        this.identifikator = value;
-    }
-
-    /**
-     * Gets the value of the uuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUuid() {
-        return uuid;
-    }
-
-    /**
-     * Sets the value of the uuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUuid(String value) {
-        this.uuid = value;
-    }
 
 }

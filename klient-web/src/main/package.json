@@ -1,5 +1,5 @@
 {
-  "author": "Mesan AS",
+  "author": "Netcompany",
   "name": "nha",
   "version": "0.0.1",
   "homepage": "https://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com/arkivverket/NHAREG.git"
+    "url": "git@github.com/norsk-helsearkiv/nhareg.git"
   },
   "dependencies": {
     "angular-hotkeys": "~1.4.5"

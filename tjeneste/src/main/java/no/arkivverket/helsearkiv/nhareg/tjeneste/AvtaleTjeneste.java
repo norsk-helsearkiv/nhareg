@@ -1,24 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.tjeneste;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.persistence.EntityExistsException;
-import javax.persistence.Query;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import no.arkivverket.helsearkiv.nhareg.auth.Roller;
 import no.arkivverket.helsearkiv.nhareg.auth.UserService;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
@@ -27,6 +8,19 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.persistence.EntityExistsException;
+import javax.persistence.Query;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -58,7 +52,7 @@ public class AvtaleTjeneste extends EntitetsTjeneste<Avtale, String> {
     @GET
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getDefaultAvtale(){
+    public String getDefaultAvtale() {
         Avlevering a = avleveringTjeneste.getDefaultAvlevering();
         if (a == null) {
             return null;

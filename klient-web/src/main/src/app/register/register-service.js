@@ -4,7 +4,6 @@ var mod = angular.module('nha.register.register-service', [
 mod.factory('registerService', [registerService]);
 
 function registerService() {
-
     var avlevering;
     var pasientjournalDTO;
     var avleveringsidentifikator;
@@ -28,29 +27,35 @@ function registerService() {
         return avlevering;
     }
 
-    function getAvleveringsidentifikator(){
+    function getAvleveringsidentifikator() {
         return avleveringsidentifikator;
     }
-    function setAvleveringsidentifikator(ident){
-        avleveringsidentifikator = ident;
+
+    function setAvleveringsidentifikator(id) {
+        avleveringsidentifikator = id;
     }
-    function setValgtAvtale(avtale){
+
+    function setValgtAvtale(avtale) {
         valgtAvtale = avtale;
     }
-    function getValgtAvtale(){
+
+    function getValgtAvtale() {
         return valgtAvtale;
     }
-    function setVirksomhet(v){
+
+    function setVirksomhet(v) {
         virksomhet = v;
     }
-    function getVirksomhet(){
+
+    function getVirksomhet() {
         return virksomhet;
     }
-    function setAvleveringsbeskrivelse(beskrivelse){
+
+    function setAvleveringsbeskrivelse(beskrivelse) {
         avleveringsbeskrivelse = beskrivelse;
     }
 
-    function getAvleveringsbeskrivelse(){
+    function getAvleveringsbeskrivelse() {
         return avleveringsbeskrivelse;
     }
 
@@ -72,7 +77,5 @@ function registerService() {
 
         setAvleveringsbeskrivelse : setAvleveringsbeskrivelse,
         getAvleveringsbeskrivelse : getAvleveringsbeskrivelse
-
     };
-
 }

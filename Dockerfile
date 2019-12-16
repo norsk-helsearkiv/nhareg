@@ -76,16 +76,17 @@ RUN sed -i "s/<resolve-parameter-values>false<\/resolve-parameter-values>/\<reso
 # Add admin user
 RUN $JBOSS_HOME/bin/add-user.sh -u admin -p admin --silent
 
+RUN mkdir /cli/ \
+    && chown jboss:0 /cli
 COPY src/main/resources/env.properties /usr/src/
-COPY src/main/resources/wildflyConfig.cli /usr/src/
-COPY src/main/resources/update-datasource-credentials.cli /
+COPY src/main/resources/*.cli /cli/
 COPY --from=build /root/.m2/repository/mysql/mysql-connector-java/$MYSQL_CONNECTOR/mysql-connector-java-$MYSQL_CONNECTOR.jar $JBOSS_HOME/standalone/deployments/
 
 # Add Wildfly configurations
 RUN echo "Configuring Wildfly" \
     && bash -c '$JBOSS_HOME/bin/standalone.sh &' \
     && bash -c 'until `$JBOSS_CLI -c ":read-attribute(name=server-state)" 2> /dev/null | grep -q running`; do echo `$JBOSS_CLI -c ":read-attribute(name=server-state)" 2> /dev/null`; sleep 1; done' \
-    && $JBOSS_CLI --file=/usr/src/wildflyConfig.cli --properties=/usr/src/env.properties \
+    && $JBOSS_CLI --file=/cli/wildflyConfig.cli --properties=/usr/src/env.properties \
     && chown -R jboss:0 ${JBOSS_HOME} \
     && chmod -R g+rw ${JBOSS_HOME} \
     && rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/*

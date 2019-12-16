@@ -1,12 +1,12 @@
 angular.module('nha.common.list-view', [
-        'nha.common.list-service',
-        'nha.common.pager-service',
-        'nha.common.http-service',
-        'nha.common.error-service',
-        'nha.common.modal-service',
-        'nha.register.register-service',
-        'ui.router'
-    ])
+    'nha.common.list-service',
+    'nha.common.pager-service',
+    'nha.common.http-service',
+    'nha.common.error-service',
+    'nha.common.modal-service',
+    'nha.register.register-service',
+    'ui.router'
+])
 
     .config(function config($stateProvider) {
         $stateProvider.state('list', {
@@ -21,19 +21,28 @@ angular.module('nha.common.list-view', [
     })
 
     .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registerService, stateService, pagerService) {
-        var antall = 15;
+        var size = listService.getSize();
+        // We set the base endpoint URL based on if avlevering is set or not. This is a hack to account for the previous setup which relied on 
+        // setting avlevering as a URL parameter, then handling it in the backend.
+        var transfer = listService.getAvlevering();
+        var transferUrl = transfer !== null ? "transfer/" + transfer.avleveringsidentifikator + "/records/" : "";
+        var medicalRecordUrl = "pasientjournaler/";
+        var baseEndpointUrl = transfer !== null ? transferUrl : medicalRecordUrl;
 
         $scope.$watch(
             function () {
                 return $filter('translate')('konfig.ANTALL');
             },
             function (newval) {
-                antall = Number(newval);
+                listService.setSize(Number(newval));
+                size = listService.getSize();
             }
         );
+
         $scope.tekster = {
             "tooltip": {}
         };
+
         $scope.$watch(
             function () {
                 return $filter('translate')('home.PASIENTSOK');
@@ -65,17 +74,15 @@ angular.module('nha.common.list-view', [
         }
 
         var setTittel = function (data) {
-            var max = (data.side * data.antall);
+            var max = (data.page * data.size);
             if (max > data.total) {
                 max = data.total;
             }
-            var undertittel = ((data.side - 1) * data.antall) + 1 + "..." + max + " / " + data.total;
-            $scope.tittel.underTittel = undertittel;
+            $scope.tittel.underTittel = ((data.page - 1) * data.size) + 1 + "..." + max + " / " + data.total;
         };
 
         $scope.tittel = listService.getTittel();
         setTittel($scope.data);
-
 
         $scope.lagringsenhetAsc = false;
         $scope.fodselsnummerAsc = false;
@@ -86,31 +93,30 @@ angular.module('nha.common.list-view', [
         $scope.faarAsc = false;
         $scope.daarAsc = false;
         $scope.oppdatertAvAsc = false;
-
-
         $scope.sortDirection = null;
         $scope.sortColumn = null;
         $scope.sok = stateService.sokState;
 
         $scope.actionSort = function (column, sortDirection) {
             console.log("sorting by:" + column + " dir:" + sortDirection);
-            var direction = sortDirection ? "asc" : "desc";
-            $scope.sortDirection = direction;
+            $scope.sortDirection = sortDirection ? "asc" : "desc";
             $scope.sortColumn = column;
 
-            httpService.getAll("pasientjournaler?side=" + $scope.pager.currentPage + "&antall=" + antall + listService.getQuery() + "&orderBy=" + $scope.sortColumn + "&sortDirection=" + $scope.sortDirection)
+            httpService.getAll(baseEndpointUrl + "?page=" + $scope.pager.currentPage +
+                               "&size=" + size +
+                               listService.getQuery() +
+                               "&orderBy=" + $scope.sortColumn +
+                               "&sortDirection=" + $scope.sortDirection)
                 .success(function (data, status, headers, config) {
-
                     setTittel(data);
                     $scope.data = data;
                     $scope.updatePager($scope.pager.currentPage);
-
                 }).error(function (data, status, headers, config) {
                 errorService.errorCode(status);
             });
         };
 
-        $scope.actionRensSok = function(){
+        $scope.actionRensSok = function() {
             $scope.sok.lagringsenhet = '';
             $scope.sok.fanearkId = '';
             $scope.sok.fodselsnummer = '';
@@ -132,28 +138,21 @@ angular.module('nha.common.list-view', [
                 sokOppdatertAv: $scope.sok.oppdatertAv,
                 sokSistOppdatert: $scope.sok.sistOppdatert
             };
-            listService.setSok(sok);
-            httpService.getAll("pasientjournaler?side=1&antall=" + antall + listService.getQuery())
-                .success(function (data, status, headers, config) {
 
+            listService.setSok(sok);
+            httpService.getAll(baseEndpointUrl + "?page=1&size=" + size + listService.getQuery())
+                .success(function (data, status, headers, config) {
                     setTittel(data);
                     $scope.tittel.tittel = $scope.tekster.pasientsok;
-
                     $scope.data = data;
-
-
                     $scope.updatePager(1);
-
-
                 }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
+                    errorService.errorCode(status);
             });
         };
 
-
-
-        $scope.updatePager = function(page){
-            $scope.pager = pagerService.getPager($scope.data.total, page, antall);
+        $scope.updatePager = function(page) {
+            $scope.pager = pagerService.getPager($scope.data.total, page, size);
         };
 
         $scope.updatePager(1);
@@ -170,11 +169,12 @@ angular.module('nha.common.list-view', [
             if ($scope.sortColumn) {
                 ordering += "&orderBy=" + $scope.sortColumn;
             }
+
             if ($scope.sortDirection) {
                 ordering += "&sortDirection=" + $scope.sortDirection;
             }
 
-            httpService.getAll("pasientjournaler?side=" + page + "&antall=" + $scope.pager.pageSize + listService.getQuery() + ordering)
+            httpService.getAll(baseEndpointUrl + "?page=" + page + "&size=" + $scope.pager.pageSize + listService.getQuery() + ordering)
                 .success(function (data) {
                     setTittel(data);
                     $scope.data = data;
@@ -186,7 +186,7 @@ angular.module('nha.common.list-view', [
 
         $scope.actionFjernPasientjournal = function (pasientjournal) {
             modalService.deleteModal($scope.tekster.pasientjournal, pasientjournal.navn + " (" + pasientjournal.fodselsnummer + ") ", function () {
-                httpService.deleteElement("pasientjournaler/" + pasientjournal.uuid)
+                httpService.deleteElement(medicalRecordUrl + pasientjournal.uuid)
                     .success(function () {
                         fjern($scope.data.liste, pasientjournal);
                         --$scope.data.antall;
@@ -199,10 +199,9 @@ angular.module('nha.common.list-view', [
         };
 
         $scope.actionLeggTilPasientjournal = function () {
-
             var first = $scope.data.liste[0];
 
-            httpService.get("pasientjournaler/" + first.uuid)
+            httpService.get(medicalRecordUrl + first.uuid)
                 .success(function (data) {
                     registerService.setVirksomhet(data.virksomhet);
                     registerService.setPasientjournalDTO(null);
@@ -212,8 +211,8 @@ angular.module('nha.common.list-view', [
 
                     $location.path('/registrer');
                 }).error(function (data, status) {
-                    errorService.errorCode(status);
-                });
+                errorService.errorCode(status);
+            });
 
         };
 
@@ -230,10 +229,10 @@ angular.module('nha.common.list-view', [
         };
 
         $scope.actionVisJournal = function (pasientjournal) {
-            httpService.get("pasientjournaler/" + pasientjournal)
+            httpService.get(medicalRecordUrl + pasientjournal)
                 .success(function (data, status, headers, config) {
                     registerService.setPasientjournalDTO(data);
-                    var avlevering = {lagringsenhetformat:data.lagringsenhetformat};
+                    var avlevering = { lagringsenhetformat: data.lagringsenhetformat };
                     registerService.setAvlevering(avlevering);
                     registerService.setVirksomhet(data.virksomhet);
                     registerService.setValgtAvtale(data.avtaleBeskrivelse);
@@ -241,7 +240,7 @@ angular.module('nha.common.list-view', [
                     registerService.setAvleveringsbeskrivelse(data.avleveringBeskrivelse);
                     $location.path('/registrer');
                 }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
+                    errorService.errorCode(status);
             });
         };
 

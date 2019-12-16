@@ -109,7 +109,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
-                    <argLine>-Xms800m -Xmx800m -XX:MaxPermSize=500m</argLine>
+                    <argLine>-Xms800m -Xmx800m</argLine>
                     <!-- Fork every test because it will launch a separate AS instance -->
                     <forkMode>always</forkMode>
                     <systemPropertyVariables>
@@ -135,8 +135,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -256,6 +256,13 @@
             <groupId>org.picketbox</groupId>
             <artifactId>picketbox</artifactId>
             <version>4.0.7.Final</version>
+        </dependency>
+
+
+        <!-- LOMBOK -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 </project>

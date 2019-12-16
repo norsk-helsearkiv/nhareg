@@ -1,22 +1,24 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 import org.apache.commons.lang3.StringUtils;
-import org.picketbox.util.StringUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 
 /**
  * Created by haraldk on 07.05.15.
  */
 public class SortPasientjournaler {
 
-
-    public void sort(List<Pasientjournal> pasientjournaler, final String order, final String direction){
+    public void sort(List<Pasientjournal> pasientjournaler, final String order, final String direction) {
         if (order!=null) {
             FlexibleComparator comp = new FlexibleComparator(Order.valueOf(order));
             boolean asc = "asc".equals(direction);//"desc" for descending..

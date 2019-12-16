@@ -1,8 +1,8 @@
 var mod = angular.module('nha.common.list-service', []);
 
-mod.factory('listService', ['$http', listService]);
+mod.factory('listService', [listService]);
 
-function listService($http) {
+function listService() {
     var tittel;
     var data;
     var avlevering = null;
@@ -36,21 +36,25 @@ function listService($http) {
     }
 
     function getQuery() {
-        if (avlevering !== null && avlevering !== undefined) {
-            return "&avlevering=" + avlevering.avleveringsidentifikator;
-        }
-
         if (sok !== null && sok !== undefined) {
-            return "&sokLagringsenhet=" + (sok.sokLagringsenhet?sok.sokLagringsenhet:"") +
-            "&sokFanearkId=" + (sok.sokFanearkId?sok.sokFanearkId:"") +
-            "&sokFodselsnummer=" + (sok.sokFodselsnummer?sok.sokFodselsnummer:"") +
-            "&sokNavn=" + (sok.sokNavn?sok.sokNavn:"") +
-            "&sokFodt=" + (sok.sokFodt?sok.sokFodt:"") +
-            "&sokOppdatertAv=" + (sok.sokOppdatertAv?sok.sokOppdatertAv:"") +
-            "&sokSistOppdatert=" + (sok.sokSistOppdatert?sok.sokSistOppdatert:"");
+            return "&sokLagringsenhet=" + (sok.sokLagringsenhet ? sok.sokLagringsenhet : "") +
+            "&sokFanearkId=" + (sok.sokFanearkId ? sok.sokFanearkId : "") +
+            "&sokFodselsnummer=" + (sok.sokFodselsnummer ? sok.sokFodselsnummer : "") +
+            "&sokNavn=" + (sok.sokNavn ? sok.sokNavn : "") +
+            "&sokFodt=" + (sok.sokFodt ? sok.sokFodt : "") +
+            "&sokOppdatertAv=" + (sok.sokOppdatertAv ? sok.sokOppdatertAv : "") +
+            "&sokSistOppdatert=" + (sok.sokSistOppdatert ? sok.sokSistOppdatert : "");
         }
 
         return '';
+    }
+    
+    function getSize() {
+        return size;
+    }
+    
+    function setSize(newSize) {
+        size = newSize;
     }
 
     return {
@@ -60,6 +64,8 @@ function listService($http) {
         setSok: setSok,
         getTittel: getTittel,
         getData: getData,
-        getQuery: getQuery
+        getQuery: getQuery,
+        getSize: getSize,
+        setSize: setSize
     };
 }

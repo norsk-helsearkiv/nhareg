@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import java.io.Serializable;
 import java.util.Calendar;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -102,4 +103,23 @@ public class DatoEllerAar implements Serializable
         this.aar = value;
     }
 
+    /**
+     * Transforms the value to string.
+     * @return The string value of either the date or year.
+     */
+    public String toString() {
+        return this.dato != null ? this.dato.toString() : this.aar.toString();
+    }
+
+    /**
+     * Get the year either from date or aar.
+     * @return int value of the year.
+     */
+    public int getYear() {
+        if (dato != null) {
+            return dato.get(Calendar.YEAR);
+        }
+        
+        return aar;
+    }
 }

@@ -1,10 +1,11 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
+import lombok.Data;
+
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.*;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -38,107 +39,47 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Pasientjournal", propOrder = {
-        "journalidentifikator",
-        "grunnopplysninger",
-        "diagnose",
-        "supplerendeopplysninger",
-        "lagringsenhet",
-        "slettet",
-        "oppdateringsinfo",
-        "fanearkid",
-        "merknad"
+    "journalidentifikator",
+    "grunnopplysninger",
+    "diagnose",
+    "supplerendeopplysninger",
+    "lagringsenhet",
+    "slettet",
+    "oppdateringsinfo",
+    "fanearkid",
+    "merknad"
 })
-public class Pasientjournal implements Serializable
-{
+@Data
+public class Pasientjournal implements Serializable {
 
     @XmlElement(required = true)
     protected Journalidentifikator journalidentifikator;
+
     @XmlElement(required = true)
     protected Grunnopplysninger grunnopplysninger;
-    protected Set<Diagnose> diagnose;
-    protected List<Supplerendeopplysninger> supplerendeopplysninger;
+
     @XmlElement(required = true)
     protected List<Lagringsenhet> lagringsenhet;
-    protected Boolean slettet;
+
     @XmlElement(required = true)
     protected Oppdateringsinfo oppdateringsinfo;
+
     @XmlAttribute(name = "uuid")
     protected String uuid;
-    protected String fanearkid;
+
     @XmlElement(name="merknad")
     protected String merknad;
 
     @XmlTransient
     protected Calendar opprettetDato;
 
-    public String getFanearkid() { return this.fanearkid; }
+    protected List<Supplerendeopplysninger> supplerendeopplysninger;
 
-    public void setFanearkid(String fanearkid){
-        this.fanearkid = fanearkid;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Pasientjournal that = (Pasientjournal) o;
-
-        return uuid.equals(that.uuid);
-    }
-
-    @Override
-    public int hashCode() {
-        return uuid.hashCode();
-    }
-
-    /**
-     * Gets the value of the journalidentifikator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Journalidentifikator }
-     *     
-     */
-    public Journalidentifikator getJournalidentifikator() {
-        return journalidentifikator;
-    }
-
-    /**
-     * Sets the value of the journalidentifikator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Journalidentifikator }
-     *     
-     */
-    public void setJournalidentifikator(Journalidentifikator value) {
-        this.journalidentifikator = value;
-    }
-
-    /**
-     * Gets the value of the grunnopplysninger property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Grunnopplysninger }
-     *     
-     */
-    public Grunnopplysninger getGrunnopplysninger() {
-        return grunnopplysninger;
-    }
-
-    /**
-     * Sets the value of the grunnopplysninger property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Grunnopplysninger }
-     *     
-     */
-    public void setGrunnopplysninger(Grunnopplysninger value) {
-        this.grunnopplysninger = value;
-    }
+    protected Set<Diagnose> diagnose;
+    
+    protected Boolean slettet;
+    
+    protected String fanearkid;
 
     /**
      * Gets the value of the diagnose property.
@@ -230,92 +171,24 @@ public class Pasientjournal implements Serializable
         return this.lagringsenhet;
     }
 
-    /**
-     * Gets the value of the slettet property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isSlettet() {
-        return slettet;
-    }
-
-    /**
-     * Sets the value of the slettet property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setSlettet(Boolean value) {
-        this.slettet = value;
-    }
-
-    /**
-     * Gets the value of the oppdateringsinfo property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Oppdateringsinfo }
-     *     
-     */
-    public Oppdateringsinfo getOppdateringsinfo() {
-        return oppdateringsinfo;
-    }
-
-    /**
-     * Sets the value of the oppdateringsinfo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Oppdateringsinfo }
-     *     
-     */
-    public void setOppdateringsinfo(Oppdateringsinfo value) {
-        this.oppdateringsinfo = value;
-    }
-
-    /**
-     * Gets the value of the uuid property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUuid() {
-        return uuid;
-    }
-
-    /**
-     * Sets the value of the uuid property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUuid(String value) {
-        this.uuid = value;
-    }
-
     @XmlTransient
     public Calendar getOpprettetDato() {
         return opprettetDato;
     }
 
-    public void setOpprettetDato(Calendar opprettetDato) {
-        this.opprettetDato = opprettetDato;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pasientjournal that = (Pasientjournal) o;
+
+        return uuid.equals(that.uuid);
     }
 
-    public String getMerknad() {
-        return merknad;
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
     }
 
-    public void setMerknad(String merknad) {
-        this.merknad = merknad;
-    }
 }

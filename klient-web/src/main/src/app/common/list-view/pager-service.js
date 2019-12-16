@@ -3,9 +3,6 @@ var mod = angular.module('nha.common.pager-service', []);
 mod.factory('pagerService', [pagerService]);
 
 function pagerService() {
-
-
-
     // service implementation
     function getPager(totalItems, currentPage, pageSize) {
         // default to first page
@@ -56,15 +53,18 @@ function pagerService() {
             pages: pages
         };
     }
+    
     function range(start, stop, step){
-        var a=[start];
-        var b=start;
-        while(b<stop){
-            b+=step;a.push(b);
+        var a = [start];
+        var b = start;
+        
+        while(b < stop) {
+            b += step;
+            a.push(b);
         }
+        
         return a;
     }
-
 
     return {
         getPager : getPager
