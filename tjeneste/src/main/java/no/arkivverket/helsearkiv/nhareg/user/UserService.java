@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
@@ -32,7 +32,7 @@ public class UserService implements UserServiceInterface {
 
         //defaulter til bruker-rolle hvis det mangler..
         if (bruker.getRolle().getNavn().isEmpty()) {
-            bruker.getRolle().setNavn(Roller.ROLE_BRUKER);
+            bruker.getRolle().setNavn(Roles.ROLE_BRUKER);
         }
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...

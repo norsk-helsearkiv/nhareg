@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import org.apache.commons.lang3.StringUtils;
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,134 +10,182 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
-
 /**
  * Created by haraldk on 07.05.15.
  */
 public class SortPasientjournaler {
 
-    public void sort(List<Pasientjournal> pasientjournaler, final String order, final String direction) {
-        if (order!=null) {
-            FlexibleComparator comp = new FlexibleComparator(Order.valueOf(order));
+    public void sort(final List<Pasientjournal> pasientjournaler, final String order, final String direction) {
+        if (order != null) {
+            final FlexibleComparator comp = new FlexibleComparator(Order.valueOf(order));
             boolean asc = "asc".equals(direction);//"desc" for descending..
-            Collections.sort(pasientjournaler, asc?comp:Collections.reverseOrder(comp));
+            pasientjournaler.sort(asc ? comp : Collections.reverseOrder(comp));
+            
             return;
         }
 
-        Collections.sort(pasientjournaler, new Comparator<Pasientjournal>() {
-            public int compare(Pasientjournal o1, Pasientjournal o2) {
-                Oppdateringsinfo io1 = o1.getOppdateringsinfo();
-                Oppdateringsinfo io2 = o2.getOppdateringsinfo();
-                if (io1==null&&io2==null)
-                    return 0;
-                if (io1==null)
-                    return -1;
-                if (io2 == null)
-                    return 1;
-                if (io1.getSistOppdatert() == null && io2.getSistOppdatert() == null) {
-                    return 0;
-                }
-                if (io1.getSistOppdatert() != null) {
-                    return -1;
-                }
-                if (io2.getSistOppdatert() != null) {
-                    return 1;
-                }
-                int val =  io2.getSistOppdatert().compareTo(io1.getSistOppdatert());
-                return val;
+        pasientjournaler.sort((value, other) -> {
+            final Oppdateringsinfo updateInfoValue = value.getOppdateringsinfo();
+            final Oppdateringsinfo updateInfoOther = other.getOppdateringsinfo();
+            if (updateInfoValue == null && updateInfoOther == null) {
+                return 0;
             }
+
+            if (updateInfoValue == null) {
+                return -1;
+            }
+
+            if (updateInfoOther == null) {
+                return 1;
+            }
+            
+            if (updateInfoValue.getSistOppdatert() == null && updateInfoOther.getSistOppdatert() == null) {
+                return 0;
+            }
+
+            if (updateInfoValue.getSistOppdatert() != null) {
+                return -1;
+            }
+
+            if (updateInfoOther.getSistOppdatert() != null) {
+                return 1;
+            }
+
+            return updateInfoOther.getSistOppdatert().compareTo(updateInfoValue.getSistOppdatert());
         });
     }
 
     public enum Order {lagringsenhet, fodselsnummer, jnr, lnr, fanearkid, navn, faar, daar, oppdatertAv}
 
-     class FlexibleComparator implements Comparator<Pasientjournal> {
+    class FlexibleComparator implements Comparator<Pasientjournal> {
         private Order sortingBy;
-        private DatoEllerAarTilStringTransformer trans = new DatoEllerAarTilStringTransformer();
 
-         public FlexibleComparator(final Order sortingBy){
-             this.sortingBy = sortingBy;
-         }
-        public int compare(Pasientjournal p1, Pasientjournal p2) {
+        public FlexibleComparator(final Order sortingBy){
+            this.sortingBy = sortingBy;
+        }
+        
+        public int compare(final Pasientjournal recordOne, final Pasientjournal recordTwo) {
+            final Journalidentifikator journalOneId = recordOne.getJournalidentifikator();
+            final Journalidentifikator journalTwoId = recordTwo.getJournalidentifikator();
+            final Grunnopplysninger baseInfoOne = recordOne.getGrunnopplysninger();
+            final Grunnopplysninger baseInfoTwo = recordTwo.getGrunnopplysninger();
+
             switch(sortingBy) {
                 case lagringsenhet:
-                    if (p1.getLagringsenhet().size() > 0 && p2.getLagringsenhet().size() > 0)
-                        return comp(p1.getLagringsenhet().get(0).getIdentifikator(), p2.getLagringsenhet().get(0).getIdentifikator());
-                    if (p1.getLagringsenhet().size() == 0 && p2.getLagringsenhet().size() == 0)
+                    final int storageOneSize = recordOne.getLagringsenhet().size();
+                    final int storageTwoSize = recordTwo.getLagringsenhet().size();
+                    
+                    if (storageOneSize > 0 && storageTwoSize > 0) {
+                        final String recordOneId = recordOne.getLagringsenhet().get(0).getIdentifikator();
+                        final String recordTwoId = recordTwo.getLagringsenhet().get(0).getIdentifikator();
+                        return comp(recordOneId, recordTwoId);
+                    }
+                    
+                    if (storageOneSize == 0 && storageTwoSize == 0)
                         return 0;
-                    return p1.getLagringsenhet().size() == 0 ? 1 : -1;
+                    
+                    return storageOneSize == 0 ? 1 : -1;
 
                 case fodselsnummer:
-                    if (p1.getGrunnopplysninger().getIdentifikator()!=null&&p2.getGrunnopplysninger().getIdentifikator()!=null){
-                        int v = comp(p1.getGrunnopplysninger().getIdentifikator().getPID(), p2.getGrunnopplysninger().getIdentifikator().getPID());
-                        return v;
+                    final Identifikator recordOneId = baseInfoOne.getIdentifikator();
+                    final Identifikator recordTwoId = baseInfoTwo.getIdentifikator();
+                    
+                    if (recordOneId != null && recordTwoId != null) {
+                        return comp(recordOneId.getPID(), recordTwoId.getPID());
                     }
-                    if (p1.getGrunnopplysninger().getIdentifikator()==null && p2.getGrunnopplysninger().getIdentifikator()==null){
+                    
+                    if (recordOneId == null && recordTwoId == null) {
                         return 0;
                     }
-                    return p1.getGrunnopplysninger().getIdentifikator()==null?1:-1;
+                    
+                    return recordOneId == null ? 1 : -1;
+                
                 case jnr:
-                    if (p1.getJournalidentifikator()!=null&&p2.getJournalidentifikator()!=null){
-                        return comp(p1.getJournalidentifikator().getJournalnummer(), p2.getJournalidentifikator().getJournalnummer());
+                    if (journalOneId != null && journalTwoId != null) {
+                        return comp(journalOneId.getJournalnummer(), journalTwoId.getJournalnummer());
                     }
-                    if (p1.getJournalidentifikator()==null&&p2.getJournalidentifikator()==null){
+                    
+                    if (journalOneId == null && journalTwoId == null) {
                         return 0;
                     }
-                    return p1.getJournalidentifikator()==null?1:-1;
+                    
+                    return journalOneId == null ? 1 : -1;
+                
                 case fanearkid:
-                    if (p1!=null&&p2!=null){
-                        return comp(p1.getFanearkid(), p2.getFanearkid());
-                    }
-                    if (p1==null&&p2==null){
+                    if (recordOne == null || recordTwo == null) {
                         return 0;
                     }
-                    return p1.getJournalidentifikator()==null?1:-1;
+
+                    if (recordOne != null && recordTwo != null) {
+                        return comp(recordOne.getFanearkid(), recordTwo.getFanearkid());
+                    }
+                
+                    return journalOneId == null ? 1 : -1;
+                
                 case lnr:
-                    if (p1.getJournalidentifikator()!=null&&p2.getJournalidentifikator()!=null){
-                        return comp(p1.getJournalidentifikator().getLøpenummer(), p2.getJournalidentifikator().getLøpenummer());
+                    if (journalOneId != null && journalTwoId !=null) {
+                        return comp(journalOneId.getLøpenummer(), journalTwoId.getLøpenummer());
                     }
-                    if (p1.getJournalidentifikator()==null&&p2.getJournalidentifikator()==null){
+                    
+                    if (journalOneId == null && journalTwoId ==null) {
                         return 0;
                     }
-                    return p1.getJournalidentifikator()==null?1:-1;
+                    
+                    return journalOneId == null ? 1 : -1;
+                
                 case navn:
-                    if (p1.getGrunnopplysninger()!=null&&p2.getGrunnopplysninger()!=null){
-                        return comp(p1.getGrunnopplysninger().getPnavn(), p2.getGrunnopplysninger().getPnavn());
+                    if (baseInfoOne != null && baseInfoTwo != null) {
+                        return comp(baseInfoOne.getPnavn(), baseInfoTwo.getPnavn());
                     }
-                    if (p1.getGrunnopplysninger()==null&&p2.getGrunnopplysninger()==null){
+                    
+                    if (baseInfoOne == null && baseInfoTwo == null) {
                         return 0;
                     }
-                    return p1.getGrunnopplysninger()==null?1:-1;
+                
+                    return baseInfoOne == null ? 1 : -1;
+                
                 case faar:
-                    if (p1.getGrunnopplysninger()!=null&&p2.getGrunnopplysninger()!=null){
-                        return compDate(trans.transform(p1.getGrunnopplysninger().getFødt()), trans.transform(p2.getGrunnopplysninger().getFødt()));
+                    if (baseInfoOne != null && baseInfoTwo != null) {
+                        final DatoEllerAar bornOne = baseInfoOne.getFødt();
+                        final DatoEllerAar bornTwo = baseInfoTwo.getFødt();
+                        return compDate(DateOrYearConverter.fromDateOrYear(bornOne),
+                                        DateOrYearConverter.fromDateOrYear(bornTwo));
                     }
-                    if (p1.getGrunnopplysninger()==null&&p2.getGrunnopplysninger()==null){
+                    
+                    if (baseInfoOne == null && baseInfoTwo == null) {
                         return 0;
                     }
-                    return p1.getGrunnopplysninger()==null?1:-1;
+                    
+                    return baseInfoOne == null ? 1 : -1;
+                
                 case daar:
-                    if (p1.getGrunnopplysninger()!=null&&p2.getGrunnopplysninger()!=null){
-                        String p1Dod = trans.transform(p1.getGrunnopplysninger().getDød());
-                        String p2Dod = trans.transform(p2.getGrunnopplysninger().getDød());
-                        return compDate(p1Dod, p2Dod);
+                    if (baseInfoOne != null && baseInfoTwo != null) {
+                        final String deadOne = DateOrYearConverter.fromDateOrYear(baseInfoOne.getDød());
+                        final String deadTwo = DateOrYearConverter.fromDateOrYear(baseInfoTwo.getDød());
+                        return compDate(deadOne, deadTwo);
                     }
-                    if (p1.getGrunnopplysninger()==null&&p2.getGrunnopplysninger()==null){
+                    
+                    if (baseInfoOne == null && baseInfoTwo == null) {
                         return 0;
                     }
-                    return p1.getGrunnopplysninger()==null?1:-1;
+                    
+                    return baseInfoOne == null ? 1 : -1;
+                
                 case oppdatertAv:
-                    if (p1.getOppdateringsinfo()!=null&&p2.getOppdateringsinfo()!=null){
-                        return comp(p1.getOppdateringsinfo().getOppdatertAv(), p2.getOppdateringsinfo().getOppdatertAv());
-                    }
-                    if (p1.getOppdateringsinfo()==null&&p2.getOppdateringsinfo()==null){
+                    final Oppdateringsinfo updateInfoOne = recordOne.getOppdateringsinfo();
+                    final Oppdateringsinfo updateInfoTwo = recordTwo.getOppdateringsinfo();
+                    
+                    if (updateInfoOne == null && updateInfoTwo == null) {
                         return 0;
                     }
-                    return p1.getOppdateringsinfo()==null?1:-1;
+
+                    if (updateInfoOne != null && updateInfoTwo != null){
+                        return comp(updateInfoOne.getOppdatertAv(), updateInfoTwo.getOppdatertAv());
+                    }
+                    
+                    return updateInfoOne == null ? 1 : -1;
             }
+
             throw new RuntimeException("Practically unreachable code, can't be thrown");
         }
 
@@ -144,43 +193,48 @@ public class SortPasientjournaler {
             this.sortingBy = sortBy;
         }
 
-        private int comp(String s1, String s2){
-            if (!StringUtils.isBlank(s1) && !StringUtils.isBlank(s2)){
-                return s1.compareTo(s2);
+        private int comp(final String value, final String other) {
+            if (value != null && !value.isEmpty() && other != null && !other.isEmpty()) {
+                return value.compareTo(other);
             }
-            if (StringUtils.isBlank(s1) && StringUtils.isBlank(s2)){
+            
+            if ((value == null || value.isEmpty()) && (other == null || other.isEmpty())) {
                 return 0;
             }
 
-            return (StringUtils.isBlank(s1))?1:-1;
+            return (value == null || value.isEmpty()) ? 1 : -1;
         }
 
 
-        private int compDate(String s1, String s2){
-            Date d1 = createDate(s1);
-            Date d2 = createDate(s2);
-            if (d1!=null && d2!=null){
-                return d1.compareTo(d2);
+        private int compDate(final String value, final String other) {
+            final Date dateValue = createDate(value);
+            final Date dateOther = createDate(other);
+            
+            if (dateValue != null && dateOther != null) {
+                return dateValue.compareTo(dateOther);
             }
-            if (d1==null&&d2==null){
+            
+            if (dateValue == null && dateOther == null) {
                 return 0;
             }
-            return (d1 == null) ? 1 : -1;
+            return (dateValue == null) ? 1 : -1;
         }
 
-        private Date createDate(String dateIn){
-            if (dateIn==null)
-                dateIn = "01.01.0001";
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        private Date createDate(String dateString) {
+            if (dateString == null)
+                dateString = "01.01.0001";
+            final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
             try {
-                String dateToConvert = dateIn;
-                if (dateIn!=null&&dateIn.length()==4) {//year
-                    dateToConvert = "01.01."+dateIn;
+                String dateToConvert = dateString;
+                if (dateString.length() == 4) {//year
+                    dateToConvert = "01.01." + dateString;
                 }
+ 
                 return format.parse(dateToConvert);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+ 
             return null;
         }
     }

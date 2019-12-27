@@ -76,17 +76,20 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         return pagedResultList;
     }
 
-    public List<RecordTransferDTO> fetchAllRecordTransfers(final Map<String, String> queryParameters,
-                                                           final int page,
-                                                           final int size) {
+    public List<RecordTransferDTO> fetchAllRecordTransfers(final Map<String, String> queryParameters) {
         final Query query = createQueryWithPredicates(queryParameters, GET_RECORD_TRANSFER_RESULTS);
         final List<Object[]> queryResults;
-
-        if (page > 0 && size >= 0) {
-            // Remove 1 from the page as results are 0 indexed, but given page is not.
+        
+        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
+            final int page = Integer.parseInt(queryParameters.get(PAGE));
+            final int size = Integer.parseInt(queryParameters.get(SIZE));
             final int index = (page - 1) * size;
-            query.setFirstResult(index);
-            query.setMaxResults(size);
+            
+            if (page > 0 && size >= 0) {
+                // Remove 1 from the page as results are 0 indexed, but given page is not.
+                query.setFirstResult(index);
+                query.setMaxResults(size);
+            }
         }
 
         try {
@@ -96,7 +99,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         }
 
         // Map each row into a RecordTransferDTO object and add it to a list.
-        List<RecordTransferDTO> recordTransferDTOList = new ArrayList<>();
+        final List<RecordTransferDTO> recordTransferDTOList = new ArrayList<>();
         queryResults.forEach(objects -> recordTransferDTOList.add(mapFromObjectsToRecordTransferDTO(objects)));
         
         return recordTransferDTOList;

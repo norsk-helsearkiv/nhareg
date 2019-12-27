@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 
 import javax.annotation.security.RolesAllowed;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/diagnosekoder")
-@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
 public class DiagnosisCodeResource {
 
     @Inject

@@ -46,7 +46,7 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
         if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
             //datostreng kan bestå av kun år eller full dato.
             Date date = null;
-            DatoEllerAar dateOrYear = DateOrYearConverter.tilDatoEllerAar(dateQueryParameter);
+            DatoEllerAar dateOrYear = DateOrYearConverter.toDateOrYear(dateQueryParameter);
             if (dateOrYear != null) {
                 if (dateOrYear.getAar() != null) {
                     date = GyldigeDatoformater.getDateFromYear(dateOrYear.getAar());

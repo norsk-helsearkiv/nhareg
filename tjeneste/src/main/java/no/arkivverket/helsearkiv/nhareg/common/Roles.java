@@ -1,9 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
-/**
- * Created by haraldk on 24.04.15.
- */
-public final class Roller {
+public final class Roles {
     public final static String ROLE_ADMIN = "admin";
     public final static String ROLE_BRUKER = "bruker";
 }

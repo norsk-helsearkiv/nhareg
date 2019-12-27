@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
@@ -34,7 +33,7 @@ public class TransferDAO extends EntityDAO<Avlevering> {
 
     @Override
     public Avlevering fetchById(String id) {
-         Avlevering transfer = super.fetchById(id);
+         final Avlevering transfer = super.fetchById(id);
          
          // Force load 
          transfer.getPasientjournal().forEach(record -> {
@@ -58,16 +57,16 @@ public class TransferDAO extends EntityDAO<Avlevering> {
         return String.valueOf(result);
     }
 
-    public TransferDTO fetchTransferFromRecordId(final String recordId) {
+    public Avlevering fetchTransferFromRecordId(final String recordId) {
         final String queryString = "SELECT * " 
             + "FROM avlevering a " 
-            + "JOIN avlevering_pasientjournal aps ON aps.avleverings_identifikator = a.avleveringsidentifikator " 
+            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator " 
             + "WHERE aps.pasientjournal_uuid = :id";
         
-        Query query = getEntityManager().createNativeQuery(queryString, TransferDTO.class);
+        final Query query = getEntityManager().createNativeQuery(queryString, Avlevering.class);
         query.setParameter("id", recordId);
         
-        return (TransferDTO) query.getResultList();
+        return (Avlevering) query.getResultList();
     }
     
     public Avlevering fetchTransferForStorageUnit(final String id) {
@@ -94,7 +93,7 @@ public class TransferDAO extends EntityDAO<Avlevering> {
                 + "WHERE lagringsenhet_uuid = :id)";
         final Query query = getEntityManager().createNativeQuery(queryString);
         query.setParameter("id", storageUnitId);
-        List<String> result = query.getResultList();
+        final List<String> result = query.getResultList();
         
         if (result.isEmpty()) {
             return null;

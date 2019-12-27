@@ -11,22 +11,27 @@ import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
+import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class StorageUnitService implements StorageUnitServiceInterface {
 
-    @Resource
     private SessionContext sessionContext;
 
+    @Override
+    @Resource
+    public void setSessionContext(SessionContext sessionContext) {
+        this.sessionContext = sessionContext;
+    }
+    
     @Inject
     private StorageUnitDAO storageUnitDAO;
     
@@ -39,6 +44,9 @@ public class StorageUnitService implements StorageUnitServiceInterface {
     @Inject
     private MedicalRecordDAO medicalRecordDAO;
 
+    @Inject
+    private ConfigurationDAO configurationDAO;
+    
     private static final String NOT_UNIQUE_CONSTRAINT = "NotUnique";
     private static final String STORAGE_UNIT_ATTRIBUTE = "lagringsenheter";
 
@@ -75,7 +83,7 @@ public class StorageUnitService implements StorageUnitServiceInterface {
 
     @Override
     public List<Lagringsenhet> getStorageUnits(final MultivaluedMap<String, String> queryParameters) {
-        final Map<String, String> mappedParameters = convertToMap(queryParameters);
+        final Map<String, String> mappedParameters = ParameterConverter.multivaluedToMap(queryParameters);
         return storageUnitDAO.fetchAll(mappedParameters);
     }
 
@@ -102,34 +110,25 @@ public class StorageUnitService implements StorageUnitServiceInterface {
             printerIp = "127.0.0.1";
         }
 
-        Integer printerPort = konfigParam.getInt(ConfigurationDAO.KONFIG_PRINTER_PORT);
+        Integer printerPort = configurationDAO.getInt(ConfigurationDAO.KONFIG_PRINTER_PORT);
         if (printerPort == null) {
             printerPort = 9100;
         }
 
-        String fileTemplatePath = konfigParam.getVerdi(ConfigurationDAO.KONFIG_TEMPLATEFILE);
-        String toPrint = new EtikettBuilder().buildContent(fileTemplatePath, storageUnit, transfer, medicalRecordCount);
+        final String fileTemplatePath = configurationDAO.getValue(ConfigurationDAO.KONFIG_TEMPLATEFILE);
+        try {
+            final String toPrint = new EtikettBuilder().buildContent(fileTemplatePath, storageUnit, transfer,
+                                                            medicalRecordCount);
 
-        new SocketPrinter().print(toPrint, printerIp, printerPort);
+            new SocketPrinter().print(toPrint, printerIp, printerPort);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            return;
+        }
+        
         storageUnit.setUtskrift(true);
 
-        getEntityManager().merge(storageUnit);
-        return Response.ok().build();
-
-    }
-
-    /**
-     * Filter out empty entries and convert to map.
-     * @param queryParameters HTTP query parameters passed to the endpoint.
-     * @return HashMap all empty params removed.
-     */
-    private Map<String, String> convertToMap(final MultivaluedMap<String, String> queryParameters) {
-        Map<String, String> mappedQueries = new HashMap<>();
-        // Convert to map
-        queryParameters.forEach((key, value) -> mappedQueries.put(key, value.get(0)));
-        // Remove all empty entries, as well as page and size
-        mappedQueries.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().isEmpty());
-        return mappedQueries;
+        storageUnitDAO.update(storageUnit);
     }
 
 }

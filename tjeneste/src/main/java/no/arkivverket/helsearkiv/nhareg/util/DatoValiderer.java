@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
@@ -8,7 +9,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
 
 import java.util.*;
 
@@ -30,8 +30,8 @@ public class DatoValiderer {
      * @return
      */
     public List<Valideringsfeil> validerDiagnose(DiagnoseDTO diagnose, Pasientjournal pasientjournal) {
-        List<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
-        Grunnopplysninger grunnopplysninger = pasientjournal.getGrunnopplysninger();
+        final List<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+        final Grunnopplysninger grunnopplysninger = pasientjournal.getGrunnopplysninger();
 
         //ta diagnosedato som god fisk ettersom både mors og født er ukjent...
         if (grunnopplysninger.getFodtdatoUkjent() != null &&
@@ -41,9 +41,8 @@ public class DatoValiderer {
             return feil;
         }
 
-        DatoEllerAarTilStringTransformer tilStringTransformer = new DatoEllerAarTilStringTransformer();
-        String diagnoseDatoString = diagnose.getDiagnosedato();
-        Date diagnoseDato = getDate(diagnoseDatoString);
+        final String diagnoseDatoString = diagnose.getDiagnosedato();
+        final Date diagnoseDato = getDate(diagnoseDatoString);
 
         if (diagnoseDato == null) {
             feil.add(new Valideringsfeil("diagnosedato", "DiagFormatFeil"));
@@ -52,16 +51,16 @@ public class DatoValiderer {
 
         //fødtdatoår kjent
         if (grunnopplysninger.getFodtdatoUkjent() == null || !grunnopplysninger.getFodtdatoUkjent()) {
-            DatoEllerAar fodt = grunnopplysninger.getFødt();
-            String fodtString = tilStringTransformer.transform(fodt);
+            final DatoEllerAar fodt = grunnopplysninger.getFødt();
+            final String fodtString = DateOrYearConverter.fromDateOrYear(fodt);
             if ((compareDateString(fodtString, diagnoseDatoString) == DateCompareResult.AFTER)) {
                 feil.add(new Valideringsfeil("diagnosedato", "DiagForFodt"));
             }
         }
 
         if (grunnopplysninger.getDødsdatoUkjent() == null || !grunnopplysninger.getDødsdatoUkjent()) {
-            DatoEllerAar dod = grunnopplysninger.getDød();
-            String dodString = tilStringTransformer.transform(dod);
+            final DatoEllerAar dod = grunnopplysninger.getDød();
+            final String dodString = DateOrYearConverter.fromDateOrYear(dod);
             if ((compareDateString(dodString, diagnoseDatoString) == DateCompareResult.BEFORE)) {
                 feil.add(new Valideringsfeil("diagnosedato", "DiagEtterDod"));
             }
@@ -407,22 +406,20 @@ public class DatoValiderer {
             int y2 = getYear(dato2);
             if (y1 < y2) return DateCompareResult.BEFORE;
             if (y1 == y2) return DateCompareResult.EQUAL;
-            if (y1 > y2) return DateCompareResult.AFTER;
+            return DateCompareResult.AFTER;
         } else {
             Date d1 = getDate(dato1);
             Date d2 = getDate(dato2);
 
             int v = d1.compareTo(d2);
-            if (v == -1){
+            if (v < 0){
                 return DateCompareResult.BEFORE;
             }
             if (v == 0)
                 return DateCompareResult.EQUAL;
-            if (v == 1)
-                return DateCompareResult.AFTER;
+            
+            return DateCompareResult.AFTER;
         }
-
-        return null;
     }
 
     enum DateCompareResult{

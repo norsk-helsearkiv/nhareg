@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/admin")
-@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
 @Stateless
 public class UserResource {
 
@@ -70,7 +70,7 @@ public class UserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/brukere")
     public List<BrukerDTO> getBrukere() {
         return adminService.getUsers();
@@ -79,7 +79,7 @@ public class UserResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/brukere")
     public Response oppdaterBruker(BrukerDTO brukerDTO) {
         return Response.ok(adminService.updateUser(brukerDTO)).build();

@@ -6,6 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
+import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
@@ -13,7 +14,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,7 +78,8 @@ public class TransferService implements TransferServiceInterface {
 
     @Override
     public List<AvleveringDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
-        final List<Avlevering> transferList = transferDAO.fetchAll(convertToMap(queryParameters));
+        final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
+        final List<Avlevering> transferList = transferDAO.fetchAll(mappedQueries);
         // Convert to AvleveringDTO list
         return transferList.stream().map(AvleveringDTO::new).collect(Collectors.toList());
     }
@@ -123,15 +124,6 @@ public class TransferService implements TransferServiceInterface {
         }
         
         return transferDAO.fetchById(defaultUuid);
-    }
-
-    private Map<String, String> convertToMap(final MultivaluedMap<String, String> queryParameters) {
-        Map<String, String> mappedQueries = new HashMap<>();
-        // Convert to map
-        queryParameters.forEach((key, value) -> mappedQueries.put(key, value.get(0)));
-        // Remove all empty entries, as well as page and size
-        mappedQueries.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().isEmpty());
-        return mappedQueries;
     }
 
     private Oppdateringsinfo createUpdateInfo() {

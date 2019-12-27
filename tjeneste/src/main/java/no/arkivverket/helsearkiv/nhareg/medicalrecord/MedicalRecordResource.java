@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
@@ -18,7 +18,7 @@ import java.io.File;
 
 @Singleton
 @Path("/pasientjournaler")
-@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
 public class MedicalRecordResource {
 
     @Inject

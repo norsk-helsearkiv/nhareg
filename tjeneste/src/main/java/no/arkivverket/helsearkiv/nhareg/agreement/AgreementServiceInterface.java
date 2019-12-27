@@ -12,5 +12,8 @@ public interface AgreementServiceInterface {
     List<Avtale> getAll(final MultivaluedMap<String, String> queryParameters);
 
     List<AvleveringDTO> getTransfersById(final String id, final Avlevering defaultTransfer);
-    
+
+    Avtale create(final Avtale agreement);
+
+    Avtale delete(final String id);
 }

@@ -54,6 +54,7 @@ public class DatoEllerAar implements Serializable {
     @XmlJavaTypeAdapter(Adapter2 .class)
     @XmlSchemaType(name = "date")
     protected Calendar dato;
+
     protected Integer aar;
 
     /**

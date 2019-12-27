@@ -1,8 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -12,7 +16,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class DiagnosekodeServiceTest {
+@RunWith(Arquillian.class)
+public class DiagnosisCodeServiceTest {
+
+    @Deployment
+    public static WebArchive deployment() {
+        return RESTDeployment.deployment();
+    }
 
     @Inject
     private DiagnosisCodeServiceInterface diagnosisCodeService;
@@ -33,14 +43,14 @@ public class DiagnosekodeServiceTest {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
-        assertEquals(2, diagnosisCodes.size());
+        assertEquals(3, diagnosisCodes.size());
     }
 
     @Test
     public void getAll_withPaging_shouldFindOne() {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        queryParameters.add(EntitetsTjeneste.SIDE, "1");
-        queryParameters.add(EntitetsTjeneste.ANTALL, "1");
+        queryParameters.add("page", "1");
+        queryParameters.add("size", "1");
         List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(1, diagnosisCodes.size());
@@ -87,11 +97,11 @@ public class DiagnosekodeServiceTest {
     }
 
     @Test
-    public void getAll_nullCode_shouldReturnNone() {
+    public void getAll_nullCode_shouldReturnThree() {
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add("code", null);
         final List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
-        assertEquals(0, diagnosisCodes.size());
+        assertEquals(3, diagnosisCodes.size());
     }
 }

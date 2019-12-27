@@ -1,6 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
@@ -39,6 +41,8 @@ import java.io.Serializable;
     "oppdateringsinfo"
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Diagnose implements Serializable {
 
     protected DatoEllerAar diagdato;

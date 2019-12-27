@@ -4,15 +4,27 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import org.junit.Test;
 
+import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import static org.junit.Assert.*;
 
+// @RunWith(Arquillian.class)
 public class MedicalRecordServiceTest {
+
+    // @Deployment
+    // public static WebArchive deployment() {
+    //     return RESTDeployment.deployment();
+    // }
 
     @Inject
     private MedicalRecordServiceInterface medicalRecordService;
+    
+    // @Before
+    // public void setUp() {
+    //     medicalRecordService.setSessionContext(mock(SessionContext.class));
+    // }
 
     @Test
     public void getByIdWithTransfer_shouldReturnThreeStorageUnits() {
@@ -68,9 +80,13 @@ public class MedicalRecordServiceTest {
         assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
     }
 
-    @Test(expected = NoResultException.class)
+    @Test
     public void delete_invalidId_shouldThrowNoResultException() {
-        medicalRecordService.delete("tull");
+        try {
+            medicalRecordService.delete("tull");
+        } catch (EJBException ejb) {
+            assertEquals(ejb.getCause().getClass(), NoResultException.class);
+        }
     }
 
     @Test

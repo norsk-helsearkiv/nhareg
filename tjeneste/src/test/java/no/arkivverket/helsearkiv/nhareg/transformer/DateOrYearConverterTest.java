@@ -47,7 +47,7 @@ public class DateOrYearConverterTest {
 
     @Test
     public void tilDatoEllerAar() throws ParseException {
-        DatoEllerAar datoEllerAar = DateOrYearConverter.tilDatoEllerAar("15.03.2015");
+        DatoEllerAar datoEllerAar = DateOrYearConverter.toDateOrYear("15.03.2015");
         assertNotNull(datoEllerAar);
         assertNotNull(datoEllerAar.getDato());
         assertEquals(15, datoEllerAar.getDato().get(Calendar.DAY_OF_MONTH));
@@ -58,7 +58,7 @@ public class DateOrYearConverterTest {
     @Test
     public void tilString() throws ParseException {
         String datoString = "15.03.2015";
-        DatoEllerAar datoEllerAar = DateOrYearConverter.tilDatoEllerAar(datoString);
+        DatoEllerAar datoEllerAar = DateOrYearConverter.toDateOrYear(datoString);
         assertNotNull(datoEllerAar);
         assertNotNull(datoEllerAar.getDato());
         assertEquals(15, datoEllerAar.getDato().get(Calendar.DAY_OF_MONTH));

@@ -16,6 +16,9 @@ import java.util.Map;
 
 public abstract class EntityDAO<T> {
 
+    protected static final String SIZE = "size";
+    protected static final String PAGE = "page";
+
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
 
@@ -25,8 +28,7 @@ public abstract class EntityDAO<T> {
 
     public EntityDAO() {}
     
-    public EntityDAO(final Class<T> entityClass,
-                     final String idName) {
+    public EntityDAO(final Class<T> entityClass, final String idName) {
         this.entityClass = entityClass;
         this.idName = idName;
     }
@@ -92,7 +94,15 @@ public abstract class EntityDAO<T> {
      * @return A list of results of type T.
      */
     public List<T> fetchAll(final Map<String, String> queryParameters) {
-        return fetchAllPaged(queryParameters, 0, 0);
+        int page = 0;
+        int size  = 0;
+
+        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
+            page = Integer.parseInt(queryParameters.get(PAGE));
+            size = Integer.parseInt(queryParameters.get(SIZE));
+        }
+
+        return fetchAllPaged(queryParameters, page, size);
     }
 
     /**

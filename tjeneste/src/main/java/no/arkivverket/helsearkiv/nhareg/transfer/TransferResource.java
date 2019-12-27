@@ -1,13 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.user.UserService;
+import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -25,14 +25,14 @@ import java.util.List;
 
 @Path("/avleveringer")
 @Stateless
-@RolesAllowed({Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
+@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
 public class TransferResource {
 
     @Resource
     private SessionContext sessionContext;
 
     @Inject
-    private UserService userService;
+    private UserServiceInterface userService;
     
     @Inject
     private MedicalRecordServiceInterface medicalRecordService;
@@ -48,7 +48,7 @@ public class TransferResource {
 
     @POST
     @Path("/ny")
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Avlevering create(final AvleveringDTO avleveringDTO) {
         return transferService.create(avleveringDTO);
     }
@@ -56,14 +56,14 @@ public class TransferResource {
     @PUT
     @Path("/ny")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public AvleveringDTO update(final AvleveringDTO transferDTO) {
         return transferService.update(transferDTO);
     }
 
     @DELETE
     @Path("/{id}")
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Avlevering delete(@PathParam("id") String id) {
         return transferService.delete(id);
     }
@@ -106,6 +106,7 @@ public class TransferResource {
     public ListObject getMedicalRecordList(@PathParam("id") String id, @Context UriInfo uriInfo) {
         final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
         queryParameters.add("transferId", id);
+        
         return medicalRecordService.getAllWithTransfers(queryParameters);
     }
 
@@ -121,15 +122,16 @@ public class TransferResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createMedicalRecord(@PathParam("id") String id, final PersondataDTO personalDataDTO) {
         final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, personalDataDTO);
+        
         return Response.ok(medicalRecordDTO).build();
     }
 
     @GET
     @Path("/{id}/leveranse")
     @Produces(MediaType.APPLICATION_XML)
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response getTransferXML(@PathParam("id") String id) {
-        Avlevering transfer = transferService.getById(id);
+        final Avlevering transfer = transferService.getById(id);
 
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();
@@ -151,18 +153,20 @@ public class TransferResource {
     @POST
     @Path("/{id}/laas")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response lockTransfer(@PathParam("id") String id) {
         transferService.lockTransfer(id);
+        
         return Response.ok().build();
     }
 
     @POST
     @Path("/{id}/laasOpp")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roller.ROLE_ADMIN})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response unlockTransfer(@PathParam("id") String id) {
         transferService.unlockTransfer(id);
+        
         return Response.ok().build();
     }
 

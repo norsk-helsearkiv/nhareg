@@ -3,7 +3,10 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
@@ -13,6 +16,7 @@ import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.FanearkidValiderer;
+import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
 import javax.annotation.Resource;
@@ -43,7 +47,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     private StorageUnitDAO storageUnitDAO;
     
     @Inject
-    private ConfigurationDAO konfigparam;
+    private ConfigurationDAO configurationDAO;
     
     @Inject
     private GenderDAO genderDAO;
@@ -96,26 +100,24 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     @Override
     public MedicalRecordDTO getByIdWithTransfer(final String id) {
         final Pasientjournal pasientjournal = medicalRecordDAO.fetchById(id);
-        final TransferDTO transferDTO = transferDAO.fetchTransferFromRecordId(id);
+        final Avlevering transfer = transferDAO.fetchTransferFromRecordId(id);
         final Virksomhet business = businessDAO.fetchBusiness();
 
-        // TODO 
-        return MedicalRecordConverter.convertToMedicalRecordDTO(pasientjournal, transferDTO, business.getForetaksnavn());
+        return MedicalRecordConverter.convertToMedicalRecordDTO(pasientjournal, transfer, business.getForetaksnavn());
     }
 
     @Override
     public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters) {
         int page = 0;
-        int size  = 0;
-
-        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
-            page = Integer.parseInt(queryParameters.getFirst(PAGE));
-            size = Integer.parseInt(queryParameters.getFirst(SIZE));
+        int size = 0;
+        
+        if (queryParameters.containsKey("size") && queryParameters.containsKey("page")) {
+            page = Integer.parseInt(queryParameters.getFirst("page"));
+            size = Integer.parseInt(queryParameters.getFirst("size"));
         }
-
-        final Map<String, String> mappedQueries = convertToMap(queryParameters);
-        final List<RecordTransferDTO> recordTransferDTOList = 
-            medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
+        
+        final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
+        final List<RecordTransferDTO> recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries);
         return new ListObject<>(recordTransferDTOList, recordTransferDTOList.size(), page, size);
     }
     
@@ -169,12 +171,13 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         medicalRecord.setOpprettetDato(original.getOpprettetDato());
         Pasientjournal oppdatertPasientjournal = medicalRecordDAO.update(medicalRecord);
 
+        // TODO
         // return MedicalRecordMapper.convertToMedicalRecordDTO(oppdatertPasientjournal, transferDTO, businessDTO);
         return updatedMedicalRecord;
     }
 
     @Override
-    public void validatePID(String pid) {
+    public void validatePID(final String pid) {
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(pid);
         if (fnrfeil != null) {
             throw new ValideringsfeilException(Collections.singleton(fnrfeil));
@@ -196,7 +199,10 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Tracking.
         transfer.setOppdateringsinfo(createUpdateInfo());
-        final MedicalRecordDTO medicalRecordDTO = MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord);
+        final Virksomhet business = businessDAO.fetchBusiness();
+        final MedicalRecordDTO medicalRecordDTO = MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord,
+                                                                                                   transfer,
+                                                                                                   business.getForetaksnavn());
         final String transferIdForRecord = transferDAO.fetchTransferIdFromRecordId(medicalRecord.getUuid());
         medicalRecordDTO.setAvleveringsidentifikator(transferIdForRecord);
 
@@ -211,31 +217,13 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         return medicalRecordDTO;
     }
 
-    /**
-     * Filter out empty entries and convert to map.
-     * @param queryParameters HTTP query parameters passed to the endpoint.
-     * @return HashMap all empty params removed.
-     */
-    private Map<String, String> convertToMap(final MultivaluedMap<String, String> queryParameters) {
-        Map<String, String> mappedQueries = new HashMap<>();
-        // Convert to map
-        queryParameters.forEach((key, value) -> mappedQueries.put(key, value.get(0)));
-        // Remove all empty entries, as well as page and size
-        mappedQueries.entrySet().removeIf(entry ->
-                                              entry.getValue() == null ||
-                                              entry.getValue().isEmpty() ||
-                                              SIZE.equals(entry.getKey()) ||
-                                              PAGE.equals(entry.getKey()));
-        return mappedQueries;
-    }
-
     private void validateBaseData(final PersondataDTO persondataDTO) {
         // VALIDERING - Persondata
         ArrayList<Valideringsfeil> valideringsfeil = new Validator<>(PersondataDTO.class, persondataDTO).valider();
 
         //Validerer forholdet mellom dataoer
         DatoValiderer datoValiderer = new DatoValiderer();
-        valideringsfeil.addAll(datoValiderer.valider(persondataDTO, konfigparam));
+        valideringsfeil.addAll(datoValiderer.valider(persondataDTO, configurationDAO));
 
         Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondataDTO);
         if (fnrfeil != null) {
@@ -244,7 +232,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
             }
         }
 
-        Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondataDTO, konfigparam);
+        Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondataDTO, configurationDAO);
         if (fanearkidFeil != null) {
             valideringsfeil.add(fanearkidFeil);
         }
@@ -254,13 +242,13 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
     }
 
-    private void createAndAttachStorageUnit(List<Lagringsenhet> storageUnits) {
+    private void createAndAttachStorageUnit(final List<Lagringsenhet> storageUnits) {
         // Create new storage units
         storageUnits.forEach(storageUnitDAO::create);
         // 
-        List<Lagringsenhet> existingStorageUnits = storageUnits.stream()
-                                                                .map(unit -> storageUnitDAO.fetchById(unit.getIdentifikator()))
-                                                                .collect(Collectors.toList());
+        final List<Lagringsenhet> existingStorageUnits = storageUnits.stream()
+                                                                     .map(unit -> storageUnitDAO.fetchById(unit.getIdentifikator()))
+                                                                     .collect(Collectors.toList());
         storageUnits.clear();
         storageUnits.addAll(existingStorageUnits);
     }

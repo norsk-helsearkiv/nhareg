@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roller;
+import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 
@@ -11,8 +11,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/diagnoser")
-@RolesAllowed(value = {Roller.ROLE_ADMIN, Roller.ROLE_BRUKER})
-public class DiagnoseTjeneste {
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+public class DiagnosisResource {
 
     @Inject
     private DiagnosisServiceInterface diagnosisService;

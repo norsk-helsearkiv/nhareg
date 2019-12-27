@@ -2,7 +2,10 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.*;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
 import java.util.Arrays;
@@ -11,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.tilDatoEllerAar;
+import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.toDateOrYear;
 
 public class MedicalRecordConverter {
     
@@ -82,12 +85,12 @@ public class MedicalRecordConverter {
 
         final String born = personalDataDTO.getFodt();
         if (born != null) {
-            baseProperties.setFødt(tilDatoEllerAar(born));
+            baseProperties.setFødt(toDateOrYear(born));
         }
 
         final String dead = personalDataDTO.getDod();
         if (dead != null) {
-            baseProperties.setDød(tilDatoEllerAar(dead));
+            baseProperties.setDød(toDateOrYear(dead));
         }
 
         baseProperties.setDødsdatoUkjent(baseProperties.getDød() == null);
@@ -96,12 +99,12 @@ public class MedicalRecordConverter {
         final Kontakt contact = new Kontakt();
         final String firstContact = personalDataDTO.getFKontakt();
         if (firstContact != null) {
-            contact.setFoerste(tilDatoEllerAar(firstContact));
+            contact.setFoerste(toDateOrYear(firstContact));
         }
 
         final String lastContact = personalDataDTO.getSKontakt();
         if (lastContact != null) {
-            contact.setSiste(tilDatoEllerAar(lastContact));
+            contact.setSiste(toDateOrYear(lastContact));
         }
 
         baseProperties.setKontakt(contact);
@@ -111,7 +114,7 @@ public class MedicalRecordConverter {
         return medicalRecord;
     }
     
-    public static PersondataDTO convertToPersonalDataDTO(Pasientjournal medicalRecord) {
+    public static PersondataDTO convertToPersonalDataDTO(final Pasientjournal medicalRecord) {
         final PersondataDTO personalData = new PersondataDTO();
 
         personalData.setUuid(medicalRecord.getUuid());
@@ -176,15 +179,15 @@ public class MedicalRecordConverter {
     }
     
     public static MedicalRecordDTO convertToMedicalRecordDTO(final Pasientjournal medicalRecord,
-                                                             final TransferDTO transferDTO,
+                                                             final Avlevering transfer,
                                                              final String business) {
         final PersondataDTO personalData = convertToPersonalDataDTO(medicalRecord);
         final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO(); 
 
         medicalRecordDTO.setPersondata(personalData);
-        medicalRecordDTO.setAvleveringBeskrivelse(transferDTO.getTransferDescription());
-        medicalRecordDTO.setAvleveringsidentifikator(transferDTO.getAgreementId());
-        medicalRecordDTO.setAvleveringLaast(transferDTO.isLocked());
+        medicalRecordDTO.setAvleveringBeskrivelse(transfer.getAvleveringsbeskrivelse());
+        medicalRecordDTO.setAvleveringsidentifikator(transfer.getAvtale().getAvtaleidentifikator());
+        medicalRecordDTO.setAvleveringLaast(transfer.getLaast());
         
         final Set<Diagnose> diagnosisSet = medicalRecord.getDiagnose();
         final List<DiagnoseDTO> diagnoseDTOList = DiagnosisConverter.convertToDiagnosisDTOList(diagnosisSet);
@@ -195,7 +198,7 @@ public class MedicalRecordConverter {
         return medicalRecordDTO;
     }
     
-    public static RecordTransferDTO convertToRecordTransferDTO(Pasientjournal medicalRecord) {
+    public static RecordTransferDTO convertToRecordTransferDTO(final Pasientjournal medicalRecord) {
         RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
 
         final Grunnopplysninger baseInformation = medicalRecord.getGrunnopplysninger();
@@ -259,7 +262,7 @@ public class MedicalRecordConverter {
         return recordTransferDTO;
     }
 
-    public static List<RecordTransferDTO> convertToRecordTransferDTOList(List<Pasientjournal> medicalRecordList) {
+    public static List<RecordTransferDTO> convertToRecordTransferDTOList(final List<Pasientjournal> medicalRecordList) {
         return medicalRecordList.stream()
             .map(MedicalRecordConverter::convertToRecordTransferDTO)
             .collect(Collectors.toList());

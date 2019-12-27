@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
+import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
@@ -9,12 +10,9 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
-import no.arkivverket.helsearkiv.nhareg.transformer.DiagnoseTilDTOTransformer;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import org.apache.commons.collections4.Transformer;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.inject.Inject;
 import java.util.*;
@@ -31,11 +29,9 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     @Inject
     private DiagnosisDAO diagnosisDAO;
 
-    @EJB(name = "DiagnoseFraDTOTransformer")
-    private Transformer<DiagnoseDTO, Diagnose> diagnoseFraDTOTransformer;
-
-    private Transformer<Diagnose, DiagnoseDTO> diagnoseTilDTOTransformer = new DiagnoseTilDTOTransformer();
-
+    @Inject
+    private DiagnosisCodeDAO diagnosisCodeDAO;
+    
     @Override
     public DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO) {
         final Pasientjournal medicalRecord = medicalRecordDAO.fetchById(id);
@@ -55,8 +51,9 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
         final Oppdateringsinfo updateInfo = createUpdateInfo();
         diagnoseDTO.setOppdatertAv(updateInfo.getOppdatertAv());
-        
-        final Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
+
+        final Diagnosekode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosekode());
+        final Diagnose diagnose = DiagnosisConverter.convertFromDiagnosisDTO(diagnoseDTO, diagnosisCode);
         diagnose.setOppdateringsinfo(updateInfo);
         diagnose.setUuid(UUID.randomUUID().toString());
         
@@ -64,7 +61,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         medicalRecord.getDiagnose().add(diagnose);
         medicalRecord.setOppdateringsinfo(updateInfo);
 
-        return diagnoseTilDTOTransformer.transform(diagnose);
+        return DiagnosisConverter.convertToDiagnosisDTO(diagnose);
     }
 
     @Override 
@@ -98,7 +95,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
             throw new ValideringsfeilException(valideringsfeil);
         }
 
-        Diagnose diagnose = diagnoseFraDTOTransformer.transform(diagnoseDTO);
+        final Diagnosekode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosekode());
+        final Diagnose diagnose = DiagnosisConverter.convertFromDiagnosisDTO(diagnoseDTO, diagnosisCode);
         diagnose.setOppdateringsinfo(createUpdateInfo());
         diagnosisDAO.update(diagnose);
 
