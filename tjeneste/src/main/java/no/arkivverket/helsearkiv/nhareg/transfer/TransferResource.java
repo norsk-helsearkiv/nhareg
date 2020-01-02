@@ -23,9 +23,9 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.util.List;
 
-@Path("/avleveringer")
 @Stateless
-@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+@Path("/avleveringer")
+@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class TransferResource {
 
     @Resource
@@ -50,7 +50,8 @@ public class TransferResource {
     @Path("/ny")
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Avlevering create(final AvleveringDTO avleveringDTO) {
-        return transferService.create(avleveringDTO);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return transferService.create(avleveringDTO, username);
     }
 
     @PUT
@@ -58,7 +59,8 @@ public class TransferResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public AvleveringDTO update(final AvleveringDTO transferDTO) {
-        return transferService.update(transferDTO);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return transferService.update(transferDTO, username);
     }
 
     @DELETE
@@ -72,7 +74,8 @@ public class TransferResource {
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
     public Avlevering getDefaultAvlevering() {
-        return transferService.getDefaultTransfer();
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return transferService.getDefaultTransfer(username);
     }
 
     @GET
@@ -121,7 +124,10 @@ public class TransferResource {
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createMedicalRecord(@PathParam("id") String id, final PersondataDTO personalDataDTO) {
-        final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, personalDataDTO);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, 
+                                                                                        personalDataDTO,
+                                                                                        username);
         
         return Response.ok(medicalRecordDTO).build();
     }

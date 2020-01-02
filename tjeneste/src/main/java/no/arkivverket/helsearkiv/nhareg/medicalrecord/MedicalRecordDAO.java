@@ -2,11 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -46,34 +46,34 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
     private static final List<String> DATE_PREDICATES = Arrays.asList("sistOppdatert", "sistOppdatertEnd", "fodt",
                                                                       "fodtEnd");
 
+    private static final HashMap<String, String> ORDER_PREDICATES = new HashMap<String, String>() {{
+        put("lagringsenhet", "lagringsenhetformat");
+        put("fodselsnummer", "pid");
+        put("jnr", "journalnummer");
+        put("navn", "pnavn");
+        put("lnr", "lopenummer");
+    }};
+    
     public MedicalRecordDAO() {
         super(Pasientjournal.class, "uuid");
     }
 
-    public MedicalRecordDTO fetchRecordTransferById(final String id) {
-        final String queryString = 
-            "SELECT NEW no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO(" 
-            + "ps.fanearkid, ps.journalidentifikator, ps.grunnopplysninger, ps.lagringsenhet, ps.oppdateringsinfo, " 
-            + "ps.uuid, ps.merknad, ps.diagnose, " 
-            // + " a.avleveringsidentifikator, a.avleveringsbeskrivelse, a.avtale, a.lagringsenhetformat, "
-            + "v.foretaksnavn) "
-            + "FROM Pasientjournal ps, Virksomhet v "
-            // + "JOIN avlevering_pasientjournal aps ON ps.uuid = aps.pasientjournal_uuid "
-            // + "JOIN Avlevering a ON a.avleveringsidentifikator = aps.Avlevering_avleveringsidentifikator "
-            + "WHERE ps.uuid = :id";
-        
-        final Query query = getEntityManager().createQuery(queryString, MedicalRecordDTO.class);
-        query.setParameter("id", id);
-        return (MedicalRecordDTO) query.getResultList();
-    }
-    
     @Override
-    public List<Pasientjournal> fetchAllPaged(final Map<String, String> queryParameters, 
-                                              final int page, 
-                                              final int size) {
-        List<Pasientjournal> pagedResultList = super.fetchAllPaged(queryParameters, page, size);
-        forceLoadStorageUnits(pagedResultList);
-        return pagedResultList;
+    public Pasientjournal fetchById(final String id) {
+        final Pasientjournal medicalRecord = super.fetchById(id);
+        medicalRecord.getLagringsenhet().size();
+        medicalRecord.getDiagnose().size();
+        
+        return medicalRecord;
+    }
+
+    @Override
+    public Pasientjournal fetchSingleInstance(String id) throws NoResultException {
+        final Pasientjournal medicalRecord = super.fetchSingleInstance(id);
+        medicalRecord.getDiagnose().size();
+        medicalRecord.getLagringsenhet().size();
+        
+        return medicalRecord;
     }
 
     public List<RecordTransferDTO> fetchAllRecordTransfers(final Map<String, String> queryParameters) {
@@ -187,7 +187,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         }
 
         buildPredicateStringAndParameters(queryParameters, predicateStringBuilder, parameters);
-
+        
         // Replace parameters that were set
         final Query query = getEntityManager().createNativeQuery(predicateStringBuilder.toString());
         replaceQueryParameters(parameters, query);
@@ -199,6 +199,10 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
                                                    final StringBuilder predicateStringBuilder,
                                                    final Map<String, String> parameters) {
         queryParameters.forEach((key, value) -> {
+            if (!PREDICATE_NATIVE_MAP.containsKey(key)) {
+                return;
+            }
+            
             predicateStringBuilder.append(" AND ");
 
             if (DATE_PREDICATES.contains(key)) {
@@ -215,6 +219,15 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
                 predicateStringBuilder.append(PREDICATE_NATIVE_MAP.get(key));
             }
         });
+
+        if (queryParameters.containsKey("orderBy") && queryParameters.containsKey("sortDirection")) {
+            final String orderBy = queryParameters.get("orderBy");
+            final String orderPredicate = ORDER_PREDICATES.getOrDefault(orderBy, orderBy);
+            predicateStringBuilder.append(" ORDER BY ")
+                                  .append(orderPredicate)
+                                  .append(" ")
+                                  .append(queryParameters.get("sortDirection").toUpperCase());
+        }
     }
 
     private void replaceQueryParameters(final Map<String, String> parameters, final Query query) {
@@ -357,17 +370,6 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
 
         return new RecordTransferDTO(uuid, lagringsenhet, pid, fanearkid, journalnummer, lopenummer, pnavn, faar, daar,
                                      oppdatertAv, avleveringsId, opprettetDato, laast);
-    }
-
-    /**
-     * Forces loading of the storage units which are lazy loaded.
-     */
-    private void forceLoadStorageUnits(List<Pasientjournal> medicalRecordList) {
-        for (Pasientjournal medicalRecord: medicalRecordList) {
-            if (medicalRecord.getLagringsenhet() != null) {
-                final int tmp = medicalRecord.getLagringsenhet().size();
-            }
-        }
     }
 
 }

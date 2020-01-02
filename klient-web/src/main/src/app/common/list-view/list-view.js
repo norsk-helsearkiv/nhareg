@@ -93,7 +93,6 @@ angular.module('nha.common.list-view', [
         $scope.sok = stateService.sokState;
 
         $scope.actionSort = function (column, sortDirection) {
-            console.log("sorting by:" + column + " dir:" + sortDirection);
             $scope.sortDirection = sortDirection ? "asc" : "desc";
             $scope.sortColumn = column;
 

@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/diagnoser")
-@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class DiagnosisResource {
 
     @Inject

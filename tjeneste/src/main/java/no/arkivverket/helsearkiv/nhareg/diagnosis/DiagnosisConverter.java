@@ -7,6 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
@@ -37,7 +38,8 @@ public class DiagnosisConverter {
         final String updatedBy = diagnosis.getOppdateringsinfo().getOppdatertAv();
         final Date date = diagnosis.getOppdateringsinfo().getSistOppdatert().getTime();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        final String updatedDate = GyldigeDatoformater.asLocalDate(date).format(formatter);
+        final LocalDateTime localDate = GyldigeDatoformater.asLocalDateTime(date);
+        final String updatedDate = localDate.format(formatter);
 
         return new DiagnoseDTO(uuid, diagnosisDate, diagnosisCodingSystem, diagnosisCodeString, diagnosisText, 
                                updatedBy, updatedDate);

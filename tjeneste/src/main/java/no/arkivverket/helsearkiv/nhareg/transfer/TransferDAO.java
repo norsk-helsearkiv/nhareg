@@ -66,11 +66,11 @@ public class TransferDAO extends EntityDAO<Avlevering> {
         final Query query = getEntityManager().createNativeQuery(queryString, Avlevering.class);
         query.setParameter("id", recordId);
         
-        return (Avlevering) query.getResultList();
+        return (Avlevering) query.getSingleResult();
     }
     
     public Avlevering fetchTransferForStorageUnit(final String id) {
-        final String select = "SELECT distinct a "
+        final String select = "SELECT DISTINCT a "
             + "FROM Avlevering a "
             + "INNER JOIN a.pasientjournal p "
             + "INNER JOIN p.lagringsenhet l "

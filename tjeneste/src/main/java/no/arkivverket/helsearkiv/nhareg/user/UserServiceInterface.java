@@ -8,21 +8,19 @@ import java.util.List;
 
 public interface UserServiceInterface {
 
-    BrukerDTO updateUser(BrukerDTO userDTO);
+    BrukerDTO updateUser(final BrukerDTO userDTO, final String username);
 
-    void updatePassword(final String newPassword);
+    void updatePassword(final String newPassword, final String username);
 
-    String getLastUsedStorageUnit();
+    String getLastUsedStorageUnit(final String username);
 
-    String getUser();
-
-    String getRole();
+    String getRole(final String username);
 
     List<BrukerDTO> getUsers();
 
     List<Rolle> getRoles();
 
-    Boolean checkPasswordReset();
+    Boolean checkPasswordReset(final String username);
 
     Bruker getByUsername(final String username);
 

@@ -8,8 +8,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -19,9 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TransferService implements TransferServiceInterface {
-
-    @Resource
-    private SessionContext sessionContext; 
     
     @Inject
     private TransferDAO transferDAO;
@@ -30,7 +25,7 @@ public class TransferService implements TransferServiceInterface {
     private UserDAO userDAO;
 
     @Override
-    public Avlevering create(final AvleveringDTO transferDTO) {
+    public Avlevering create(final AvleveringDTO transferDTO, final String username) {
         final Avlevering eksisterendeAvlevering = transferDAO.fetchById(transferDTO.getAvleveringsidentifikator());
 
         if (eksisterendeAvlevering != null) {
@@ -38,13 +33,13 @@ public class TransferService implements TransferServiceInterface {
         }
 
         Avlevering transfer = transferDTO.toAvlevering();
-        transfer.setOppdateringsinfo(createUpdateInfo());
+        transfer.setOppdateringsinfo(createUpdateInfo(username));
 
         return transfer;
     }
 
     @Override
-    public AvleveringDTO update(final AvleveringDTO transferDTO) {
+    public AvleveringDTO update(final AvleveringDTO transferDTO, final String username) {
         // Validate
         new Validator<>(AvleveringDTO.class).validerMedException(transferDTO);
 
@@ -58,7 +53,7 @@ public class TransferService implements TransferServiceInterface {
         existingTransfer.setLagringsenhetformat(transferDTO.getLagringsenhetformat());
 
         // Set update info
-        existingTransfer.setOppdateringsinfo(createUpdateInfo());
+        existingTransfer.setOppdateringsinfo(createUpdateInfo(username));
 
         // Update
         final Avlevering updatedTransfer = transferDAO.update(existingTransfer);
@@ -89,16 +84,6 @@ public class TransferService implements TransferServiceInterface {
         return transferDAO.fetchTransferForStorageUnit(id);
     }
 
-    @Override 
-    public String getFirstTransferId(final String id) {
-        return transferDAO.fetchFirstTransferIdFromStorageUnit(id);
-    }
-
-    @Override
-    public String getTransferId(final String medicalRecordId) {
-        return transferDAO.fetchTransferIdFromRecordId(medicalRecordId);
-    }
-
     @Override
     public void lockTransfer(final String id) {
         final Avlevering transfer = transferDAO.fetchById(id);
@@ -114,8 +99,7 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public Avlevering getDefaultTransfer() {
-        final String username = sessionContext.getCallerPrincipal().getName();
+    public Avlevering getDefaultTransfer(final String username) {
         final Bruker bruker = userDAO.fetchByUsername(username);
         final String defaultUuid = bruker.getDefaultAvleveringsUuid();
 
@@ -126,32 +110,12 @@ public class TransferService implements TransferServiceInterface {
         return transferDAO.fetchById(defaultUuid);
     }
 
-    private Oppdateringsinfo createUpdateInfo() {
+    private Oppdateringsinfo createUpdateInfo(final String username) {
         Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
-        oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
+        oppdateringsinfo.setOppdatertAv(username);
         oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
 
         return oppdateringsinfo;
     }
     
-    // public List<Valideringsfeil> validerLagringsenheter(String avleveringid, List<Lagringsenhet> lagringsenheter) {
-    //     List<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
-    //
-    //     // Plukker ut de eksisterende lagringsenhetene
-    //     Collection<Lagringsenhet> eksisterendeLagringsenheter = CollectionUtils.select(lagringsenheter, eksisterendeLagringsenhetPredicate);
-    //     for (Lagringsenhet storageUnit : eksisterendeLagringsenheter) {
-    //         try {
-    //             Avlevering avlevering = transferService.getTransferForStorageUnit(storageUnit.getIdentifikator());
-    //             if (!avlevering.getAvleveringsidentifikator().equals(avleveringid)) {
-    //                 valideringsfeil.add(new Valideringsfeil(FINNES_I_ANNEN_AVLEVERING_ATTRIBUTT, FINNES_I_ANNEN_AVLEVERING_CONSTRAINT));
-    //                 break;
-    //             }
-    //         } catch (NoResultException ignored) {
-    //             // Ingen Avleveringer med pasientjournaler som har lagringsenhet med ID.
-    //         }
-    //     }
-    //    
-    //     return valideringsfeil;
-    // }
-
 }

@@ -8,8 +8,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfei
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import org.apache.commons.codec.binary.Base64;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -23,23 +21,20 @@ public class UserService implements UserServiceInterface {
     @Inject
     private UserDAO userDAO;
 
-    @Resource
-    private SessionContext sessionContext;
-
     @Override
-    public BrukerDTO updateUser(BrukerDTO userDTO) {
+    public BrukerDTO updateUser(final BrukerDTO userDTO, final String username) {
         final Bruker bruker = userDTO.toBruker();
 
         //defaulter til bruker-rolle hvis det mangler..
-        if (bruker.getRolle().getNavn().isEmpty()) {
-            bruker.getRolle().setNavn(Roles.ROLE_BRUKER);
+        final String userName = bruker.getRolle().getNavn();
+        if (userName != null && userName.isEmpty()) {
+            bruker.getRolle().setNavn(Roles.ROLE_USER);
         }
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
-        final String username = sessionContext.getCallerPrincipal().getName();
-        final String loggedInRolle = userDAO.getRolle(username);
-        if (loggedInRolle.equals("admin") && userDTO.getBrukernavn().equals(username)) {
-            bruker.getRolle().setNavn(loggedInRolle);
+        final String loggedInRole = userDAO.getRolle(username);
+        if (loggedInRole.equals("admin") && userDTO.getBrukernavn().equals(username)) {
+            bruker.getRolle().setNavn(loggedInRole);
         }
 
         boolean resetPass = false;
@@ -67,8 +62,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public void updatePassword(final String newPassword) {
-        final String username = sessionContext.getCallerPrincipal().getName();
+    public void updatePassword(final String newPassword, final String username) {
         final Bruker bruker = userDAO.fetchByUsername(username);
         final String b64pwd = passordToHash(newPassword);
 
@@ -97,8 +91,7 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public Boolean checkPasswordReset() {
-        final String username = sessionContext.getCallerPrincipal().getName();
+    public Boolean checkPasswordReset(final String username) {
         final Bruker user = userDAO.fetchByUsername(username);
 
         return "Y".equals(user.getResetPassord());
@@ -115,20 +108,12 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public String getUser() {
-        return sessionContext.getCallerPrincipal().getName();
-    }
-
-    @Override
-    public String getRole() {
-        final String username = sessionContext.getCallerPrincipal().getName();
-
+    public String getRole(final String username) {
         return userDAO.getRolle(username);
     }
 
     @Override
-    public String getLastUsedStorageUnit() {
-        final String username = sessionContext.getCallerPrincipal().getName();
+    public String getLastUsedStorageUnit(final String username) {
         return userDAO.fetchStorageUnitByUsername(username);
     }
 
@@ -142,7 +127,7 @@ public class UserService implements UserServiceInterface {
         return feilList;
     }
 
-    private boolean validerPassord(String passord) {
+    private boolean validerPassord(final String passord) {
         return passord != null && passord.length() >= 5;
     }
 
@@ -163,7 +148,7 @@ public class UserService implements UserServiceInterface {
         final List<Valideringsfeil> errorList = new ArrayList<>();
 
         if (printerIP == null || printerIP.isEmpty()) {
-            final Valideringsfeil emptyPrinterError =new Valideringsfeil("printer", "Empty printer IP");
+            final Valideringsfeil emptyPrinterError = new Valideringsfeil("printer", "Empty printer IP");
             errorList.add(emptyPrinterError);
         } else {
             final String[] ipGroups = printerIP.split("\\.");
@@ -190,4 +175,5 @@ public class UserService implements UserServiceInterface {
             throw new ValideringsfeilException(errorList);
         }
     }
+
 }

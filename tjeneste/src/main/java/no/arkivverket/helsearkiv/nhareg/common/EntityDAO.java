@@ -35,7 +35,7 @@ public abstract class EntityDAO<T> {
 
     public T create(@NotNull final T entity) {
         new Validator<T>(entityClass).validerMedException(entity);
-
+        
         entityManager.persist(entity);
 
         return entity;

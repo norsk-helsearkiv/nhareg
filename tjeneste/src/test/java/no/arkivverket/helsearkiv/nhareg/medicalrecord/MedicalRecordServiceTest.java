@@ -2,29 +2,33 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.ejb.EJBException;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import static org.junit.Assert.*;
 
-// @RunWith(Arquillian.class)
+@Stateless
+@RunWith(Arquillian.class)
 public class MedicalRecordServiceTest {
 
-    // @Deployment
-    // public static WebArchive deployment() {
-    //     return RESTDeployment.deployment();
-    // }
+    private static String USERNAME = "nhabruker1";
+    
+    @Deployment
+    public static WebArchive deployment() {
+        return RESTDeployment.deployment();
+    }
 
     @Inject
     private MedicalRecordServiceInterface medicalRecordService;
-    
-    // @Before
-    // public void setUp() {
-    //     medicalRecordService.setSessionContext(mock(SessionContext.class));
-    // }
 
     @Test
     public void getByIdWithTransfer_shouldReturnThreeStorageUnits() {
@@ -38,7 +42,7 @@ public class MedicalRecordServiceTest {
     public void updateMedicalRecord_newJournalNumber() {
         MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         medicalRecordDTO.getPersondata().setJournalnummer("12345");
-        medicalRecordService.updateMedicalRecord(medicalRecordDTO);
+        medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
     }
 
     @Test
@@ -48,7 +52,7 @@ public class MedicalRecordServiceTest {
 
         final String beskrivelse = "ny beskrivelse";
         medicalRecordDTO.setAvleveringBeskrivelse(beskrivelse);
-        medicalRecordService.updateMedicalRecord(medicalRecordDTO);
+        medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
 
         final MedicalRecordDTO updatedMedicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         assertNotNull(updatedMedicalRecordDTO);
@@ -70,7 +74,7 @@ public class MedicalRecordServiceTest {
         assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
 
         // Do an update
-        medicalRecordService.updateMedicalRecord(medicalRecordDTO);
+        medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
 
         // Checks the number of diagnosis that are saved
         medicalRecordDTO = medicalRecordService.getByIdWithTransfer(id);
@@ -83,7 +87,7 @@ public class MedicalRecordServiceTest {
     @Test
     public void delete_invalidId_shouldThrowNoResultException() {
         try {
-            medicalRecordService.delete("tull");
+            medicalRecordService.delete("tull", USERNAME);
         } catch (EJBException ejb) {
             assertEquals(ejb.getCause().getClass(), NoResultException.class);
         }
@@ -91,8 +95,9 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void delete_validId_shouldSetDeletedToTrue() {
-        Pasientjournal medicalRecord = medicalRecordService.delete("uuid1");
+        Pasientjournal medicalRecord = medicalRecordService.delete("uuid1", USERNAME);
         assertNotNull(medicalRecord);
         assertEquals(true, medicalRecord.getSlettet());
     }
+    
 }

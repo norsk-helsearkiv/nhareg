@@ -9,9 +9,9 @@ import javax.ws.rs.core.MultivaluedMap;
 
 public interface MedicalRecordServiceInterface {
 
-    Pasientjournal create(final Pasientjournal medicalRecord);
+    Pasientjournal create(final Pasientjournal medicalRecord, final String username);
     
-    Pasientjournal delete(final String id);
+    Pasientjournal delete(final String id, final String username);
     
     Pasientjournal getById(final String id);
     
@@ -19,10 +19,11 @@ public interface MedicalRecordServiceInterface {
 
     ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters);
 
-    MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO);
+    MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO, final String username);
     
     void validatePID(final String pid);
 
-    MedicalRecordDTO createInTransfer(final String transferId, final PersondataDTO personalDataDTO);
+    MedicalRecordDTO createInTransfer(final String transferId, final PersondataDTO personalDataDTO,
+                                      final String username);
     
 }

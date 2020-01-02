@@ -41,7 +41,7 @@ public class AgreementDAO extends EntityDAO<Avtale> {
 
     public List<Avlevering> fetchTransfersById(final String id) {
         final String queryString = 
-            "SELECT OBJECT(o) "
+            "SELECT OBJECT(a) "
             + "FROM Avlevering a "
             + "WHERE a.avtale.avtaleidentifikator = :id";
         final Query query = getEntityManager().createQuery(queryString);

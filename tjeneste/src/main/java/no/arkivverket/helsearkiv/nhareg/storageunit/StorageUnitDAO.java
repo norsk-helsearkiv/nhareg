@@ -1,40 +1,37 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 
+import javax.ejb.Stateless;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+@Stateless
 public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
-    
-    private static String FETCH_TRANSFER_QUERY = "SELECT distinct a"
-        + " FROM Avlevering a"
-        + " INNER JOIN a.pasientjournal p"
-        + " INNER JOIN p.lagringsenhet l"
-        + " WHERE l.identifikator = :id"; ;
-    
-    private static String FETCH_BY_ID_QUERY = "SELECT OBJECT(o) "
-        + "FROM Lagringsenhet o "
-        + "WHERE o.identifikator = :id "
-        + "ORDER BY o.uuid";
 
     public StorageUnitDAO() {
         super(Lagringsenhet.class, "uuid");
     }
 
     @Override
+    public Lagringsenhet create(final Lagringsenhet storageUnit) {
+        storageUnit.setUuid(UUID.randomUUID().toString());
+        return super.create(storageUnit);
+    }
+
+    @Override
     public List<Lagringsenhet> fetchAll(final Map<String, String> queryParameters) {
         final String searchId = queryParameters.get("identifikatorSok");
         final String queryString = 
-            "SELECT OBJECT(o) "
-            + "FROM Lagringsenhet o "
-            + "WHERE o.identifikator " 
+            "SELECT OBJECT(l) "
+            + "FROM Lagringsenhet l "
+            + "WHERE l.identifikator " 
             + "LIKE :id "
-            + "ORDER BY o.uuid";
+            + "ORDER BY l.uuid";
         
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", "%" + searchId + "%");
@@ -42,15 +39,12 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
         return (List<Lagringsenhet>) query.getResultList();
     }
 
-    public Avlevering fetchTransferForStorageUnit(final String id) {
-        final Query query = getEntityManager().createQuery(FETCH_TRANSFER_QUERY);
-        query.setParameter("id", id);
-
-        return (Avlevering) query.getSingleResult();
-    }
-
     public Lagringsenhet fetchById(final String id) {
-        final Query query = getEntityManager().createQuery(FETCH_BY_ID_QUERY);
+        final String queryString = "SELECT OBJECT(l) "
+            + "FROM Lagringsenhet l "
+            + "WHERE l.identifikator = :id "
+            + "ORDER BY l.uuid";
+        final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", id);
         
         List<Lagringsenhet> lagringsenheter = query.getResultList();
@@ -60,27 +54,6 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
         }
 
         return null;
-    }
-
-    public Lagringsenhet fetchStorageUnitWithId(final String id) {
-        final String queryString =
-            "SELECT OBJECT(o) "
-            + "FROM Lagringsenhet AS o "
-            + "WHERE o.identifikator = :id "
-            + "ORDER BY o.uuid";
-        
-        final Query query = getEntityManager().createQuery(queryString);
-        query.setParameter("id", id);
-        final List<Lagringsenhet> lagringsenheter = query.getResultList();
-        //
-        // Skal være en liste med max en forekomst.
-        // Hvis det er flere tar vi den med lavest uuid.
-        //
-        if (lagringsenheter.isEmpty()) {
-            return null;
-        }
-
-        return lagringsenheter.get(0);
     }
 
     public Integer fetchCountOfRecordsForStorageUnit(final String storageUnitId) {
@@ -123,4 +96,5 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
         
         return String.valueOf(result);
     }
+
 }

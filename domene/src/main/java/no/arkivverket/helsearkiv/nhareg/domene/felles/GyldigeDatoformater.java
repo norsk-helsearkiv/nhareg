@@ -121,6 +121,10 @@ public class GyldigeDatoformater {
     }
     
     public static LocalDate asLocalDate(final Date date) {
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).toLocalDate();
+        return asLocalDateTime(date).toLocalDate();
+    }
+    
+    public static LocalDateTime asLocalDateTime(final Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 }

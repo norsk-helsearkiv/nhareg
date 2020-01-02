@@ -6,9 +6,11 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -16,10 +18,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.File;
 
-@Singleton
+@Stateless
 @Path("/pasientjournaler")
-@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class MedicalRecordResource {
+
+    @Resource
+    private SessionContext sessionContext;
 
     @Inject
     private MedicalRecordServiceInterface medicalRecordService;
@@ -29,18 +34,21 @@ public class MedicalRecordResource {
     public MedicalRecordDTO get(@PathParam("id") String id) {
         return medicalRecordService.getByIdWithTransfer(id);
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Pasientjournal create(final Pasientjournal medicalRecord) {
-        return medicalRecordService.create(medicalRecord);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return medicalRecordService.create(medicalRecord, username);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(final MedicalRecordDTO medicalRecordDTO) {
         try {
-            final MedicalRecordDTO updatedMedicalRecord = medicalRecordService.updateMedicalRecord(medicalRecordDTO);
+            final String username = sessionContext.getCallerPrincipal().getName();
+            final MedicalRecordDTO updatedMedicalRecord = medicalRecordService.updateMedicalRecord(medicalRecordDTO,
+                                                                                                   username);
             return Response.ok(updatedMedicalRecord).build();
         } catch (ValideringsfeilException ve) {
             return Response.status(Response.Status.BAD_REQUEST).entity(ve.getValideringsfeil()).build();
@@ -50,9 +58,10 @@ public class MedicalRecordResource {
     @DELETE
     @Path("/{id}")
     public Pasientjournal delete(@PathParam("id") String id) {
-        return medicalRecordService.delete(id);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        return medicalRecordService.delete(id, username);
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public ListObject getAllWithTransfers(@Context UriInfo uriInfo) {
@@ -79,4 +88,5 @@ public class MedicalRecordResource {
     public Response removeAttachment(@PathParam("pid") String medicalRecordId, @PathParam("vid") String attachmentId) {
         return Response.noContent().build();
     }
+
 }

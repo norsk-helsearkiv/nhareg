@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 @Path("/diagnosekoder")
-@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+@RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class DiagnosisCodeResource {
 
     @Inject

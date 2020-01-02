@@ -1,7 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
@@ -10,8 +9,10 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfei
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -21,12 +22,13 @@ import javax.ws.rs.core.UriInfo;
 import java.util.Collections;
 import java.util.List;
 
+@Stateless
 @Path("/lagringsenheter")
-@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+@RolesAllowed({Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class StorageUnitResource {
 
-    // private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    // private final javax.validation.Validator validator = factory.getValidator();
+    @Resource
+    private SessionContext sessionContext;
 
     @Inject
     private UserServiceInterface userService;
@@ -37,46 +39,28 @@ public class StorageUnitResource {
     @Inject
     private StorageUnitServiceInterface storageUnitService;
 
-    @EJB
-    private ConfigurationDAO konfigParam;
-
     @PUT
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateMedicalRecord(final Lagringsenhet storageUnit) {
-        // final String pasientjournalUuid = storageUnitService.getRecordIdFromStorageUnit(storageUnit.getUuid());
-        // final String avleveringsId = transferService.getTransferId(pasientjournalUuid);
-        //
-        // //sjekk om lagringsenhet finnes i en annen avlevering
-        // List<Valideringsfeil> valideringsfeil = avleveringTjeneste.validerLagringsenheter(avleveringsId, Collections.singletonList(lagringsenhet));
-        // if (!valideringsfeil.isEmpty()) {
-        //     Valideringsfeil feil = new Valideringsfeil("identifikator",
-        //             "Lagringsenhetens identifikator finnes i en annen avlevering, benytt en annen identifikator");
-        //     return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
-        // }
-        //
-        // Integer count = getLagringsenhetCount(lagringsenhet.getIdentifikator());
-        // if (count > 0) {
-        //     Valideringsfeil feil = new Valideringsfeil("identifikator",
-        //             "Lagringsenhetens identifikator er ikke unik, benytt en annen identifikator");
-        //     return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
-        // }
-
         final Lagringsenhet updatedStorageUnit = storageUnitService.update(storageUnit);
+
         return Response.ok(updatedStorageUnit).build();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/sistBrukte")
     public String getLastUsedStorageUnit() {
-        return userService.getLastUsedStorageUnit();
+        final String username = sessionContext.getCallerPrincipal().getName();
+        
+        return userService.getLastUsedStorageUnit(username);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/{id}/pasientjournaler")
     public List<RecordTransferDTO> getMedicalRecords(@PathParam("id") final String id) {
         return storageUnitService.getMedicalRecordsForId(id);
@@ -101,7 +85,7 @@ public class StorageUnitResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/sok")
     public List<Lagringsenhet> getStorageUnitsWithId(@Context UriInfo uriInfo) {
         return storageUnitService.getStorageUnits(uriInfo.getQueryParameters());
@@ -109,7 +93,7 @@ public class StorageUnitResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_BRUKER})
+    @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/{uuid}/maske")
     public String getStorageUnitMask(@PathParam("uuid") String id) {
         Lagringsenhet storageUnit = storageUnitService.getById(id);
@@ -121,7 +105,9 @@ public class StorageUnitResource {
     @GET
     @Path("/{id}/print")
     public Response printPasientjournal(@PathParam("id") String id) {
-        storageUnitService.printMedicalRecord(id);
+        final String username = sessionContext.getCallerPrincipal().getName();
+        storageUnitService.printMedicalRecord(id, username);
+        
         return Response.ok().build();
     }
 

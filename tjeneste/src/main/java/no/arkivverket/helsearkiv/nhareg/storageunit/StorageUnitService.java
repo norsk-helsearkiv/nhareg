@@ -14,8 +14,6 @@ import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
@@ -24,14 +22,6 @@ import java.util.Map;
 
 public class StorageUnitService implements StorageUnitServiceInterface {
 
-    private SessionContext sessionContext;
-
-    @Override
-    @Resource
-    public void setSessionContext(SessionContext sessionContext) {
-        this.sessionContext = sessionContext;
-    }
-    
     @Inject
     private StorageUnitDAO storageUnitDAO;
     
@@ -46,9 +36,6 @@ public class StorageUnitService implements StorageUnitServiceInterface {
 
     @Inject
     private ConfigurationDAO configurationDAO;
-    
-    private static final String NOT_UNIQUE_CONSTRAINT = "NotUnique";
-    private static final String STORAGE_UNIT_ATTRIBUTE = "lagringsenheter";
 
     @Override
     public Lagringsenhet getById(String id) {
@@ -72,16 +59,6 @@ public class StorageUnitService implements StorageUnitServiceInterface {
     }
 
     @Override
-    public Integer getCountOfRecordsForStorageUnit(final String storageUnitId) {
-        return storageUnitDAO.fetchCountOfRecordsForStorageUnit(storageUnitId);
-    }
-
-    @Override 
-    public String getRecordIdFromStorageUnit(final String storageUnitId) {
-        return storageUnitDAO.fetchRecordIdFromStorageUnit(storageUnitId);
-    }
-
-    @Override
     public List<Lagringsenhet> getStorageUnits(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedParameters = ParameterConverter.multivaluedToMap(queryParameters);
         return storageUnitDAO.fetchAll(mappedParameters);
@@ -97,12 +74,11 @@ public class StorageUnitService implements StorageUnitServiceInterface {
     }
 
     @Override
-    public void printMedicalRecord(final String id) {
+    public void printMedicalRecord(final String id, final String username) {
         final Lagringsenhet storageUnit = storageUnitDAO.fetchById(id);
         final Integer medicalRecordCount = storageUnitDAO.fetchCountOfRecordsForStorageUnit(id);
         final String firstTransferId = transferDAO.fetchFirstTransferIdFromStorageUnit(storageUnit.getUuid());
         final Avlevering transfer = transferDAO.fetchById(firstTransferId);
-        final String username = sessionContext.getCallerPrincipal().getName();;
         final Bruker user = userDAO.fetchByUsername(username);
 
         String printerIp = user.getPrinterzpl();

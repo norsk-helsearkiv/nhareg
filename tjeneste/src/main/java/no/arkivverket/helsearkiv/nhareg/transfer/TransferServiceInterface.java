@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface TransferServiceInterface {
 
-    Avlevering create(final AvleveringDTO transferDTO);
+    Avlevering create(final AvleveringDTO transferDTO, final String username);
 
-    AvleveringDTO update(final AvleveringDTO transferDTO);
+    AvleveringDTO update(final AvleveringDTO transferDTO, final String username);
     
     Avlevering delete(final String id);
     
@@ -18,16 +18,12 @@ public interface TransferServiceInterface {
 
     Avlevering getTransferForStorageUnit(final String id);
 
-    String getFirstTransferId(final String id);
-
-    String getTransferId(final String medicalRecordId);
-
     List<AvleveringDTO> getAll(final MultivaluedMap<String, String> queryParameters);
 
     void lockTransfer(final String id);
 
     void unlockTransfer(final String id);
 
-    Avlevering getDefaultTransfer();
+    Avlevering getDefaultTransfer(final String username);
     
 }

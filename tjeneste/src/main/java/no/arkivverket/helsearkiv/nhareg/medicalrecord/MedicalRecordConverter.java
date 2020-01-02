@@ -238,7 +238,7 @@ public class MedicalRecordConverter {
             recordTransferDTO.setLnr(journalId.getLøpenummer());
         }
 
-        recordTransferDTO.setFanearkid(Integer.parseInt(medicalRecord.getFanearkid()));
+        recordTransferDTO.setFanearkid(Long.parseLong(medicalRecord.getFanearkid()));
 
         final List<Lagringsenhet> storageUnitList = medicalRecord.getLagringsenhet();
         if (storageUnitList != null && storageUnitList.size() > 0) {
