@@ -96,8 +96,8 @@ public class StorageUnitResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/{uuid}/maske")
     public String getStorageUnitMask(@PathParam("uuid") String id) {
-        Lagringsenhet storageUnit = storageUnitService.getById(id);
-        Avlevering transfer = transferService.getTransferForStorageUnit(storageUnit.getIdentifikator());
+        final Lagringsenhet storageUnit = storageUnitService.getById(id);
+        final Avlevering transfer = transferService.getTransferForStorageUnit(storageUnit.getIdentifikator());
 
         return transfer.getLagringsenhetformat();
     }

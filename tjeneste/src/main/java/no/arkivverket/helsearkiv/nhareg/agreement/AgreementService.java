@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;
@@ -33,21 +33,21 @@ public class AgreementService implements AgreementServiceInterface {
     }
 
     @Override
-    public List<AvleveringDTO> getTransfersById(final String id, final Avlevering defaultTransfer) {
+    public List<TransferDTO> getTransfersById(final String id, final Avlevering defaultTransfer) {
         final List<Avlevering> transferList = agreementDAO.fetchTransfersById(id);
 
-        final List<AvleveringDTO> dtoListe = new ArrayList<AvleveringDTO>();
-        for (Avlevering avlevering : transferList) {
-            AvleveringDTO dto = new AvleveringDTO(avlevering);
+        final List<TransferDTO> transferDTOS = new ArrayList<>();
+        for (Avlevering transfer : transferList) {
+            TransferDTO transferDTO = new TransferDTO(transfer);
             if (defaultTransfer != null) {
-                if (avlevering.getAvleveringsidentifikator().equals(defaultTransfer.getAvleveringsidentifikator())) {
-                    dto.setDefaultAvlevering(true);
+                if (transfer.getAvleveringsidentifikator().equals(defaultTransfer.getAvleveringsidentifikator())) {
+                    transferDTO.setDefaultAvlevering(true);
                 }
             }
-            dtoListe.add(dto);
+            transferDTOS.add(transferDTO);
         }
 
-        return dtoListe; 
+        return transferDTOS; 
     }
     
 }

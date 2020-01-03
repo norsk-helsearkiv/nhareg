@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 
 import javax.annotation.Resource;
@@ -75,7 +75,7 @@ public class AgreementResource {
     public Response getTransfers(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
         final Avlevering defaultTransfer = transferService.getDefaultTransfer(username);
-        final List<AvleveringDTO> transferDTOList = agreementService.getTransfersById(id, defaultTransfer);
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersById(id, defaultTransfer);
         return Response.ok(transferDTOList).build();
     }
     

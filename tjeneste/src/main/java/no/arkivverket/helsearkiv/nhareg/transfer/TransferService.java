@@ -3,7 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
@@ -25,26 +25,26 @@ public class TransferService implements TransferServiceInterface {
     private UserDAO userDAO;
 
     @Override
-    public Avlevering create(final AvleveringDTO transferDTO, final String username) {
+    public Avlevering create(final TransferDTO transferDTO, final String username) {
         final Avlevering eksisterendeAvlevering = transferDAO.fetchById(transferDTO.getAvleveringsidentifikator());
 
         if (eksisterendeAvlevering != null) {
             throw new EntityExistsException("Avlevering med samme Id eksisterer");
         }
 
-        Avlevering transfer = transferDTO.toAvlevering();
+        final Avlevering transfer = transferDTO.toTransfer();
         transfer.setOppdateringsinfo(createUpdateInfo(username));
 
         return transfer;
     }
 
     @Override
-    public AvleveringDTO update(final AvleveringDTO transferDTO, final String username) {
+    public TransferDTO update(final TransferDTO transferDTO, final String username) {
         // Validate
-        new Validator<>(AvleveringDTO.class).validerMedException(transferDTO);
+        new Validator<>(TransferDTO.class).validerMedException(transferDTO);
 
         // Get existing transfer
-        final Avlevering existingTransfer = transferDAO.fetchSingleInstance(transferDTO.getAvleveringsidentifikator());
+        final Avlevering existingTransfer = transferDAO.fetchById(transferDTO.getAvleveringsidentifikator());
 
         // Copy values
         existingTransfer.setAvleveringsidentifikator(transferDTO.getAvleveringsidentifikator());
@@ -58,7 +58,7 @@ public class TransferService implements TransferServiceInterface {
         // Update
         final Avlevering updatedTransfer = transferDAO.update(existingTransfer);
 
-        return new AvleveringDTO(updatedTransfer);
+        return new TransferDTO(updatedTransfer);
     }
 
     @Override
@@ -72,15 +72,15 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public List<AvleveringDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
+    public List<TransferDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<Avlevering> transferList = transferDAO.fetchAll(mappedQueries);
-        // Convert to AvleveringDTO list
-        return transferList.stream().map(AvleveringDTO::new).collect(Collectors.toList());
+        // Convert to TransferDTO list
+        return transferList.stream().map(TransferDTO::new).collect(Collectors.toList());
     }
 
     @Override 
-    public Avlevering getTransferForStorageUnit(String id) {
+    public Avlevering getTransferForStorageUnit(final String id) {
         return transferDAO.fetchTransferForStorageUnit(id);
     }
 

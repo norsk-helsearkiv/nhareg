@@ -19,8 +19,9 @@ import no.arkivverket.helsearkiv.nhareg.util.FanearkidValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
+import javax.persistence.PersistenceException;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,26 +30,26 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Inject
     private MedicalRecordDAO medicalRecordDAO;
-    
+
     @Inject
     private TransferDAO transferDAO;
-    
+
     @Inject
     private BusinessDAO businessDAO;
 
     @Inject
     private StorageUnitDAO storageUnitDAO;
-    
+
     @Inject
     private ConfigurationDAO configurationDAO;
-    
+
     @Inject
     private GenderDAO genderDAO;
-    
+
     @Inject
     private UserDAO userDAO;
 
-    @Override 
+    @Override
     public Pasientjournal create(final Pasientjournal medicalRecord, final String username) {
         medicalRecord.setUuid(UUID.randomUUID().toString());
 
@@ -65,7 +66,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
         medicalRecord.setOpprettetDato(Calendar.getInstance());
-        
+
         return medicalRecordDAO.create(medicalRecord);
     }
 
@@ -101,17 +102,17 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters) {
         int page = 0;
         int size = 0;
-        
+
         if (queryParameters.containsKey("size") && queryParameters.containsKey("page")) {
             page = Integer.parseInt(queryParameters.getFirst("page"));
             size = Integer.parseInt(queryParameters.getFirst("size"));
         }
-        
+
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<RecordTransferDTO> recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries);
         return new ListObject<>(recordTransferDTOList, recordTransferDTOList.size(), page, size);
     }
-    
+
     @Override
     public MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO, final String username) {
         // VALIDERING - Persondata
@@ -120,7 +121,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         //KONVERTERING
         final Pasientjournal medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(medicalRecordDTO.getPersondata());
         createAndAttachStorageUnit(medicalRecord.getLagringsenhet());
-        
+
         final Pasientjournal original = medicalRecordDAO.fetchById(medicalRecord.getUuid());
         if (original != null) {
             medicalRecord.getDiagnose().addAll(original.getDiagnose());
@@ -150,7 +151,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         if (lagringsenhetFormat != null && !lagringsenhetFormat.isEmpty()) {
             transfer.setLagringsenhetformat(lagringsenhetFormat);
         }
-        
+
         transferDAO.update(transfer);
 
         // Save
@@ -171,14 +172,14 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     }
 
     @Override
-    public MedicalRecordDTO createInTransfer(final String transferId, 
+    public MedicalRecordDTO createInTransfer(final String transferId,
                                              final PersondataDTO personalDataDTO,
                                              final String username) {
         // Validate personal data
         validateBaseData(personalDataDTO);
 
         // Convert personal data to medical record
-        final Pasientjournal medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(personalDataDTO); 
+        final Pasientjournal medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(personalDataDTO);
 
         // Save
         medicalRecordDAO.create(medicalRecord);
@@ -231,12 +232,23 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     private void createAndAttachStorageUnit(final List<Lagringsenhet> storageUnits) {
         // Create new storage units
-        try {
-            storageUnits.forEach(storageUnitDAO::create);
-        } catch (ConstraintViolationException ignored) {
-            // Ignore existing ones 
-        }
-        
+        storageUnits.forEach(unit -> {
+            try {
+                storageUnitDAO.create(unit);
+            } catch (EJBTransactionRolledbackException ejb) {
+                Throwable cause = ejb.getCause();
+                
+                while ((cause != null) && !(cause instanceof PersistenceException)) {
+                    cause = cause.getCause();
+                }
+                
+                // Ignore non-unique storage units
+                if (cause == null) {
+                    throw ejb;
+                }
+            }
+        });
+
         final List<Lagringsenhet> existingStorageUnits = storageUnits.stream()
                                                                      .map(unit -> storageUnitDAO.fetchById(unit.getIdentifikator()))
                                                                      .collect(Collectors.toList());

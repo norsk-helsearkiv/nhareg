@@ -1,16 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 
 public interface TransferServiceInterface {
 
-    Avlevering create(final AvleveringDTO transferDTO, final String username);
+    Avlevering create(final TransferDTO transferDTO, final String username);
 
-    AvleveringDTO update(final AvleveringDTO transferDTO, final String username);
+    TransferDTO update(final TransferDTO transferDTO, final String username);
     
     Avlevering delete(final String id);
     
@@ -18,7 +18,7 @@ public interface TransferServiceInterface {
 
     Avlevering getTransferForStorageUnit(final String id);
 
-    List<AvleveringDTO> getAll(final MultivaluedMap<String, String> queryParameters);
+    List<TransferDTO> getAll(final MultivaluedMap<String, String> queryParameters);
 
     void lockTransfer(final String id);
 

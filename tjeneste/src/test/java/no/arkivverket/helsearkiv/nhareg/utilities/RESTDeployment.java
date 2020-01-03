@@ -19,7 +19,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
@@ -68,7 +67,6 @@ public class RESTDeployment {
                                .addPackage(BrukerDTO.class.getPackage())
                                .addPackage(MedicalRecordDTO.class.getPackage())
                                .addPackage(PersondataDTO.class.getPackage())
-                               .addPackage(TransferDTO.class.getPackage())
                                // Entity
                                .addPackage(EntityDAO.class.getPackage())
                                // Agreements

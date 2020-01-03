@@ -33,32 +33,23 @@ public class TransferDAO extends EntityDAO<Avlevering> {
 
     @Override
     public Avlevering fetchById(final String id) {
-        System.out.println(id);
-        final Avlevering transfer = super.fetchById(id);
-
-        if (transfer == null) {
-            return null;
-        }
-
-        // Force load 
-        transfer.getPasientjournal().forEach(record -> {
-            if (record.getLagringsenhet() != null) {
-                record.getLagringsenhet().size();
-            }
-
-            if (record.getDiagnose() != null) {
-                record.getDiagnose().size();
-            }
-        });
-
-        return transfer;
+        final String queryString = "SELECT DISTINCT a " 
+            + "FROM Avlevering a " 
+            + "JOIN FETCH a.pasientjournal pj " 
+            + "JOIN FETCH pj.diagnose "
+            + "JOIN FETCH pj.lagringsenhet " 
+            + "WHERE a.avleveringsidentifikator = :id ";
+        final Query query = getEntityManager().createQuery(queryString, Avlevering.class);
+        query.setParameter("id", id);
+        
+        return (Avlevering) query.getSingleResult();
     }
 
     public String fetchTransferIdFromRecordId(final String medicalRecordId) {
         final String queryString =
             "SELECT Avlevering_avleveringsidentifikator "
                 + "FROM Avlevering_Pasientjournal "
-                + "WHERE pasientjournal_uuid = :id";
+                + "WHERE pasientjournal_uuid = :id ";
 
         final Query query = getEntityManager().createNativeQuery(queryString);
         query.setParameter("id", medicalRecordId);
@@ -84,7 +75,7 @@ public class TransferDAO extends EntityDAO<Avlevering> {
             + "FROM Avlevering a "
             + "INNER JOIN a.pasientjournal p "
             + "INNER JOIN p.lagringsenhet l "
-            + "WHERE l.identifikator = :id ";
+            + "WHERE l.uuid = :id ";
 
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("id", id);

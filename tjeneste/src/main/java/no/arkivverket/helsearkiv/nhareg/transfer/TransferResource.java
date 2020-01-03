@@ -2,9 +2,9 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AvleveringDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
@@ -49,16 +49,16 @@ public class TransferResource {
     @POST
     @Path("/ny")
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public Avlevering create(final AvleveringDTO avleveringDTO) {
+    public Avlevering create(final TransferDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        return transferService.create(avleveringDTO, username);
+        return transferService.create(transferDTO, username);
     }
 
     @PUT
     @Path("/ny")
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public AvleveringDTO update(final AvleveringDTO transferDTO) {
+    public TransferDTO update(final TransferDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         return transferService.update(transferDTO, username);
     }
@@ -91,7 +91,7 @@ public class TransferResource {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<AvleveringDTO> getTransferDTOList(@Context UriInfo uriInfo) {
+    public List<TransferDTO> getTransferDTOList(@Context UriInfo uriInfo) {
         return transferService.getAll(uriInfo.getQueryParameters());
     }
 

@@ -10,13 +10,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.ejb.EJBException;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
 import static org.junit.Assert.*;
 
-@Stateless
 @RunWith(Arquillian.class)
 public class MedicalRecordServiceTest {
 
