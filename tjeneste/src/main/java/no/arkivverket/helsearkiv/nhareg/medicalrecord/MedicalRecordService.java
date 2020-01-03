@@ -20,6 +20,7 @@ import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -170,7 +171,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     }
 
     @Override
-    public MedicalRecordDTO createInTransfer(final String transferId, final PersondataDTO personalDataDTO,
+    public MedicalRecordDTO createInTransfer(final String transferId, 
+                                             final PersondataDTO personalDataDTO,
                                              final String username) {
         // Validate personal data
         validateBaseData(personalDataDTO);
@@ -229,8 +231,11 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     private void createAndAttachStorageUnit(final List<Lagringsenhet> storageUnits) {
         // Create new storage units
-        // TODO handle existing storage units
-        storageUnits.forEach(storageUnitDAO::create);
+        try {
+            storageUnits.forEach(storageUnitDAO::create);
+        } catch (ConstraintViolationException ignored) {
+            // Ignore existing ones 
+        }
         
         final List<Lagringsenhet> existingStorageUnits = storageUnits.stream()
                                                                      .map(unit -> storageUnitDAO.fetchById(unit.getIdentifikator()))

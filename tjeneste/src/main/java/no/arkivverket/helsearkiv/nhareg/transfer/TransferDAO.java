@@ -32,24 +32,34 @@ public class TransferDAO extends EntityDAO<Avlevering> {
     }
 
     @Override
-    public Avlevering fetchById(String id) {
-         final Avlevering transfer = super.fetchById(id);
-         
-         // Force load 
-         transfer.getPasientjournal().forEach(record -> {
-             record.getLagringsenhet().size();
-             record.getDiagnose().size();
-         });
-         
-         return transfer;
+    public Avlevering fetchById(final String id) {
+        System.out.println(id);
+        final Avlevering transfer = super.fetchById(id);
+
+        if (transfer == null) {
+            return null;
+        }
+
+        // Force load 
+        transfer.getPasientjournal().forEach(record -> {
+            if (record.getLagringsenhet() != null) {
+                record.getLagringsenhet().size();
+            }
+
+            if (record.getDiagnose() != null) {
+                record.getDiagnose().size();
+            }
+        });
+
+        return transfer;
     }
 
     public String fetchTransferIdFromRecordId(final String medicalRecordId) {
-        final String queryString =  
+        final String queryString =
             "SELECT Avlevering_avleveringsidentifikator "
-            + "FROM Avlevering_Pasientjournal "
-            + "WHERE pasientjournal_uuid = :id";
-        
+                + "FROM Avlevering_Pasientjournal "
+                + "WHERE pasientjournal_uuid = :id";
+
         final Query query = getEntityManager().createNativeQuery(queryString);
         query.setParameter("id", medicalRecordId);
         final Object result = query.getSingleResult();
@@ -58,24 +68,24 @@ public class TransferDAO extends EntityDAO<Avlevering> {
     }
 
     public Avlevering fetchTransferFromRecordId(final String recordId) {
-        final String queryString = "SELECT * " 
-            + "FROM avlevering a " 
-            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator " 
+        final String queryString = "SELECT * "
+            + "FROM avlevering a "
+            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator "
             + "WHERE aps.pasientjournal_uuid = :id";
-        
+
         final Query query = getEntityManager().createNativeQuery(queryString, Avlevering.class);
         query.setParameter("id", recordId);
-        
+
         return (Avlevering) query.getSingleResult();
     }
-    
+
     public Avlevering fetchTransferForStorageUnit(final String id) {
         final String select = "SELECT DISTINCT a "
             + "FROM Avlevering a "
             + "INNER JOIN a.pasientjournal p "
             + "INNER JOIN p.lagringsenhet l "
             + "WHERE l.identifikator = :id ";
-        
+
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("id", id);
 
@@ -83,22 +93,22 @@ public class TransferDAO extends EntityDAO<Avlevering> {
     }
 
     public final String fetchFirstTransferIdFromStorageUnit(String storageUnitId) {
-        final String queryString = 
-            "SELECT Avlevering_avleveringsidentifikator " 
-            + "FROM Avlevering_Pasientjournal "
-            + "WHERE pasientjournal_uuid "
-            + "IN " 
-                + "(SELECT pasientjournal_uuid " 
-                + "FROM pasientjournal_lagringsenhet " 
+        final String queryString =
+            "SELECT Avlevering_avleveringsidentifikator "
+                + "FROM Avlevering_Pasientjournal "
+                + "WHERE pasientjournal_uuid "
+                + "IN "
+                + "(SELECT pasientjournal_uuid "
+                + "FROM pasientjournal_lagringsenhet "
                 + "WHERE lagringsenhet_uuid = :id)";
         final Query query = getEntityManager().createNativeQuery(queryString);
         query.setParameter("id", storageUnitId);
         final List<String> result = query.getResultList();
-        
+
         if (result.isEmpty()) {
             return null;
         }
-        
+
         return result.get(0);
     }
 

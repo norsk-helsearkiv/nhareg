@@ -78,6 +78,7 @@ public class Avlevering implements Serializable {
         if (pasientjournal == null) {
             pasientjournal = new HashSet<Pasientjournal>();
         }
-        return this.pasientjournal;
+        
+        return pasientjournal;
     }
 }

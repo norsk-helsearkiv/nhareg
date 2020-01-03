@@ -20,6 +20,7 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
     @Override
     public Lagringsenhet create(final Lagringsenhet storageUnit) {
         storageUnit.setUuid(UUID.randomUUID().toString());
+        
         return super.create(storageUnit);
     }
 
@@ -80,21 +81,6 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
         query.setParameter("id", id);
 
         return (List<Pasientjournal>) query.getResultList();
-    }
-
-    public final String fetchRecordIdFromStorageUnit(final String storageUnitId) {
-        final String queryString =
-            "SELECT Pasientjournal_uuid " 
-            + "FROM Pasientjournal_Lagringsenhet " 
-            + "WHERE lagringsenhet_uuid = :id";
-        final Query query = getEntityManager().createNativeQuery(queryString);
-        
-        query.setParameter("id", storageUnitId);
-        query.setMaxResults(1);
-        
-        final Object result = query.getSingleResult();
-        
-        return String.valueOf(result);
     }
 
 }

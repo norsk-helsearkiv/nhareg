@@ -186,7 +186,7 @@ public class MedicalRecordConverter {
 
         medicalRecordDTO.setPersondata(personalData);
         medicalRecordDTO.setAvleveringBeskrivelse(transfer.getAvleveringsbeskrivelse());
-        medicalRecordDTO.setAvleveringsidentifikator(transfer.getAvtale().getAvtaleidentifikator());
+        medicalRecordDTO.setAvleveringsidentifikator(transfer.getAvleveringsidentifikator());
         medicalRecordDTO.setAvleveringLaast(transfer.getLaast());
         
         final Set<Diagnose> diagnosisSet = medicalRecord.getDiagnose();
