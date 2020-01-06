@@ -5,10 +5,10 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 
 public interface DiagnosisServiceInterface {
   
-    DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO);
+    DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO, final String username);
 
-    Diagnose update(final String id, final DiagnoseDTO diagnoseDTO);
+    Diagnose update(final String id, final DiagnoseDTO diagnoseDTO, final String username);
     
-    boolean delete(final String id, final DiagnoseDTO diagnoseDTO);
+    boolean delete(final String id, final DiagnoseDTO diagnoseDTO, final String username);
     
 }

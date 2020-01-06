@@ -8,8 +8,10 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
+import javax.persistence.PersistenceException;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.Calendar;
 import java.util.List;
@@ -26,16 +28,24 @@ public class TransferService implements TransferServiceInterface {
 
     @Override
     public Avlevering create(final TransferDTO transferDTO, final String username) {
-        final Avlevering eksisterendeAvlevering = transferDAO.fetchById(transferDTO.getAvleveringsidentifikator());
-
-        if (eksisterendeAvlevering != null) {
-            throw new EntityExistsException("Avlevering med samme Id eksisterer");
-        }
-
         final Avlevering transfer = transferDTO.toTransfer();
         transfer.setOppdateringsinfo(createUpdateInfo(username));
 
-        return transfer;
+        try {
+            return transferDAO.create(transfer);
+        } catch (EJBTransactionRolledbackException ejb) { // Catch duplicate entries
+            Throwable cause = ejb.getCause();
+
+            while ((cause != null) && !(cause instanceof PersistenceException)) {
+                cause = cause.getCause();
+            }
+
+            if (cause == null) {
+                throw ejb;
+            }
+            
+            throw new EntityExistsException("Avlevering med samme id eksisterer");
+        }
     }
 
     @Override

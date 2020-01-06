@@ -4,7 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -50,8 +50,8 @@ public class MedicalRecordResource {
             final MedicalRecordDTO updatedMedicalRecord = medicalRecordService.updateMedicalRecord(medicalRecordDTO,
                                                                                                    username);
             return Response.ok(updatedMedicalRecord).build();
-        } catch (ValideringsfeilException ve) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(ve.getValideringsfeil()).build();
+        } catch (ValidationErrorException ve) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(ve.getValidationError()).build();
         }
     }
 

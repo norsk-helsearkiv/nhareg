@@ -1,12 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
-import java.util.ArrayList;
-import java.util.Set;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  *
@@ -29,17 +30,17 @@ public class Validator<T> {
         this.obj = obj;
     }
 
-    public ArrayList<Valideringsfeil> valider() {
+    public ArrayList<ValidationError> valider() {
         return valider(obj);
     }
 
-    public ArrayList<Valideringsfeil> valider(T obj) {
-        ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
+    public ArrayList<ValidationError> valider(T obj) {
+        ArrayList<ValidationError> validationError = new ArrayList<ValidationError>();
 
         // Håndterer null objekt
         if (obj == null) {
-            valideringsfeil.add(new Valideringsfeil(objClass + "", "NotNull", "Object cannot be null"));
-            return valideringsfeil;
+            validationError.add(new ValidationError(objClass + "", "NotNull", "Object cannot be null"));
+            return validationError;
         }
 
         //Validerer obj
@@ -56,17 +57,17 @@ public class Validator<T> {
             String attributt = feil.getPropertyPath().toString();
             String constraint = messageTemplate.substring(start, stop);
 
-            valideringsfeil.add((new Valideringsfeil(attributt, constraint, feil.getMessage())));
+            validationError.add((new ValidationError(attributt, constraint, feil.getMessage())));
         }
-        
-        return valideringsfeil;
+
+        return validationError;
     }
-    
+
     public void validerMedException(T obj) {
-        ArrayList<Valideringsfeil> valideringsfeil = valider(obj);
-        
-        if (!valideringsfeil.isEmpty()) {
-            throw new ValideringsfeilException(valideringsfeil);
+        ArrayList<ValidationError> validationError = valider(obj);
+
+        if (!validationError.isEmpty()) {
+            throw new ValidationErrorException(validationError);
         }
     }
 }

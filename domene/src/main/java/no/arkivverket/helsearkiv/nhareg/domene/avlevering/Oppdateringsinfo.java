@@ -1,18 +1,12 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
-
-import java.io.Serializable;
-import java.util.Calendar;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import lombok.Data;
 
+import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
+import java.util.Calendar;
 
 /**
  * 
@@ -46,7 +40,9 @@ import lombok.Data;
     "prosesstrinn"
 })
 @Data
+@Embeddable
 public class Oppdateringsinfo implements Serializable {
+    
     @XmlElement(name = "sist_oppdatert", required = true, type = String.class)
     @XmlJavaTypeAdapter(Adapter1 .class)
     @XmlSchemaType(name = "dateTime")

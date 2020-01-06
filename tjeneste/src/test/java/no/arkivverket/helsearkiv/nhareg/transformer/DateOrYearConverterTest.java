@@ -32,8 +32,8 @@ public class DateOrYearConverterTest {
 
         Pasientjournal pasientjournal = MedicalRecordConverter.convertFromPersonalDataDTO(dto);
 
-        assertEquals(dto.getFodselsnummer(), pasientjournal.getGrunnopplysninger().getIdentifikator().getPID());
-        int dod = pasientjournal.getGrunnopplysninger().getDød().getAar();
+        assertEquals(dto.getFodselsnummer(), pasientjournal.getGrunnopplysninger().getIdentifikator().getPid());
+        int dod = pasientjournal.getGrunnopplysninger().getDead().getAar();
         assertEquals(2009, dod);
     }
 
@@ -78,19 +78,19 @@ public class DateOrYearConverterTest {
 
         Grunnopplysninger grn = new Grunnopplysninger();
         Identifikator id = new Identifikator();
-        id.setPID("01010942345");
+        id.setPid("01010942345");
         id.setTypePID("fodselsnummer");
         grn.setIdentifikator(id);
 
         grn.setPnavn("Natalie");
-        grn.setDød(getDato());
-        grn.setDødsdatoUkjent(Boolean.FALSE);
-        grn.setFødt(getDato());
+        grn.setDead(getDato());
+        grn.setDeathDateUnknown(Boolean.FALSE);
+        grn.setBorn(getDato());
 
-        Kjønn k = new Kjønn();
+        Gender k = new Gender();
         k.setCode("K");
         k.setDisplayName("Kvinne");
-        grn.setKjønn(k);
+        grn.setGender(k);
 
         Kontakt kontakt = new Kontakt();
         kontakt.setFoerste(getDato());

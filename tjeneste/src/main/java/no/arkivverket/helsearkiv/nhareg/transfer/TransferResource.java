@@ -51,6 +51,7 @@ public class TransferResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Avlevering create(final TransferDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
+        
         return transferService.create(transferDTO, username);
     }
 

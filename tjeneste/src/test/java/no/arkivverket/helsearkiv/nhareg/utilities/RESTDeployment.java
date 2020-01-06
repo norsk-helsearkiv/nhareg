@@ -15,15 +15,14 @@ import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
-import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
@@ -56,13 +55,13 @@ public class RESTDeployment {
     public static WebArchive deployment() {
         return NharegDeployment.deployment()
                                // Models
-                               .addPackage(Avtale.class.getPackage())
+                               .addPackage(Agreement.class.getPackage())
                                .addPackage(Bruker.class.getPackage())
                                .addPackage(DatoEllerAar.class.getPackage())
                                .addPackage(GyldigeDatoformater.class.getPackage())
                                .addPackage(Konfigparam.class.getPackage())
                                .addPackage(ListObject.class.getPackage())
-                               .addPackage(ValideringsfeilException.class.getPackage())
+                               .addPackage(ValidationErrorException.class.getPackage())
                                // DTOs
                                .addPackage(BrukerDTO.class.getPackage())
                                .addPackage(MedicalRecordDTO.class.getPackage())
@@ -105,8 +104,6 @@ public class RESTDeployment {
                                .addPackage(StorageUnitDAO.class.getPackage())
                                // User
                                .addPackage(UserDAO.class.getPackage())
-                               // exception
-                               .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
                                //util
                                .addPackage(DatoValiderer.class.getPackage())
                                .addPackage(ParameterConverter.class.getPackage())

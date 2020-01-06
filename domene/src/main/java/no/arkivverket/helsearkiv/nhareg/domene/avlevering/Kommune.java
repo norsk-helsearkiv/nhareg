@@ -1,12 +1,12 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
+import lombok.Data;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
+import java.io.Serializable;
 
 /**
  * <p>Java class for Kommune complex type.
@@ -39,60 +39,13 @@ import javax.xml.bind.annotation.XmlType;
     "knavn",
     "knummer"
 })
-public class Kommune implements Serializable
-{
+@Data
+public class Kommune implements Serializable {
 
     @XmlElement(required = true)
     protected String knavn;
+    
     @XmlElement(required = true)
     protected String knummer;
-
-    /**
-     * Gets the value of the knavn property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getKnavn() {
-        return knavn;
-    }
-
-    /**
-     * Sets the value of the knavn property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setKnavn(String value) {
-        this.knavn = value;
-    }
-
-    /**
-     * Gets the value of the knummer property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getKnummer() {
-        return knummer;
-    }
-
-    /**
-     * Sets the value of the knummer property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setKnummer(String value) {
-        this.knummer = value;
-    }
 
 }

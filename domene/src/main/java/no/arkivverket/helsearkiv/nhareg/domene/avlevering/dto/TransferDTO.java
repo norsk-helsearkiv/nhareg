@@ -2,8 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ public class TransferDTO implements Serializable {
 
     protected String avleveringsbeskrivelse;
 
-    protected Avtale avtale;
+    protected Agreement avtale;
 
     protected String arkivskaper;
 
@@ -30,10 +30,10 @@ public class TransferDTO implements Serializable {
     public TransferDTO(final Avlevering transfer) {
         this.avleveringsidentifikator = transfer.getAvleveringsidentifikator();
         this.avleveringsbeskrivelse = transfer.getAvleveringsbeskrivelse();
-        this.avtale = transfer.getAvtale();
+        this.avtale = transfer.getAgreement();
         this.arkivskaper = transfer.getArkivskaper();
         this.antallPasientjournaler = transfer.getPasientjournal().size();
-        this.laast = transfer.getLaast();
+        this.laast = transfer.isLaast();
         this.lagringsenhetformat = transfer.getLagringsenhetformat();
     }
 
@@ -43,7 +43,7 @@ public class TransferDTO implements Serializable {
         transfer.setArkivskaper(getArkivskaper());
         transfer.setAvleveringsbeskrivelse(getAvleveringsbeskrivelse());
         transfer.setAvleveringsidentifikator(getAvleveringsidentifikator());
-        transfer.setAvtale(getAvtale());
+        transfer.setAgreement(getAvtale());
         transfer.setLaast(isLaast());
 
         return transfer;

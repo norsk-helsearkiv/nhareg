@@ -4,6 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
@@ -43,20 +49,27 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "diagnose")
 public class Diagnose implements Serializable {
 
+    @Id
+    @XmlAttribute(name = "uuid")
+    protected String uuid;
+    
     protected DatoEllerAar diagdato;
     
+    @ManyToOne
     protected Diagnosekode diagnosekode;
     
+    @NotNull
+    @Size(min = 2, max = 255)
     @XmlElement(required = true)
     protected String diagnosetekst;
     
     @XmlElement(required = true)
     protected Oppdateringsinfo oppdateringsinfo;
     
-    @XmlAttribute(name = "uuid")
-    protected String uuid;
 
     @Override
     public boolean equals(Object o) {

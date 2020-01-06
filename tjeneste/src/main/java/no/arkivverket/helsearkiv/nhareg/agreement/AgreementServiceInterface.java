@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface AgreementServiceInterface {
     
-    List<Avtale> getAll(final MultivaluedMap<String, String> queryParameters);
+    List<Agreement> getAll(final MultivaluedMap<String, String> queryParameters);
 
-    List<TransferDTO> getTransfersById(final String id, final Avlevering defaultTransfer);
+    List<TransferDTO> getTransfersByAgreementId(final String id, final Avlevering defaultTransfer);
 
-    Avtale create(final Avtale agreement);
+    Agreement create(final Agreement agreement);
 
-    Avtale delete(final String id);
+    Agreement delete(final String id);
+
+    Agreement update(final Agreement agreement);
 }

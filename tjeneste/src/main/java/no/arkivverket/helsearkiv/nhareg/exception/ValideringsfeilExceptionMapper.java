@@ -1,22 +1,23 @@
 package no.arkivverket.helsearkiv.nhareg.exception;
 
 /**
- * ExceptionMapper for å gi klienter respons på ValideringsfeilException.
+ * ExceptionMapper for å gi klienter respons på ValidationErrorException.
  * @author arnfinns
  */
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
 
 @Provider
-public class ValideringsfeilExceptionMapper implements ExceptionMapper<ValideringsfeilException> {
+public class ValideringsfeilExceptionMapper implements ExceptionMapper<ValidationErrorException> {
 
     @Override
-    public Response toResponse(ValideringsfeilException exception) {
+    public Response toResponse(final ValidationErrorException exception) {
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity(exception.getValideringsfeil())
+                .entity(exception.getValidationError())
                 .build();
     }
 }

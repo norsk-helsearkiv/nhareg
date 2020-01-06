@@ -91,7 +91,7 @@ public class SortPasientjournaler {
                     final Identifikator recordTwoId = baseInfoTwo.getIdentifikator();
                     
                     if (recordOneId != null && recordTwoId != null) {
-                        return comp(recordOneId.getPID(), recordTwoId.getPID());
+                        return comp(recordOneId.getPid(), recordTwoId.getPid());
                     }
                     
                     if (recordOneId == null && recordTwoId == null) {
@@ -146,8 +146,8 @@ public class SortPasientjournaler {
                 
                 case faar:
                     if (baseInfoOne != null && baseInfoTwo != null) {
-                        final DatoEllerAar bornOne = baseInfoOne.getFødt();
-                        final DatoEllerAar bornTwo = baseInfoTwo.getFødt();
+                        final DatoEllerAar bornOne = baseInfoOne.getBorn();
+                        final DatoEllerAar bornTwo = baseInfoTwo.getBorn();
                         return compDate(DateOrYearConverter.fromDateOrYear(bornOne),
                                         DateOrYearConverter.fromDateOrYear(bornTwo));
                     }
@@ -160,8 +160,8 @@ public class SortPasientjournaler {
                 
                 case daar:
                     if (baseInfoOne != null && baseInfoTwo != null) {
-                        final String deadOne = DateOrYearConverter.fromDateOrYear(baseInfoOne.getDød());
-                        final String deadTwo = DateOrYearConverter.fromDateOrYear(baseInfoTwo.getDød());
+                        final String deadOne = DateOrYearConverter.fromDateOrYear(baseInfoOne.getDead());
+                        final String deadTwo = DateOrYearConverter.fromDateOrYear(baseInfoTwo.getDead());
                         return compDate(deadOne, deadTwo);
                     }
                     

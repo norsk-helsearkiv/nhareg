@@ -1,8 +1,10 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
 
+import javax.persistence.Embeddable;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
@@ -11,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-
 
 /**
  * Type for å representere en dato eller et årstall
@@ -48,6 +49,7 @@ import java.util.Calendar;
     "aar"
 })
 @Data
+@Embeddable
 public class DatoEllerAar implements Serializable {
 
     @XmlElement(type = String.class)
@@ -55,6 +57,8 @@ public class DatoEllerAar implements Serializable {
     @XmlSchemaType(name = "date")
     protected Calendar dato;
 
+    @Min(value = 1800)
+    @Max(value = 2099)
     protected Integer aar;
 
     /**

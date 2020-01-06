@@ -20,8 +20,7 @@ public class DiagnosisConverter {
         final String diagnosisDateString = diagnosisDTO.getDiagnosedato();
         final DatoEllerAar diagnosisDate = DateOrYearConverter.toDateOrYear(diagnosisDateString);
 
-        return new Diagnose(diagnosisDate, diagnosisCode, diagnosisDTO.getDiagnosetekst(), null,
-                            diagnosisDTO.getUuid());
+        return new Diagnose(diagnosisDTO.getUuid(), diagnosisDate, diagnosisCode, diagnosisDTO.getDiagnosetekst(), null);
     }
     
     public static DiagnoseDTO convertToDiagnosisDTO(final Diagnose diagnosis) {

@@ -22,9 +22,9 @@ public class EtikettBuilder {
         final String content = FileUtils.readFileToString(new File(template), "UTF-8");
 
         return content.replace(ARKIVSKAPER, transfer.getArkivskaper())
-                .replace(AVTALEIDENTIFIKATOR, transfer.getAvtale().getAvtaleidentifikator())
+                .replace(AVTALEIDENTIFIKATOR, transfer.getAgreement().getAgreementId())
                 .replace(AVLEVERINGSIDENTIFIKATOR, transfer.getAvleveringsidentifikator())
-                .replace(AVTALEBESKRIVELSE, transfer.getAvtale().getAvtalebeskrivelse())
+                .replace(AVTALEBESKRIVELSE, transfer.getAgreement().getAvtalebeskrivelse())
                 .replace(AVLEVERINGSBESKRIVELSE, transfer.getAvleveringsbeskrivelse())
                 .replace(ANTALL_JOURNALER, String.valueOf(storageUnitSize))
                 .replace(LAGRINGSENHET_IDENTIFIKATOR, storageUnit.getIdentifikator());

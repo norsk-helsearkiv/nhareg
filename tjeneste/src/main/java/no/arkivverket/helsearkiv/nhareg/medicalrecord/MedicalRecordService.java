@@ -8,8 +8,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
@@ -19,9 +19,7 @@ import no.arkivverket.helsearkiv.nhareg.util.FanearkidValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
 
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,10 +53,10 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
         if (baseProperties != null) {
-            if (baseProperties.getKjønn() != null) {
-                Kjønn kjonn = baseProperties.getKjønn();
-                kjonn = genderDAO.fetchById(kjonn.getCode());
-                baseProperties.setKjønn(kjonn);
+            if (baseProperties.getGender() != null) {
+                Gender gender = baseProperties.getGender();
+                gender = genderDAO.fetchById(gender.getCode());
+                baseProperties.setGender(gender);
             }
         }
 
@@ -129,8 +127,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         //Setter verdier
         if (medicalRecordDTO.getPersondata().getKjonn() != null) {
-            final Kjønn gender = genderDAO.fetchSingleInstance(medicalRecordDTO.getPersondata().getKjonn());
-            medicalRecord.getGrunnopplysninger().setKjønn(gender);
+            final Gender gender = genderDAO.fetchSingleInstance(medicalRecordDTO.getPersondata().getKjonn());
+            medicalRecord.getGrunnopplysninger().setGender(gender);
         }
 
         // Update lagringsenhet
@@ -141,7 +139,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
 
         // Update avlevering
-        final Avlevering transfer = transferDAO.fetchById(medicalRecordDTO.getAvleveringsidentifikator());
+        final String transferId = medicalRecordDTO.getAvleveringsidentifikator();
+        final Avlevering transfer = transferDAO.fetchById(transferId);
         final String transferDescription = medicalRecordDTO.getAvleveringBeskrivelse();
         if (transferDescription != null && !transferDescription.isEmpty()) {
             transfer.setAvleveringsbeskrivelse(transferDescription);
@@ -165,9 +164,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public void validatePID(final String pid) {
-        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(pid);
+        ValidationError fnrfeil = PersonnummerValiderer.valider(pid);
         if (fnrfeil != null) {
-            throw new ValideringsfeilException(Collections.singleton(fnrfeil));
+            throw new ValidationErrorException(Collections.singleton(fnrfeil));
         }
     }
 
@@ -207,47 +206,32 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     private void validateBaseData(final PersondataDTO persondataDTO) {
         // VALIDERING - Persondata
-        ArrayList<Valideringsfeil> valideringsfeil = new Validator<>(PersondataDTO.class, persondataDTO).valider();
+        ArrayList<ValidationError> validationError = new Validator<>(PersondataDTO.class, persondataDTO).valider();
 
         //Validerer forholdet mellom dataoer
         DatoValiderer datoValiderer = new DatoValiderer();
-        valideringsfeil.addAll(datoValiderer.valider(persondataDTO, configurationDAO));
+        validationError.addAll(datoValiderer.valider(persondataDTO, configurationDAO));
 
-        Valideringsfeil fnrfeil = PersonnummerValiderer.valider(persondataDTO);
+        ValidationError fnrfeil = PersonnummerValiderer.valider(persondataDTO);
         if (fnrfeil != null) {
-            if (!valideringsfeil.contains(fnrfeil)) {
-                valideringsfeil.add(fnrfeil);
+            if (!validationError.contains(fnrfeil)) {
+                validationError.add(fnrfeil);
             }
         }
 
-        Valideringsfeil fanearkidFeil = FanearkidValiderer.valider(persondataDTO, configurationDAO);
+        ValidationError fanearkidFeil = FanearkidValiderer.valider(persondataDTO, configurationDAO);
         if (fanearkidFeil != null) {
-            valideringsfeil.add(fanearkidFeil);
+            validationError.add(fanearkidFeil);
         }
 
-        if (valideringsfeil.size() > 0) {
-            throw new ValideringsfeilException(valideringsfeil);
+        if (validationError.size() > 0) {
+            throw new ValidationErrorException(validationError);
         }
     }
 
     private void createAndAttachStorageUnit(final List<Lagringsenhet> storageUnits) {
-        // Create new storage units
-        storageUnits.forEach(unit -> {
-            try {
-                storageUnitDAO.create(unit);
-            } catch (EJBTransactionRolledbackException ejb) {
-                Throwable cause = ejb.getCause();
-                
-                while ((cause != null) && !(cause instanceof PersistenceException)) {
-                    cause = cause.getCause();
-                }
-                
-                // Ignore non-unique storage units
-                if (cause == null) {
-                    throw ejb;
-                }
-            }
-        });
+        // Create new storage units, ignores existing units
+        storageUnits.forEach(storageUnitDAO::create);
 
         final List<Lagringsenhet> existingStorageUnits = storageUnits.stream()
                                                                      .map(unit -> storageUnitDAO.fetchById(unit.getIdentifikator()))

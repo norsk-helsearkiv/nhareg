@@ -1,10 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -12,43 +12,44 @@ import java.util.Collections;
 import java.util.List;
 
 @Stateless
-public class AgreementDAO extends EntityDAO<Avtale> {
-    
+public class AgreementDAO extends EntityDAO<Agreement> {
+
     public AgreementDAO() {
-        super(Avtale.class, "avtaleidentifikator");        
+        super(Agreement.class, "agreementId");
     }
 
     @Override
-    public Avtale delete(final String id) {
-        final Avtale agreement = super.fetchSingleInstance(id);
-        final String queryString = "SELECT COUNT(a) " 
-            + "FROM Avlevering a " 
-            + "WHERE a.avtale = :agreement";
+    public Agreement delete(final String id) {
+        final Agreement agreement = super.fetchSingleInstance(id);
+        System.out.println(agreement);
+        final String queryString = "SELECT COUNT(a) "
+            + "FROM Avlevering a "
+            + "WHERE a.agreement = :agreement";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("agreement", agreement);
         
         final Long size = (Long) query.getSingleResult();
+        System.out.println(size);
         
         if (size != 0) {
-            final Valideringsfeil validationError = new Valideringsfeil("Avtale", "HasChildren");
-            final List<Valideringsfeil> validationErrorList = Collections.singletonList(validationError);
-            throw new ValideringsfeilException(validationErrorList);
+            final ValidationError validationError = new ValidationError("Avtale", "HasChildren");
+            final List<ValidationError> validationErrorList = Collections.singletonList(validationError);
+            throw new ValidationErrorException(validationErrorList);
         }
 
         getEntityManager().remove(agreement);
+        
         return agreement;
     }
 
-    public List<Avlevering> fetchTransfersById(final String id) {
-        final String queryString = 
-            "SELECT OBJECT(a) "
+    public List<Avlevering> fetchTransfersByAgreementId(final String id) {
+        final String queryString = "SELECT OBJECT(a) "
             + "FROM Avlevering a "
-            + "WHERE a.avtale.avtaleidentifikator = :id";
+            + "WHERE a.agreement.agreementId = :id ";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", id);
 
-        List<Avlevering> avleveringer = query.getResultList();
-        
-        return avleveringer;
-   }
+        return (List<Avlevering>) query.getResultList();
+    }
+    
 }

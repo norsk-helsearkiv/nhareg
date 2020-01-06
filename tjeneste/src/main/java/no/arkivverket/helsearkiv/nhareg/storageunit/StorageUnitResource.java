@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 
@@ -74,7 +74,7 @@ public class StorageUnitResource {
         final Lagringsenhet storageUnit = storageUnitService.getById(moveMedicalRecordDTO.getLagringsenhetIdentifikator());
 
         if (storageUnit == null) {
-            Valideringsfeil feil = new Valideringsfeil("identifikator", "Lagringsenheten finnes ikke");
+            ValidationError feil = new ValidationError("identifikator", "Lagringsenheten finnes ikke");
             return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
         }
 

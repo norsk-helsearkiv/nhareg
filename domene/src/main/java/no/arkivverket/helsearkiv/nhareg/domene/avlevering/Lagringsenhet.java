@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
@@ -39,12 +43,16 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "lagringsenhet")
 public class Lagringsenhet implements Serializable {
 
+    @NotNull
     @XmlElement(required = true)
     @Column(unique = true)
     protected String identifikator;
 
+    @Id
     @XmlAttribute(name = "uuid")
     protected String uuid;
 

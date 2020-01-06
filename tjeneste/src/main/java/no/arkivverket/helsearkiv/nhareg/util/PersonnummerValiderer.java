@@ -1,10 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 
 /**
  * Created by haraldk on 27.03.15.
@@ -16,19 +13,19 @@ public class PersonnummerValiderer {
     /** Lengden på gyldig fødselsnummer. */
     public static final int LEN_FNR = 11;
 
-    public static Valideringsfeil valider(String fnr) {
+    public static ValidationError valider(String fnr) {
         if (fnr != null && !fnr.isEmpty()) {
             if (gyldigFnr(fnr)) {
                 return null;
             }
 
-            return new Valideringsfeil("fodselsnummer", "FeilFodselsnummer");
+            return new ValidationError("fodselsnummer", "FeilFodselsnummer");
         }
 
         return null;
     }
 
-    public static Valideringsfeil valider(PersondataDTO dto) {
+    public static ValidationError valider(PersondataDTO dto) {
         String fnr = dto.getFodselsnummer();
         return valider(fnr);
     }

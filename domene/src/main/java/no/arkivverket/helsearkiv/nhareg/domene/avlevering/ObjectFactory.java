@@ -1,11 +1,9 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
-
 
 /**
  * This object contains factory methods for each 
@@ -54,9 +52,9 @@ public class ObjectFactory {
      * Create an instance of {@link CV }
      * 
      */
-    public CV createCV() {
-        return new CV();
-    }
+    // public CV createCV() {
+    //     return new CV();
+    // }
 
     /**
      * Create an instance of {@link Oppdateringsinfo }
@@ -75,11 +73,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Kjønn }
+     * Create an instance of {@link Gender }
      * 
      */
-    public Kjønn createKjønn() {
-        return new Kjønn();
+    public Gender createKjønn() {
+        return new Gender();
     }
 
     /**
@@ -195,11 +193,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Avtale }
+     * Create an instance of {@link Agreement }
      * 
      */
-    public Avtale createAvtale() {
-        return new Avtale();
+    public Agreement createAvtale() {
+        return new Agreement();
     }
 
     /**

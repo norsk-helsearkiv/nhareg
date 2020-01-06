@@ -1,19 +1,20 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
+import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.*;
+import java.io.Serializable;
 
 /**
  * 
- *                 Denne klassen benyttes for å representere datatypen CS.
- *                 Benyttes for registrering av kodet verdi hvor koden angis i form av en tekststreng og med mulighet til å angi kodemeningen som opsjon. Kodeverket og versjonen av dette skal være entydig bestemt av dataelementtypen.
- *             
+ * Denne klassen benyttes for å representere datatypen CS.
+ * Benyttes for registrering av kodet verdi hvor koden angis i form av en tekststreng og med mulighet til å angi
+ * kodemeningen som opsjon. Kodeverket og versjonen av dette skal være entydig bestemt av dataelementtypen.
  * 
  * <p>Java class for CS complex type.
  * 
@@ -31,8 +32,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CS", propOrder = {
@@ -40,62 +39,20 @@ import javax.xml.bind.annotation.XmlType;
     "displayName"
 })
 @XmlSeeAlso({
-    Kjønn.class
+    Gender.class
 })
-public class CS implements Serializable
-{
+@Data
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class CS implements Serializable {
 
+    @Id
+    @NotNull
     @XmlElement(required = true)
     protected String code;
+    
+    @NotNull
     @XmlElement(required = true)
     protected String displayName;
-
-    /**
-     * Gets the value of the code property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * Sets the value of the code property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCode(String value) {
-        this.code = value;
-    }
-
-    /**
-     * Gets the value of the displayName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * Sets the value of the displayName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDisplayName(String value) {
-        this.displayName = value;
-    }
 
 }

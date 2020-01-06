@@ -1,5 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,6 +33,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "diagnosekode")
+@Entity
+@Table(name = "diagnosekode")
 public class Diagnosekode extends CV implements Serializable {
-
 }

@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public class ValidatorTest {
 
     @Test
     public void validator_nullObjekt_skalGiEnFeil() {
-        ArrayList<Valideringsfeil> feil = 
+        ArrayList<ValidationError> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, null).valider();
         
         assertEquals(1, feil.size());
@@ -21,7 +21,7 @@ public class ValidatorTest {
     public void validator_tomDto_skalGiIngenFeil() {
         PersondataDTO person = new PersondataDTO();
         
-        ArrayList<Valideringsfeil> feil = 
+        ArrayList<ValidationError> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
         
         assert(feil.isEmpty());
@@ -42,7 +42,7 @@ public class ValidatorTest {
         person.setFKontakt("1.1.1999");
         person.setSKontakt("5.1.1999");
         
-        ArrayList<Valideringsfeil> feil = 
+        ArrayList<ValidationError> feil = 
                 new Validator<PersondataDTO>(PersondataDTO.class, person).valider();
         
         assert(feil.isEmpty());

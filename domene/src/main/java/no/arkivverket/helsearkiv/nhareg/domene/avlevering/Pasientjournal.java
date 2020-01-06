@@ -2,6 +2,9 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.*;
@@ -48,20 +51,33 @@ import java.util.*;
     "merknad"
 })
 @Data
+@Entity
+@Table(name = "pasientjournal")
 public class Pasientjournal implements Serializable {
 
+    @Embedded
     @XmlElement(required = true)
     protected Journalidentifikator journalidentifikator;
 
+    @Embedded
     @XmlElement(required = true)
     protected Grunnopplysninger grunnopplysninger;
 
+    @NotNull
+    @Size(min = 1)
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "pasientjournal_lagringsenhet",
+        joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
+        inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
+    )
     @XmlElement(required = true)
     protected List<Lagringsenhet> lagringsenhet;
 
+    @Embedded
     @XmlElement(required = true)
     protected Oppdateringsinfo oppdateringsinfo;
 
+    @Id
     @XmlAttribute(name = "uuid")
     protected String uuid;
 
@@ -71,8 +87,14 @@ public class Pasientjournal implements Serializable {
     @XmlTransient
     protected Calendar opprettetDato;
 
+    @Transient
     protected List<Supplerendeopplysninger> supplerendeopplysninger;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "pasientjournal_diagnose",
+        joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
+        inverseJoinColumns = @JoinColumn(name = "diagnose_uuid")
+    )
     protected Set<Diagnose> diagnose;
     
     protected Boolean slettet;
@@ -81,7 +103,7 @@ public class Pasientjournal implements Serializable {
 
     public Set<Diagnose> getDiagnose() {
         if (diagnose == null) {
-            diagnose = new HashSet<Diagnose>();
+            diagnose = new HashSet<>();
         }
         
         return this.diagnose;
@@ -89,7 +111,7 @@ public class Pasientjournal implements Serializable {
 
     public List<Supplerendeopplysninger> getSupplerendeopplysninger() {
         if (supplerendeopplysninger == null) {
-            supplerendeopplysninger = new ArrayList<Supplerendeopplysninger>();
+            supplerendeopplysninger = new ArrayList<>();
         }
         
         return this.supplerendeopplysninger;
@@ -97,7 +119,7 @@ public class Pasientjournal implements Serializable {
 
     public List<Lagringsenhet> getLagringsenhet() {
         if (lagringsenhet == null) {
-            lagringsenhet = new ArrayList<Lagringsenhet>();
+            lagringsenhet = new ArrayList<>();
         }
         
         return this.lagringsenhet;
@@ -109,11 +131,11 @@ public class Pasientjournal implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Pasientjournal that = (Pasientjournal) o;
+        final Pasientjournal that = (Pasientjournal) o;
 
         return uuid.equals(that.uuid);
     }

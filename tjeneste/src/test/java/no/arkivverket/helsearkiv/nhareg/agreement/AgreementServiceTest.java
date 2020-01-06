@@ -1,8 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,8 +33,17 @@ public class AgreementServiceTest {
     private AgreementServiceInterface agreementService;
 
     @Test
+    public void create_missingBusiness_shouldReturnAgreement() {
+        final Agreement agreement = new Agreement("enhet-4", Calendar.getInstance(), "boks4", null);
+        
+        final Agreement newAgreement = agreementService.create(agreement);
+        assertNotNull(newAgreement);
+        assertEquals(newAgreement, agreement);
+    }
+    
+    @Test
     public void getAll_emptyQuery_shouldReturnTwo() {
-        final List<Avtale> agreementList = agreementService.getAll(new MultivaluedHashMap<>());
+        final List<Agreement> agreementList = agreementService.getAll(new MultivaluedHashMap<>());
         assertEquals(2, agreementList.size());
     }
 
@@ -50,31 +60,38 @@ public class AgreementServiceTest {
         }
     }
 
-    @Test(expected = ValideringsfeilException.class)
-    public void delete_validIdWithChildren_shouldThrowValideringsfeilException() {
+    @Test(expected = ValidationErrorException.class)
+    public void delete_validIdWithChildren_shouldThrowValidationErrorException() {
         agreementService.delete("Avtale1");
     }
 
     @Test
     public void delete_validIdWithoutChildren_shouldReturnAgreement() {
-        final Avtale transfer = new Avtale();
+        final Agreement transfer = new Agreement();
         final Calendar calendar = Calendar.getInstance();
         final Virksomhet virksomhet = new Virksomhet();
         final String agreementId = "test-avtale";
 
         transfer.setAvtalebeskrivelse("beskrivelse");
-        transfer.setAvtaleidentifikator(agreementId);
+        transfer.setAgreementId(agreementId);
         transfer.setAvtaledato(calendar);
 
         virksomhet.setOrganisasjonsnummer("100");
         virksomhet.setNavn("Testorganisasjon");
         transfer.setVirksomhet(virksomhet);
         
-        final Avtale newAgreement = agreementService.create(transfer);
+        final Agreement newAgreement = agreementService.create(transfer);
         assertNotNull(newAgreement);
 
-        final Avtale deletedAgreement = agreementService.delete(agreementId);
+        final Agreement deletedAgreement = agreementService.delete(agreementId);
         assertNotNull(deletedAgreement);
     }
 
+    @Test
+    public void getTransfersByAgreementId_validId_shouldReturnTransfers() {
+        List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
+        assertNotNull(transferDTOList);
+        assertEquals(1, transferDTOList.size());
+    }
+    
 }

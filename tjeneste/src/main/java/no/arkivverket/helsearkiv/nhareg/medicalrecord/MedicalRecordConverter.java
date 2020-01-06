@@ -58,7 +58,7 @@ public class MedicalRecordConverter {
         final String pid = personalDataDTO.getFodselsnummer();
         if (pid != null) {
             final Identifikator identifikator = new Identifikator();
-            identifikator.setPID(pid);
+            identifikator.setPid(pid);
 
             if (PersonnummerValiderer.isHnummer(pid)) {
                 identifikator.setTypePID("H");
@@ -78,23 +78,23 @@ public class MedicalRecordConverter {
 
         final String genderString = personalDataDTO.getKjonn();
         if (genderString != null) {
-            final Kjønn gender = new Kjønn();
+            final Gender gender = new Gender();
             gender.setCode(genderString);
-            baseProperties.setKjønn(gender);
+            baseProperties.setGender(gender);
         }
 
         final String born = personalDataDTO.getFodt();
         if (born != null) {
-            baseProperties.setFødt(toDateOrYear(born));
+            baseProperties.setBorn(toDateOrYear(born));
         }
 
         final String dead = personalDataDTO.getDod();
         if (dead != null) {
-            baseProperties.setDød(toDateOrYear(dead));
+            baseProperties.setDead(toDateOrYear(dead));
         }
 
-        baseProperties.setDødsdatoUkjent(baseProperties.getDød() == null);
-        baseProperties.setFodtdatoUkjent(baseProperties.getFødt() == null);
+        baseProperties.setDeathDateUnknown(baseProperties.getDead() == null);
+        baseProperties.setBornDateUnknown(baseProperties.getBorn() == null);
 
         final Kontakt contact = new Kontakt();
         final String firstContact = personalDataDTO.getFKontakt();
@@ -133,26 +133,26 @@ public class MedicalRecordConverter {
             personalData.setNavn(baseProperties.getPnavn());
 
             if (baseProperties.getIdentifikator() != null) {
-                personalData.setFodselsnummer(baseProperties.getIdentifikator().getPID());
+                personalData.setFodselsnummer(baseProperties.getIdentifikator().getPid());
             }
 
-            if (baseProperties.getKjønn() != null) {
-                personalData.setKjonn(baseProperties.getKjønn().getCode());
+            if (baseProperties.getGender() != null) {
+                personalData.setKjonn(baseProperties.getGender().getCode());
             }
 
-            if (baseProperties.getFødt() != null) {
-                personalData.setFodt(baseProperties.getFødt().getStringValue());
+            if (baseProperties.getBorn() != null) {
+                personalData.setFodt(baseProperties.getBorn().getStringValue());
             }
             
-            if (baseProperties.getDød() != null) {
-                personalData.setDod(baseProperties.getDød().getStringValue());
+            if (baseProperties.getDead() != null) {
+                personalData.setDod(baseProperties.getDead().getStringValue());
             }
 
-            if (baseProperties.getDødsdatoUkjent() != null && baseProperties.getDødsdatoUkjent()) {
+            if (baseProperties.getDeathDateUnknown() != null && baseProperties.getDeathDateUnknown()) {
                 personalData.setDod("mors");
             }
 
-            if (baseProperties.getFodtdatoUkjent() != null && baseProperties.getFodtdatoUkjent()) {
+            if (baseProperties.getBornDateUnknown() != null && baseProperties.getBornDateUnknown()) {
                 personalData.setFodt("ukjent");
             }
 
@@ -187,7 +187,7 @@ public class MedicalRecordConverter {
         medicalRecordDTO.setPersondata(personalData);
         medicalRecordDTO.setAvleveringBeskrivelse(transfer.getAvleveringsbeskrivelse());
         medicalRecordDTO.setAvleveringsidentifikator(transfer.getAvleveringsidentifikator());
-        medicalRecordDTO.setAvleveringLaast(transfer.getLaast());
+        medicalRecordDTO.setAvleveringLaast(transfer.isLaast());
         
         final Set<Diagnose> diagnosisSet = medicalRecord.getDiagnose();
         final List<DiagnoseDTO> diagnoseDTOList = DiagnosisConverter.convertToDiagnosisDTOList(diagnosisSet);
@@ -206,28 +206,28 @@ public class MedicalRecordConverter {
             recordTransferDTO.setNavn(baseInformation.getPnavn());
 
             if (baseInformation.getIdentifikator() != null) {
-                recordTransferDTO.setFodselsnummer(baseInformation.getIdentifikator().getPID());
+                recordTransferDTO.setFodselsnummer(baseInformation.getIdentifikator().getPid());
             }
 
-            final DatoEllerAar born = baseInformation.getFødt();
+            final DatoEllerAar born = baseInformation.getBorn();
             if (born != null) {
                 final String yearBorn = String.valueOf(born.getYear());
                 recordTransferDTO.setFaar(yearBorn);
             }
 
-            if (baseInformation.getFodtdatoUkjent() != null &&
-                baseInformation.getFodtdatoUkjent()) {
+            if (baseInformation.getBornDateUnknown() != null &&
+                baseInformation.getBornDateUnknown()) {
                 recordTransferDTO.setFaar("ukjent");
             }
 
-            final DatoEllerAar dead = baseInformation.getDød();
+            final DatoEllerAar dead = baseInformation.getDead();
             if (dead != null) {
                 final String yearDied = String.valueOf(dead.getYear());
                 recordTransferDTO.setDaar(yearDied);
             }
 
-            if (baseInformation.getDødsdatoUkjent() != null &&
-                baseInformation.getDødsdatoUkjent()) {
+            if (baseInformation.getDeathDateUnknown() != null &&
+                baseInformation.getDeathDateUnknown()) {
                 recordTransferDTO.setDaar("mors");
             }
         }

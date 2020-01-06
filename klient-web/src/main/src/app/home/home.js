@@ -234,7 +234,7 @@ angular.module('nha.home', [
                       $scope.defaultAvlevering = avtaleIdent;
 
                       for (var i = 0; i < data.length; i++) {
-                          if (data[i].avtaleidentifikator === avtaleIdent) {
+                          if (data[i].avtaleidentifikator.toLowerCase() === avtaleIdent.toLowerCase()) {
                               $scope.setValgtAvtale(data[i]);
                               break;
                           }

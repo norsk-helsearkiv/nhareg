@@ -2,8 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
@@ -39,20 +39,25 @@ public class AgreementResource {
 
     @POST
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public Avtale create(final Avtale agreement) {
+    public Agreement create(final Agreement agreement) {
         return agreementService.create(agreement);
     }
 
+    @PUT
+    public Agreement update(final Agreement agreement) {
+        return agreementService.update(agreement);
+    }
+    
     @DELETE
     @Path("/{id}")
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public Avtale delete(@PathParam("id") String id) {
+    public Agreement delete(@PathParam("id") String id) {
         return agreementService.delete(id);
     }
-
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Avtale> getAll(@Context UriInfo uriInfo) {
+    public List<Agreement> getAll(@Context UriInfo uriInfo) {
         return agreementService.getAll(uriInfo.getQueryParameters());
     }
 
@@ -63,11 +68,11 @@ public class AgreementResource {
         final String username = sessionContext.getCallerPrincipal().getName();
         final Avlevering transfer = transferService.getDefaultTransfer(username);
         
-        if (transfer == null) {
+        if (transfer == null || transfer.getAgreement() == null) {
             return null;
         }
         
-        return transfer.getAvtale().getAvtaleidentifikator();
+        return transfer.getAgreement().getAgreementId();
     }
 
     @GET
@@ -75,7 +80,8 @@ public class AgreementResource {
     public Response getTransfers(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
         final Avlevering defaultTransfer = transferService.getDefaultTransfer(username);
-        final List<TransferDTO> transferDTOList = agreementService.getTransfersById(id, defaultTransfer);
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);
+        
         return Response.ok(transferDTOList).build();
     }
     

@@ -2,8 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -23,32 +23,18 @@ public class TransferDAO extends EntityDAO<Avlevering> {
 
         // Cannot delete non-empty transfers
         if (!transfer.getPasientjournal().isEmpty()) {
-            final Valideringsfeil validationError = new Valideringsfeil("Avlevering", "HasChildren");
-            final List<Valideringsfeil> validationErrors = Collections.singletonList(validationError);
-            throw new ValideringsfeilException(validationErrors);
+            final ValidationError validationError = new ValidationError("Avlevering", "HasChildren");
+            final List<ValidationError> validationErrors = Collections.singletonList(validationError);
+            throw new ValidationErrorException(validationErrors);
         }
 
         return super.delete(id);
     }
 
-    @Override
-    public Avlevering fetchById(final String id) {
-        final String queryString = "SELECT DISTINCT a " 
-            + "FROM Avlevering a " 
-            + "JOIN FETCH a.pasientjournal pj " 
-            + "JOIN FETCH pj.diagnose "
-            + "JOIN FETCH pj.lagringsenhet " 
-            + "WHERE a.avleveringsidentifikator = :id ";
-        final Query query = getEntityManager().createQuery(queryString, Avlevering.class);
-        query.setParameter("id", id);
-        
-        return (Avlevering) query.getSingleResult();
-    }
-
     public String fetchTransferIdFromRecordId(final String medicalRecordId) {
         final String queryString =
             "SELECT Avlevering_avleveringsidentifikator "
-                + "FROM Avlevering_Pasientjournal "
+                + "FROM avlevering_pasientjournal "
                 + "WHERE pasientjournal_uuid = :id ";
 
         final Query query = getEntityManager().createNativeQuery(queryString);
@@ -59,11 +45,11 @@ public class TransferDAO extends EntityDAO<Avlevering> {
     }
 
     public Avlevering fetchTransferFromRecordId(final String recordId) {
-        final String queryString = "SELECT * "
-            + "FROM avlevering a "
-            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator "
-            + "WHERE aps.pasientjournal_uuid = :id";
-
+        final String queryString = "SELECT * " 
+            + "FROM avlevering a " 
+            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator " 
+            + "WHERE aps.pasientjournal_uuid = :id ";
+        
         final Query query = getEntityManager().createNativeQuery(queryString, Avlevering.class);
         query.setParameter("id", recordId);
 
@@ -75,7 +61,7 @@ public class TransferDAO extends EntityDAO<Avlevering> {
             + "FROM Avlevering a "
             + "INNER JOIN a.pasientjournal p "
             + "INNER JOIN p.lagringsenhet l "
-            + "WHERE l.uuid = :id ";
+            + "WHERE l.identifikator = :id ";
 
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("id", id);
@@ -83,7 +69,7 @@ public class TransferDAO extends EntityDAO<Avlevering> {
         return (Avlevering) query.getSingleResult();
     }
 
-    public final String fetchFirstTransferIdFromStorageUnit(String storageUnitId) {
+    public final String fetchFirstTransferIdFromStorageUnit(final String storageUnitId) {
         final String queryString =
             "SELECT Avlevering_avleveringsidentifikator "
                 + "FROM Avlevering_Pasientjournal "

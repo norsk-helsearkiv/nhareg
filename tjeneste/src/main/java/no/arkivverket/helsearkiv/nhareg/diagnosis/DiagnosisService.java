@@ -7,21 +7,16 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiagnosisService implements DiagnosisServiceInterface {
-
-    @Resource
-    private SessionContext sessionContext;
     
     @Inject
     private MedicalRecordDAO medicalRecordDAO;
@@ -33,7 +28,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     private DiagnosisCodeDAO diagnosisCodeDAO;
     
     @Override
-    public DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO) {
+    public DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
         final Pasientjournal medicalRecord = medicalRecordDAO.fetchById(id);
 
         if (medicalRecord == null) {
@@ -42,14 +37,14 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
         new Validator<>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
         final DatoValiderer dateValidator = new DatoValiderer();
-        List<Valideringsfeil> errors = dateValidator.validerDiagnose(diagnoseDTO, medicalRecord);
+        List<ValidationError> errors = dateValidator.validerDiagnose(diagnoseDTO, medicalRecord);
         validateDiagnosisCode(diagnoseDTO.getDiagnosekode());
 
         if (errors.size() > 0) {
-            throw new ValideringsfeilException(errors);
+            throw new ValidationErrorException(errors);
         }
 
-        final Oppdateringsinfo updateInfo = createUpdateInfo();
+        final Oppdateringsinfo updateInfo = createUpdateInfo(username);
         diagnoseDTO.setOppdatertAv(updateInfo.getOppdatertAv());
 
         final Diagnosekode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosekode());
@@ -65,7 +60,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     }
 
     @Override 
-    public Diagnose update(final String id, final DiagnoseDTO diagnoseDTO) {
+    public Diagnose update(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
         final Pasientjournal pasientjournal = medicalRecordDAO.fetchById(id);
         
         if (pasientjournal == null) {
@@ -73,18 +68,18 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         // Validate diagnosis
-        final ArrayList<Valideringsfeil> valideringsfeil = new Validator<>(DiagnoseDTO.class).valider(diagnoseDTO);
+        final ArrayList<ValidationError> validationError = new Validator<>(DiagnoseDTO.class).valider(diagnoseDTO);
         final DatoValiderer datoValiderer = new DatoValiderer();
-        final List<Valideringsfeil> diagfeil = datoValiderer.validerDiagnose(diagnoseDTO, pasientjournal);
+        final List<ValidationError> diagfeil = datoValiderer.validerDiagnose(diagnoseDTO, pasientjournal);
         
         if (diagfeil.size() > 0) {
-            valideringsfeil.addAll(diagfeil);
+            validationError.addAll(diagfeil);
         }
 
         validateDiagnosisCode(diagnoseDTO.getDiagnosekode());
         
-        if (valideringsfeil.size() != 0) {
-            for (Valideringsfeil feil : valideringsfeil) {
+        if (validationError.size() != 0) {
+            for (ValidationError feil : validationError) {
                 if (feil.getAttribute().equals("diagnosedato")) {
                     feil.setAttribute("diagnosedatotab");
                 }
@@ -92,19 +87,19 @@ public class DiagnosisService implements DiagnosisServiceInterface {
                     feil.setAttribute("diagnosekodetab");
                 }
             }
-            throw new ValideringsfeilException(valideringsfeil);
+            throw new ValidationErrorException(validationError);
         }
 
         final Diagnosekode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosekode());
         final Diagnose diagnose = DiagnosisConverter.convertFromDiagnosisDTO(diagnoseDTO, diagnosisCode);
-        diagnose.setOppdateringsinfo(createUpdateInfo());
+        diagnose.setOppdateringsinfo(createUpdateInfo(username));
         diagnosisDAO.update(diagnose);
 
         return diagnose;
     }
 
     @Override
-    public boolean delete(final String id, final DiagnoseDTO diagnoseDTO) {
+    public boolean delete(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
         final Pasientjournal medicalRecord = medicalRecordDAO.fetchById(id);
         final Diagnose diagnosis = diagnosisDAO.fetchById(diagnoseDTO.getUuid());
         
@@ -114,7 +109,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
         medicalRecord.getDiagnose().remove(diagnosis);
         diagnosisDAO.delete(diagnosis.getUuid());
-        medicalRecord.setOppdateringsinfo(createUpdateInfo());
+        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
 
         return true;
     }
@@ -132,17 +127,17 @@ public class DiagnosisService implements DiagnosisServiceInterface {
             
             // Check if the diagnosis code exists
             if (diagnosisCodeList.size() == 0) {
-                ArrayList<Valideringsfeil> valideringsfeil = new ArrayList<Valideringsfeil>();
-                valideringsfeil.add(new Valideringsfeil("diagnosekode", "UkjentDiagnosekode"));
+                ArrayList<ValidationError> validationError = new ArrayList<ValidationError>();
+                validationError.add(new ValidationError("diagnosekode", "UkjentDiagnosekode"));
                 
-                throw new ValideringsfeilException(valideringsfeil);
+                throw new ValidationErrorException(validationError);
             }
         }
     }
 
-    private Oppdateringsinfo createUpdateInfo() {
+    private Oppdateringsinfo createUpdateInfo(final String username) {
         Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
-        oppdateringsinfo.setOppdatertAv(sessionContext.getCallerPrincipal().getName());
+        oppdateringsinfo.setOppdatertAv(username);
         oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
 
         return oppdateringsinfo;

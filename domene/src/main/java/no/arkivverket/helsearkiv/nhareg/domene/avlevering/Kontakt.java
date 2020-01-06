@@ -1,11 +1,12 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
+import lombok.Data;
+
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-
+import java.io.Serializable;
 
 /**
  * <p>Java class for Kontakt complex type.
@@ -32,58 +33,22 @@ import javax.xml.bind.annotation.XmlType;
     "foerste",
     "siste"
 })
-public class Kontakt implements Serializable
-{
+@Data
+@Embeddable
+public class Kontakt implements Serializable {
 
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "dato", column = @Column(name = "foersteKontaktDato")),
+        @AttributeOverride(name = "aar", column = @Column(name = "foersteKontaktAar"))
+    })
     protected DatoEllerAar foerste;
+
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride(name = "dato", column = @Column(name = "sisteKontaktDato")),
+        @AttributeOverride(name = "aar", column = @Column(name = "sisteKontaktAar"))
+    })
     protected DatoEllerAar siste;
-
-    /**
-     * Gets the value of the foerste property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public DatoEllerAar getFoerste() {
-        return foerste;
-    }
-
-    /**
-     * Sets the value of the foerste property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public void setFoerste(DatoEllerAar value) {
-        this.foerste = value;
-    }
-
-    /**
-     * Gets the value of the siste property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public DatoEllerAar getSiste() {
-        return siste;
-    }
-
-    /**
-     * Sets the value of the siste property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DatoEllerAar }
-     *     
-     */
-    public void setSiste(DatoEllerAar value) {
-        this.siste = value;
-    }
 
 }

@@ -24,7 +24,6 @@ public abstract class EntityDAO<T> {
 
     private Class<T> entityClass;
     private String idName;
-    private String orderByName;
 
     public EntityDAO() {}
     
@@ -34,7 +33,7 @@ public abstract class EntityDAO<T> {
     }
 
     public T create(@NotNull final T entity) {
-        new Validator<T>(entityClass).validerMedException(entity);
+        new Validator<>(entityClass).validerMedException(entity);
         
         entityManager.persist(entity);
 
@@ -119,10 +118,6 @@ public abstract class EntityDAO<T> {
         final Predicate[] predicates = extractPredicates(queryParameters, criteriaBuilder, root);
 
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
-
-        if (orderByName != null && !orderByName.isEmpty()) {
-            criteriaQuery.orderBy(criteriaBuilder.desc(root.get(orderByName)));
-        }
 
         TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
 

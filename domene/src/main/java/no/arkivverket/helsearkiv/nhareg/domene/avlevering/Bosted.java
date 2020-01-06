@@ -1,12 +1,12 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.io.Serializable;
+import lombok.Data;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
+import java.io.Serializable;
 
 /**
  * <p>Java class for Bosted complex type.
@@ -33,59 +33,12 @@ import javax.xml.bind.annotation.XmlType;
     "kommune",
     "adresse"
 })
-public class Bosted implements Serializable
-{
+@Data
+public class Bosted implements Serializable {
 
     @XmlElement(required = true)
     protected Kommune kommune;
+
     protected String adresse;
-
-    /**
-     * Gets the value of the kommune property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Kommune }
-     *     
-     */
-    public Kommune getKommune() {
-        return kommune;
-    }
-
-    /**
-     * Sets the value of the kommune property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Kommune }
-     *     
-     */
-    public void setKommune(Kommune value) {
-        this.kommune = value;
-    }
-
-    /**
-     * Gets the value of the adresse property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAdresse() {
-        return adresse;
-    }
-
-    /**
-     * Sets the value of the adresse property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAdresse(String value) {
-        this.adresse = value;
-    }
 
 }

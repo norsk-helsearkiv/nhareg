@@ -4,8 +4,8 @@ import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.inject.Inject;
@@ -46,9 +46,9 @@ public class UserService implements UserServiceInterface {
         }
 
         if (!resetPass) { // lite poeng å validere passord hvis det skal resettes
-            List<Valideringsfeil> feil = validerNyEndreBruker(userDTO.getPassword());
+            List<ValidationError> feil = validerNyEndreBruker(userDTO.getPassword());
             if (feil.size() > 0) {
-                throw new ValideringsfeilException(feil);
+                throw new ValidationErrorException(feil);
             }
         }
 
@@ -66,9 +66,9 @@ public class UserService implements UserServiceInterface {
         final Bruker bruker = userDAO.fetchByUsername(username);
         final String b64pwd = passordToHash(newPassword);
 
-        final List<Valideringsfeil> feil = validerNyEndreBruker(newPassword);
+        final List<ValidationError> feil = validerNyEndreBruker(newPassword);
         if (feil.size() > 0) {
-            throw new ValideringsfeilException(feil);
+            throw new ValidationErrorException(feil);
         }
 
         bruker.setPassord(b64pwd);
@@ -117,10 +117,10 @@ public class UserService implements UserServiceInterface {
         return userDAO.fetchStorageUnitByUsername(username);
     }
 
-    private List<Valideringsfeil> validerNyEndreBruker(final String passord) {
-        List<Valideringsfeil> feilList = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> validerNyEndreBruker(final String passord) {
+        List<ValidationError> feilList = new ArrayList<ValidationError>();
         if (!validerPassord(passord)) {
-            Valideringsfeil feil = new Valideringsfeil("passord", "FeilPassord");
+            ValidationError feil = new ValidationError("passord", "FeilPassord");
             feilList.add(feil);
         }
 
@@ -145,15 +145,15 @@ public class UserService implements UserServiceInterface {
     }
 
     private void validatePrinterIP(final String printerIP) {
-        final List<Valideringsfeil> errorList = new ArrayList<>();
+        final List<ValidationError> errorList = new ArrayList<>();
 
         if (printerIP == null || printerIP.isEmpty()) {
-            final Valideringsfeil emptyPrinterError = new Valideringsfeil("printer", "Empty printer IP");
+            final ValidationError emptyPrinterError = new ValidationError("printer", "Empty printer IP");
             errorList.add(emptyPrinterError);
         } else {
             final String[] ipGroups = printerIP.split("\\.");
             if (ipGroups.length != 4) {
-                errorList.add(new Valideringsfeil("printer", "Error in IP address length"));
+                errorList.add(new ValidationError("printer", "Error in IP address length"));
             }
 
             try {
@@ -163,16 +163,16 @@ public class UserService implements UserServiceInterface {
                                               .filter(group -> (group >= 0 && group <= 255))
                                               .count() == 4;
                 if (!correctFormat) {
-                    errorList.add(new Valideringsfeil("printer", "Error in IP format"));
+                    errorList.add(new ValidationError("printer", "Error in IP format"));
                 }
             } catch (NumberFormatException nfe) {
                 nfe.printStackTrace();
-                errorList.add(new Valideringsfeil("printer", "Error with integers in IP"));
+                errorList.add(new ValidationError("printer", "Error with integers in IP"));
             }
         }
 
         if (errorList.size() > 0) {
-            throw new ValideringsfeilException(errorList);
+            throw new ValidationErrorException(errorList);
         }
     }
 

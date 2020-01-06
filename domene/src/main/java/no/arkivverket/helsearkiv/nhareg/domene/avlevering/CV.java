@@ -2,6 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
@@ -46,15 +51,23 @@ import java.io.Serializable;
     Diagnosekode.class
 })
 @Data
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class CV implements Serializable {
-
+    
+    @NotNull
+    @Id
     protected String code;
     
     protected String displayName;
     
+    @NotNull
+    @Id
     @XmlElement(required = true)
     protected String codeSystem;
     
+    @NotNull
+    @Id
     protected String codeSystemVersion;
     
     protected String originalText;

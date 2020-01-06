@@ -1,15 +1,11 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
+import lombok.Data;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Calendar;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 
 /**
  * <p>Java class for Innleggelse complex type.
@@ -36,64 +32,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "inndato",
     "utdato"
 })
-public class Innleggelse implements Serializable
-{
+@Data
+public class Innleggelse implements Serializable {
 
     @XmlElement(required = true, type = String.class)
     @XmlJavaTypeAdapter(Adapter2 .class)
     @XmlSchemaType(name = "date")
     protected Calendar inndato;
+
     @XmlElement(required = true, type = String.class)
     @XmlJavaTypeAdapter(Adapter2 .class)
     @XmlSchemaType(name = "date")
     protected Calendar utdato;
-
-    /**
-     * Gets the value of the inndato property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public Calendar getInndato() {
-        return inndato;
-    }
-
-    /**
-     * Sets the value of the inndato property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInndato(Calendar value) {
-        this.inndato = value;
-    }
-
-    /**
-     * Gets the value of the utdato property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public Calendar getUtdato() {
-        return utdato;
-    }
-
-    /**
-     * Sets the value of the utdato property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUtdato(Calendar value) {
-        this.utdato = value;
-    }
 
 }

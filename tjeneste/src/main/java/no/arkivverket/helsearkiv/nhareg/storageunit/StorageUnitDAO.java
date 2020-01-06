@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.storageunit;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -19,9 +20,18 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
 
     @Override
     public Lagringsenhet create(final Lagringsenhet storageUnit) {
-        storageUnit.setUuid(UUID.randomUUID().toString());
+        new Validator<>(Lagringsenhet.class).validerMedException(storageUnit);
+
+        final Lagringsenhet existingUnit = this.fetchById(storageUnit.getIdentifikator());
         
-        return super.create(storageUnit);
+        if (existingUnit == null) {
+            storageUnit.setUuid(UUID.randomUUID().toString());
+            getEntityManager().persist(storageUnit);
+            
+            return storageUnit;
+        }
+        
+        return null;
     }
 
     @Override
@@ -40,21 +50,20 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
         return (List<Lagringsenhet>) query.getResultList();
     }
 
+    @Override
     public Lagringsenhet fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(l) "
-            + "FROM Lagringsenhet l "
-            + "WHERE l.identifikator = :id "
-            + "ORDER BY l.uuid";
-        final Query query = getEntityManager().createQuery(queryString);
+        final String queryString = "SELECT OBJECT(l)" 
+            + "FROM Lagringsenhet l " 
+            + "WHERE l.identifikator = :id ";
+        
+        final Query query = getEntityManager().createQuery(queryString, Lagringsenhet.class);
         query.setParameter("id", id);
         
-        List<Lagringsenhet> lagringsenheter = query.getResultList();
-        // Should be a list of one unit, if more than one take the lowest
-        if (!lagringsenheter.isEmpty()) {
-            return lagringsenheter.get(0);
+        try {
+            return (Lagringsenhet) query.getSingleResult();
+        } catch (Exception ignored) {
+            return null;
         }
-
-        return null;
     }
 
     public Integer fetchCountOfRecordsForStorageUnit(final String storageUnitId) {

@@ -1,9 +1,7 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
-import java.util.Calendar;
-
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.util.Calendar;
 
 public class Adapter2 extends XmlAdapter<String, Calendar> {
 

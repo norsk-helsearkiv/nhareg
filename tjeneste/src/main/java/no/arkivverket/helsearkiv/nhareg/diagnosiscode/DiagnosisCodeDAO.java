@@ -8,6 +8,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
@@ -28,6 +29,17 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
 
     public DiagnosisCodeDAO() {
         super(Diagnosekode.class, "code");
+    }
+
+    @Override
+    public Diagnosekode fetchById(final String id) {
+        final String queryString = "SELECT OBJECT(dk) " 
+            + "FROM Diagnosekode dk " 
+            + "WHERE dk.code = :id ";
+        final Query query = getEntityManager().createQuery(queryString, Diagnosekode.class);
+        query.setParameter("id", id);
+
+        return (Diagnosekode) query.getSingleResult();
     }
 
     @Override

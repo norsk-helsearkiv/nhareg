@@ -7,7 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Valideringsfeil;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 
 import java.util.*;
@@ -29,15 +29,15 @@ public class DatoValiderer {
      * @param pasientjournal
      * @return
      */
-    public List<Valideringsfeil> validerDiagnose(DiagnoseDTO diagnose, Pasientjournal pasientjournal) {
-        final List<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    public List<ValidationError> validerDiagnose(DiagnoseDTO diagnose, Pasientjournal pasientjournal) {
+        final List<ValidationError> feil = new ArrayList<ValidationError>();
         final Grunnopplysninger grunnopplysninger = pasientjournal.getGrunnopplysninger();
 
         //ta diagnosedato som god fisk ettersom både mors og født er ukjent...
-        if (grunnopplysninger.getFodtdatoUkjent() != null &&
-            grunnopplysninger.getFodtdatoUkjent() &&
-            grunnopplysninger.getDødsdatoUkjent() != null &&
-            grunnopplysninger.getDødsdatoUkjent()) {
+        if (grunnopplysninger.getBornDateUnknown() != null &&
+            grunnopplysninger.getBornDateUnknown() &&
+            grunnopplysninger.getDeathDateUnknown() != null &&
+            grunnopplysninger.getDeathDateUnknown()) {
             return feil;
         }
 
@@ -45,24 +45,24 @@ public class DatoValiderer {
         final Date diagnoseDato = getDate(diagnoseDatoString);
 
         if (diagnoseDato == null) {
-            feil.add(new Valideringsfeil("diagnosedato", "DiagFormatFeil"));
+            feil.add(new ValidationError("diagnosedato", "DiagFormatFeil"));
             return feil;
         }
 
         //fødtdatoår kjent
-        if (grunnopplysninger.getFodtdatoUkjent() == null || !grunnopplysninger.getFodtdatoUkjent()) {
-            final DatoEllerAar fodt = grunnopplysninger.getFødt();
+        if (grunnopplysninger.getBornDateUnknown() == null || !grunnopplysninger.getBornDateUnknown()) {
+            final DatoEllerAar fodt = grunnopplysninger.getBorn();
             final String fodtString = DateOrYearConverter.fromDateOrYear(fodt);
             if ((compareDateString(fodtString, diagnoseDatoString) == DateCompareResult.AFTER)) {
-                feil.add(new Valideringsfeil("diagnosedato", "DiagForFodt"));
+                feil.add(new ValidationError("diagnosedato", "DiagForFodt"));
             }
         }
 
-        if (grunnopplysninger.getDødsdatoUkjent() == null || !grunnopplysninger.getDødsdatoUkjent()) {
-            final DatoEllerAar dod = grunnopplysninger.getDød();
+        if (grunnopplysninger.getDeathDateUnknown() == null || !grunnopplysninger.getDeathDateUnknown()) {
+            final DatoEllerAar dod = grunnopplysninger.getDead();
             final String dodString = DateOrYearConverter.fromDateOrYear(dod);
             if ((compareDateString(dodString, diagnoseDatoString) == DateCompareResult.BEFORE)) {
-                feil.add(new Valideringsfeil("diagnosedato", "DiagEtterDod"));
+                feil.add(new ValidationError("diagnosedato", "DiagEtterDod"));
             }
         }
 
@@ -70,8 +70,8 @@ public class DatoValiderer {
     }
 
     //Hjelpemetoder for validering
-    public ArrayList<Valideringsfeil> valider(PersondataDTO person, ConfigurationDAO konfig) {
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    public ArrayList<ValidationError> valider(PersondataDTO person, ConfigurationDAO konfig) {
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
 
         if (person == null) {
             return feil;
@@ -80,13 +80,13 @@ public class DatoValiderer {
         //født kan ikke være mors
         if (sjekkMorsUkjent(person.getFodt(), "mors") &&
             sjekkMorsUkjent(person.getFodt(), "m")) {
-            feil.add(new Valideringsfeil("fodt", "DagEllerAar"));
+            feil.add(new ValidationError("fodt", "DagEllerAar"));
         }
 
         //død kan ikke være ukjent
         if (sjekkMorsUkjent(person.getDod(), "ukjent") &&
             sjekkMorsUkjent(person.getDod(), "u")) {
-            feil.add(new Valideringsfeil("dod", "DagEllerAar"));
+            feil.add(new ValidationError("dod", "DagEllerAar"));
         }
 
         if (feil.size() > 0) {
@@ -100,45 +100,45 @@ public class DatoValiderer {
         Date minLim = GyldigeDatoformater.getDateRoll(new Date(), -maxAge);
 
         //skjema 1
-        List<Valideringsfeil> fnumfeil = fnumSjekk(person, lowLim, maxLim);
+        List<ValidationError> fnumfeil = fnumSjekk(person, lowLim, maxLim);
         leggTilFeil(feil, fnumfeil);
 
         //skjema 2a
         if (gyldigUkjent.contains(person.getFodt())) { //mors sjekkes i metoden pga feilmelding hvis den mangler
-            List<Valideringsfeil> pdatofeil = pasientjournaldatoerutenkjentfogmors(person, lowLim, maxLim);
+            List<ValidationError> pdatofeil = pasientjournaldatoerutenkjentfogmors(person, lowLim, maxLim);
             leggTilFeil(feil, pdatofeil);
         }
 
         //skjema 2b
         if (gyldigMors.contains(person.getDod()) && sjekk(person.getFodt())) {
-            List<Valideringsfeil> pdatofeilb = pasientjournaldatokjentfdatoukjentdod(person, minLim);
+            List<ValidationError> pdatofeilb = pasientjournaldatokjentfdatoukjentdod(person, minLim);
             leggTilFeil(feil, pdatofeilb);
         }
 
         //skjema 2c
         if (gyldigUkjent.contains(person.getFodt()) && sjekk(person.getDod())) {
-            List<Valideringsfeil> pdatofeilc = pasientjournaldatokjentmorsukjentfodt(person, lowLim, maxLim);
+            List<ValidationError> pdatofeilc = pasientjournaldatokjentmorsukjentfodt(person, lowLim, maxLim);
             leggTilFeil(feil, pdatofeilc);
         }
 
         //skjema 2d
         if (sjekk(person.getFodt())&&sjekk(person.getDod())) {
-            List<Valideringsfeil> pdatofeild = pasientjournaldatokjentfodtogmors(person, lowLim, maxLim);
+            List<ValidationError> pdatofeild = pasientjournaldatokjentfodtogmors(person, lowLim, maxLim);
             leggTilFeil(feil, pdatofeild);
         }
 
         return feil;
     }
 
-    private void leggTilFeil(List<Valideringsfeil> feilliste, List<Valideringsfeil> nyeFeil) {
+    private void leggTilFeil(List<ValidationError> feilliste, List<ValidationError> nyeFeil) {
         if (!nyeFeil.isEmpty()) {
             feilliste.addAll(nyeFeil);
         }
     }
 
     //skjema 01
-    private ArrayList<Valideringsfeil> fnumSjekk(PersondataDTO person, Date lowLim, Date maxLim) {
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private ArrayList<ValidationError> fnumSjekk(PersondataDTO person, Date lowLim, Date maxLim) {
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         String fnr = person.getFodselsnummer();
 
         if (!gyldigUkjent.contains(person.getFodt())) {
@@ -148,12 +148,12 @@ public class DatoValiderer {
                     //TODO sjekke også her på år?
                     Date fodt = getDate(person.getFodt());
                     if (fodt.before(lowLim) || fodt.after(maxLim)) {
-                        feil.add(new Valideringsfeil("fodt", "UtenforGyldigPeriode",
+                        feil.add(new ValidationError("fodt", "UtenforGyldigPeriode",
                                                      "Person born outside valid period."));
                     }
                 }
             } else {
-                Valideringsfeil fnrfeil = PersonnummerValiderer.valider(person);
+                ValidationError fnrfeil = PersonnummerValiderer.valider(person);
                 if (fnrfeil != null) {
                     feil.add(fnrfeil);
                 }
@@ -164,32 +164,32 @@ public class DatoValiderer {
     }
 
     //skjema 02a
-    private ArrayList<Valideringsfeil> pasientjournaldatoerutenkjentfogmors(PersondataDTO person, Date lowLim, Date maxLim) {
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private ArrayList<ValidationError> pasientjournaldatoerutenkjentfogmors(PersondataDTO person, Date lowLim, Date maxLim) {
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         if (gyldigMors.contains(person.getDod())){
             if (sjekk(person.getSKontakt()) && sjekk(person.getFKontakt())) {
                 Date sKontakt = getDate(person.getSKontakt());
                 if ((compareDateString(person.getFKontakt(), person.getSKontakt())) == DateCompareResult.AFTER) {
-                    feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
+                    feil.add(new ValidationError("fKontakt", "fKontaktEttersKontakt"));
                 }
 
                 //TODO sammenligne disse også på kun ÅR?
                 if (sKontakt.before(lowLim) || sKontakt.after(maxLim)) {
-                    feil.add(new Valideringsfeil("sKontakt", "UtenforGyldigPeriode"));
+                    feil.add(new ValidationError("sKontakt", "UtenforGyldigPeriode"));
                 }
             }
         } else if (!sjekk(person.getDod())) {
-            feil.add(new Valideringsfeil("dod", "manglermors"));
+            feil.add(new ValidationError("dod", "manglermors"));
         }
 
         return feil;
     }
 
     //skjema 02b
-    private List<Valideringsfeil> pasientjournaldatokjentfdatoukjentdod(PersondataDTO person, Date maxAge) {
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> pasientjournaldatokjentfdatoukjentdod(PersondataDTO person, Date maxAge) {
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         if (sjekk(person.getDod()) || gyldigMors.contains(person.getDod())) {
-            List<Valideringsfeil> f = sjekkKontaktdatoFodt(person);
+            List<ValidationError> f = sjekkKontaktdatoFodt(person);
             if (!f.isEmpty()) {
                 feil.addAll(f);
             }
@@ -198,9 +198,9 @@ public class DatoValiderer {
                 Date fodt = getDate(person.getFodt());
                 //TODO også her kun på år?
                 if (fodt.before(maxAge)) {
-                    feil.add(new Valideringsfeil("fodt", "UtenforGyldigPeriode"));
+                    feil.add(new ValidationError("fodt", "UtenforGyldigPeriode"));
                 } else {
-                    List<Valideringsfeil> f = sjekkKontaktdatoFodt(person);
+                    List<ValidationError> f = sjekkKontaktdatoFodt(person);
                     if (!f.isEmpty()) {
                         feil.addAll(f);
                     }
@@ -215,14 +215,14 @@ public class DatoValiderer {
     }
 
     //skjema 02c
-    private List<Valideringsfeil> pasientjournaldatokjentmorsukjentfodt(PersondataDTO person, Date lowLim, Date maxLim) {
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> pasientjournaldatokjentmorsukjentfodt(PersondataDTO person, Date lowLim, Date maxLim) {
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         Date dod = getDate(person.getDod());
         //TODO også her sammenlign på år?
         if (dod.before(lowLim) || dod.after(maxLim)) {
-            feil.add(new Valideringsfeil("dod", "UtenforGyldigPeriode"));
+            feil.add(new ValidationError("dod", "UtenforGyldigPeriode"));
         } else {
-            List<Valideringsfeil> f = sjekkKontaktdatoDod(person);
+            List<ValidationError> f = sjekkKontaktdatoDod(person);
             if (!f.isEmpty()){
                 feil.addAll(f);
             }
@@ -232,19 +232,19 @@ public class DatoValiderer {
     }
 
     //skjema 02d
-    private List<Valideringsfeil> pasientjournaldatokjentfodtogmors(PersondataDTO person, Date lowLim, Date maxLim){
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> pasientjournaldatokjentfodtogmors(PersondataDTO person, Date lowLim, Date maxLim){
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         Date dod = getDate(person.getDod());
         //TODO også her sammenligne på ÅR?
         if (dod.before(lowLim) || dod.after(maxLim)) {
-            feil.add(new Valideringsfeil("dod", "UtenforGyldigPeriode"));
+            feil.add(new ValidationError("dod", "UtenforGyldigPeriode"));
         } else {
             if (sjekk(person.getFodt()) && sjekk(person.getDod())) {
                 Date fodt = getDate(person.getFodt());
                 if (compareDateString(person.getDod(), person.getFodt()) == DateCompareResult.BEFORE) {
-                    feil.add(new Valideringsfeil("fodt", "FodtEtterDodt"));
+                    feil.add(new ValidationError("fodt", "FodtEtterDodt"));
                 } else {
-                    List<Valideringsfeil> f = sjekkKontaktdatoFodtogDod(person);
+                    List<ValidationError> f = sjekkKontaktdatoFodtogDod(person);
                     if (!f.isEmpty()) {
                         feil.addAll(f);
                     }
@@ -255,8 +255,8 @@ public class DatoValiderer {
         return feil;
     }
 
-    private List<Valideringsfeil> sjekkKontaktdatoFodtogDod(PersondataDTO person) {
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> sjekkKontaktdatoFodtogDod(PersondataDTO person) {
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
 
         //første og siste kontaktdato registrert
         if (sjekk(person.getFKontakt()) && sjekk(person.getSKontakt())) {
@@ -264,27 +264,27 @@ public class DatoValiderer {
             Date sKontakt = getDate(person.getSKontakt());
 
             if (compareDateString(person.getFKontakt(), person.getSKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktEttersKontakt"));
             }
 
             //første kan ikke være før født
             if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktForFodt"));
             }
 
             if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
+                feil.add(new ValidationError("sKontakt", "sKontaktEtterDod"));
             }
         }
         //bare siste kontaktdato registrert
         else if (sjekk(person.getSKontakt())) {
             Date sKontakt = getDate(person.getSKontakt());
             if (compareDateString(person.getFodt(), person.getSKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("sKontakt", "sKontaktForFodt"));
+                feil.add(new ValidationError("sKontakt", "sKontaktForFodt"));
             }
 
             if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
+                feil.add(new ValidationError("sKontakt", "sKontaktEtterDod"));
             }
         }
         //bare første kontaktdato registrert
@@ -292,11 +292,11 @@ public class DatoValiderer {
             Date fKontakt = getDate(person.getFKontakt());
             //første kan ikke være før født
             if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktForFodt"));
             }
 
             if (compareDateString(person.getFKontakt(), person.getDod()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktEtterDod"));
+                feil.add(new ValidationError("fKontakt", "fKontaktEtterDod"));
             }
         }
 
@@ -307,23 +307,23 @@ public class DatoValiderer {
      * @param person
      * @return
      */
-    private List<Valideringsfeil> sjekkKontaktdatoFodt(PersondataDTO person){
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> sjekkKontaktdatoFodt(PersondataDTO person){
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         //første og siste kontaktdato registrert
         if (sjekk(person.getFKontakt()) && sjekk(person.getSKontakt())) {
             if (compareDateString(person.getFKontakt(), person.getSKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktEttersKontakt"));
             }
 
             //første kan ikke være før født
             if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktForFodt"));
             }
         }
         //bare siste kontaktdato registrert
         else if (sjekk(person.getSKontakt())) {
             if (compareDateString(person.getFodt(), person.getSKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("sKontakt", "sKontaktForFodt"));
+                feil.add(new ValidationError("sKontakt", "sKontaktForFodt"));
             }
 
         }
@@ -331,7 +331,7 @@ public class DatoValiderer {
         else if (sjekk(person.getFKontakt())) {
             //første kan ikke være før født
             if (compareDateString(person.getFodt(), person.getFKontakt()) == DateCompareResult.AFTER) {
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktForFodt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktForFodt"));
             }
         }
         
@@ -343,24 +343,24 @@ public class DatoValiderer {
      * @param person
      * @return
      */
-    private List<Valideringsfeil> sjekkKontaktdatoDod(PersondataDTO person){
-        ArrayList<Valideringsfeil> feil = new ArrayList<Valideringsfeil>();
+    private List<ValidationError> sjekkKontaktdatoDod(PersondataDTO person){
+        ArrayList<ValidationError> feil = new ArrayList<ValidationError>();
         Date dod = getDate(person.getDod());
         //første og siste kontaktdato registrert
         if (sjekk(person.getFKontakt()) && sjekk(person.getSKontakt())) {
             if (compareDateString(person.getFKontakt(), person.getSKontakt()) == DateCompareResult.AFTER){
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktEttersKontakt"));
+                feil.add(new ValidationError("fKontakt", "fKontaktEttersKontakt"));
             }
 
             //siste kan ikke være etter død
             if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER){
-                feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
+                feil.add(new ValidationError("sKontakt", "sKontaktEtterDod"));
             }
         }
         //bare siste kontaktdato registrert
         else if (sjekk(person.getSKontakt())) {
             if (compareDateString(person.getSKontakt(), person.getDod()) == DateCompareResult.AFTER){
-                feil.add(new Valideringsfeil("sKontakt", "sKontaktEtterDod"));
+                feil.add(new ValidationError("sKontakt", "sKontaktEtterDod"));
             }
 
         }
@@ -368,7 +368,7 @@ public class DatoValiderer {
         else if (sjekk(person.getFKontakt())) {
             //første kan ikke være etter død
             if (compareDateString(person.getFKontakt(), person.getDod()) == DateCompareResult.AFTER){
-                feil.add(new Valideringsfeil("fKontakt", "fKontaktEtterDod"));
+                feil.add(new ValidationError("fKontakt", "fKontaktEtterDod"));
             }
         }
         return feil;

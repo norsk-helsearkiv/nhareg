@@ -1,17 +1,19 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 /**
- * <p>Java class for Kjønn complex type.
+ * <p>Java class for Gender complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Kjønn">
+ * &lt;complexType name="Gender">
  *   &lt;complexContent>
  *     &lt;extension base="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}CS">
  *     &lt;/extension>
@@ -22,6 +24,8 @@ import java.io.Serializable;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Kj\u00f8nn")
-public class Kjønn extends CS implements Serializable {
+@XmlType(name = "Gender")
+@Entity
+@Table(name = "kjonn")
+public class Gender extends CS implements Serializable {
 }

@@ -1,14 +1,16 @@
-
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-
 
 /**
  * <p>Java class for Virksomhet complex type.
@@ -38,8 +40,12 @@ import java.io.Serializable;
     "foretaksnavn"
 })
 @Data
+@Entity
+@Table(name = "virksomhet")
 public class Virksomhet implements Serializable {
 
+    @Id
+    @Column(name = "organisasjonsnummer")
     @XmlElement(required = true)
     protected String organisasjonsnummer;
     
@@ -47,4 +53,5 @@ public class Virksomhet implements Serializable {
     protected String navn;
     
     protected String foretaksnavn;
+    
 }
