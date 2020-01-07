@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://eisi.helsedir.no/anno2014/nha-1.61-RGM/sak" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://eisi.helsedir.no/anno2014/nha-1.61-RGM/sak">
+<xs:schema xmlns="http://eisi.helsedir.no/anno2014/nha-1.61-RGM/sak" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   targetNamespace="http://eisi.helsedir.no/anno2014/nha-1.61-RGM/sak">
 	<xs:complexType name="Arkivert_EPJ">
 		<xs:annotation>
 			<xs:documentation>

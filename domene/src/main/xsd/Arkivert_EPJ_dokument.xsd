@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://http://eisi.helsedir.no/anno2014/nha-1.61-RGM/dokument" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://http://eisi.helsedir.no/anno2014/nha-1.61-RGM/dokument">
+<xs:schema xmlns="http://http://eisi.helsedir.no/anno2014/nha-1.61-RGM/dokument" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		   targetNamespace="http://http://eisi.helsedir.no/anno2014/nha-1.61-RGM/dokument">
 	<xs:element name="pasientidentifikator">
 		<xs:complexType>
 			<xs:complexContent>

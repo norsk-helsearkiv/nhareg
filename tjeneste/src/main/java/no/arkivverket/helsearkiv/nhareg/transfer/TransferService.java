@@ -51,7 +51,7 @@ public class TransferService implements TransferServiceInterface {
     @Override
     public TransferDTO update(final TransferDTO transferDTO, final String username) {
         // Validate
-        new Validator<>(TransferDTO.class).validerMedException(transferDTO);
+        new Validator<>(TransferDTO.class).validateWithException(transferDTO);
 
         // Get existing transfer
         final Avlevering existingTransfer = transferDAO.fetchById(transferDTO.getAvleveringsidentifikator());

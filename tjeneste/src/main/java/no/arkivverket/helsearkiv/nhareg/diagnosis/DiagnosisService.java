@@ -35,7 +35,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
             return null;
         }
 
-        new Validator<>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
+        new Validator<>(DiagnoseDTO.class).validateWithException(diagnoseDTO);
         final DateValidation dateValidator = new DateValidation();
         List<ValidationError> errors = dateValidator.validateDiagnosis(diagnoseDTO, medicalRecord);
         validateDiagnosisCode(diagnoseDTO.getDiagnosekode());
@@ -68,7 +68,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         // Validate diagnosis
-        final ArrayList<ValidationError> validationError = new Validator<>(DiagnoseDTO.class).valider(diagnoseDTO);
+        final ArrayList<ValidationError> validationError = new Validator<>(DiagnoseDTO.class).validate(diagnoseDTO);
         final DateValidation dateValidation = new DateValidation();
         final List<ValidationError> diagfeil = dateValidation.validateDiagnosis(diagnoseDTO, pasientjournal);
         

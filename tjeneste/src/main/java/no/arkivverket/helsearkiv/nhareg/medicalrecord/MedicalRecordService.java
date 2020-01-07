@@ -209,7 +209,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     private void validateBaseData(final PersondataDTO persondataDTO) {
         // VALIDERING - Persondata
-        ArrayList<ValidationError> validationError = new Validator<>(PersondataDTO.class, persondataDTO).valider();
+        ArrayList<ValidationError> validationError = new Validator<>(PersondataDTO.class, persondataDTO).validate();
 
         //Validerer forholdet mellom dataoer
         DateValidation dateValidation = new DateValidation();

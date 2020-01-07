@@ -33,8 +33,8 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
 
     @Override
     public Diagnosekode fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(dk) " 
-            + "FROM Diagnosekode dk " 
+        final String queryString = "SELECT OBJECT(dk) "
+            + "FROM Diagnosekode dk "
             + "WHERE dk.code = :id ";
         final Query query = getEntityManager().createQuery(queryString, Diagnosekode.class);
         query.setParameter("id", id);
@@ -47,8 +47,8 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
                                             final CriteriaBuilder criteriaBuilder,
                                             final Root<Diagnosekode> root) {
         final List<Predicate> predicates = new ArrayList<>();
-
         final String codeQueryParameter = queryParameters.get(CODE_QUERY_PARAMETER);
+
         if (codeQueryParameter != null && !codeQueryParameter.isEmpty()) {
             final Predicate predicate = criteriaBuilder.equal(root.get("code"), codeQueryParameter);
             predicates.add(predicate);
@@ -57,8 +57,9 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
         final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
         if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
             //datostreng kan bestå av kun år eller full dato.
+            final DatoEllerAar dateOrYear = DateOrYearConverter.toDateOrYear(dateQueryParameter);
+
             Date date = null;
-            DatoEllerAar dateOrYear = DateOrYearConverter.toDateOrYear(dateQueryParameter);
             if (dateOrYear != null) {
                 if (dateOrYear.getAar() != null) {
                     date = GyldigeDatoformater.getDateFromYear(dateOrYear.getAar());
@@ -68,17 +69,16 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
             }
 
             if (date != null) {
-                final String queryString =
-                    "SELECT kodeverkversjon "
-                        + "FROM Diagnosekodeverk "
-                        + "WHERE gyldig_til_dato >= ?1 "
-                        + "AND gyldig_fra_dato <= ?1";
+                final String queryString = "SELECT kodeverkversjon "
+                    + "FROM Diagnosekodeverk "
+                    + "WHERE gyldig_til_dato >= ?1 "
+                    + "AND gyldig_fra_dato <= ?1";
                 final List resultList = getEntityManager().createNativeQuery(queryString)
-                                                                  .setParameter(1, new java.sql.Date(date.getTime()))
-                                                                  .getResultList();
+                                                          .setParameter(1, new java.sql.Date(date.getTime()))
+                                                          .getResultList();
                 resultList.size();
                 //kan være flere kodeverk som overlapper her...
-                EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
+                final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
                 final SingularAttribute<CV, String> attribute =
                     type.getDeclaredSingularAttribute("codeSystemVersion" , String.class);
                 final Expression<String> expression = root.get(attribute);
@@ -96,7 +96,7 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
 
     private void createDisplayNamePredicate(final Map<String, String> queryParameters,
                                             final CriteriaBuilder criteriaBuilder,
-                                            final Root<Diagnosekode> root, 
+                                            final Root<Diagnosekode> root,
                                             final List<Predicate> predicates) {
         final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
         final String displayNameLike = queryParameters.get(DISPLAY_NAME_LIKE_QUERY_PARAMETER);
@@ -107,5 +107,5 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
 
         predicates.add(predicate);
     }
-    
+
 }

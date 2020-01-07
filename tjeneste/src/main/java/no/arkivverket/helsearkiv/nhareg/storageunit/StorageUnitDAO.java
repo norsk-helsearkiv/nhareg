@@ -20,7 +20,7 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
 
     @Override
     public Lagringsenhet create(final Lagringsenhet storageUnit) {
-        new Validator<>(Lagringsenhet.class).validerMedException(storageUnit);
+        new Validator<>(Lagringsenhet.class).validateWithException(storageUnit);
 
         final Lagringsenhet existingUnit = this.fetchById(storageUnit.getIdentifikator());
         

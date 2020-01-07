@@ -33,7 +33,7 @@ public abstract class EntityDAO<T> {
     }
 
     public T create(@NotNull final T entity) {
-        new Validator<>(entityClass).validerMedException(entity);
+        new Validator<>(entityClass).validateWithException(entity);
         
         entityManager.persist(entity);
 
@@ -42,7 +42,7 @@ public abstract class EntityDAO<T> {
 
     public T update(T entity) {
         // Validerer.
-        new Validator<T>(entityClass).validerMedException(entity);
+        new Validator<T>(entityClass).validateWithException(entity);
 
         // Oppdaterer.
         getEntityManager().merge(entity);

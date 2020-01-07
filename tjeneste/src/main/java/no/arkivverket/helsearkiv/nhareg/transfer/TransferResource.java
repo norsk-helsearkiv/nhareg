@@ -126,10 +126,8 @@ public class TransferResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createMedicalRecord(@PathParam("id") String id, final PersondataDTO personalDataDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, 
-                                                                                        personalDataDTO,
-                                                                                        username);
-        
+        final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, personalDataDTO, username);
+
         return Response.ok(medicalRecordDTO).build();
     }
 

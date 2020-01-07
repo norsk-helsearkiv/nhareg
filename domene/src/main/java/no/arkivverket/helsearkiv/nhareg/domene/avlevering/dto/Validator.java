@@ -9,11 +9,6 @@ import javax.validation.ValidatorFactory;
 import java.util.ArrayList;
 import java.util.Set;
 
-/**
- *
- * @author robing
- * @param <T> Objektklassen som skal valideres
- */
 public class Validator<T> {
 
     private final Class<T> objClass;
@@ -30,12 +25,12 @@ public class Validator<T> {
         this.obj = obj;
     }
 
-    public ArrayList<ValidationError> valider() {
-        return valider(obj);
+    public ArrayList<ValidationError> validate() {
+        return validate(obj);
     }
 
-    public ArrayList<ValidationError> valider(T obj) {
-        ArrayList<ValidationError> validationError = new ArrayList<ValidationError>();
+    public ArrayList<ValidationError> validate(T obj) {
+        final ArrayList<ValidationError> validationError = new ArrayList<ValidationError>();
 
         // Håndterer null objekt
         if (obj == null) {
@@ -44,9 +39,9 @@ public class Validator<T> {
         }
 
         //Validerer obj
-        Set<ConstraintViolation<T>> constraintViolations = validator.validate(obj);
-        for (ConstraintViolation<T> feil : constraintViolations) {
-            String messageTemplate = feil.getConstraintDescriptor().getMessageTemplate();
+        final Set<ConstraintViolation<T>> constraintViolations = validator.validate(obj);
+        for (ConstraintViolation<T> violation : constraintViolations) {
+            final String messageTemplate = violation.getConstraintDescriptor().getMessageTemplate();
 
             int start = messageTemplate.indexOf("constraints") + 12;
             int stop = messageTemplate.length() - 1;
@@ -54,17 +49,17 @@ public class Validator<T> {
                 stop = messageTemplate.indexOf("message") - 1;
             }
 
-            String attributt = feil.getPropertyPath().toString();
-            String constraint = messageTemplate.substring(start, stop);
+            final String attribute = violation.getPropertyPath().toString();
+            final String constraint = messageTemplate.substring(start, stop);
 
-            validationError.add((new ValidationError(attributt, constraint, feil.getMessage())));
+            validationError.add((new ValidationError(attribute, constraint, violation.getMessage())));
         }
 
         return validationError;
     }
 
-    public void validerMedException(T obj) {
-        ArrayList<ValidationError> validationError = valider(obj);
+    public void validateWithException(T obj) {
+        final ArrayList<ValidationError> validationError = validate(obj);
 
         if (!validationError.isEmpty()) {
             throw new ValidationErrorException(validationError);

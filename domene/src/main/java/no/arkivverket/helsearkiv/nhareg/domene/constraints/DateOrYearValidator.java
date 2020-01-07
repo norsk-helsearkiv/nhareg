@@ -5,11 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-/**
- *
- * @author robing
- */
-public class DagEllerAarValidator implements ConstraintValidator<DagEllerAar, String> {
+public class DateOrYearValidator implements ConstraintValidator<DagEllerAar, String> {
     
     public void initialize(DagEllerAar constraintAnnotation) {
     }
