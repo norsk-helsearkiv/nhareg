@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.Socket;
 
 /**
@@ -10,17 +10,18 @@ import java.net.Socket;
  */
 public class SocketPrinter {
 
-    public void print(final String content, String hostIp, Integer printerPort) throws IOException {
+    public void print(final String content, final String hostIp, final Integer printerPort) throws IOException {
         // The line below illustrates the default port 6101 for mobile printers 9100 is the default port number
         // for desktop and tabletop printers
-        Socket clientSocket = new Socket(hostIp, printerPort);
+        final Socket clientSocket = new Socket(hostIp, printerPort);
 
-        DataOutputStream outToPrinter = new DataOutputStream(clientSocket.getOutputStream());
-        PrintStream print = new PrintStream(outToPrinter);
+        final DataOutputStream outToPrinter = new DataOutputStream(clientSocket.getOutputStream());
+        final PrintStream print = new PrintStream(outToPrinter);
         print.print(content);
 
         clientSocket.close();
         outToPrinter.close();
         print.close();
     }
+
 }

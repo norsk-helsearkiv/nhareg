@@ -46,7 +46,7 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
     protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
                                             final CriteriaBuilder criteriaBuilder,
                                             final Root<Diagnosekode> root) {
-        final List<Predicate> predicates = new ArrayList<Predicate>();
+        final List<Predicate> predicates = new ArrayList<>();
 
         final String codeQueryParameter = queryParameters.get(CODE_QUERY_PARAMETER);
         if (codeQueryParameter != null && !codeQueryParameter.isEmpty()) {
@@ -73,16 +73,16 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
                         + "FROM Diagnosekodeverk "
                         + "WHERE gyldig_til_dato >= ?1 "
                         + "AND gyldig_fra_dato <= ?1";
-                final List kodeverksversjoner = getEntityManager().createNativeQuery(queryString)
+                final List resultList = getEntityManager().createNativeQuery(queryString)
                                                                   .setParameter(1, new java.sql.Date(date.getTime()))
                                                                   .getResultList();
-                kodeverksversjoner.size();
+                resultList.size();
                 //kan være flere kodeverk som overlapper her...
                 EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
                 final SingularAttribute<CV, String> attribute =
                     type.getDeclaredSingularAttribute("codeSystemVersion" , String.class);
                 final Expression<String> expression = root.get(attribute);
-                final Predicate predicate = expression.in(kodeverksversjoner);
+                final Predicate predicate = expression.in(resultList);
                 predicates.add(predicate);
             }
         }
@@ -107,4 +107,5 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
 
         predicates.add(predicate);
     }
+    
 }

@@ -10,7 +10,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -36,8 +36,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         new Validator<>(DiagnoseDTO.class).validerMedException(diagnoseDTO);
-        final DatoValiderer dateValidator = new DatoValiderer();
-        List<ValidationError> errors = dateValidator.validerDiagnose(diagnoseDTO, medicalRecord);
+        final DateValidation dateValidator = new DateValidation();
+        List<ValidationError> errors = dateValidator.validateDiagnosis(diagnoseDTO, medicalRecord);
         validateDiagnosisCode(diagnoseDTO.getDiagnosekode());
 
         if (errors.size() > 0) {
@@ -69,8 +69,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
         // Validate diagnosis
         final ArrayList<ValidationError> validationError = new Validator<>(DiagnoseDTO.class).valider(diagnoseDTO);
-        final DatoValiderer datoValiderer = new DatoValiderer();
-        final List<ValidationError> diagfeil = datoValiderer.validerDiagnose(diagnoseDTO, pasientjournal);
+        final DateValidation dateValidation = new DateValidation();
+        final List<ValidationError> diagfeil = dateValidation.validateDiagnosis(diagnoseDTO, pasientjournal);
         
         if (diagfeil.size() > 0) {
             validationError.addAll(diagfeil);
@@ -127,7 +127,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
             
             // Check if the diagnosis code exists
             if (diagnosisCodeList.size() == 0) {
-                ArrayList<ValidationError> validationError = new ArrayList<ValidationError>();
+                ArrayList<ValidationError> validationError = new ArrayList<>();
                 validationError.add(new ValidationError("diagnosekode", "UkjentDiagnosekode"));
                 
                 throw new ValidationErrorException(validationError);

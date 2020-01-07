@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.validation;
 
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
@@ -7,12 +7,14 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationErro
 /**
  * Created by haraldk on 31/10/2017.
  */
-public class FanearkidValiderer {
-    public static final String KONFIG_FANEARKID = "fanearkid";
+public class FanearkidValidation {
+    
+    private static final String KONFIG_FANEARKID = "fanearkid";
 
-    public static ValidationError valider(PersondataDTO dto, ConfigurationDAO konfig) {
-        Integer fieldLength = konfig.getInt(KONFIG_FANEARKID);
-        String fanearkid = dto.getFanearkid();
+    public static ValidationError validate(final PersondataDTO personalDataDTO, final ConfigurationDAO configurationDAO) {
+        final Integer fieldLength = configurationDAO.getInt(KONFIG_FANEARKID);
+        final String fanearkid = personalDataDTO.getFanearkid();
+        
         if (fieldLength != null) {
             if (fanearkid == null) {
                 return new ValidationError("fanearkid", "FeilFanearkidNull", "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
@@ -24,4 +26,5 @@ public class FanearkidValiderer {
         
         return null;
     }
+    
 }

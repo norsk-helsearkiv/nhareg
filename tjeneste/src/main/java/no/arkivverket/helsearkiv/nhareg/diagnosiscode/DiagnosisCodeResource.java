@@ -27,5 +27,5 @@ public class DiagnosisCodeResource {
     public List<Diagnosekode> getAll(@Context UriInfo uriInfo) {
         return diagnosisCodeService.getAll(uriInfo.getQueryParameters());
     }
-
+    
 }

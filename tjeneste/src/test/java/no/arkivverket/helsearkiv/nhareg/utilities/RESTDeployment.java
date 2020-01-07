@@ -34,8 +34,8 @@ import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferService;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
+import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
@@ -105,7 +105,7 @@ public class RESTDeployment {
                                // User
                                .addPackage(UserDAO.class.getPackage())
                                //util
-                               .addPackage(DatoValiderer.class.getPackage())
+                               .addPackage(DateValidation.class.getPackage())
                                .addPackage(ParameterConverter.class.getPackage())
                                //
                                // Denne blokken er med for å få med commons-collections4 i testene

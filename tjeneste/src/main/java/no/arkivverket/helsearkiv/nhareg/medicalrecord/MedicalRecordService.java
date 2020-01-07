@@ -14,10 +14,10 @@ import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
-import no.arkivverket.helsearkiv.nhareg.util.FanearkidValiderer;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
-import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
+import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
+import no.arkivverket.helsearkiv.nhareg.validation.FanearkidValidation;
+import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
@@ -155,7 +155,10 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Save
         medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
-        medicalRecord.setOpprettetDato(original.getOpprettetDato());
+        if (original != null) {
+            medicalRecord.setOpprettetDato(original.getOpprettetDato());
+        }
+        
         final Pasientjournal updatedMedicalRecord = medicalRecordDAO.update(medicalRecord);
         final String business = businessDAO.fetchBusiness().getForetaksnavn();
 
@@ -164,7 +167,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public void validatePID(final String pid) {
-        ValidationError fnrfeil = PersonnummerValiderer.valider(pid);
+        ValidationError fnrfeil = PIDValidation.validate(pid);
         if (fnrfeil != null) {
             throw new ValidationErrorException(Collections.singleton(fnrfeil));
         }
@@ -209,17 +212,17 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         ArrayList<ValidationError> validationError = new Validator<>(PersondataDTO.class, persondataDTO).valider();
 
         //Validerer forholdet mellom dataoer
-        DatoValiderer datoValiderer = new DatoValiderer();
-        validationError.addAll(datoValiderer.valider(persondataDTO, configurationDAO));
+        DateValidation dateValidation = new DateValidation();
+        validationError.addAll(dateValidation.validate(persondataDTO, configurationDAO));
 
-        ValidationError fnrfeil = PersonnummerValiderer.valider(persondataDTO);
+        ValidationError fnrfeil = PIDValidation.validate(persondataDTO);
         if (fnrfeil != null) {
             if (!validationError.contains(fnrfeil)) {
                 validationError.add(fnrfeil);
             }
         }
 
-        ValidationError fanearkidFeil = FanearkidValiderer.valider(persondataDTO, configurationDAO);
+        ValidationError fanearkidFeil = FanearkidValidation.validate(persondataDTO, configurationDAO);
         if (fanearkidFeil != null) {
             validationError.add(fanearkidFeil);
         }

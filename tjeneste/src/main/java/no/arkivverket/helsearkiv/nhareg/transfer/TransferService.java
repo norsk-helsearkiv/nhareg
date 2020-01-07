@@ -85,6 +85,7 @@ public class TransferService implements TransferServiceInterface {
     public List<TransferDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<Avlevering> transferList = transferDAO.fetchAll(mappedQueries);
+        
         // Convert to TransferDTO list
         return transferList.stream().map(TransferDTO::new).collect(Collectors.toList());
     }

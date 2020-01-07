@@ -6,7 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.util.PersonnummerValiderer;
+import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,11 +60,11 @@ public class MedicalRecordConverter {
             final Identifikator identifikator = new Identifikator();
             identifikator.setPid(pid);
 
-            if (PersonnummerValiderer.isHnummer(pid)) {
+            if (PIDValidation.isHnummer(pid)) {
                 identifikator.setTypePID("H");
-            } else if (PersonnummerValiderer.isDnummer(pid)) {
+            } else if (PIDValidation.isDnummer(pid)) {
                 identifikator.setTypePID("D");
-            } else if(PersonnummerValiderer.isFnummer(pid)) {
+            } else if(PIDValidation.isFnummer(pid)) {
                 identifikator.setTypePID("F");
             }
             
