@@ -172,8 +172,8 @@ public class DateValidation {
                                                                  final Date lowLim,
                                                                  final Date maxLim) {
         final ArrayList<ValidationError> feil = new ArrayList<>();
-        final String lastContact = personalDataDTO.getSKontakt();
-        final String firstContact = personalDataDTO.getFKontakt();
+        final String lastContact = personalDataDTO.getLastContact();
+        final String firstContact = personalDataDTO.getFirstContact();
         final String dead = personalDataDTO.getDod();
 
         if (gyldigMors.contains(dead)) {
@@ -270,8 +270,8 @@ public class DateValidation {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
 
         //første og siste kontaktdato registrert
-        final String firstContact = personalDataDTO.getFKontakt();
-        final String lastContact = personalDataDTO.getSKontakt();
+        final String firstContact = personalDataDTO.getFirstContact();
+        final String lastContact = personalDataDTO.getLastContact();
         final String born = personalDataDTO.getFodt();
         final String dead = personalDataDTO.getDod();
 
@@ -321,8 +321,8 @@ public class DateValidation {
      */
     private List<ValidationError> checkContactDateBorn(final PersondataDTO personalDataDTO){
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
-        final String firstContact = personalDataDTO.getFKontakt();
-        final String lastContact = personalDataDTO.getSKontakt();
+        final String firstContact = personalDataDTO.getFirstContact();
+        final String lastContact = personalDataDTO.getLastContact();
         final String born = personalDataDTO.getFodt();
 
         //første og siste kontaktdato registrert
@@ -361,8 +361,8 @@ public class DateValidation {
      */
     private List<ValidationError> checkContactDateDead(final PersondataDTO personalDataDTO) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
-        final String firstContact = personalDataDTO.getFKontakt();
-        final String lastContact = personalDataDTO.getSKontakt();
+        final String firstContact = personalDataDTO.getFirstContact();
+        final String lastContact = personalDataDTO.getLastContact();
         final String dead = personalDataDTO.getDod();
         
         //første og siste kontaktdato registrert

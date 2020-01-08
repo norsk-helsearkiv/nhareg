@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
@@ -23,82 +23,82 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public BrukerDTO updateUser(final BrukerDTO userDTO, final String username) {
-        final Bruker bruker = userDTO.toBruker();
+        final User user = userDTO.toBruker();
 
         //defaulter til bruker-rolle hvis det mangler..
-        final String userName = bruker.getRolle().getNavn();
+        final String userName = user.getRole().getName();
         if (userName != null && userName.isEmpty()) {
-            bruker.getRolle().setNavn(Roles.ROLE_USER);
+            user.getRole().setName(Roles.ROLE_USER);
         }
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
         final String loggedInRole = userDAO.getRolle(username);
         if (loggedInRole.equals("admin") && userDTO.getBrukernavn().equals(username)) {
-            bruker.getRolle().setNavn(loggedInRole);
+            user.getRole().setName(loggedInRole);
         }
 
         boolean resetPass = false;
         if (userDTO.getResetPassword() != null && userDTO.getResetPassword()) {
-            bruker.setResetPassord("Y"); // enkel resetpassord-indikator kan forfines ved behov...
+            user.setResetPassord("Y"); // enkel resetpassord-indikator kan forfines ved behov...
             resetPass = true;
         } else {
-            bruker.setResetPassord("");
+            user.setResetPassord("");
         }
 
         if (!resetPass) { // lite poeng å validere passord hvis det skal resettes
-            List<ValidationError> feil = validerNyEndreBruker(userDTO.getPassword());
+            List<ValidationError> feil = validateNewChangeUser(userDTO.getPassword());
             if (feil.size() > 0) {
                 throw new ValidationErrorException(feil);
             }
         }
 
-        validatePrinterIP(bruker.getPrinterzpl());
+        validatePrinterIP(user.getPrinterzpl());
 
-        String b64Pwd = passordToHash(bruker.getPassord());
-        bruker.setPassord(b64Pwd);
+        String b64Pwd = passwordToHash(user.getPassord());
+        user.setPassord(b64Pwd);
 
-        final Bruker newUser = userDAO.createBruker(bruker);
+        final User newUser = userDAO.createBruker(user);
         return new BrukerDTO(newUser);
     }
 
     @Override
     public void updatePassword(final String newPassword, final String username) {
-        final Bruker bruker = userDAO.fetchByUsername(username);
-        final String b64pwd = passordToHash(newPassword);
+        final User user = userDAO.fetchByUsername(username);
+        final String b64pwd = passwordToHash(newPassword);
 
-        final List<ValidationError> feil = validerNyEndreBruker(newPassword);
+        final List<ValidationError> feil = validateNewChangeUser(newPassword);
         if (feil.size() > 0) {
             throw new ValidationErrorException(feil);
         }
 
-        bruker.setPassord(b64pwd);
-        bruker.setResetPassord("");
+        user.setPassord(b64pwd);
+        user.setResetPassord("");
     }
 
     @Override
     public List<BrukerDTO> getUsers() {
-        List<BrukerDTO> dtos = new ArrayList<BrukerDTO>();
-        for (Bruker bruker: userDAO.getAllBrukere()) {
-            dtos.add(new BrukerDTO(bruker));
+        final List<BrukerDTO> dtos = new ArrayList<>();
+        for (User user : userDAO.getAllBrukere()) {
+            dtos.add(new BrukerDTO(user));
         }
 
         return dtos;
     }
 
     @Override
-    public List<Rolle> getRoles() {
+    public List<Role> getRoles() {
         return userDAO.getRoller();
     }
 
     @Override
     public Boolean checkPasswordReset(final String username) {
-        final Bruker user = userDAO.fetchByUsername(username);
+        final User user = userDAO.fetchByUsername(username);
 
         return "Y".equals(user.getResetPassord());
     }
 
     @Override
-    public Bruker getByUsername(String username) {
+    public User getByUsername(final String username) {
         return userDAO.fetchByUsername(username);
     }
 
@@ -117,24 +117,25 @@ public class UserService implements UserServiceInterface {
         return userDAO.fetchStorageUnitByUsername(username);
     }
 
-    private List<ValidationError> validerNyEndreBruker(final String passord) {
-        List<ValidationError> feilList = new ArrayList<ValidationError>();
-        if (!validerPassord(passord)) {
-            ValidationError feil = new ValidationError("passord", "FeilPassord");
-            feilList.add(feil);
+    private List<ValidationError> validateNewChangeUser(final String password) {
+        final List<ValidationError> validationErrors = new ArrayList<>();
+        
+        if (!validatePassword(password)) {
+            ValidationError validationError = new ValidationError("passord", "FeilPassord");
+            validationErrors.add(validationError);
         }
 
-        return feilList;
+        return validationErrors;
     }
 
-    private boolean validerPassord(final String passord) {
-        return passord != null && passord.length() >= 5;
+    private boolean validatePassword(final String password) {
+        return password != null && password.length() >= 5;
     }
 
-    private String passordToHash(final String passord) {
+    private String passwordToHash(final String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(passord.getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
 
             return Base64.encodeBase64String(hash);
         } catch (NoSuchAlgorithmException e) {

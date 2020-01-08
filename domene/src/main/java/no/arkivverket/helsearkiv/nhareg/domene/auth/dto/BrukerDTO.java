@@ -3,8 +3,8 @@ package no.arkivverket.helsearkiv.nhareg.domene.auth.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 
 @Data
 @NoArgsConstructor
@@ -23,10 +23,10 @@ public class BrukerDTO {
     
     private String printerzpl;
 
-    public BrukerDTO(final Bruker user) {
+    public BrukerDTO(final User user) {
         this.brukernavn = user.getBrukernavn();
         this.printerzpl = user.getPrinterzpl();
-        this.rolle = new RolleDTO(user.getRolle());
+        this.rolle = new RolleDTO(user.getRole());
     }
 
     public BrukerDTO(final String brukernavn, final RolleDTO rolle, final String password,
@@ -38,19 +38,21 @@ public class BrukerDTO {
         this.resetPassword = resetPassword;
     }
 
-    public Bruker toBruker(){
-        Bruker bruker = new Bruker();
-        bruker.setBrukernavn(brukernavn);
-        bruker.setPassord(password);
-        Rolle rolle = new Rolle();
+    public User toBruker() {
+        final User user = new User();
+        final Role role = new Role();
+        
+        user.setBrukernavn(brukernavn);
+        user.setPassord(password);
         
         if (this.rolle != null) {
-            rolle.setNavn(this.rolle.getNavn());
+            role.setName(this.rolle.getNavn());
         }
         
-        bruker.setRolle(rolle);
-        bruker.setPrinterzpl(getPrinterzpl());
+        user.setRole(role);
+        user.setPrinterzpl(getPrinterzpl());
         
-        return bruker;
+        return user;
     }
+    
 }

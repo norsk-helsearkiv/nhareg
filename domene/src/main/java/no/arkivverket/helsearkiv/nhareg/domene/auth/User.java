@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "bruker")
-public class Bruker {
+public class User {
     
     @Id
     private String brukernavn;
@@ -26,6 +26,6 @@ public class Bruker {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rollenavn")
-    private Rolle rolle;
+    private Role role;
 
 }

@@ -2,10 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
@@ -43,6 +40,7 @@ import java.io.Serializable;
 })
 @Data
 @Entity
+@Table(name = "cs")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class CS implements Serializable {
 

@@ -14,8 +14,8 @@
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.User</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Role</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         

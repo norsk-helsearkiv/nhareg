@@ -11,7 +11,6 @@ import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.toDateOrYear;
@@ -20,8 +19,8 @@ public class MedicalRecordConverter {
     
     public static Pasientjournal convertFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
         final Pasientjournal medicalRecord = new Pasientjournal();
-        final String uuid = personalDataDTO.getUuid();
 
+        final String uuid = personalDataDTO.getUuid();
         medicalRecord.setUuid(uuid);
         
         final String[] storageUnits = personalDataDTO.getLagringsenheter();
@@ -30,7 +29,7 @@ public class MedicalRecordConverter {
             // For each storage unit: create a new StorageUnit with random UUID, then add it to the list.
             Arrays.stream(storageUnits).forEach(
                 unitId -> {
-                    final Lagringsenhet storageUnit = new Lagringsenhet(unitId, UUID.randomUUID().toString(), false);
+                    final Lagringsenhet storageUnit = new Lagringsenhet(unitId, null, false);
                     storageUnitList.add(storageUnit);
                 }
             );
@@ -97,12 +96,12 @@ public class MedicalRecordConverter {
         baseProperties.setBornDateUnknown(baseProperties.getBorn() == null);
 
         final Kontakt contact = new Kontakt();
-        final String firstContact = personalDataDTO.getFKontakt();
+        final String firstContact = personalDataDTO.getFirstContact();
         if (firstContact != null) {
             contact.setFoerste(toDateOrYear(firstContact));
         }
 
-        final String lastContact = personalDataDTO.getSKontakt();
+        final String lastContact = personalDataDTO.getLastContact();
         if (lastContact != null) {
             contact.setSiste(toDateOrYear(lastContact));
         }
@@ -159,12 +158,12 @@ public class MedicalRecordConverter {
             if (baseProperties.getKontakt() != null) {
                 final DatoEllerAar firstContactDate = baseProperties.getKontakt().getFoerste();
                 if (firstContactDate != null) {
-                    personalData.setFKontakt(firstContactDate.getStringValue());
+                    personalData.setFirstContact(firstContactDate.getStringValue());
                 }
 
                 final DatoEllerAar lastContactDate = baseProperties.getKontakt().getSiste();
                 if (lastContactDate != null) {
-                    personalData.setSKontakt(lastContactDate.getStringValue());
+                    personalData.setLastContact(lastContactDate.getStringValue());
                 }
             }
         }

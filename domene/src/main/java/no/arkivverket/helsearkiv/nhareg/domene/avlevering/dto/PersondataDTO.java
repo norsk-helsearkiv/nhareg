@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,12 +45,14 @@ public class PersondataDTO implements Serializable {
     @DagEllerAar
     private String dod;
 
+    @JsonProperty("fKontakt")
     @DagEllerAar
-    private String fKontakt;
+    private String firstContact;
 
+    @JsonProperty("sKontakt")
     @DagEllerAar
-    private String sKontakt;
-    
+    private String lastContact;
+
     private String uuid;
 
     private String merknad;

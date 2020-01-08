@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
@@ -111,8 +111,8 @@ public class TransferService implements TransferServiceInterface {
 
     @Override
     public Avlevering getDefaultTransfer(final String username) {
-        final Bruker bruker = userDAO.fetchByUsername(username);
-        final String defaultUuid = bruker.getDefaultAvleveringsUuid();
+        final User user = userDAO.fetchByUsername(username);
+        final String defaultUuid = user.getDefaultAvleveringsUuid();
 
         if (defaultUuid == null || defaultUuid.isEmpty()) {
             return null;

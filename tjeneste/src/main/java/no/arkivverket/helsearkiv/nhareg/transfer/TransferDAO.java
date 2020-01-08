@@ -32,8 +32,7 @@ public class TransferDAO extends EntityDAO<Avlevering> {
     }
 
     public String fetchTransferIdFromRecordId(final String medicalRecordId) {
-        final String queryString =
-            "SELECT Avlevering_avleveringsidentifikator "
+        final String queryString = "SELECT Avlevering_avleveringsidentifikator "
                 + "FROM avlevering_pasientjournal "
                 + "WHERE pasientjournal_uuid = :id ";
 

@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 
 import javax.annotation.Resource;
@@ -71,7 +71,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/roller")
-    public List<Rolle> getRoller() {
+    public List<Role> getRoller() {
         return userService.getRoles();
     }
 

@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.auth;
 
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 
 import javax.ejb.EJB;
@@ -17,7 +17,7 @@ public class AuthServiceBean implements AuthService {
     private UserDAO userDAO;
 
     public boolean isAuthorized(String name, Set<String> rolesAllowed){
-        Bruker user = userDAO.fetchByUsername(name);
-        return rolesAllowed.contains(user.getRolle().getNavn());
+        User user = userDAO.fetchByUsername(name);
+        return rolesAllowed.contains(user.getRole().getName());
     }
 }

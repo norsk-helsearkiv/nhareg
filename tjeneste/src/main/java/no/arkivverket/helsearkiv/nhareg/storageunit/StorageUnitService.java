@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
@@ -79,7 +79,7 @@ public class StorageUnitService implements StorageUnitServiceInterface {
         final Integer medicalRecordCount = storageUnitDAO.fetchCountOfRecordsForStorageUnit(id);
         final String firstTransferId = transferDAO.fetchFirstTransferIdFromStorageUnit(storageUnit.getUuid());
         final Avlevering transfer = transferDAO.fetchById(firstTransferId);
-        final Bruker user = userDAO.fetchByUsername(username);
+        final User user = userDAO.fetchByUsername(username);
 
         String printerIp = user.getPrinterzpl();
         if (printerIp == null) {

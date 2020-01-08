@@ -1,51 +1,51 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
 import java.util.List;
 
 @Stateless
-public class UserDAO extends EntityDAO<Bruker> {
+public class UserDAO extends EntityDAO<User> {
 
     public UserDAO() {
-        super(Bruker.class, "brukernavn");
+        super(User.class, "brukernavn");
     }
 
     public String getRolle(final String username) {
-        return fetchByUsername(username).getRolle().getNavn();
+        return fetchByUsername(username).getRole().getName();
     }
 
-    public Bruker fetchByUsername(final String username) {
-        return getEntityManager().find(Bruker.class, username);
+    public User fetchByUsername(final String username) {
+        return getEntityManager().find(User.class, username);
     }
 
-    public List<Bruker> getAllBrukere() {
-        final String queryString = "SELECT b FROM Bruker b";
+    public List<User> getAllBrukere() {
+        final String queryString = "SELECT b FROM User b";
         final Query query = getEntityManager().createQuery(queryString);
         
         return query.getResultList();
     }
 
-    public Bruker createBruker(Bruker bruker) {
-        return getEntityManager().merge(bruker);
+    public User createBruker(User user) {
+        return getEntityManager().merge(user);
     }
     
-    public List<Rolle> getRoller() {
-        final String queryString = "SELECT r FROM Rolle r";
+    public List<Role> getRoller() {
+        final String queryString = "SELECT r FROM Role r";
         final Query query = getEntityManager().createQuery(queryString);
         
         return query.getResultList();
     }
 
     public void updateLagringsenhet(final String username, final String lagringsenhet) {
-        final Bruker bruker = fetchByUsername(username);
-        bruker.setLagringsenhet(lagringsenhet);
+        final User user = fetchByUsername(username);
+        user.setLagringsenhet(lagringsenhet);
       
-        getEntityManager().persist(bruker);
+        getEntityManager().persist(user);
     }
 
     public String fetchStorageUnitByUsername(final String username) {
@@ -53,14 +53,14 @@ public class UserDAO extends EntityDAO<Bruker> {
     }
 
     public void updateDefaultAvlevering(final String username, final String transferId) {
-        final Bruker bruker = fetchByUsername(username);
+        final User user = fetchByUsername(username);
         
-        if (transferId.equals(bruker.getDefaultAvleveringsUuid())) {
-            bruker.setDefaultAvleveringsUuid(null);
+        if (transferId.equals(user.getDefaultAvleveringsUuid())) {
+            user.setDefaultAvleveringsUuid(null);
         } else {
-            bruker.setDefaultAvleveringsUuid(transferId);
+            user.setDefaultAvleveringsUuid(transferId);
         }
         
-        getEntityManager().persist(bruker);
+        getEntityManager().persist(user);
     }
 }

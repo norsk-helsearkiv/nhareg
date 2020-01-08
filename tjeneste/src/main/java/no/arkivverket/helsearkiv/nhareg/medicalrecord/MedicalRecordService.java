@@ -21,6 +21,7 @@ import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,7 +109,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<RecordTransferDTO> recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries);
-        return new ListObject<>(recordTransferDTOList, recordTransferDTOList.size(), page, size);
+        final BigInteger totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
+        return new ListObject<>(recordTransferDTOList, totalSize.intValueExact(), page, size);
     }
 
     @Override
@@ -167,9 +169,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public void validatePID(final String pid) {
-        ValidationError fnrfeil = PIDValidation.validate(pid);
-        if (fnrfeil != null) {
-            throw new ValidationErrorException(Collections.singleton(fnrfeil));
+        final ValidationError validationError = PIDValidation.validate(pid);
+        if (validationError != null) {
+            throw new ValidationErrorException(Collections.singleton(validationError));
         }
     }
 
@@ -182,7 +184,16 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Convert personal data to medical record
         final Pasientjournal medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(personalDataDTO);
-
+        if (medicalRecord.getUuid() == null || medicalRecord.getUuid().isEmpty()) {
+            medicalRecord.setUuid(UUID.randomUUID().toString());
+        }
+        
+        // Updates storage units, fetches storage unit uuids
+        createAndAttachStorageUnit(medicalRecord.getLagringsenhet());
+        
+        // Set updated by and when
+        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
+        
         // Save
         medicalRecordDAO.create(medicalRecord);
         final Avlevering transfer = transferDAO.fetchSingleInstance(transferId);

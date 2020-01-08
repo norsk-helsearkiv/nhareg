@@ -13,7 +13,7 @@ import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisResource;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisService;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
@@ -56,7 +56,7 @@ public class RESTDeployment {
         return NharegDeployment.deployment()
                                // Models
                                .addPackage(Agreement.class.getPackage())
-                               .addPackage(Bruker.class.getPackage())
+                               .addPackage(User.class.getPackage())
                                .addPackage(DatoEllerAar.class.getPackage())
                                .addPackage(GyldigeDatoformater.class.getPackage())
                                .addPackage(Konfigparam.class.getPackage())

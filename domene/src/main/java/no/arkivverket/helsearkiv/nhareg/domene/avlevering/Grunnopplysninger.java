@@ -67,7 +67,7 @@ public class Grunnopplysninger implements Serializable {
 
     @NotNull
     @Valid
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "kjonn")
     @XmlElement(required = true)
     protected Gender gender;
@@ -76,6 +76,8 @@ public class Grunnopplysninger implements Serializable {
     @Column(name = "dodsdatoUkjent")
     protected Boolean deathDateUnknown;
 
+    @Basic
+    @Column(name = "fodtdatoUkjent")
     protected Boolean bornDateUnknown;
 
     @Embedded

@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.auth.dto;
 
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 
 /**
  * Created by haraldk on 08/11/2017.
@@ -11,8 +11,8 @@ public class RolleDTO {
     public RolleDTO() {
     }
     
-    public RolleDTO(final Rolle rolle) {
-        this.navn = rolle.getNavn();
+    public RolleDTO(final Role role) {
+        this.navn = role.getName();
     }
     
     public RolleDTO(final String navn) {

@@ -65,7 +65,7 @@ public class Pasientjournal implements Serializable {
 
     @NotNull
     @Size(min = 1)
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "pasientjournal_lagringsenhet",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
@@ -85,7 +85,8 @@ public class Pasientjournal implements Serializable {
     protected String merknad;
 
     @XmlTransient
-    protected Calendar opprettetDato;
+    @Column(name = "opprettetDato", updatable = false, insertable = false)
+    protected Calendar opprettetDato = Calendar.getInstance();
 
     @Transient
     protected List<Supplerendeopplysninger> supplerendeopplysninger;
@@ -131,11 +132,11 @@ public class Pasientjournal implements Serializable {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
 
-        final Pasientjournal that = (Pasientjournal) o;
+        final Pasientjournal that = (Pasientjournal) other;
 
         return uuid.equals(that.uuid);
     }

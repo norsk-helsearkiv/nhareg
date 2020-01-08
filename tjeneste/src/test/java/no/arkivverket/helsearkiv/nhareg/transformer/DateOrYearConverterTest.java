@@ -27,8 +27,8 @@ public class DateOrYearConverterTest {
         dto.setLopenummer("234");
         dto.setNavn("Natalie");
         dto.setUuid("uuid1");
-        dto.setFKontakt("2009");
-        dto.setSKontakt("2009");
+        dto.setFirstContact("2009");
+        dto.setLastContact("2009");
 
         Pasientjournal pasientjournal = MedicalRecordConverter.convertFromPersonalDataDTO(dto);
 

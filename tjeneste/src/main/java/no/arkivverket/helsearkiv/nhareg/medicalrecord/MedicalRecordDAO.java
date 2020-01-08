@@ -9,10 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -20,18 +17,21 @@ import java.util.*;
 @Stateless
 public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
 
-    private final static String GET_RECORD_TRANSFER_RESULTS =
+    private final static String RECORD_TRANSFER = 
+        "FROM pasientjournal ps "
+        + "JOIN avlevering_pasientjournal aps ON ps.uuid = aps.pasientjournal_uuid "
+        + "JOIN avlevering a ON a.avleveringsidentifikator = aps.Avlevering_avleveringsidentifikator "
+        + "WHERE (ps.slettet IS NULL) ";
+    
+    private final static String FETCH_RECORD_TRANSFER_RESULTS =
         "SELECT uuid, fanearkid, daar, faar, pid, pnavn,"
             + "journalnummer, lopenummer, ps.oppdatertAv, "
             + "opprettetDato, avleveringsidentifikator, "
             + "lagringsenhetformat, laast "
-            + "FROM pasientjournal ps "
-            + "JOIN avlevering_pasientjournal aps "
-            + "ON ps.uuid = aps.pasientjournal_uuid "
-            + "JOIN avlevering a "
-            + "ON a.avleveringsidentifikator = aps.Avlevering_avleveringsidentifikator " 
-            + "WHERE (ps.slettet IS NULL) ";
+            + RECORD_TRANSFER;
 
+    private final static String FETCH_RECORD_TRANSFER_COUNT = "SELECT COUNT(*) " + RECORD_TRANSFER;
+    
     private static final HashMap<String, String> PREDICATE_NATIVE_MAP = new HashMap<String, String>() {{
         put("fanearkid", "(fanearkid LIKE :fanearkid)");
         put("lagringsenhet", "(lagringsenhetformat LIKE :lagringsenhet)");
@@ -77,7 +77,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
     }
 
     public List<RecordTransferDTO> fetchAllRecordTransfers(final Map<String, String> queryParameters) {
-        final Query query = createQueryWithPredicates(queryParameters, GET_RECORD_TRANSFER_RESULTS);
+        final Query query = createQueryWithPredicates(queryParameters, FETCH_RECORD_TRANSFER_RESULTS);
         final List<Object[]> queryResults;
         
         if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
@@ -105,71 +105,11 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         return recordTransferDTOList;
     }
 
-    @Override
-    protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
-                                            final CriteriaBuilder criteriaBuilder,
-                                            final Root<Pasientjournal> root) {
-        final List<Predicate> predicates = new ArrayList<>();
-        final HashMap<String, Path> predicateMap = new HashMap<String, Path>() {{
-            put("fanearkid",     root.get("fanearkid"));
-            put("lagringsenhet", root.join("lagringsenhet").get("identifikator"));
-            put("fodselsnummer", root.get("grunnopplysninger").get("identifikator").get("pid"));
-            put("navn",          root.get("grunnopplysninger").get("pnavn"));
-            put("oppdatertAv",   root.get("oppdateringsinfo").get("oppdatertAv"));
-        }};
+    public BigInteger fetchAllRecordTransferCount(final Map<String, String> queryParameters) {
+        final Query query = createQueryWithPredicates(queryParameters, FETCH_RECORD_TRANSFER_COUNT);
 
-        for (String key: predicateMap.keySet()) {
-            String value = queryParameters.get(key);
-            if (value != null && !value.isEmpty()) {
-                final Path path = predicateMap.get(key);
-                value = "%" + value.replace(' ', '%') + "%";
-                predicates.add(criteriaBuilder.like(path, value));
-            }
-        }
-
-        String key = "sistOppdatert";
-        String value = queryParameters.get(key);
-        if (value != null && !value.isEmpty()) {
-            final Path<Date> path = root.get("oppdateringsinfo").get("sistOppdatert");
-            // Deal with only year specified.
-            if (value.length() == 4) {
-                final LocalDate date = GyldigeDatoformater.getLocalDate(value);
-                final Predicate yearPredicate = criteriaBuilder.greaterThanOrEqualTo(path, GyldigeDatoformater.asLegacyDate(date));
-                final LocalDate nextYear = date != null ? date.plusYears(1) : null;
-                final Predicate nextYearPredicate = criteriaBuilder.lessThan(path, GyldigeDatoformater.asLegacyDate(nextYear));
-                predicates.add(yearPredicate);
-                predicates.add(nextYearPredicate);
-            } else {
-                final List<Predicate> datePredicates = createDatePredicates(criteriaBuilder, path, value);
-                predicates.addAll(datePredicates);
-            }
-        }
-
-        key = "fodt";
-        value = queryParameters.get(key);
-        if (value != null && !value.isEmpty()) {
-            // Check if its only the year specified
-            if (value.length() == 4) {
-                Path<Integer> path = root.get("grunnopplysninger").get("født").get("aar");
-                int year = Integer.parseInt(value);
-                final Predicate yearPredicate = criteriaBuilder.greaterThanOrEqualTo(path, year);
-                final Predicate nextYearPredicate = criteriaBuilder.lessThan(path, year + 1);
-                predicates.add(yearPredicate);
-                predicates.add(nextYearPredicate);
-            } else {
-                Path<Date> path = root.get("grunnopplysninger").get("født").get("dato");
-                final List<Predicate> datePredicates = createDatePredicates(criteriaBuilder, path, value);
-                predicates.addAll(datePredicates);
-            }
-        }
-
-        // Do not fetch those that have been marked as deleted.
-        predicates.add(criteriaBuilder.or(criteriaBuilder.isNull(root.get("slettet")),
-                                          criteriaBuilder.isFalse(root.get("slettet"))));
-
-        return predicates.toArray(new Predicate[0]);
+        return (BigInteger) query.getSingleResult();
     }
-
 
     /**
      * Creates a native query to the database based on the given query string. Converts the given query parameters to
@@ -199,7 +139,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
                                                    final StringBuilder predicateStringBuilder,
                                                    final Map<String, String> parameters) {
         queryParameters.forEach((key, value) -> {
-            if (!PREDICATE_NATIVE_MAP.containsKey(key)) {
+            if (!PREDICATE_NATIVE_MAP.containsKey(key) && !"navn".equals(key)) {
                 return;
             }
             
@@ -249,17 +189,6 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
             }
         });
     }
-    
-    private List<Predicate> createDatePredicates(final CriteriaBuilder criteriaBuilder,
-                                                 final Path<Date> path,
-                                                 final String value) {
-        final LocalDate date = GyldigeDatoformater.getLocalDate(value);
-        final LocalDate nextDay = date != null ? date.plusDays(1) : null;
-        final Predicate beginDatePredicate = criteriaBuilder.greaterThanOrEqualTo(path, GyldigeDatoformater.asLegacyDate(date));
-        final Predicate endDatePredicate = criteriaBuilder.lessThan(path, GyldigeDatoformater.asLegacyDate(nextDay));
-
-        return Arrays.asList(beginDatePredicate, endDatePredicate);
-    }
 
     /**
      * Creates a predicate for pnavn column. For each name separated by a space it will create a query that matches
@@ -280,14 +209,9 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
             // Replace * as it does not work with setParameter
             final String nameParameter = name.replace("*", "");
             // Matches name% OR %name OR % Name %
-            namesPredicate.append("( pnavn LIKE :name")
-                          .append(nameParameter)
-                          .append(" OR pnavn LIKE :name")
-                          .append(nameParameter)
-                          .append("End")
-                          .append(" OR pnavn LIKE :name")
-                          .append(nameParameter)
-                          .append("Middle )");
+            namesPredicate.append("( pnavn LIKE :name").append(nameParameter)
+                          .append(" OR pnavn LIKE :name").append(nameParameter).append("End")
+                          .append(" OR pnavn LIKE :name").append(nameParameter).append("Middle )");
 
             // Replace * with SQL wildcard
             final String nameValue = name.replace('*', '%');
@@ -363,7 +287,8 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
         final String journalnummer = Objects.toString(resultRow[6], null);
         final String lopenummer = Objects.toString(resultRow[7], null);
         final String oppdatertAv = Objects.toString(resultRow[8], null);
-        final Long opprettetDato = ((Date) resultRow[9]).getTime();
+        final Date creationDate = resultRow[9] == null ? null : (Date) resultRow[9];
+        final Long opprettetDato = creationDate == null ? null : creationDate.getTime();
         final String avleveringsId = Objects.toString(resultRow[10], null);
         final String lagringsenhet = Objects.toString(resultRow[11], null);
         final boolean laast = (boolean) resultRow[12];
