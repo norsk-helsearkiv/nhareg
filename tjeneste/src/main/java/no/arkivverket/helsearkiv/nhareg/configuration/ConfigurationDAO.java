@@ -18,12 +18,13 @@ public class ConfigurationDAO {
     public static final String KONFIG_AARHUNDRE = "aarhundre";
     public static final String KONFIG_TEMPLATEFILE = "templateFilePath";
     public static final String KONFIG_PRINTER_PORT = "printerPort";
+    public static final String KONFIG_LMR = "lmr";
 
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
 
     public String getValue(final String name) {
-        ConfigurationParameter param = entityManager.find(ConfigurationParameter.class, name);
+        final ConfigurationParameter param = entityManager.find(ConfigurationParameter.class, name);
         return param == null ? null : param.getVerdi();
     }
 

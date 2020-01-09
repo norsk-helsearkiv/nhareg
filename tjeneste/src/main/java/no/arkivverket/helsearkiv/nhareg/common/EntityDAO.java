@@ -19,7 +19,7 @@ public abstract class EntityDAO<T> {
     protected static final String SIZE = "size";
     protected static final String PAGE = "page";
 
-    @PersistenceContext(unitName = "primary")
+    @PersistenceContext(name = "primary")
     private EntityManager entityManager;
 
     private Class<T> entityClass;
