@@ -27,7 +27,7 @@ public class LmrService implements LmrServiceInterface {
         final Lmr lmr = lmrDAO.fetchById(pid);
         
         if (lmr == null) {
-            final ValidationError validationError = new ValidationError("lmr", "NotFound");
+            final ValidationError validationError = new ValidationError("lmr", "NationalIdentityDoesNotExist");
             throw new ValidationErrorException(Collections.singletonList(validationError));       
         }
         
