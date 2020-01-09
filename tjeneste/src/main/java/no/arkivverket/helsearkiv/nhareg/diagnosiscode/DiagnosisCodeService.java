@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;
@@ -14,13 +14,13 @@ public class DiagnosisCodeService implements DiagnosisCodeServiceInterface {
     private DiagnosisCodeDAO diagnosisCodeDAO;
     
     @Override
-    public List<Diagnosekode> getAll(final MultivaluedMap<String, String> queryParameters) {
+    public List<DiagnosisCode> getAll(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         return diagnosisCodeDAO.fetchAll(mappedQueries);
     }
 
     @Override
-    public Diagnosekode create(final Diagnosekode diagnosisCode) {
+    public DiagnosisCode create(final DiagnosisCode diagnosisCode) {
         return diagnosisCodeDAO.create(diagnosisCode);
     }
 

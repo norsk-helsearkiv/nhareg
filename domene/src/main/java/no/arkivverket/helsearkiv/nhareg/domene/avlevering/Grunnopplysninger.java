@@ -1,48 +1,21 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.DeathDateAdapter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
-/**
- * <p>Java class for Grunnopplysninger complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="Grunnopplysninger">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="identifikator" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}Identifikator" minOccurs="0"/>
- *         &lt;element name="pnavn" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="født" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}DatoEllerAar"/>
- *         &lt;element name="dødsdatoUkjent" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *         &lt;element name="død" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}DatoEllerAar" minOccurs="0"/>
- *         &lt;element name="kontakt" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}Kontakt" minOccurs="0"/>
- *         &lt;element name="gender" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}Gender"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Grunnopplysninger", propOrder = {
     "identifikator",
     "pnavn",
     "born",
     "deathDateUnknown",
-    "bornDateUnknown",
     "dead",
     "kontakt",
     "gender"
@@ -54,7 +27,8 @@ public class Grunnopplysninger implements Serializable {
     protected Identifikator identifikator;
     
     @NotNull
-    @XmlElement(required = true)
+    @Column(name = "pnavn")
+    @XmlElement(required = true, name = "pasientnavn")
     protected String pnavn;
     
     @Embedded
@@ -62,22 +36,25 @@ public class Grunnopplysninger implements Serializable {
         @AttributeOverride(column = @Column(name = "fdato"), name = "dato"),
         @AttributeOverride(column = @Column(name = "faar"), name = "aar")
     })
-    @XmlElement(required = true, name = "født")
-    protected DatoEllerAar born;
+    @XmlElement(required = true, name = "fodtdato")
+    protected DateOrYear born;
 
     @NotNull
     @Valid
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "kjonn")
-    @XmlElement(required = true)
+    @XmlElement(required = true, name = "kjonn")
     protected Gender gender;
 
     @Basic
     @Column(name = "dodsdatoUkjent")
+    @XmlElement(name = "sikkermors", nillable = true)
+    @XmlJavaTypeAdapter(DeathDateAdapter.class)
     protected Boolean deathDateUnknown;
 
     @Basic
     @Column(name = "fodtdatoUkjent")
+    @XmlTransient
     protected Boolean bornDateUnknown;
 
     @Embedded
@@ -85,7 +62,8 @@ public class Grunnopplysninger implements Serializable {
         @AttributeOverride(column = @Column(name = "ddato"), name = "dato"),
         @AttributeOverride(column = @Column(name = "daar"), name = "aar")
     })
-    protected DatoEllerAar dead;
+    @XmlElement(name = "morsdato", nillable = true)
+    protected DateOrYear dead;
 
     @Embedded
     protected Kontakt kontakt;

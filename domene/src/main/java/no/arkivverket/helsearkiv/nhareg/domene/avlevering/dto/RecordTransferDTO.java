@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,30 +10,43 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecordTransferDTO {
 
+    @JsonProperty(value = "uuid")
     private String uuid;
 
-    private String lagringsenhet;
+    @JsonProperty(value = "lagringsenhet")
+    private String storageUnit;
 
-    private String fodselsnummer;
+    @JsonProperty(value = "fodselsnummer")
+    private String pid;
 
+    @JsonProperty(value = "fanearkid")
     private long fanearkid;
 
-    private String jnr;
+    @JsonProperty(value = "jnr")
+    private String recordNumber;
 
-    private String lnr;
+    @JsonProperty(value = "lnr")
+    private String serialNumber;
 
-    private String navn;
+    @JsonProperty(value = "navn")
+    private String name;
 
-    private String faar;
+    @JsonProperty(value = "faar")
+    private String bornYear;
 
-    private String daar;
+    @JsonProperty(value = "daar")
+    private String deathYear;
 
-    private String oppdatertAv;
+    @JsonProperty(value = "oppdatertAv")
+    private String updatedBy;
 
-    private String avleveringsidentifikator;
+    @JsonProperty(value = "avleveringsidentifikator")
+    private String transferId;
 
-    private Long opprettetDato;
+    @JsonProperty(value = "opprettetDato")
+    private Long creationDate;
 
-    private boolean avleveringLaast;
+    @JsonProperty(value = "avleveringLaast")
+    private boolean transferLocked;
 
 }

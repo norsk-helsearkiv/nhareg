@@ -27,7 +27,7 @@ public class PIDValidation {
     }
 
     public static ValidationError validate(final PersondataDTO personalDataDTO) {
-        final String fnr = personalDataDTO.getFodselsnummer();
+        final String fnr = personalDataDTO.getPid();
         
         return validate(fnr);
     }

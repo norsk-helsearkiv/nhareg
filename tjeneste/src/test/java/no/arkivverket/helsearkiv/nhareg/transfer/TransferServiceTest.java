@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
@@ -29,8 +29,8 @@ public class TransferServiceTest {
     
     @Test(expected = EntityExistsException.class)
     public void create_duplicateEntry_shouldThrowEntityExistsException() {
-        final Avlevering transfer = new Avlevering();
-        transfer.setAvleveringsidentifikator("Avlevering-1");
+        final Transfer transfer = new Transfer();
+        transfer.setTransferId("Avlevering-1");
         final TransferDTO transferDTO = new TransferDTO(transfer);
         
         transferService.create(transferDTO, "nhabruker1");
@@ -38,14 +38,14 @@ public class TransferServiceTest {
     
     @Test
     public void getById_getValidId_shouldReturnTransfer() {
-        final Avlevering transfer = transferService.getById("Avlevering-1");
+        final Transfer transfer = transferService.getById("Avlevering-1").toTransfer();
         assertNotNull(transfer);
-        assertNotNull(transfer.getPasientjournal());
+        assertNotNull(transfer.getMedicalRecords());
         assertNotNull(transfer.getAgreement());
         assertNotNull(transfer.getOppdateringsinfo());
-        transfer.getPasientjournal().forEach(medicalRecord -> {
-            assertNotNull(medicalRecord.getDiagnose()); 
-            assertNotNull(medicalRecord.getLagringsenhet());
+        transfer.getMedicalRecords().forEach(medicalRecord -> {
+            assertNotNull(medicalRecord.getDiagnosis()); 
+            assertNotNull(medicalRecord.getStorageUnit());
         });
     }
     
@@ -58,16 +58,16 @@ public class TransferServiceTest {
     public void update_updateArchiveCreator_shouldReturnUpdated() {
         final String id = "Avlevering-1";
         final String archiveCreator = "JUnit test";
-        final Avlevering transfer = transferService.getById(id);
+        final Transfer transfer = transferService.getById(id).toTransfer();
         assertNotNull(transfer);
         assertNotNull(transfer.getAgreement());
-        assertNotNull(transfer.getPasientjournal());
+        assertNotNull(transfer.getMedicalRecords());
 
         final TransferDTO transferDTO = new TransferDTO(transfer);
-        transferDTO.setArkivskaper(archiveCreator);
+        transferDTO.setArchiveCreator(archiveCreator);
         transferService.update(transferDTO, "nhabruker1");
         
-        final Avlevering updatedTransfer = transferService.getById(id);
+        final Transfer updatedTransfer = transferService.getById(id).toTransfer();
         assertNotNull(updatedTransfer);
         assertNotNull(updatedTransfer.getAgreement());
         assertNotNull(updatedTransfer.getOppdateringsinfo());
@@ -78,9 +78,9 @@ public class TransferServiceTest {
     public void getTransferForStorageUnit_validId_shouldReturnTransfer() {
         final String storageId = "boks1";
         
-        final Avlevering transfer = transferService.getTransferForStorageUnit(storageId);
+        final Transfer transfer = transferService.getTransferForStorageUnit(storageId).toTransfer();
         assertNotNull(transfer);
-        assertNotNull(transfer.getPasientjournal());
+        assertNotNull(transfer.getMedicalRecords());
     }
     
 }

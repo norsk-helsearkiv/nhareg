@@ -17,35 +17,35 @@ import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.toDate
 
 public class MedicalRecordConverter {
     
-    public static Pasientjournal convertFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
-        final Pasientjournal medicalRecord = new Pasientjournal();
+    public static MedicalRecord convertFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
+        final MedicalRecord medicalRecord = new MedicalRecord();
 
         final String uuid = personalDataDTO.getUuid();
         medicalRecord.setUuid(uuid);
         
-        final String[] storageUnits = personalDataDTO.getLagringsenheter();
-        final List<Lagringsenhet> storageUnitList = medicalRecord.getLagringsenhet();
+        final String[] storageUnits = personalDataDTO.getStorageUnits();
+        final List<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
         if (storageUnits != null) {
             // For each storage unit: create a new StorageUnit with random UUID, then add it to the list.
             Arrays.stream(storageUnits).forEach(
                 unitId -> {
-                    final Lagringsenhet storageUnit = new Lagringsenhet(unitId, null, false);
+                    final StorageUnit storageUnit = new StorageUnit(unitId, null, false);
                     storageUnitList.add(storageUnit);
                 }
             );
         }
         
-        final Journalidentifikator journalId = new Journalidentifikator();
-        medicalRecord.setJournalidentifikator(journalId);
+        final RecordId journalId = new RecordId();
+        medicalRecord.setRecordId(journalId);
 
-        final String recordNumber = personalDataDTO.getJournalnummer();
+        final String recordNumber = personalDataDTO.getRecordNumber();
         if (recordNumber != null) {
-            journalId.setJournalnummer(recordNumber);
+            journalId.setRecordNumber(recordNumber);
         }
 
-        final String serialNumber = personalDataDTO.getLopenummer();
+        final String serialNumber = personalDataDTO.getSerialNumber();
         if (serialNumber != null) {
-            journalId.setLøpenummer(serialNumber);
+            journalId.setSerialNumber(serialNumber);
         }
 
         final String fanearkid = personalDataDTO.getFanearkid();
@@ -54,7 +54,7 @@ public class MedicalRecordConverter {
         }
 
         final Grunnopplysninger baseProperties = new Grunnopplysninger();
-        final String pid = personalDataDTO.getFodselsnummer();
+        final String pid = personalDataDTO.getPid();
         if (pid != null) {
             final Identifikator identifikator = new Identifikator();
             identifikator.setPid(pid);
@@ -70,24 +70,24 @@ public class MedicalRecordConverter {
             baseProperties.setIdentifikator(identifikator);
         }
 
-        final String name = personalDataDTO.getNavn();
+        final String name = personalDataDTO.getName();
         if (name != null) {
             baseProperties.setPnavn(name);
         }
 
-        final String genderString = personalDataDTO.getKjonn();
+        final String genderString = personalDataDTO.getGender();
         if (genderString != null) {
             final Gender gender = new Gender();
             gender.setCode(genderString);
             baseProperties.setGender(gender);
         }
 
-        final String born = personalDataDTO.getFodt();
+        final String born = personalDataDTO.getBorn();
         if (born != null) {
             baseProperties.setBorn(toDateOrYear(born));
         }
 
-        final String dead = personalDataDTO.getDod();
+        final String dead = personalDataDTO.getDead();
         if (dead != null) {
             baseProperties.setDead(toDateOrYear(dead));
         }
@@ -108,151 +108,151 @@ public class MedicalRecordConverter {
 
         baseProperties.setKontakt(contact);
         medicalRecord.setGrunnopplysninger(baseProperties);
-        medicalRecord.setMerknad(personalDataDTO.getMerknad());
+        medicalRecord.setMerknad(personalDataDTO.getNote());
 
         return medicalRecord;
     }
     
-    public static PersondataDTO convertToPersonalDataDTO(final Pasientjournal medicalRecord) {
+    public static PersondataDTO convertToPersonalDataDTO(final MedicalRecord medicalRecord) {
         final PersondataDTO personalData = new PersondataDTO();
 
         personalData.setUuid(medicalRecord.getUuid());
-        personalData.setMerknad(medicalRecord.getMerknad());
+        personalData.setNote(medicalRecord.getMerknad());
         personalData.setFanearkid(medicalRecord.getFanearkid());
 
-        final List<Lagringsenhet> storageUnits = medicalRecord.getLagringsenhet();
+        final List<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
         if (storageUnits != null && !storageUnits.isEmpty()) {
             // Converts storageUnits to a String array of IDs.
-            final String[] units = storageUnits.stream().map(Lagringsenhet::getIdentifikator).toArray(String[]::new);
-            personalData.setLagringsenheter(units);
+            final String[] units = storageUnits.stream().map(StorageUnit::getId).toArray(String[]::new);
+            personalData.setStorageUnits(units);
         }
 
         final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
         if (baseProperties != null) {
-            personalData.setNavn(baseProperties.getPnavn());
+            personalData.setName(baseProperties.getPnavn());
 
             if (baseProperties.getIdentifikator() != null) {
-                personalData.setFodselsnummer(baseProperties.getIdentifikator().getPid());
+                personalData.setPid(baseProperties.getIdentifikator().getPid());
             }
 
             if (baseProperties.getGender() != null) {
-                personalData.setKjonn(baseProperties.getGender().getCode());
+                personalData.setGender(baseProperties.getGender().getCode());
             }
 
             if (baseProperties.getBorn() != null) {
-                personalData.setFodt(baseProperties.getBorn().getStringValue());
+                personalData.setBorn(baseProperties.getBorn().getStringValue());
             }
             
             if (baseProperties.getDead() != null) {
-                personalData.setDod(baseProperties.getDead().getStringValue());
+                personalData.setDead(baseProperties.getDead().getStringValue());
             }
 
             if (baseProperties.getDeathDateUnknown() != null && baseProperties.getDeathDateUnknown()) {
-                personalData.setDod("mors");
+                personalData.setDead("mors");
             }
 
             if (baseProperties.getBornDateUnknown() != null && baseProperties.getBornDateUnknown()) {
-                personalData.setFodt("ukjent");
+                personalData.setBorn("ukjent");
             }
 
             if (baseProperties.getKontakt() != null) {
-                final DatoEllerAar firstContactDate = baseProperties.getKontakt().getFoerste();
+                final DateOrYear firstContactDate = baseProperties.getKontakt().getFoerste();
                 if (firstContactDate != null) {
                     personalData.setFirstContact(firstContactDate.getStringValue());
                 }
 
-                final DatoEllerAar lastContactDate = baseProperties.getKontakt().getSiste();
+                final DateOrYear lastContactDate = baseProperties.getKontakt().getSiste();
                 if (lastContactDate != null) {
                     personalData.setLastContact(lastContactDate.getStringValue());
                 }
             }
         }
 
-        final Journalidentifikator journalId = medicalRecord.getJournalidentifikator();
+        final RecordId journalId = medicalRecord.getRecordId();
         if (journalId != null) {
-            personalData.setLopenummer(journalId.getLøpenummer());
-            personalData.setJournalnummer(journalId.getJournalnummer());
+            personalData.setSerialNumber(journalId.getSerialNumber());
+            personalData.setRecordNumber(journalId.getRecordNumber());
         }
 
         return personalData;
     }
     
-    public static MedicalRecordDTO convertToMedicalRecordDTO(final Pasientjournal medicalRecord,
-                                                             final Avlevering transfer,
+    public static MedicalRecordDTO convertToMedicalRecordDTO(final MedicalRecord medicalRecord,
+                                                             final Transfer transfer,
                                                              final String business) {
         final PersondataDTO personalData = convertToPersonalDataDTO(medicalRecord);
         final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO(); 
 
-        medicalRecordDTO.setPersondata(personalData);
-        medicalRecordDTO.setAvleveringBeskrivelse(transfer.getAvleveringsbeskrivelse());
-        medicalRecordDTO.setAvleveringsidentifikator(transfer.getAvleveringsidentifikator());
-        medicalRecordDTO.setAvleveringLaast(transfer.isLaast());
+        medicalRecordDTO.setPersonalDataDTO(personalData);
+        medicalRecordDTO.setTransferDescription(transfer.getTransferDescription());
+        medicalRecordDTO.setTransferId(transfer.getTransferId());
+        medicalRecordDTO.setTransferLocked(transfer.isLocked());
         
-        final Set<Diagnose> diagnosisSet = medicalRecord.getDiagnose();
+        final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
         final List<DiagnoseDTO> diagnoseDTOList = DiagnosisConverter.convertToDiagnosisDTOList(diagnosisSet);
-        medicalRecordDTO.setDiagnoser(diagnoseDTOList);
+        medicalRecordDTO.setDiagnosisDTOList(diagnoseDTOList);
         
-        medicalRecordDTO.setVirksomhet(business);
+        medicalRecordDTO.setBusiness(business);
         
         return medicalRecordDTO;
     }
     
-    public static RecordTransferDTO convertToRecordTransferDTO(final Pasientjournal medicalRecord) {
+    public static RecordTransferDTO convertToRecordTransferDTO(final MedicalRecord medicalRecord) {
         RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
 
         final Grunnopplysninger baseInformation = medicalRecord.getGrunnopplysninger();
         if (baseInformation != null) {
-            recordTransferDTO.setNavn(baseInformation.getPnavn());
+            recordTransferDTO.setName(baseInformation.getPnavn());
 
             if (baseInformation.getIdentifikator() != null) {
-                recordTransferDTO.setFodselsnummer(baseInformation.getIdentifikator().getPid());
+                recordTransferDTO.setPid(baseInformation.getIdentifikator().getPid());
             }
 
-            final DatoEllerAar born = baseInformation.getBorn();
+            final DateOrYear born = baseInformation.getBorn();
             if (born != null) {
                 final String yearBorn = String.valueOf(born.getYear());
-                recordTransferDTO.setFaar(yearBorn);
+                recordTransferDTO.setBornYear(yearBorn);
             }
 
             if (baseInformation.getBornDateUnknown() != null &&
                 baseInformation.getBornDateUnknown()) {
-                recordTransferDTO.setFaar("ukjent");
+                recordTransferDTO.setBornYear("ukjent");
             }
 
-            final DatoEllerAar dead = baseInformation.getDead();
+            final DateOrYear dead = baseInformation.getDead();
             if (dead != null) {
                 final String yearDied = String.valueOf(dead.getYear());
-                recordTransferDTO.setDaar(yearDied);
+                recordTransferDTO.setDeathYear(yearDied);
             }
 
             if (baseInformation.getDeathDateUnknown() != null &&
                 baseInformation.getDeathDateUnknown()) {
-                recordTransferDTO.setDaar("mors");
+                recordTransferDTO.setDeathYear("mors");
             }
         }
 
-        final Journalidentifikator journalId = medicalRecord.getJournalidentifikator();
+        final RecordId journalId = medicalRecord.getRecordId();
         if (journalId != null) {
-            recordTransferDTO.setJnr(journalId.getJournalnummer());
-            recordTransferDTO.setLnr(journalId.getLøpenummer());
+            recordTransferDTO.setRecordNumber(journalId.getRecordNumber());
+            recordTransferDTO.setSerialNumber(journalId.getSerialNumber());
         }
 
         recordTransferDTO.setFanearkid(Long.parseLong(medicalRecord.getFanearkid()));
 
-        final List<Lagringsenhet> storageUnitList = medicalRecord.getLagringsenhet();
+        final List<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
         if (storageUnitList != null && storageUnitList.size() > 0) {
-            recordTransferDTO.setLagringsenhet(storageUnitList.get(0).getIdentifikator());
+            recordTransferDTO.setStorageUnit(storageUnitList.get(0).getId());
         }
 
         if (medicalRecord.getOppdateringsinfo() != null) {
-            recordTransferDTO.setOppdatertAv(medicalRecord.getOppdateringsinfo().getOppdatertAv());
+            recordTransferDTO.setUpdatedBy(medicalRecord.getOppdateringsinfo().getOppdatertAv());
 
             if (medicalRecord.getOppdateringsinfo().getSistOppdatert() != null) {
                 try {
-                    recordTransferDTO.setOpprettetDato(medicalRecord.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
+                    recordTransferDTO.setCreationDate(medicalRecord.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
                 } catch (Throwable ignored) {}
             } else {
-                recordTransferDTO.setOpprettetDato(0L);
+                recordTransferDTO.setCreationDate(0L);
             }
         }
 
@@ -261,7 +261,7 @@ public class MedicalRecordConverter {
         return recordTransferDTO;
     }
 
-    public static List<RecordTransferDTO> convertToRecordTransferDTOList(final List<Pasientjournal> medicalRecordList) {
+    public static List<RecordTransferDTO> convertToRecordTransferDTOList(final List<MedicalRecord> medicalRecordList) {
         return medicalRecordList.stream()
             .map(MedicalRecordConverter::convertToRecordTransferDTO)
             .collect(Collectors.toList());

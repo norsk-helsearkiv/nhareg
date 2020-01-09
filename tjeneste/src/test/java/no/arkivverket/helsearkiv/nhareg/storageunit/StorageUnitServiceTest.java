@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -27,27 +27,27 @@ public class StorageUnitServiceTest {
     
     @Test(expected = ValidationErrorException.class)
     public void create_missingId_shouldThrowValideringsfeilException() {
-        final Lagringsenhet storageUnit = new Lagringsenhet();
+        final StorageUnit storageUnit = new StorageUnit();
         storageUnitService.create(storageUnit);
     }
 
     @Test
     public void create_withValidId_shouldNotGetNull() {
-        final Lagringsenhet storageUnit = new Lagringsenhet();
-        storageUnit.setIdentifikator("LagringsenhetForEnhetstesting");
-        final Lagringsenhet newStorageUnit = storageUnitService.create(storageUnit);
+        final StorageUnit storageUnit = new StorageUnit();
+        storageUnit.setId("LagringsenhetForEnhetstesting");
+        final StorageUnit newStorageUnit = storageUnitService.create(storageUnit);
         assertNotNull(newStorageUnit);
     }
 
     @Test
     public void getById_validId_shouldReturnStorageUnit() {
-        final Lagringsenhet storageUnit = storageUnitService.getById("boks1");
+        final StorageUnit storageUnit = storageUnitService.getById("boks1");
         assertNotNull(storageUnit);
     }
 
     @Test
     public void getById_invalidId_shouldReturnNull() {
-        final Lagringsenhet storageUnit = storageUnitService.getById("invalid");
+        final StorageUnit storageUnit = storageUnitService.getById("invalid");
         assertNull(storageUnit);
     }
     

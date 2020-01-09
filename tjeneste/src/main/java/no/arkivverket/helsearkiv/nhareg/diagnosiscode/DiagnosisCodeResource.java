@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -24,7 +24,7 @@ public class DiagnosisCodeResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Diagnosekode> getAll(@Context UriInfo uriInfo) {
+    public List<DiagnosisCode> getAll(@Context UriInfo uriInfo) {
         return diagnosisCodeService.getAll(uriInfo.getQueryParameters());
     }
     

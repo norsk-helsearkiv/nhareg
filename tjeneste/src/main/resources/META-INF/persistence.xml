@@ -6,13 +6,13 @@
     <persistence-unit name="primary">
         <jta-data-source>java:jboss/datasources/NharegDS</jta-data-source>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.CV</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Gender</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.User</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Role</class>

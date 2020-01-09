@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
@@ -37,7 +37,7 @@ public class MedicalRecordResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Pasientjournal create(final Pasientjournal medicalRecord) {
+    public MedicalRecord create(final MedicalRecord medicalRecord) {
         final String username = sessionContext.getCallerPrincipal().getName();
         return medicalRecordService.create(medicalRecord, username);
     }
@@ -57,7 +57,7 @@ public class MedicalRecordResource {
 
     @DELETE
     @Path("/{id}")
-    public Pasientjournal delete(@PathParam("id") String id) {
+    public MedicalRecord delete(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
         return medicalRecordService.delete(id, username);
     }

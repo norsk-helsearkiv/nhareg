@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
@@ -9,11 +9,11 @@ import javax.ws.rs.core.MultivaluedMap;
 
 public interface MedicalRecordServiceInterface {
 
-    Pasientjournal create(final Pasientjournal medicalRecord, final String username);
+    MedicalRecord create(final MedicalRecord medicalRecord, final String username);
     
-    Pasientjournal delete(final String id, final String username);
+    MedicalRecord delete(final String id, final String username);
     
-    Pasientjournal getById(final String id);
+    MedicalRecord getById(final String id);
     
     MedicalRecordDTO getByIdWithTransfer(final String id);
 

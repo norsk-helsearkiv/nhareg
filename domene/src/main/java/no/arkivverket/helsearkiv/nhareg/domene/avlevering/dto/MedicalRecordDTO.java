@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,20 +12,28 @@ import java.util.List;
 @NoArgsConstructor
 public class MedicalRecordDTO {
     
-    private PersondataDTO persondata;
+    @JsonProperty(value = "persondata")
+    private PersondataDTO personalDataDTO;
 
-    private List<DiagnoseDTO> diagnoser;
+    @JsonProperty(value = "diagnoser")
+    private List<DiagnoseDTO> diagnosisDTOList;
  
-    private String virksomhet;
+    @JsonProperty(value = "virksomhet")
+    private String business;
 
-    private String avtaleBeskrivelse;
+    @JsonProperty(value = "avtaleBeskrivelse")
+    private String agreementDescription;
 
-    private String avleveringBeskrivelse;
+    @JsonProperty(value = "avleveringBeskrivelse")
+    private String transferDescription;
 
-    private String avleveringsidentifikator;
+    @JsonProperty(value = "avleveringsidentifikator")
+    private String transferId;
 
-    private String lagringsenhetformat;
+    @JsonProperty(value = "lagringsenhetformat")
+    private String storageUnitFormat;
 
-    private boolean avleveringLaast;
+    @JsonProperty(value = "avleveringLaast")
+    private boolean transferLocked;
 
 }

@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Stateless
-public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
+public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
 
     private final static String RECORD_TRANSFER = 
         "FROM pasientjournal ps "
@@ -55,23 +55,23 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
     }};
     
     public MedicalRecordDAO() {
-        super(Pasientjournal.class, "uuid");
+        super(MedicalRecord.class, "uuid");
     }
 
     @Override
-    public Pasientjournal fetchById(final String id) {
-        final Pasientjournal medicalRecord = super.fetchById(id);
-        medicalRecord.getLagringsenhet().size();
-        medicalRecord.getDiagnose().size();
+    public MedicalRecord fetchById(final String id) {
+        final MedicalRecord medicalRecord = super.fetchById(id);
+        medicalRecord.getStorageUnit().size();
+        medicalRecord.getDiagnosis().size();
         
         return medicalRecord;
     }
 
     @Override
-    public Pasientjournal fetchSingleInstance(String id) throws NoResultException {
-        final Pasientjournal medicalRecord = super.fetchSingleInstance(id);
-        medicalRecord.getDiagnose().size();
-        medicalRecord.getLagringsenhet().size();
+    public MedicalRecord fetchSingleInstance(String id) throws NoResultException {
+        final MedicalRecord medicalRecord = super.fetchSingleInstance(id);
+        medicalRecord.getDiagnosis().size();
+        medicalRecord.getStorageUnit().size();
         
         return medicalRecord;
     }
@@ -178,7 +178,7 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
                 } else {
                     // Dates needs to be set as DATE temporal type.
                     if (DATE_PREDICATES.contains(key)) {
-                        final Date date = GyldigeDatoformater.getDate(value);
+                        final Date date = ValidDateFormats.getDate(value);
                         query.setParameter(key, date, TemporalType.DATE);
                     } else {
                         query.setParameter(key, value);
@@ -229,13 +229,13 @@ public class MedicalRecordDAO extends EntityDAO<Pasientjournal> {
      * Creates a date predicate to be used in a WHERE ... BETWEEN statement. Adds start and end date to parameters.
      * @param key Key used to index PREDICATE_NATIVE_MAP. Is also used as key in parameters, key + End is used for 
      *            end date
-     * @param value Date as a string of a valid date format ({@link GyldigeDatoformater}).
+     * @param value Date as a string of a valid date format ({@link ValidDateFormats}).
      * @param parameters Map that will be updated with the keys and values of the date and end date as strings or null
      *                   if the date could not be converted.
      * @return The {@link #PREDICATE_NATIVE_MAP} value for the given key.
      */
     private String createDatePredicateNativeQuery(final String key, final String value, final Map<String, String> parameters) {
-        final LocalDate date = GyldigeDatoformater.getLocalDate(value);
+        final LocalDate date = ValidDateFormats.getLocalDate(value);
 
         if (date == null) {
             parameters.put(key, null);

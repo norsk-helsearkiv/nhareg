@@ -33,19 +33,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Avlevering }
+     * Create an instance of {@link Transfer }
      * 
      */
-    public Avlevering createAvlevering() {
-        return new Avlevering();
+    public Transfer createAvlevering() {
+        return new Transfer();
     }
 
     /**
-     * Create an instance of {@link Diagnosekode }
+     * Create an instance of {@link DiagnosisCode }
      * 
      */
-    public Diagnosekode createDiagnosekode() {
-        return new Diagnosekode();
+    public DiagnosisCode createDiagnosekode() {
+        return new DiagnosisCode();
     }
 
     /**
@@ -89,11 +89,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Pasientjournal }
+     * Create an instance of {@link MedicalRecord }
      * 
      */
-    public Pasientjournal createPasientjournal() {
-        return new Pasientjournal();
+    public MedicalRecord createPasientjournal() {
+        return new MedicalRecord();
     }
 
     /**
@@ -137,11 +137,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Diagnose }
+     * Create an instance of {@link Diagnosis }
      * 
      */
-    public Diagnose createDiagnose() {
-        return new Diagnose();
+    public Diagnosis createDiagnose() {
+        return new Diagnosis();
     }
 
     /**
@@ -153,11 +153,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DatoEllerAar }
+     * Create an instance of {@link DateOrYear }
      * 
      */
-    public DatoEllerAar createDatoEllerAar() {
-        return new DatoEllerAar();
+    public DateOrYear createDatoEllerAar() {
+        return new DateOrYear();
     }
 
     /**
@@ -185,11 +185,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Lagringsenhet }
+     * Create an instance of {@link StorageUnit }
      * 
      */
-    public Lagringsenhet createLagringsenhet() {
-        return new Lagringsenhet();
+    public StorageUnit createLagringsenhet() {
+        return new StorageUnit();
     }
 
     /**
@@ -209,11 +209,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Journalidentifikator }
+     * Create an instance of {@link RecordId }
      * 
      */
-    public Journalidentifikator createJournalidentifikator() {
-        return new Journalidentifikator();
+    public RecordId createJournalidentifikator() {
+        return new RecordId();
     }
 
     /**
@@ -226,12 +226,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Avlevering }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link Transfer }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv", name = "Avlevering")
-    public JAXBElement<Avlevering> createAvlevering(Avlevering value) {
-        return new JAXBElement<Avlevering>(_Avlevering_QNAME, Avlevering.class, null, value);
+    public JAXBElement<Transfer> createAvlevering(Transfer value) {
+        return new JAXBElement<Transfer>(_Avlevering_QNAME, Transfer.class, null, value);
     }
 
 }

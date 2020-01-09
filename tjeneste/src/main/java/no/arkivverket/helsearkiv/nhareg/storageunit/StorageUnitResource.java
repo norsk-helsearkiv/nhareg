@@ -1,10 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.StorageUnitDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
@@ -42,8 +43,8 @@ public class StorageUnitResource {
     @PUT
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateMedicalRecord(final Lagringsenhet storageUnit) {
-        final Lagringsenhet updatedStorageUnit = storageUnitService.update(storageUnit);
+    public Response updateMedicalRecord(final StorageUnit storageUnit) {
+        final StorageUnit updatedStorageUnit = storageUnitService.update(storageUnit);
 
         return Response.ok(updatedStorageUnit).build();
     }
@@ -71,7 +72,7 @@ public class StorageUnitResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/flytt")
     public Response moveMedicalRecords(final FlyttPasientjournalDTO moveMedicalRecordDTO) {
-        final Lagringsenhet storageUnit = storageUnitService.getById(moveMedicalRecordDTO.getLagringsenhetIdentifikator());
+        final StorageUnit storageUnit = storageUnitService.getById(moveMedicalRecordDTO.getLagringsenhetIdentifikator());
 
         if (storageUnit == null) {
             ValidationError feil = new ValidationError("identifikator", "Lagringsenheten finnes ikke");
@@ -87,7 +88,7 @@ public class StorageUnitResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/sok")
-    public List<Lagringsenhet> getStorageUnitsWithId(@Context UriInfo uriInfo) {
+    public List<StorageUnitDTO> getStorageUnitsWithId(@Context UriInfo uriInfo) {
         return storageUnitService.getStorageUnits(uriInfo.getQueryParameters());
     }
 
@@ -96,10 +97,10 @@ public class StorageUnitResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/{uuid}/maske")
     public String getStorageUnitMask(@PathParam("uuid") String id) {
-        final Lagringsenhet storageUnit = storageUnitService.getById(id);
-        final Avlevering transfer = transferService.getTransferForStorageUnit(storageUnit.getIdentifikator());
+        final StorageUnit storageUnit = storageUnitService.getById(id);
+        final TransferDTO transfer = transferService.getTransferForStorageUnit(storageUnit.getId());
 
-        return transfer.getLagringsenhetformat();
+        return transfer.getStorageUnitFormat();
     }
 
     @GET

@@ -1,24 +1,25 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.StorageUnitDTO;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 
 public interface StorageUnitServiceInterface {
 
-    Lagringsenhet getById(final String id);
+    StorageUnit getById(final String id);
 
-    Lagringsenhet create(final Lagringsenhet storageUnit);
+    StorageUnit create(final StorageUnit storageUnit);
  
-    Lagringsenhet update(final Lagringsenhet storageUnit);
+    StorageUnit update(final StorageUnit storageUnit);
 
     List<RecordTransferDTO> getMedicalRecordsForId(final String id);
 
-    List<Lagringsenhet> getStorageUnits(final MultivaluedMap<String, String> queryParameters);
+    List<StorageUnitDTO> getStorageUnits(final MultivaluedMap<String, String> queryParameters);
 
-    void updateRecordStorageUnit(final List<String> medicalRecordIds, final Lagringsenhet storageUnit);
+    void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnit storageUnit);
 
     void printMedicalRecord(final String id, final String username);
     

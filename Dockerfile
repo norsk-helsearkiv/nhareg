@@ -91,6 +91,10 @@ RUN echo "Configuring Wildfly" \
     && chmod -R g+rw ${JBOSS_HOME} \
     && rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/*
 
+# Install Java 8
+RUN yum -y install tar java-1.8.0-openjdk-devel && \
+    yum clean all
+
 # Deploy apps
 COPY --from=build /usr/src/klient-web/target/web.war $JBOSS_HOME/standalone/deployments/
 COPY --from=build /usr/src/tjeneste/target/api.war $JBOSS_HOME/standalone/deployments/

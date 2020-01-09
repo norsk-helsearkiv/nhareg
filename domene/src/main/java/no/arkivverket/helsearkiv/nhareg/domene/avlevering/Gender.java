@@ -24,7 +24,7 @@ import java.io.Serializable;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Gender")
+@XmlType(name = "kjonn")
 @Entity
 @Table(name = "kjonn")
 public class Gender extends CS implements Serializable {

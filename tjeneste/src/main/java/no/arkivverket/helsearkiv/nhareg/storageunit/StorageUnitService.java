@@ -2,10 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.StorageUnitDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StorageUnitService implements StorageUnitServiceInterface {
 
@@ -38,47 +40,49 @@ public class StorageUnitService implements StorageUnitServiceInterface {
     private ConfigurationDAO configurationDAO;
 
     @Override
-    public Lagringsenhet getById(String id) {
+    public StorageUnit getById(String id) {
         return storageUnitDAO.fetchById(id);
     }
 
     @Override
-    public Lagringsenhet create(final Lagringsenhet storageUnit) {
+    public StorageUnit create(final StorageUnit storageUnit) {
         return storageUnitDAO.create(storageUnit);
     }
 
     @Override
-    public Lagringsenhet update(final Lagringsenhet storageUnit) {
+    public StorageUnit update(final StorageUnit storageUnit) {
         return storageUnitDAO.update(storageUnit);
     }
 
     @Override
     public List<RecordTransferDTO> getMedicalRecordsForId(final String id) {
-        List<Pasientjournal> medicalRecords = storageUnitDAO.fetchMedicalRecordsForStorageUnit(id);
+        List<MedicalRecord> medicalRecords = storageUnitDAO.fetchMedicalRecordsForStorageUnit(id);
         return MedicalRecordConverter.convertToRecordTransferDTOList(medicalRecords);
     }
 
     @Override
-    public List<Lagringsenhet> getStorageUnits(final MultivaluedMap<String, String> queryParameters) {
+    public List<StorageUnitDTO> getStorageUnits(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedParameters = ParameterConverter.multivaluedToMap(queryParameters);
-        return storageUnitDAO.fetchAll(mappedParameters);
+        final List<StorageUnit> storageUnits = storageUnitDAO.fetchAll(mappedParameters);
+        
+        return storageUnits.stream().map(StorageUnitDTO::new).collect(Collectors.toList());
     }
 
     @Override
-    public void updateRecordStorageUnit(final List<String> medicalRecordIds, final Lagringsenhet storageUnit) {
+    public void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnit storageUnit) {
         for (final String recordId: medicalRecordIds) {
-            final Pasientjournal medicalRecord = medicalRecordDAO.fetchById(recordId);
-            medicalRecord.getLagringsenhet().clear();
-            medicalRecord.getLagringsenhet().add(storageUnit);
+            final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(recordId);
+            medicalRecord.getStorageUnit().clear();
+            medicalRecord.getStorageUnit().add(storageUnit);
         }
     }
 
     @Override
     public void printMedicalRecord(final String id, final String username) {
-        final Lagringsenhet storageUnit = storageUnitDAO.fetchById(id);
+        final StorageUnit storageUnit = storageUnitDAO.fetchById(id);
         final Integer medicalRecordCount = storageUnitDAO.fetchCountOfRecordsForStorageUnit(id);
         final String firstTransferId = transferDAO.fetchFirstTransferIdFromStorageUnit(storageUnit.getUuid());
-        final Avlevering transfer = transferDAO.fetchById(firstTransferId);
+        final Transfer transfer = transferDAO.fetchById(firstTransferId);
         final User user = userDAO.fetchByUsername(username);
 
         String printerIp = user.getPrinterzpl();
@@ -102,7 +106,7 @@ public class StorageUnitService implements StorageUnitServiceInterface {
             return;
         }
         
-        storageUnit.setUtskrift(true);
+        storageUnit.setPrint(true);
 
         storageUnitDAO.update(storageUnit);
     }

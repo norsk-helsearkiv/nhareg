@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class DateOrYearConverter {
 
-    public static String fromDateOrYear(final DatoEllerAar dateOrYear) {
+    public static String fromDateOrYear(final DateOrYear dateOrYear) {
         final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         
         if (dateOrYear == null) {
@@ -23,7 +23,7 @@ public class DateOrYearConverter {
         }
     }
     
-    public static DatoEllerAar toDateOrYear(final String time) {
+    public static DateOrYear toDateOrYear(final String time) {
         if (time.toLowerCase().equals("mors") ||
                 time.isEmpty() ||
                 time.toLowerCase().equals("m") ||
@@ -32,13 +32,13 @@ public class DateOrYearConverter {
             return null;
         }
 
-        final DatoEllerAar dateOrYear = new DatoEllerAar();
+        final DateOrYear dateOrYear = new DateOrYear();
         if (time.length() == 4) {
             dateOrYear.setAar(Integer.parseInt(time));
             return dateOrYear;
         }
 
-        final Date date = GyldigeDatoformater.getDate(time);
+        final Date date = ValidDateFormats.getDate(time);
         Calendar instance = Calendar.getInstance();
         instance.setTime(date);
         dateOrYear.setDato(instance);

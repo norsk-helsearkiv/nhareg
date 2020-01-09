@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -12,17 +12,17 @@ import java.util.Map;
 import java.util.UUID;
 
 @Stateless
-public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
+public class StorageUnitDAO extends EntityDAO<StorageUnit> {
 
     public StorageUnitDAO() {
-        super(Lagringsenhet.class, "uuid");
+        super(StorageUnit.class, "uuid");
     }
 
     @Override
-    public Lagringsenhet create(final Lagringsenhet storageUnit) {
-        new Validator<>(Lagringsenhet.class).validateWithException(storageUnit);
+    public StorageUnit create(final StorageUnit storageUnit) {
+        new Validator<>(StorageUnit.class).validateWithException(storageUnit);
 
-        final Lagringsenhet existingUnit = this.fetchById(storageUnit.getIdentifikator());
+        final StorageUnit existingUnit = this.fetchById(storageUnit.getId());
         
         if (existingUnit == null) {
             storageUnit.setUuid(UUID.randomUUID().toString());
@@ -35,32 +35,32 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
     }
 
     @Override
-    public List<Lagringsenhet> fetchAll(final Map<String, String> queryParameters) {
+    public List<StorageUnit> fetchAll(final Map<String, String> queryParameters) {
         final String searchId = queryParameters.get("identifikatorSok");
         final String queryString = 
-            "SELECT OBJECT(l) "
-            + "FROM Lagringsenhet l "
-            + "WHERE l.identifikator " 
+            "SELECT OBJECT(su) "
+            + "FROM StorageUnit su "
+            + "WHERE su.id " 
             + "LIKE :id "
-            + "ORDER BY l.uuid";
+            + "ORDER BY su.uuid";
         
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", "%" + searchId + "%");
 
-        return (List<Lagringsenhet>) query.getResultList();
+        return (List<StorageUnit>) query.getResultList();
     }
 
     @Override
-    public Lagringsenhet fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(l)" 
-            + "FROM Lagringsenhet l " 
-            + "WHERE l.identifikator = :id ";
+    public StorageUnit fetchById(final String id) {
+        final String queryString = "SELECT OBJECT(su)" 
+            + "FROM StorageUnit su " 
+            + "WHERE su.id = :id ";
         
-        final Query query = getEntityManager().createQuery(queryString, Lagringsenhet.class);
+        final Query query = getEntityManager().createQuery(queryString, StorageUnit.class);
         query.setParameter("id", id);
         
         try {
-            return (Lagringsenhet) query.getSingleResult();
+            return (StorageUnit) query.getSingleResult();
         } catch (Exception ignored) {
             return null;
         }
@@ -68,10 +68,10 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
 
     public Integer fetchCountOfRecordsForStorageUnit(final String storageUnitId) {
         final String queryString =
-            "SELECT COUNT(p) "
-                + "FROM Pasientjournal p "
-                + "INNER JOIN p.lagringsenhet l "
-                + "WHERE l.identifikator = :id";
+            "SELECT COUNT(mr) "
+                + "FROM MedicalRecord mr "
+                + "INNER JOIN mr.storageUnit su "
+                + "WHERE su.id = :id";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", storageUnitId);
 
@@ -80,16 +80,16 @@ public class StorageUnitDAO extends EntityDAO<Lagringsenhet> {
         return res.intValue();
     }
 
-    public List<Pasientjournal> fetchMedicalRecordsForStorageUnit(final String id) {
+    public List<MedicalRecord> fetchMedicalRecordsForStorageUnit(final String id) {
         final String queryString = 
-            "SELECT p " 
-            + "FROM Pasientjournal p "
-            + "INNER JOIN p.lagringsenhet l "
-            + "WHERE l.identifikator = :id";
+            "SELECT mr " 
+            + "FROM MedicalRecord mr "
+            + "INNER JOIN mr.storageUnit su "
+            + "WHERE su.id = :id";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", id);
 
-        return (List<Pasientjournal>) query.getResultList();
+        return (List<MedicalRecord>) query.getResultList();
     }
 
 }

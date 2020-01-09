@@ -6,9 +6,9 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
@@ -49,7 +49,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     private UserDAO userDAO;
 
     @Override
-    public Pasientjournal create(final Pasientjournal medicalRecord, final String username) {
+    public MedicalRecord create(final MedicalRecord medicalRecord, final String username) {
         medicalRecord.setUuid(UUID.randomUUID().toString());
 
         final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
@@ -61,7 +61,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
             }
         }
 
-        createAndAttachStorageUnit(medicalRecord.getLagringsenhet());
+        createAndAttachStorageUnit(medicalRecord.getStorageUnit());
 
         medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
         medicalRecord.setOpprettetDato(Calendar.getInstance());
@@ -75,8 +75,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
      * @return The updated medical record.
      */
     @Override
-    public Pasientjournal delete(final String id, final String username) {
-        final Pasientjournal medicalRecord = medicalRecordDAO.fetchSingleInstance(id);
+    public MedicalRecord delete(final String id, final String username) {
+        final MedicalRecord medicalRecord = medicalRecordDAO.fetchSingleInstance(id);
         medicalRecord.setSlettet(true);
         medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
 
@@ -84,17 +84,17 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     }
 
     @Override
-    public Pasientjournal getById(final String id) {
+    public MedicalRecord getById(final String id) {
         return medicalRecordDAO.fetchById(id);
     }
 
     @Override
     public MedicalRecordDTO getByIdWithTransfer(final String id) {
-        final Pasientjournal pasientjournal = medicalRecordDAO.fetchById(id);
-        final Avlevering transfer = transferDAO.fetchTransferFromRecordId(id);
+        final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
+        final Transfer transfer = transferDAO.fetchTransferFromRecordId(id);
         final Virksomhet business = businessDAO.fetchBusiness();
 
-        return MedicalRecordConverter.convertToMedicalRecordDTO(pasientjournal, transfer, business.getForetaksnavn());
+        return MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord, transfer, business.getForetaksnavn());
     }
 
     @Override
@@ -116,41 +116,41 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     @Override
     public MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO, final String username) {
         // VALIDERING - Persondata
-        validateBaseData(medicalRecordDTO.getPersondata());
+        validateBaseData(medicalRecordDTO.getPersonalDataDTO());
 
         //KONVERTERING
-        final Pasientjournal medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(medicalRecordDTO.getPersondata());
-        createAndAttachStorageUnit(medicalRecord.getLagringsenhet());
+        final MedicalRecord medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(medicalRecordDTO.getPersonalDataDTO());
+        createAndAttachStorageUnit(medicalRecord.getStorageUnit());
 
-        final Pasientjournal original = medicalRecordDAO.fetchById(medicalRecord.getUuid());
+        final MedicalRecord original = medicalRecordDAO.fetchById(medicalRecord.getUuid());
         if (original != null) {
-            medicalRecord.getDiagnose().addAll(original.getDiagnose());
+            medicalRecord.getDiagnosis().addAll(original.getDiagnosis());
         }
 
         //Setter verdier
-        if (medicalRecordDTO.getPersondata().getKjonn() != null) {
-            final Gender gender = genderDAO.fetchSingleInstance(medicalRecordDTO.getPersondata().getKjonn());
+        if (medicalRecordDTO.getPersonalDataDTO().getGender() != null) {
+            final Gender gender = genderDAO.fetchSingleInstance(medicalRecordDTO.getPersonalDataDTO().getGender());
             medicalRecord.getGrunnopplysninger().setGender(gender);
         }
 
-        // Update lagringsenhet
-        Lagringsenhet lagringsenhet = medicalRecord.getLagringsenhet().get(0);
-        final String storageUnitId = lagringsenhet.getIdentifikator();
+        // Update storageUnit
+        StorageUnit storageUnit = medicalRecord.getStorageUnit().get(0);
+        final String storageUnitId = storageUnit.getId();
         if (storageUnitId != null && !storageUnitId.isEmpty()) {
-            userDAO.updateLagringsenhet(username, lagringsenhet.getIdentifikator());
+            userDAO.updateLagringsenhet(username, storageUnit.getId());
         }
 
         // Update avlevering
-        final String transferId = medicalRecordDTO.getAvleveringsidentifikator();
-        final Avlevering transfer = transferDAO.fetchById(transferId);
-        final String transferDescription = medicalRecordDTO.getAvleveringBeskrivelse();
+        final String transferId = medicalRecordDTO.getTransferId();
+        final Transfer transfer = transferDAO.fetchById(transferId);
+        final String transferDescription = medicalRecordDTO.getTransferDescription();
         if (transferDescription != null && !transferDescription.isEmpty()) {
-            transfer.setAvleveringsbeskrivelse(transferDescription);
+            transfer.setTransferDescription(transferDescription);
         }
 
-        final String lagringsenhetFormat = medicalRecordDTO.getLagringsenhetformat();
+        final String lagringsenhetFormat = medicalRecordDTO.getStorageUnitFormat();
         if (lagringsenhetFormat != null && !lagringsenhetFormat.isEmpty()) {
-            transfer.setLagringsenhetformat(lagringsenhetFormat);
+            transfer.setStorageUnitFormat(lagringsenhetFormat);
         }
 
         transferDAO.update(transfer);
@@ -161,7 +161,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
             medicalRecord.setOpprettetDato(original.getOpprettetDato());
         }
         
-        final Pasientjournal updatedMedicalRecord = medicalRecordDAO.update(medicalRecord);
+        final MedicalRecord updatedMedicalRecord = medicalRecordDAO.update(medicalRecord);
         final String business = businessDAO.fetchBusiness().getForetaksnavn();
 
         return MedicalRecordConverter.convertToMedicalRecordDTO(updatedMedicalRecord, transfer, business);
@@ -182,22 +182,12 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Validate personal data
         validateBaseData(personalDataDTO);
 
-        // Convert personal data to medical record
-        final Pasientjournal medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(personalDataDTO);
-        if (medicalRecord.getUuid() == null || medicalRecord.getUuid().isEmpty()) {
-            medicalRecord.setUuid(UUID.randomUUID().toString());
-        }
+        // Convert personal data to medical record and create medical record.
+        final MedicalRecord fromPersonalDataDTO = MedicalRecordConverter.convertFromPersonalDataDTO(personalDataDTO);
+        final MedicalRecord medicalRecord = this.create(fromPersonalDataDTO, username);
         
-        // Updates storage units, fetches storage unit uuids
-        createAndAttachStorageUnit(medicalRecord.getLagringsenhet());
-        
-        // Set updated by and when
-        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
-        
-        // Save
-        medicalRecordDAO.create(medicalRecord);
-        final Avlevering transfer = transferDAO.fetchSingleInstance(transferId);
-        transfer.getPasientjournal().add(medicalRecord);
+        final Transfer transfer = transferDAO.fetchSingleInstance(transferId);
+        transfer.getMedicalRecords().add(medicalRecord);
 
         // Tracking.
         transfer.setOppdateringsinfo(createUpdateInfo(username));
@@ -206,11 +196,11 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
                                                                                                    transfer,
                                                                                                    business.getForetaksnavn());
         final String transferIdForRecord = transferDAO.fetchTransferIdFromRecordId(medicalRecord.getUuid());
-        medicalRecordDTO.setAvleveringsidentifikator(transferIdForRecord);
+        medicalRecordDTO.setTransferId(transferIdForRecord);
 
         // Update the users last used storage unit
-        final Lagringsenhet lagringsenhet = medicalRecord.getLagringsenhet().get(0);
-        final String storageUnitId = lagringsenhet.getIdentifikator();
+        final StorageUnit storageUnit = medicalRecord.getStorageUnit().get(0);
+        final String storageUnitId = storageUnit.getId();
         if (storageUnitId != null && !storageUnitId.isEmpty()) {
             userDAO.updateLagringsenhet(username, storageUnitId);
         }
@@ -243,13 +233,13 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
     }
 
-    private void createAndAttachStorageUnit(final List<Lagringsenhet> storageUnits) {
+    private void createAndAttachStorageUnit(final List<StorageUnit> storageUnits) {
         // Create new storage units, ignores existing units
         storageUnits.forEach(storageUnitDAO::create);
 
-        final List<Lagringsenhet> existingStorageUnits = storageUnits.stream()
-                                                                     .map(unit -> storageUnitDAO.fetchById(unit.getIdentifikator()))
-                                                                     .collect(Collectors.toList());
+        final List<StorageUnit> existingStorageUnits = storageUnits.stream()
+                                                                   .map(unit -> storageUnitDAO.fetchById(unit.getId()))
+                                                                   .collect(Collectors.toList());
         storageUnits.clear();
         storageUnits.addAll(existingStorageUnits);
     }

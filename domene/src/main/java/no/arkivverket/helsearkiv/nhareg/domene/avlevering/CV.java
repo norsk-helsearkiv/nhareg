@@ -48,7 +48,7 @@ import java.io.Serializable;
     "originalText"
 })
 @XmlSeeAlso({
-    Diagnosekode.class
+    DiagnosisCode.class
 })
 @Data
 @Entity

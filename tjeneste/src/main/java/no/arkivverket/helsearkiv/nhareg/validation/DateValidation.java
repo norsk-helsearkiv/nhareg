@@ -2,13 +2,13 @@ package no.arkivverket.helsearkiv.nhareg.validation;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
 
 import java.util.*;
 
@@ -35,7 +35,7 @@ public class DateValidation {
      * @param medicalRecord Record to validate
      * @return A list of errors found, if any
      */
-    public List<ValidationError> validateDiagnosis(final DiagnoseDTO diagnosis, final Pasientjournal medicalRecord) {
+    public List<ValidationError> validateDiagnosis(final DiagnoseDTO diagnosis, final MedicalRecord medicalRecord) {
         final List<ValidationError> validationErrors = new ArrayList<>();
         final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
 
@@ -48,7 +48,7 @@ public class DateValidation {
             return validationErrors;
         }
 
-        final String diagnosisDateString = diagnosis.getDiagnosedato();
+        final String diagnosisDateString = diagnosis.getDiagnosisDate();
         final Date diagnosisDate = getDate(diagnosisDateString);
 
         if (diagnosisDate == null) {
@@ -58,7 +58,7 @@ public class DateValidation {
 
         // fødtdatoår kjent
         if (baseProperties.getBornDateUnknown() == null || !baseProperties.getBornDateUnknown()) {
-            final DatoEllerAar born = baseProperties.getBorn();
+            final DateOrYear born = baseProperties.getBorn();
             final String bornString = DateOrYearConverter.fromDateOrYear(born);
 
             if ((compareDateString(bornString, diagnosisDateString) == DateCompareResult.AFTER)) {
@@ -67,7 +67,7 @@ public class DateValidation {
         }
 
         if (baseProperties.getDeathDateUnknown() == null || !baseProperties.getDeathDateUnknown()) {
-            final DatoEllerAar dod = baseProperties.getDead();
+            final DateOrYear dod = baseProperties.getDead();
             final String dodString = DateOrYearConverter.fromDateOrYear(dod);
             if ((compareDateString(dodString, diagnosisDateString) == DateCompareResult.BEFORE)) {
                 validationErrors.add(new ValidationError("diagnosedato", "DiagEtterDod"));
@@ -85,8 +85,8 @@ public class DateValidation {
             return validationErrors;
         }
 
-        final String born = personalDataDTO.getFodt();
-        final String dead = personalDataDTO.getDod();
+        final String born = personalDataDTO.getBorn();
+        final String dead = personalDataDTO.getDead();
         
         //født kan ikke være mors
         if (checkMorsUnknown(born, "mors") &&
@@ -106,9 +106,9 @@ public class DateValidation {
 
         final Date lowLim = configurationDAO.getDate(ConfigurationDAO.KONFIG_LOWLIM);
         final Integer waitLim = configurationDAO.getInt(ConfigurationDAO.KONFIG_WAITLIM);
-        final Date maxLim = GyldigeDatoformater.getDateRoll(new Date(), -waitLim);
+        final Date maxLim = ValidDateFormats.getDateRoll(new Date(), -waitLim);
         final Integer maxAge = configurationDAO.getInt(ConfigurationDAO.KONFIG_MAXAGE);
-        final Date minLim = GyldigeDatoformater.getDateRoll(new Date(), -maxAge);
+        final Date minLim = ValidDateFormats.getDateRoll(new Date(), -maxAge);
 
         //skjema 1
         final List<ValidationError> fnumErrors = fnumCheck(personalDataDTO, lowLim, maxLim);
@@ -144,13 +144,13 @@ public class DateValidation {
     //skjema 01
     private ArrayList<ValidationError> fnumCheck(final PersondataDTO person, final Date lowLim, final Date maxLim) {
         final ArrayList<ValidationError> errors = new ArrayList<>();
-        final String fnr = person.getFodselsnummer();
+        final String fnr = person.getPid();
 
-        if (!gyldigUkjent.contains(person.getFodt())) {
+        if (!gyldigUkjent.contains(person.getBorn())) {
             if (fnr == null || fnr.isEmpty()) {
                 //sjekk fødselsdato
-                if (check(person.getFodt())) {
-                    final Date born = getDate(person.getFodt());
+                if (check(person.getBorn())) {
+                    final Date born = getDate(person.getBorn());
                     if (born.before(lowLim) || born.after(maxLim)) {
                         errors.add(new ValidationError("fodt", "UtenforGyldigPeriode",
                                                        "Person born outside valid period."));
@@ -174,7 +174,7 @@ public class DateValidation {
         final ArrayList<ValidationError> feil = new ArrayList<>();
         final String lastContact = personalDataDTO.getLastContact();
         final String firstContact = personalDataDTO.getFirstContact();
-        final String dead = personalDataDTO.getDod();
+        final String dead = personalDataDTO.getDead();
 
         if (gyldigMors.contains(dead)) {
             if (check(lastContact) && check(firstContact)) {
@@ -199,14 +199,14 @@ public class DateValidation {
     private List<ValidationError> recordDateKnownFDateUnkownDeath(final PersondataDTO personalDataDTO, final Date maxAge) {
         final ArrayList<ValidationError> validationErrorList = new ArrayList<>();
 
-        if (check(personalDataDTO.getDod()) || gyldigMors.contains(personalDataDTO.getDod())) {
+        if (check(personalDataDTO.getDead()) || gyldigMors.contains(personalDataDTO.getDead())) {
             final List<ValidationError> validationErrors = checkContactDateBorn(personalDataDTO);
             if (!validationErrors.isEmpty()) {
                 validationErrorList.addAll(validationErrors);
             }
         } else {
-            if (check(personalDataDTO.getFodt())) {
-                final Date born = getDate(personalDataDTO.getFodt());
+            if (check(personalDataDTO.getBorn())) {
+                final Date born = getDate(personalDataDTO.getBorn());
 
                 if (born.before(maxAge)) {
                     validationErrorList.add(new ValidationError("fodt", "UtenforGyldigPeriode"));
@@ -227,7 +227,7 @@ public class DateValidation {
                                                                 final Date lowLim,
                                                                 final Date maxLim) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
-        Date dod = getDate(personalDataDTO.getDod());
+        Date dod = getDate(personalDataDTO.getDead());
 
         if (dod.before(lowLim) || dod.after(maxLim)) {
             validationErrors.add(new ValidationError("dod", "UtenforGyldigPeriode"));
@@ -246,13 +246,13 @@ public class DateValidation {
                                                              final Date lowLim,
                                                              final Date maxLim){
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
-        final Date dead = getDate(personalDataDTO.getDod());
+        final Date dead = getDate(personalDataDTO.getDead());
 
         if (dead.before(lowLim) || dead.after(maxLim)) {
             validationErrors.add(new ValidationError("dod", "UtenforGyldigPeriode"));
         } else {
-            if (check(personalDataDTO.getFodt()) && check(personalDataDTO.getDod())) {
-                if (compareDateString(personalDataDTO.getDod(), personalDataDTO.getFodt()) == DateCompareResult.BEFORE) {
+            if (check(personalDataDTO.getBorn()) && check(personalDataDTO.getDead())) {
+                if (compareDateString(personalDataDTO.getDead(), personalDataDTO.getBorn()) == DateCompareResult.BEFORE) {
                     validationErrors.add(new ValidationError("fodt", "FodtEtterDodt"));
                 } else {
                     final List<ValidationError> errorList = checkContactDates(personalDataDTO);
@@ -272,8 +272,8 @@ public class DateValidation {
         //første og siste kontaktdato registrert
         final String firstContact = personalDataDTO.getFirstContact();
         final String lastContact = personalDataDTO.getLastContact();
-        final String born = personalDataDTO.getFodt();
-        final String dead = personalDataDTO.getDod();
+        final String born = personalDataDTO.getBorn();
+        final String dead = personalDataDTO.getDead();
 
         if (check(firstContact) && check(lastContact)) {
             if (compareDateString(firstContact, lastContact) == DateCompareResult.AFTER) {
@@ -323,7 +323,7 @@ public class DateValidation {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
         final String firstContact = personalDataDTO.getFirstContact();
         final String lastContact = personalDataDTO.getLastContact();
-        final String born = personalDataDTO.getFodt();
+        final String born = personalDataDTO.getBorn();
 
         //første og siste kontaktdato registrert
         if (check(firstContact) && check(lastContact)) {
@@ -363,7 +363,7 @@ public class DateValidation {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
         final String firstContact = personalDataDTO.getFirstContact();
         final String lastContact = personalDataDTO.getLastContact();
-        final String dead = personalDataDTO.getDod();
+        final String dead = personalDataDTO.getDead();
         
         //første og siste kontaktdato registrert
         if (check(firstContact) && check(lastContact)) {
@@ -443,7 +443,7 @@ public class DateValidation {
     }
 
     private Date getDate(final String dato) {
-        return GyldigeDatoformater.getDate(dato);
+        return ValidDateFormats.getDate(dato);
     }
 
     /**

@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 
@@ -22,9 +22,9 @@ public class AgreementDAO extends EntityDAO<Agreement> {
     public Agreement delete(final String id) {
         final Agreement agreement = super.fetchSingleInstance(id);
         System.out.println(agreement);
-        final String queryString = "SELECT COUNT(a) "
-            + "FROM Avlevering a "
-            + "WHERE a.agreement = :agreement";
+        final String queryString = "SELECT COUNT(t) "
+            + "FROM Transfer t "
+            + "WHERE t.agreement = :agreement";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("agreement", agreement);
         
@@ -42,14 +42,14 @@ public class AgreementDAO extends EntityDAO<Agreement> {
         return agreement;
     }
 
-    public List<Avlevering> fetchTransfersByAgreementId(final String id) {
-        final String queryString = "SELECT OBJECT(a) "
-            + "FROM Avlevering a "
-            + "WHERE a.agreement.agreementId = :id ";
+    public List<Transfer> fetchTransfersByAgreementId(final String id) {
+        final String queryString = "SELECT OBJECT(t) "
+            + "FROM Transfer t "
+            + "WHERE t.agreement.agreementId = :id ";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", id);
 
-        return (List<Avlevering>) query.getResultList();
+        return (List<Transfer>) query.getResultList();
     }
     
 }

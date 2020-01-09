@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateAdapter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,34 +12,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Calendar;
 
-/**
- * <p>Java class for Agreement complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="Agreement">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="agreementId" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="avtaledato" type="{http://www.w3.org/2001/XMLSchema}date"/>
- *         &lt;element name="avtalebeskrivelse" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="virksomhet" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}Virksomhet"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Avtale", propOrder = {
     "agreementId",
-    "avtaledato",
-    "avtalebeskrivelse",
-    "virksomhet"
+    "agreementDate",
+    "agreementDescription",
+    "business"
 })
 @Data
 @NoArgsConstructor
@@ -53,19 +32,21 @@ public class Agreement implements Serializable {
     protected String agreementId;
 
     @NotNull
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter2.class)
+    @XmlElement(required = true, type = String.class, name = "avtaledato")
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
-    protected Calendar avtaledato;
+    @Column(name = "avtaledato")
+    protected Calendar agreementDate;
 
     @NotNull
-    @XmlElement(required = true)
-    protected String avtalebeskrivelse;
-
+    @XmlElement(required = true, name = "avtalebeskrivelse")
+    @Column(name = "avtalebeskrivelse")
+    protected String agreementDescription;
+    
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "virksomhet_organisasjonsnummer")
-    @XmlElement(required = true)
-    protected Virksomhet virksomhet;
+    @XmlElement(required = true, name = "virksomhet")
+    protected Virksomhet business;
     
 }

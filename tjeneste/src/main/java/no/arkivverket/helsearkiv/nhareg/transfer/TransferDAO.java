@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 
@@ -11,18 +11,18 @@ import java.util.Collections;
 import java.util.List;
 
 @Stateless
-public class TransferDAO extends EntityDAO<Avlevering> {
+public class TransferDAO extends EntityDAO<Transfer> {
 
     public TransferDAO() {
-        super(Avlevering.class, "avleveringsidentifikator");
+        super(Transfer.class, "transferId");
     }
 
     @Override
-    public Avlevering delete(final String id) {
-        final Avlevering transfer = fetchSingleInstance(id);
+    public Transfer delete(final String id) {
+        final Transfer transfer = fetchSingleInstance(id);
 
         // Cannot delete non-empty transfers
-        if (!transfer.getPasientjournal().isEmpty()) {
+        if (!transfer.getMedicalRecords().isEmpty()) {
             final ValidationError validationError = new ValidationError("Avlevering", "HasChildren");
             final List<ValidationError> validationErrors = Collections.singletonList(validationError);
             throw new ValidationErrorException(validationErrors);
@@ -43,29 +43,29 @@ public class TransferDAO extends EntityDAO<Avlevering> {
         return String.valueOf(result);
     }
 
-    public Avlevering fetchTransferFromRecordId(final String recordId) {
+    public Transfer fetchTransferFromRecordId(final String recordId) {
         final String queryString = "SELECT * " 
             + "FROM avlevering a " 
             + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator " 
             + "WHERE aps.pasientjournal_uuid = :id ";
         
-        final Query query = getEntityManager().createNativeQuery(queryString, Avlevering.class);
+        final Query query = getEntityManager().createNativeQuery(queryString, Transfer.class);
         query.setParameter("id", recordId);
 
-        return (Avlevering) query.getSingleResult();
+        return (Transfer) query.getSingleResult();
     }
 
-    public Avlevering fetchTransferForStorageUnit(final String id) {
-        final String select = "SELECT DISTINCT a "
-            + "FROM Avlevering a "
-            + "INNER JOIN a.pasientjournal p "
-            + "INNER JOIN p.lagringsenhet l "
-            + "WHERE l.identifikator = :id ";
+    public Transfer fetchTransferForStorageUnit(final String id) {
+        final String select = "SELECT DISTINCT t "
+            + "FROM Transfer t "
+            + "INNER JOIN t.medicalRecords p "
+            + "INNER JOIN p.storageUnit l "
+            + "WHERE l.id = :id ";
 
         final Query query = getEntityManager().createQuery(select);
         query.setParameter("id", id);
 
-        return (Avlevering) query.getSingleResult();
+        return (Transfer) query.getSingleResult();
     }
 
     public final String fetchFirstTransferIdFromStorageUnit(final String storageUnitId) {

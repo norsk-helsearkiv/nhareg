@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
 
 import javax.annotation.Resource;
@@ -41,7 +41,7 @@ public class DiagnosisResource {
     @Path("/{id}")
     public Response update(@PathParam("id") String id, final DiagnoseDTO diagnoseDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final Diagnose updatedDiagnosis = diagnosisService.update(id, diagnoseDTO, username);
+        final Diagnosis updatedDiagnosis = diagnosisService.update(id, diagnoseDTO, username);
 
         if (updatedDiagnosis == null) {
             Response.status(Response.Status.NOT_FOUND).build();

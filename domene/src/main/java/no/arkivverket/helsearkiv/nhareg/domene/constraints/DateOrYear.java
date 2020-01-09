@@ -17,9 +17,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = DateOrYearValidator.class)
 @Documented
-public @interface DagEllerAar {
+public @interface DateOrYear {
 
-    String message() default "{no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar}";
+    String message() default "{no.arkivverket.helsearkiv.nhareg.domene.constraints.DateOrYear}";
 
     Class<?>[] groups() default {};
 

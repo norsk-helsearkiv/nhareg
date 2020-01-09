@@ -1,9 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.constraints.DateOrYear;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -14,23 +15,30 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class DiagnoseDTO implements Serializable {
 
+    @JsonProperty(value = "uuid")
     private String uuid;
 
     @NotNull
     @Size(min = 1)
-    @DagEllerAar
-    private String diagnosedato;
+    @DateOrYear
+    @JsonProperty(value = "diagnosedato")
+    private String diagnosisDate;
 
-    private String diagnosekodeverk;
+    @JsonProperty(value = "diagnosekodeverk")
+    private String diagnosisCodeSystem;
     
-    private String diagnosekode;
+    @JsonProperty(value = "diagnosekode")
+    private String diagnosisCode;
 
     @NotNull
     @Size(min = 1)
-    private String diagnosetekst;
+    @JsonProperty(value = "diagnosetekst")
+    private String diagnosisText;
 
-    private String oppdatertAv;
+    @JsonProperty(value = "oppdatertAv")
+    private String updatedBy;
 
-    private String oppdatertDato;
+    @JsonProperty(value = "oppdatertDato")
+    private String updatedDate;
 
 }

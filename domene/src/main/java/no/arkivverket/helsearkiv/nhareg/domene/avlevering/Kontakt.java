@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
@@ -18,8 +19,8 @@ import java.io.Serializable;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="foerste" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}DatoEllerAar" minOccurs="0"/>
- *         &lt;element name="siste" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}DatoEllerAar" minOccurs="0"/>
+ *         &lt;element name="foerste" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}DateOrYear" minOccurs="0"/>
+ *         &lt;element name="siste" type="{http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv}DateOrYear" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -42,13 +43,15 @@ public class Kontakt implements Serializable {
         @AttributeOverride(name = "dato", column = @Column(name = "foersteKontaktDato")),
         @AttributeOverride(name = "aar", column = @Column(name = "foersteKontaktAar"))
     })
-    protected DatoEllerAar foerste;
+    @XmlElement(name = "forstekontakt")
+    protected DateOrYear foerste;
 
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(name = "dato", column = @Column(name = "sisteKontaktDato")),
         @AttributeOverride(name = "aar", column = @Column(name = "sisteKontaktAar"))
     })
-    protected DatoEllerAar siste;
+    @XmlElement(name = "sistekontakt")
+    protected DateOrYear siste;
 
 }

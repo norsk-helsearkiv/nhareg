@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -36,12 +37,12 @@ import java.util.Calendar;
 public class Innleggelse implements Serializable {
 
     @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar inndato;
 
     @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter .class)
     @XmlSchemaType(name = "date")
     protected Calendar utdato;
 

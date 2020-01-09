@@ -1,6 +1,5 @@
-package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
+package no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
 
 import javax.validation.ConstraintViolation;

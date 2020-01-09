@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,15 +31,15 @@ public class MedicalRecordServiceTest {
     @Test
     public void getByIdWithTransfer_shouldReturnThreeStorageUnits() {
         final MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
-        assertEquals("Hunden Fido", medicalRecordDTO.getPersondata().getNavn());
-        assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
-        assertFalse(medicalRecordDTO.getDiagnoser().isEmpty());
+        assertEquals("Hunden Fido", medicalRecordDTO.getPersonalDataDTO().getName());
+        assertEquals(3, medicalRecordDTO.getPersonalDataDTO().getStorageUnits().length);
+        assertFalse(medicalRecordDTO.getDiagnosisDTOList().isEmpty());
     }
 
     @Test
     public void updateMedicalRecord_newJournalNumber() {
         MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
-        medicalRecordDTO.getPersondata().setJournalnummer("12345");
+        medicalRecordDTO.getPersonalDataDTO().setRecordNumber("12345");
         medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
     }
 
@@ -49,27 +49,27 @@ public class MedicalRecordServiceTest {
         assertNotNull(medicalRecordDTO);
 
         final String beskrivelse = "ny beskrivelse";
-        medicalRecordDTO.setAvleveringBeskrivelse(beskrivelse);
+        medicalRecordDTO.setTransferDescription(beskrivelse);
         medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
 
         final MedicalRecordDTO updatedMedicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         assertNotNull(updatedMedicalRecordDTO);
-        assertEquals(beskrivelse, updatedMedicalRecordDTO.getAvleveringBeskrivelse());
+        assertEquals(beskrivelse, updatedMedicalRecordDTO.getTransferDescription());
     }
 
     @Test
     public void updateMedicalRecord_shouldNotChangeStorageUnits() {
         final String id = "uuid1";
-        final Pasientjournal medicalRecord = medicalRecordService.getById(id);
+        final MedicalRecord medicalRecord = medicalRecordService.getById(id);
         assertNotNull(medicalRecord);
-        assertNotNull(medicalRecord.getLagringsenhet());
-        assertEquals(3, medicalRecord.getLagringsenhet().size());
+        assertNotNull(medicalRecord.getStorageUnit());
+        assertEquals(3, medicalRecord.getStorageUnit().size());
 
         MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer(id);
         assertNotNull(medicalRecordDTO);
-        assertNotNull(medicalRecordDTO.getPersondata());
-        assertNotNull(medicalRecordDTO.getPersondata().getLagringsenheter());
-        assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
+        assertNotNull(medicalRecordDTO.getPersonalDataDTO());
+        assertNotNull(medicalRecordDTO.getPersonalDataDTO().getStorageUnits());
+        assertEquals(3, medicalRecordDTO.getPersonalDataDTO().getStorageUnits().length);
 
         // Do an update
         medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
@@ -77,9 +77,9 @@ public class MedicalRecordServiceTest {
         // Checks the number of diagnosis that are saved
         medicalRecordDTO = medicalRecordService.getByIdWithTransfer(id);
         assertNotNull(medicalRecordDTO);
-        assertNotNull(medicalRecordDTO.getPersondata());
-        assertNotNull(medicalRecordDTO.getPersondata().getLagringsenheter());
-        assertEquals(3, medicalRecordDTO.getPersondata().getLagringsenheter().length);
+        assertNotNull(medicalRecordDTO.getPersonalDataDTO());
+        assertNotNull(medicalRecordDTO.getPersonalDataDTO().getStorageUnits());
+        assertEquals(3, medicalRecordDTO.getPersonalDataDTO().getStorageUnits().length);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void delete_validId_shouldSetDeletedToTrue() {
-        Pasientjournal medicalRecord = medicalRecordService.delete("uuid1", USERNAME);
+        MedicalRecord medicalRecord = medicalRecordService.delete("uuid1", USERNAME);
         assertNotNull(medicalRecord);
         assertEquals(true, medicalRecord.getSlettet());
     }

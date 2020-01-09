@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -29,19 +29,19 @@ public class DiagnosisCodeServiceTest {
 
     @Test
     public void create_shouldNotReturnNull() {
-        final Diagnosekode diagnosisCode = new Diagnosekode();
+        final DiagnosisCode diagnosisCode = new DiagnosisCode();
         diagnosisCode.setCode("Diagnosekode100");
         diagnosisCode.setCodeSystem("Kodesystem99");
         diagnosisCode.setCodeSystemVersion("0.9.Beta");
         diagnosisCode.setDisplayName("Influensa beta");
-        Diagnosekode response = diagnosisCodeService.create(diagnosisCode);
+        DiagnosisCode response = diagnosisCodeService.create(diagnosisCode);
         assertNotNull(response);
     }
 
     @Test
     public void getAll_noPaging_shouldFindThree() {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
-        List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(3, diagnosisCodes.size());
     }
@@ -51,7 +51,7 @@ public class DiagnosisCodeServiceTest {
         MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add("page", "1");
         queryParameters.add("size", "1");
-        List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(1, diagnosisCodes.size());
     }
@@ -61,7 +61,7 @@ public class DiagnosisCodeServiceTest {
         final String code = "Code0";
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add("code", code);
-        final List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(1, diagnosisCodes.size());
     }
@@ -71,7 +71,7 @@ public class DiagnosisCodeServiceTest {
         final String displayNameLike = "ode";
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         queryParameters.add("displayNameLike", displayNameLike);
-        final List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(1, diagnosisCodes.size());
     }
@@ -81,7 +81,7 @@ public class DiagnosisCodeServiceTest {
         final String displayNameLike = "oDe";
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add("displayNameLike", displayNameLike);
-        final List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(1, diagnosisCodes.size());
     }
@@ -91,7 +91,7 @@ public class DiagnosisCodeServiceTest {
         final String code = "Ukjent";
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         queryParameters.add("code", code);
-        final List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(0, diagnosisCodes.size());
     }
@@ -100,7 +100,7 @@ public class DiagnosisCodeServiceTest {
     public void getAll_nullCode_shouldReturnThree() {
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
         queryParameters.add("code", null);
-        final List<Diagnosekode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
+        final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(3, diagnosisCodes.size());
     }

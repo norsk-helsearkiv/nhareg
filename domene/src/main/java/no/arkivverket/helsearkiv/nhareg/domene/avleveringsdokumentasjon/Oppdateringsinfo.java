@@ -8,15 +8,12 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon;
 
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateTimeAdapter;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Calendar;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -56,7 +53,7 @@ public class Oppdateringsinfo
 {
 
     @XmlElement(name = "sist_oppdatert", required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlJavaTypeAdapter(StringDateTimeAdapter.class)
     @XmlSchemaType(name = "dateTime")
     protected Calendar sistOppdatert;
     @XmlElement(name = "oppdatert_av", required = true)

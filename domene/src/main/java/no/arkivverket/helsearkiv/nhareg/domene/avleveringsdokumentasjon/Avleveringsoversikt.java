@@ -8,15 +8,13 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon;
 
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateTimeAdapter;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.Calendar;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -82,27 +80,27 @@ public class Avleveringsoversikt
     @XmlElement(name = "pasient_ID_type", required = true)
     protected String pasientIDType;
     @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar fødselsdato;
     @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar morsdato;
     @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar uttrekksdato;
     @XmlElement(name = "kvalitetssikret_dato", type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar kvalitetssikretDato;
     @XmlElement(name = "overf\u00f8rt_dato", type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar overførtDato;
     @XmlElement(name = "kvittering_mottatt_dato", type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar kvitteringMottattDato;
     @XmlElement(name = "status_fra_arkivdepot")
@@ -110,15 +108,15 @@ public class Avleveringsoversikt
     @XmlElement(name = "tilbakemelding_fra_arkivdepot")
     protected String tilbakemeldingFraArkivdepot;
     @XmlElement(name = "dato_godtatt_av_arkivdepot", type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar datoGodtattAvArkivdepot;
     @XmlElement(name = "dato_forkastet_av_arkivdepot", type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar datoForkastetAvArkivdepot;
     @XmlElement(name = "tidspunkt_slettet_fra_system", type = String.class)
-    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlJavaTypeAdapter(StringDateTimeAdapter.class)
     @XmlSchemaType(name = "dateTime")
     protected Calendar tidspunktSlettetFraSystem;
     @XmlElement(name = "Overf\u00f8rt_til_ny_avlevering", namespace = "http://eisi.helsedir.no/anno2014/nha-1.61-RGM/avlevering/Avleveringsdokumentasjon")

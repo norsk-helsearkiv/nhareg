@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateAdapter;
 
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Max;
@@ -17,31 +18,6 @@ import java.util.Calendar;
 /**
  * Type for å representere en dato eller et årstall
  * 
- * <p>Java class for DatoEllerAar complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
- * <pre>
- * &lt;complexType name="DatoEllerAar">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;choice>
- *         &lt;element name="dato" type="{http://www.w3.org/2001/XMLSchema}date"/>
- *         &lt;element name="aar">
- *           &lt;simpleType>
- *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}int">
- *               &lt;minInclusive value="1800"/>
- *               &lt;maxInclusive value="2099"/>
- *             &lt;/restriction>
- *           &lt;/simpleType>
- *         &lt;/element>
- *       &lt;/choice>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
- * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DatoEllerAar", propOrder = {
@@ -50,10 +26,10 @@ import java.util.Calendar;
 })
 @Data
 @Embeddable
-public class DatoEllerAar implements Serializable {
+public class DateOrYear implements Serializable {
 
     @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar dato;
 

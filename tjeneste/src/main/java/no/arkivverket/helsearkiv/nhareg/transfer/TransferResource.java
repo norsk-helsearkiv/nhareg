@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
@@ -42,14 +42,14 @@ public class TransferResource {
 
     @GET
     @Path("/{id}")
-    public Avlevering get(@PathParam("id") String id) {
+    public TransferDTO get(@PathParam("id") String id) {
         return transferService.getById(id);
     }
 
     @POST
     @Path("/ny")
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public Avlevering create(final TransferDTO transferDTO) {
+    public TransferDTO create(final TransferDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         
         return transferService.create(transferDTO, username);
@@ -67,14 +67,14 @@ public class TransferResource {
     @DELETE
     @Path("/{id}")
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public Avlevering delete(@PathParam("id") String id) {
+    public TransferDTO delete(@PathParam("id") String id) {
         return transferService.delete(id);
     }
 
     @GET
     @Path("/default")
     @Produces(MediaType.APPLICATION_JSON)
-    public Avlevering getDefaultAvlevering() {
+    public TransferDTO getDefaultAvlevering() {
         final String username = sessionContext.getCallerPrincipal().getName();
         return transferService.getDefaultTransfer(username);
     }
@@ -136,8 +136,9 @@ public class TransferResource {
     @Produces(MediaType.APPLICATION_XML)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response getTransferXML(@PathParam("id") String id) {
-        final Avlevering transfer = transferService.getById(id);
-
+        final TransferDTO transferDTO = transferService.getById(id);
+        final Transfer transfer = transferDTO.toTransfer();
+        
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();
             final StringWriter stringWriter = new StringWriter();

@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ public class ValidatorTest {
     public void validator_validData_shouldReturnNoErrors() {
         final PersondataDTO personalDataDTO = new PersondataDTO();
         final String[] storageUnits = { "1" };
-        personalDataDTO.setLagringsenheter(storageUnits);
-        personalDataDTO.setJournalnummer("123");
-        personalDataDTO.setLopenummer("234");
-        personalDataDTO.setFodselsnummer("01019912345");
-        personalDataDTO.setNavn("Nora");
-        personalDataDTO.setKjonn("K");
-        personalDataDTO.setFodt("1.1.1999");
-        personalDataDTO.setDod("4.1.1999");
+        personalDataDTO.setStorageUnits(storageUnits);
+        personalDataDTO.setRecordNumber("123");
+        personalDataDTO.setSerialNumber("234");
+        personalDataDTO.setPid("01019912345");
+        personalDataDTO.setName("Nora");
+        personalDataDTO.setGender("K");
+        personalDataDTO.setBorn("1.1.1999");
+        personalDataDTO.setDead("4.1.1999");
         personalDataDTO.setFirstContact("1.1.1999");
         personalDataDTO.setLastContact("5.1.1999");
         

@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Lagringsenhet;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -17,17 +17,17 @@ public class EtikettBuilder {
     private static final String ANTALL_JOURNALER= "<VAR6>";
     private static final String LAGRINGSENHET_IDENTIFIKATOR= "<VAR7>";
     
-    public String buildContent(final String template, final Lagringsenhet storageUnit, final Avlevering transfer,
+    public String buildContent(final String template, final StorageUnit storageUnit, final Transfer transfer,
                                final Integer storageUnitSize) throws IOException {
         final String content = FileUtils.readFileToString(new File(template), "UTF-8");
 
         return content.replace(ARKIVSKAPER, transfer.getArkivskaper())
                 .replace(AVTALEIDENTIFIKATOR, transfer.getAgreement().getAgreementId())
-                .replace(AVLEVERINGSIDENTIFIKATOR, transfer.getAvleveringsidentifikator())
-                .replace(AVTALEBESKRIVELSE, transfer.getAgreement().getAvtalebeskrivelse())
-                .replace(AVLEVERINGSBESKRIVELSE, transfer.getAvleveringsbeskrivelse())
+                .replace(AVLEVERINGSIDENTIFIKATOR, transfer.getTransferId())
+                .replace(AVTALEBESKRIVELSE, transfer.getAgreement().getAgreementDescription())
+                .replace(AVLEVERINGSBESKRIVELSE, transfer.getTransferDescription())
                 .replace(ANTALL_JOURNALER, String.valueOf(storageUnitSize))
-                .replace(LAGRINGSENHET_IDENTIFIKATOR, storageUnit.getIdentifikator());
+                .replace(LAGRINGSENHET_IDENTIFIKATOR, storageUnit.getId());
     }
 
 }

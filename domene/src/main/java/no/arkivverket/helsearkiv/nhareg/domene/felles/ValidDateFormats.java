@@ -11,10 +11,7 @@ import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Created by haraldk on 30.04.15.
- */
-public class GyldigeDatoformater {
+public class ValidDateFormats {
     private static final String[] formater = {
             "d.M.yyyy", "dd.MM.yyyy","d.MM.yyyy", "dd.M.yyyy",
             "d,M,yyyy", "dd,MM,yyyy","d,MM,yyyy", "dd,M,yyyy",

@@ -3,9 +3,9 @@ package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.CV;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosekode;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -21,31 +21,31 @@ import java.util.List;
 import java.util.Map;
 
 @Stateless
-public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
+public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
 
     private static final String DISPLAY_NAME_LIKE_QUERY_PARAMETER = "displayNameLike";
     private static final String DIAGNOSE_DATE_QUERY_PARAMETER = "diagnoseDate";
     private static final String CODE_QUERY_PARAMETER = "code";
 
     public DiagnosisCodeDAO() {
-        super(Diagnosekode.class, "code");
+        super(DiagnosisCode.class, "code");
     }
 
     @Override
-    public Diagnosekode fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(dk) "
-            + "FROM Diagnosekode dk "
-            + "WHERE dk.code = :id ";
-        final Query query = getEntityManager().createQuery(queryString, Diagnosekode.class);
+    public DiagnosisCode fetchById(final String id) {
+        final String queryString = "SELECT OBJECT(dc) "
+            + "FROM DiagnosisCode dc "
+            + "WHERE dc.code = :id ";
+        final Query query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
         query.setParameter("id", id);
 
-        return (Diagnosekode) query.getSingleResult();
+        return (DiagnosisCode) query.getSingleResult();
     }
 
     @Override
     protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
                                             final CriteriaBuilder criteriaBuilder,
-                                            final Root<Diagnosekode> root) {
+                                            final Root<DiagnosisCode> root) {
         final List<Predicate> predicates = new ArrayList<>();
         final String codeQueryParameter = queryParameters.get(CODE_QUERY_PARAMETER);
 
@@ -57,12 +57,12 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
         final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
         if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
             //datostreng kan bestå av kun år eller full dato.
-            final DatoEllerAar dateOrYear = DateOrYearConverter.toDateOrYear(dateQueryParameter);
+            final DateOrYear dateOrYear = DateOrYearConverter.toDateOrYear(dateQueryParameter);
 
             Date date = null;
             if (dateOrYear != null) {
                 if (dateOrYear.getAar() != null) {
-                    date = GyldigeDatoformater.getDateFromYear(dateOrYear.getAar());
+                    date = ValidDateFormats.getDateFromYear(dateOrYear.getAar());
                 } else {
                     date = dateOrYear.getDato().getTime();
                 }
@@ -96,7 +96,7 @@ public class DiagnosisCodeDAO extends EntityDAO<Diagnosekode> {
 
     private void createDisplayNamePredicate(final Map<String, String> queryParameters,
                                             final CriteriaBuilder criteriaBuilder,
-                                            final Root<Diagnosekode> root,
+                                            final Root<DiagnosisCode> root,
                                             final List<Predicate> predicates) {
         final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
         final String displayNameLike = queryParameters.get(DISPLAY_NAME_LIKE_QUERY_PARAMETER);

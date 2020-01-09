@@ -16,12 +16,12 @@ import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterf
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
+import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
@@ -57,8 +57,8 @@ public class RESTDeployment {
                                // Models
                                .addPackage(Agreement.class.getPackage())
                                .addPackage(User.class.getPackage())
-                               .addPackage(DatoEllerAar.class.getPackage())
-                               .addPackage(GyldigeDatoformater.class.getPackage())
+                               .addPackage(DateOrYear.class.getPackage())
+                               .addPackage(ValidDateFormats.class.getPackage())
                                .addPackage(Konfigparam.class.getPackage())
                                .addPackage(ListObject.class.getPackage())
                                .addPackage(ValidationErrorException.class.getPackage())

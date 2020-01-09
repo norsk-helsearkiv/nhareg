@@ -6,7 +6,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import org.junit.Test;
 
-import java.text.ParseException;
 import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
@@ -15,101 +14,104 @@ import static org.junit.Assert.assertNotNull;
 public class DateOrYearConverterTest {
 
     @Test
-    public void tilPasientjournalTest() {
-        PersondataDTO dto = new PersondataDTO();
-        dto.setDod("2009");
-        dto.setFodselsnummer("01010942345");
-        dto.setFodt("2009");
-        dto.setJournalnummer("123");
-        dto.setKjonn("K");
+    public void toMedicalRecordTest() {
+        final PersondataDTO dto = new PersondataDTO();
+        dto.setDead("2009");
+        dto.setPid("01010942345");
+        dto.setBorn("2009");
+        dto.setRecordNumber("123");
+        dto.setGender("K");
         String[] lagringsenheter = {"boks1"};
-        dto.setLagringsenheter(lagringsenheter);
-        dto.setLopenummer("234");
-        dto.setNavn("Natalie");
+        dto.setStorageUnits(lagringsenheter);
+        dto.setSerialNumber("234");
+        dto.setName("Natalie");
         dto.setUuid("uuid1");
         dto.setFirstContact("2009");
         dto.setLastContact("2009");
 
-        Pasientjournal pasientjournal = MedicalRecordConverter.convertFromPersonalDataDTO(dto);
+        MedicalRecord medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(dto);
 
-        assertEquals(dto.getFodselsnummer(), pasientjournal.getGrunnopplysninger().getIdentifikator().getPid());
-        int dod = pasientjournal.getGrunnopplysninger().getDead().getAar();
+        assertEquals(dto.getPid(), medicalRecord.getGrunnopplysninger().getIdentifikator().getPid());
+        final int dod = medicalRecord.getGrunnopplysninger().getDead().getAar();
         assertEquals(2009, dod);
     }
 
     @Test
     public void mapToPersonalDataDTOTest() {
-        final PersondataDTO persondataDTO = MedicalRecordConverter.convertToPersonalDataDTO(getPasientjournal());
-        assertEquals(1, persondataDTO.getLagringsenheter().length);
-        assertEquals("01010942345", persondataDTO.getFodselsnummer());
-        assertEquals("Natalie", persondataDTO.getNavn());
+        final PersondataDTO persondataDTO = MedicalRecordConverter.convertToPersonalDataDTO(getMedicalRecord());
+        assertEquals(1, persondataDTO.getStorageUnits().length);
+        assertEquals("01010942345", persondataDTO.getPid());
+        assertEquals("Natalie", persondataDTO.getName());
     }
 
     @Test
-    public void tilDatoEllerAar() throws ParseException {
-        DatoEllerAar datoEllerAar = DateOrYearConverter.toDateOrYear("15.03.2015");
-        assertNotNull(datoEllerAar);
-        assertNotNull(datoEllerAar.getDato());
-        assertEquals(15, datoEllerAar.getDato().get(Calendar.DAY_OF_MONTH));
-        assertEquals(Calendar.MARCH, datoEllerAar.getDato().get(Calendar.MONTH));
-        assertEquals(2015, datoEllerAar.getDato().get(Calendar.YEAR));
+    public void toDateOrYear() {
+        final DateOrYear dateOrYear = DateOrYearConverter.toDateOrYear("15.03.2015");
+        assertNotNull(dateOrYear);
+        assertNotNull(dateOrYear.getDato());
+        assertEquals(15, dateOrYear.getDato().get(Calendar.DAY_OF_MONTH));
+        assertEquals(Calendar.MARCH, dateOrYear.getDato().get(Calendar.MONTH));
+        assertEquals(2015, dateOrYear.getDato().get(Calendar.YEAR));
     }
     
     @Test
-    public void tilString() throws ParseException {
-        String datoString = "15.03.2015";
-        DatoEllerAar datoEllerAar = DateOrYearConverter.toDateOrYear(datoString);
-        assertNotNull(datoEllerAar);
-        assertNotNull(datoEllerAar.getDato());
-        assertEquals(15, datoEllerAar.getDato().get(Calendar.DAY_OF_MONTH));
-        assertEquals(Calendar.MARCH, datoEllerAar.getDato().get(Calendar.MONTH));
-        assertEquals(2015, datoEllerAar.getDato().get(Calendar.YEAR));
+    public void validDate_toString() {
+        final String datoString = "15.03.2015";
+        DateOrYear dateOrYear = DateOrYearConverter.toDateOrYear(datoString);
+        assertNotNull(dateOrYear);
+        assertNotNull(dateOrYear.getDato());
+        assertEquals(15, dateOrYear.getDato().get(Calendar.DAY_OF_MONTH));
+        assertEquals(Calendar.MARCH, dateOrYear.getDato().get(Calendar.MONTH));
+        assertEquals(2015, dateOrYear.getDato().get(Calendar.YEAR));
         //
-        assertEquals(datoString,datoEllerAar.getStringValue());
+        assertEquals(datoString, dateOrYear.getStringValue());
     }
 
-    private Pasientjournal getPasientjournal() {
-        Pasientjournal pasientjournal = new Pasientjournal();
+    private MedicalRecord getMedicalRecord() {
+        final MedicalRecord medicalRecord = new MedicalRecord();
+        final StorageUnit storageUnit = new StorageUnit();
+        final Grunnopplysninger baseProperties = new Grunnopplysninger();
 
-        Lagringsenhet lght = new Lagringsenhet();
-        lght.setIdentifikator("Boks1");
-        lght.setUuid("lagring-1-boks-1");
-        pasientjournal.getLagringsenhet().add(lght);
+        storageUnit.setId("Boks1");
+        storageUnit.setUuid("lagring-1-boks-1");
+        medicalRecord.getStorageUnit().add(storageUnit);
 
-        Grunnopplysninger grn = new Grunnopplysninger();
         Identifikator id = new Identifikator();
         id.setPid("01010942345");
         id.setTypePID("fodselsnummer");
-        grn.setIdentifikator(id);
+        baseProperties.setIdentifikator(id);
 
-        grn.setPnavn("Natalie");
-        grn.setDead(getDato());
-        grn.setDeathDateUnknown(Boolean.FALSE);
-        grn.setBorn(getDato());
+        baseProperties.setPnavn("Natalie");
+        baseProperties.setDead(getDate());
+        baseProperties.setDeathDateUnknown(Boolean.FALSE);
+        baseProperties.setBorn(getDate());
 
-        Gender k = new Gender();
-        k.setCode("K");
-        k.setDisplayName("Kvinne");
-        grn.setGender(k);
+        final Gender gender = new Gender();
+        gender.setCode("K");
+        gender.setDisplayName("Kvinne");
+        baseProperties.setGender(gender);
 
-        Kontakt kontakt = new Kontakt();
-        kontakt.setFoerste(getDato());
-        kontakt.setSiste(getDato());
-        grn.setKontakt(kontakt);
-        pasientjournal.setGrunnopplysninger(grn);
+        final Kontakt contact = new Kontakt();
+        contact.setFoerste(getDate());
+        contact.setSiste(getDate());
+        baseProperties.setKontakt(contact);
+        medicalRecord.setGrunnopplysninger(baseProperties);
 
-        Journalidentifikator identifikator = new Journalidentifikator();
-        identifikator.setJournalnummer("123");
-        identifikator.setLøpenummer("234");
-        pasientjournal.setJournalidentifikator(identifikator);
+        final RecordId recordId = new RecordId();
+        recordId.setRecordNumber("123");
+        recordId.setSerialNumber("234");
+        medicalRecord.setRecordId(recordId);
 
-        pasientjournal.setUuid("uuid1");
-        return pasientjournal;
+        medicalRecord.setUuid("uuid1");
+        
+        return medicalRecord;
     }
 
-    private DatoEllerAar getDato() {
-        DatoEllerAar dato = new DatoEllerAar();
-        dato.setAar(2000);
-        return dato;
+    private DateOrYear getDate() {
+        final DateOrYear date = new DateOrYear();
+        date.setAar(2000);
+        
+        return date;
     }
+    
 }

@@ -1,10 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
@@ -27,12 +27,14 @@ public class TransferService implements TransferServiceInterface {
     private UserDAO userDAO;
 
     @Override
-    public Avlevering create(final TransferDTO transferDTO, final String username) {
-        final Avlevering transfer = transferDTO.toTransfer();
+    public TransferDTO create(final TransferDTO transferDTO, final String username) {
+        final Transfer transfer = transferDTO.toTransfer();
         transfer.setOppdateringsinfo(createUpdateInfo(username));
 
         try {
-            return transferDAO.create(transfer);
+            final Transfer created = transferDAO.create(transfer);
+            
+            return new TransferDTO(created);
         } catch (EJBTransactionRolledbackException ejb) { // Catch duplicate entries
             Throwable cause = ejb.getCause();
 
@@ -54,71 +56,79 @@ public class TransferService implements TransferServiceInterface {
         new Validator<>(TransferDTO.class).validateWithException(transferDTO);
 
         // Get existing transfer
-        final Avlevering existingTransfer = transferDAO.fetchById(transferDTO.getAvleveringsidentifikator());
+        final Transfer existingTransfer = transferDAO.fetchById(transferDTO.getTransferId());
 
         // Copy values
-        existingTransfer.setAvleveringsidentifikator(transferDTO.getAvleveringsidentifikator());
-        existingTransfer.setAvleveringsbeskrivelse(transferDTO.getAvleveringsbeskrivelse());
-        existingTransfer.setArkivskaper(transferDTO.getArkivskaper());
-        existingTransfer.setLagringsenhetformat(transferDTO.getLagringsenhetformat());
+        existingTransfer.setTransferId(transferDTO.getTransferId());
+        existingTransfer.setTransferDescription(transferDTO.getTransferDescription());
+        existingTransfer.setArkivskaper(transferDTO.getArchiveCreator());
+        existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
 
         // Set update info
         existingTransfer.setOppdateringsinfo(createUpdateInfo(username));
 
         // Update
-        final Avlevering updatedTransfer = transferDAO.update(existingTransfer);
+        final Transfer updatedTransfer = transferDAO.update(existingTransfer);
 
         return new TransferDTO(updatedTransfer);
     }
 
     @Override
-    public Avlevering delete(final String id) {
-        return transferDAO.delete(id);
+    public TransferDTO delete(final String id) {
+        final Transfer deleted = transferDAO.delete(id);
+        
+        return new TransferDTO(deleted);
     }
 
     @Override
-    public Avlevering getById(final String id) {
-        return transferDAO.fetchById(id);
+    public TransferDTO getById(final String id) {
+        final Transfer transfer = transferDAO.fetchById(id);
+        
+        return new TransferDTO(transfer);
     }
 
     @Override
     public List<TransferDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
-        final List<Avlevering> transferList = transferDAO.fetchAll(mappedQueries);
+        final List<Transfer> transferList = transferDAO.fetchAll(mappedQueries);
         
         // Convert to TransferDTO list
         return transferList.stream().map(TransferDTO::new).collect(Collectors.toList());
     }
 
     @Override 
-    public Avlevering getTransferForStorageUnit(final String id) {
-        return transferDAO.fetchTransferForStorageUnit(id);
+    public TransferDTO getTransferForStorageUnit(final String id) {
+        final Transfer transfer = transferDAO.fetchTransferForStorageUnit(id);
+        
+        return new TransferDTO(transfer);
     }
 
     @Override
     public void lockTransfer(final String id) {
-        final Avlevering transfer = transferDAO.fetchById(id);
-        transfer.setLaast(true);
+        final Transfer transfer = transferDAO.fetchById(id);
+        transfer.setLocked(true);
         transferDAO.update(transfer);
     }
 
     @Override 
     public void unlockTransfer(final String id) {
-        final Avlevering transfer = transferDAO.fetchById(id);
-        transfer.setLaast(false);
+        final Transfer transfer = transferDAO.fetchById(id);
+        transfer.setLocked(false);
         transferDAO.update(transfer);
     }
 
     @Override
-    public Avlevering getDefaultTransfer(final String username) {
+    public TransferDTO getDefaultTransfer(final String username) {
         final User user = userDAO.fetchByUsername(username);
         final String defaultUuid = user.getDefaultAvleveringsUuid();
 
         if (defaultUuid == null || defaultUuid.isEmpty()) {
             return null;
         }
+
+        final Transfer transfer = transferDAO.fetchById(defaultUuid);
         
-        return transferDAO.fetchById(defaultUuid);
+        return new TransferDTO(transfer);
     }
 
     private Oppdateringsinfo createUpdateInfo(final String username) {

@@ -1,52 +1,74 @@
 package no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 public class TransferDTO implements Serializable {
     
-    protected String avleveringsidentifikator;
+    @JsonProperty(value = "avleveringsidentifikator")
+    private String transferId;
 
-    protected String avleveringsbeskrivelse;
+    @JsonProperty(value = "avleveringsbeskrivelse")
+    private String transferDescription;
 
-    protected Agreement avtale;
+    @JsonProperty(value = "avtale")
+    private Agreement agreement;
 
-    protected String arkivskaper;
+    @JsonProperty(value = "arkivskaper")
+    private String archiveCreator;
 
-    protected String lagringsenhetformat;
+    @JsonProperty(value = "lagringsenhetformat")
+    private String storageUnitFormat;
 
-    protected int antallPasientjournaler;
+    @JsonProperty(value = "pasientjournal")
+    private Set<MedicalRecord> medicalRecords;
+    
+    @JsonProperty(value = "antallPasientjournaler")
+    private int medicalRecordCount;
 
-    private boolean laast;
+    @JsonProperty(value = "laast")
+    private boolean locked;
 
-    private boolean defaultAvlevering;
+    @JsonProperty(value = "defaultAvlevering")
+    private boolean defaultTransfer;
+    
+    @JsonProperty(value = "oppdateringsinfo")
+    private Oppdateringsinfo updateInfo;
 
-    public TransferDTO(final Avlevering transfer) {
-        this.avleveringsidentifikator = transfer.getAvleveringsidentifikator();
-        this.avleveringsbeskrivelse = transfer.getAvleveringsbeskrivelse();
-        this.avtale = transfer.getAgreement();
-        this.arkivskaper = transfer.getArkivskaper();
-        this.antallPasientjournaler = transfer.getPasientjournal().size();
-        this.laast = transfer.isLaast();
-        this.lagringsenhetformat = transfer.getLagringsenhetformat();
+    public TransferDTO(final Transfer transfer) {
+        this.transferId = transfer.getTransferId();
+        this.transferDescription = transfer.getTransferDescription();
+        this.agreement = transfer.getAgreement();
+        this.archiveCreator = transfer.getArkivskaper();
+        this.medicalRecords = transfer.getMedicalRecords();
+        this.medicalRecordCount = transfer.getMedicalRecords().size();
+        this.locked = transfer.isLocked();
+        this.storageUnitFormat = transfer.getStorageUnitFormat();
+        this.updateInfo = transfer.getOppdateringsinfo();
     }
 
-    public Avlevering toTransfer() {
-        final Avlevering transfer = new Avlevering();
-        transfer.setLagringsenhetformat(getLagringsenhetformat());
-        transfer.setArkivskaper(getArkivskaper());
-        transfer.setAvleveringsbeskrivelse(getAvleveringsbeskrivelse());
-        transfer.setAvleveringsidentifikator(getAvleveringsidentifikator());
-        transfer.setAgreement(getAvtale());
-        transfer.setLaast(isLaast());
+    public Transfer toTransfer() {
+        final Transfer transfer = new Transfer();
+        transfer.setStorageUnitFormat(getStorageUnitFormat());
+        transfer.setArkivskaper(getArchiveCreator());
+        transfer.setMedicalRecords(getMedicalRecords());
+        transfer.setTransferDescription(getTransferDescription());
+        transfer.setTransferId(getTransferId());
+        transfer.setAgreement(getAgreement());
+        transfer.setLocked(isLocked());
+        transfer.setOppdateringsinfo(getUpdateInfo());
 
         return transfer;
     }
-    
+
 }

@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
