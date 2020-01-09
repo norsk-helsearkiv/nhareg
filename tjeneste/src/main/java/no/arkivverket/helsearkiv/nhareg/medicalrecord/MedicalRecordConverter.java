@@ -1,11 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import java.util.Arrays;

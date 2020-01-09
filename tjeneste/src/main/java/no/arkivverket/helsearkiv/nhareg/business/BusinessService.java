@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.business;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 
 import javax.inject.Inject;
 
@@ -10,7 +10,7 @@ public class BusinessService implements BusinessServiceInterface {
     private BusinessDAO businessDAO;
     
     @Override
-    public Virksomhet getBusiness() {
+    public Business getBusiness() {
         return businessDAO.fetchBusiness();
     }
 }

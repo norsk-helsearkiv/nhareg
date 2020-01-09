@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;

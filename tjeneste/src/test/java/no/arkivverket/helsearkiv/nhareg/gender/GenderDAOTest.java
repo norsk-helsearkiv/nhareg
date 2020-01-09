@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.gender;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Gender;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

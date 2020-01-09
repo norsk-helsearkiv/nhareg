@@ -1,10 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 

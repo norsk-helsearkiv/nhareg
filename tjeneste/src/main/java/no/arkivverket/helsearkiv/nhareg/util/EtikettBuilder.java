@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.util;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

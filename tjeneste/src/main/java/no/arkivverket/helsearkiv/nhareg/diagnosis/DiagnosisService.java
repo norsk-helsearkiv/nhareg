@@ -1,14 +1,14 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 

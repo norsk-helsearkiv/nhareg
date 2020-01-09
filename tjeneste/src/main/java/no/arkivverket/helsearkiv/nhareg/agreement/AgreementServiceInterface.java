@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;

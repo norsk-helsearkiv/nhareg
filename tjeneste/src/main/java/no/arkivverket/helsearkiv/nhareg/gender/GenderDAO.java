@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.gender;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Gender;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender;
 
 import javax.ejb.Stateless;
 

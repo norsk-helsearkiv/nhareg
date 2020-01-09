@@ -2,14 +2,14 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
@@ -92,7 +92,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     public MedicalRecordDTO getByIdWithTransfer(final String id) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
         final Transfer transfer = transferDAO.fetchTransferFromRecordId(id);
-        final Virksomhet business = businessDAO.fetchBusiness();
+        final Business business = businessDAO.fetchBusiness();
 
         return MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord, transfer, business.getForetaksnavn());
     }
@@ -191,7 +191,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Tracking.
         transfer.setOppdateringsinfo(createUpdateInfo(username));
-        final Virksomhet business = businessDAO.fetchBusiness();
+        final Business business = businessDAO.fetchBusiness();
         final MedicalRecordDTO medicalRecordDTO = MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord,
                                                                                                    transfer,
                                                                                                    business.getForetaksnavn());

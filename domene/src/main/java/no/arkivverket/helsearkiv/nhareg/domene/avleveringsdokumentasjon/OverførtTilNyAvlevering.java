@@ -8,7 +8,7 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon;
 
-import no.arkivverket.helsearkiv.nhareg.domene.adapters.StringDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;

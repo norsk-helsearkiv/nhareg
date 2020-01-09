@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,7 +19,7 @@ public abstract class EntityDAO<T> {
     protected static final String SIZE = "size";
     protected static final String PAGE = "page";
 
-    @PersistenceContext(name = "primary")
+    @PersistenceContext(unitName = "primary")
     private EntityManager entityManager;
 
     private Class<T> entityClass;

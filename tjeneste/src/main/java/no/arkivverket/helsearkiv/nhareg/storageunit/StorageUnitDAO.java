@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.Validator;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;

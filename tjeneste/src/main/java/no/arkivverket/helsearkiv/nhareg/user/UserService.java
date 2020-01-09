@@ -4,8 +4,8 @@ import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.inject.Inject;

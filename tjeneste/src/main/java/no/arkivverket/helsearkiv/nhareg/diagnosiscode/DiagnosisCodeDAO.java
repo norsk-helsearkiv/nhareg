@@ -2,10 +2,10 @@ package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.CV;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.CV;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;

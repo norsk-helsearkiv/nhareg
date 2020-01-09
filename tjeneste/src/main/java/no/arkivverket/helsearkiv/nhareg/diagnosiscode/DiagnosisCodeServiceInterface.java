@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;

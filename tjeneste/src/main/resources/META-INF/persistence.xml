@@ -5,18 +5,18 @@
              http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
     <persistence-unit name="primary">
         <jta-data-source>java:jboss/datasources/NharegDS</jta-data-source>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.CV</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Gender</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.CV</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Business</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.User</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Role</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         
         <shared-cache-mode>ALL</shared-cache-mode>
@@ -28,6 +28,8 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true"/>
             <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
+            <property name="wildfly.jpa.default-unit" value="true"/>
+
             <!--<property name="hibernate.cache.infinispan.statistics" value="true"/>-->
         </properties>
     </persistence-unit>

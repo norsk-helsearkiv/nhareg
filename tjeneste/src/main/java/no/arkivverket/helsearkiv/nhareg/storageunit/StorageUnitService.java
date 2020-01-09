@@ -2,11 +2,11 @@ package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.StorageUnitDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.StorageUnitDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;

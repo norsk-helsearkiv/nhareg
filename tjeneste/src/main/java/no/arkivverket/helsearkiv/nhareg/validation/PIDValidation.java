@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.validation;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 /**
  * Created by haraldk on 27.03.15.

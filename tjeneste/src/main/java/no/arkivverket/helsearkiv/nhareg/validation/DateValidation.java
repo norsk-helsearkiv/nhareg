@@ -2,13 +2,13 @@ package no.arkivverket.helsearkiv.nhareg.validation;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Grunnopplysninger;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Grunnopplysninger;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import java.util.*;
 

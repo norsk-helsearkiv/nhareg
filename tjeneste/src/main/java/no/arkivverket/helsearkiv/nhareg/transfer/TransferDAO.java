@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;

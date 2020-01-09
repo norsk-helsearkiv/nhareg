@@ -2,9 +2,9 @@ package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 
 import javax.annotation.Resource;
@@ -86,7 +86,7 @@ public class AgreementResource {
     
     @GET
     @Path("/virksomhet")
-    public Virksomhet getVirksomhet() {
+    public Business getVirksomhet() {
         return businessService.getBusiness();
     }
     

@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.configuration;
 
-import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
+import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -23,7 +23,7 @@ public class ConfigurationDAO {
     private EntityManager entityManager;
 
     public String getValue(final String name) {
-        Konfigparam param = entityManager.find(Konfigparam.class, name);
+        ConfigurationParameter param = entityManager.find(ConfigurationParameter.class, name);
         return param == null ? null : param.getVerdi();
     }
 

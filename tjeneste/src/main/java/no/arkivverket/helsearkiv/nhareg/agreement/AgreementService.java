@@ -1,11 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ public class AgreementService implements AgreementServiceInterface {
     @Override
     public AgreementDTO create(final AgreementDTO agreementDTO) {
         if (agreementDTO.getBusiness() == null) {
-            final Virksomhet business = businessDAO.fetchBusiness();
+            final Business business = businessDAO.fetchBusiness();
             agreementDTO.setBusiness(business);
         }
 

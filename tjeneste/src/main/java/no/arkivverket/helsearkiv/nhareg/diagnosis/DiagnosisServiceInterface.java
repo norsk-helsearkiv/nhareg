@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
 
 public interface DiagnosisServiceInterface {
   

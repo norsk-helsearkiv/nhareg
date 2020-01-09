@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.*;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import org.junit.Test;
 

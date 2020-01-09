@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

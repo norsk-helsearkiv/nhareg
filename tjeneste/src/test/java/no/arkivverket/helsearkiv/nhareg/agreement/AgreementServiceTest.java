@@ -1,10 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Virksomhet;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -71,16 +71,16 @@ public class AgreementServiceTest {
     public void delete_validIdWithoutChildren_shouldReturnAgreement() {
         final Agreement agreement = new Agreement();
         final Calendar calendar = Calendar.getInstance();
-        final Virksomhet virksomhet = new Virksomhet();
+        final Business business = new Business();
         final String agreementId = "test-avtale";
 
         agreement.setAgreementDescription("beskrivelse");
         agreement.setAgreementId(agreementId);
         agreement.setAgreementDate(calendar);
 
-        virksomhet.setOrganisasjonsnummer("100");
-        virksomhet.setNavn("Testorganisasjon");
-        agreement.setBusiness(virksomhet);
+        business.setOrganisasjonsnummer("100");
+        business.setNavn("Testorganisasjon");
+        agreement.setBusiness(business);
 
         final AgreementDTO agreementDTO = AgreementConverter.convertToAgreementDTO(agreement);
         final AgreementDTO newAgreement = agreementService.create(agreementDTO);

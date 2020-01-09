@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,11 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnosis;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

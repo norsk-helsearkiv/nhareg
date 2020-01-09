@@ -4,7 +4,7 @@ package no.arkivverket.helsearkiv.nhareg.exception;
  * ExceptionMapper for å gi klienter respons på ValidationErrorException.
  * @author arnfinns
  */
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;

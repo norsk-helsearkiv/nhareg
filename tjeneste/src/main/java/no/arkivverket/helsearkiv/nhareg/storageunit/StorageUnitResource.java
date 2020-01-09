@@ -1,12 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.FlyttPasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.RecordTransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.StorageUnitDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.FlyttPasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.StorageUnitDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 

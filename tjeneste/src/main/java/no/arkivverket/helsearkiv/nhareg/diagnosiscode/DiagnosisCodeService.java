@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;

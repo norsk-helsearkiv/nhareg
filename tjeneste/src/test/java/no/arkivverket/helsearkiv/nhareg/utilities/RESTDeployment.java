@@ -15,14 +15,14 @@ import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValidationErrorException;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.ValidDateFormats;
-import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
+import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
@@ -59,7 +59,7 @@ public class RESTDeployment {
                                .addPackage(User.class.getPackage())
                                .addPackage(DateOrYear.class.getPackage())
                                .addPackage(ValidDateFormats.class.getPackage())
-                               .addPackage(Konfigparam.class.getPackage())
+                               .addPackage(ConfigurationParameter.class.getPackage())
                                .addPackage(ListObject.class.getPackage())
                                .addPackage(ValidationErrorException.class.getPackage())
                                // DTOs
