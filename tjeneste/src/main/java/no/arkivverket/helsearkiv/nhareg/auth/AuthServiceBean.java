@@ -16,8 +16,9 @@ public class AuthServiceBean implements AuthService {
     @EJB
     private UserDAO userDAO;
 
-    public boolean isAuthorized(String name, Set<String> rolesAllowed){
+    public boolean isAuthorized(final String name, final Set<String> rolesAllowed) {
         User user = userDAO.fetchByUsername(name);
         return rolesAllowed.contains(user.getRole().getName());
     }
+    
 }

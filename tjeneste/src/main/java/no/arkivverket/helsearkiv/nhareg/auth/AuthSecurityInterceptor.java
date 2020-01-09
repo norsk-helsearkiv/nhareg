@@ -34,19 +34,19 @@ public class AuthSecurityInterceptor implements ContainerRequestFilter {
     private ResourceInfo resourceInfo;
 
     public void filter(ContainerRequestContext requestContext) {
-        Principal p = requestContext.getSecurityContext().getUserPrincipal();
-        if (p == null) {
+        final Principal principal = requestContext.getSecurityContext().getUserPrincipal();
+        if (principal == null) {
             requestContext.abortWith(ACCESS_UNAUTHORIZED);
             return;
         }
     
-        String name = p.getName();
+        final String username = principal.getName();
         // Get method invoked.
         Method methodInvoked = resourceInfo.getResourceMethod();
         if (methodInvoked.isAnnotationPresent(RolesAllowed.class)) {
             RolesAllowed rolesAllowedAnnotation = methodInvoked.getAnnotation(RolesAllowed.class);
             Set<String> rolesAllowed = new HashSet<String>(Arrays.asList(rolesAllowedAnnotation.value()));
-            if (!authService.isAuthorized(name, rolesAllowed)){
+            if (!authService.isAuthorized(username, rolesAllowed)){
                 requestContext.abortWith(ACCESS_UNAUTHORIZED);
                 return;
             }
@@ -56,7 +56,7 @@ public class AuthSecurityInterceptor implements ContainerRequestFilter {
             RolesAllowed rolesAllowedAnnotation = methodInvoked.getDeclaringClass().getAnnotation(RolesAllowed.class);
             Set<String> rolesAllowed = new HashSet<String>(Arrays.asList(rolesAllowedAnnotation.value()));
 
-            if (!authService.isAuthorized(name, rolesAllowed)){
+            if (!authService.isAuthorized(username, rolesAllowed)){
                 requestContext.abortWith(ACCESS_UNAUTHORIZED);
             }
         }

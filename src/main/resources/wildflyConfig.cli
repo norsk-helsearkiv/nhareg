@@ -27,6 +27,9 @@ data-source add \
 /subsystem=datasources/data-source=NharegDS/connection-properties=useSSL:add(value=false)
 /subsystem=datasources/data-source=NharegDS/connection-properties=allowPublicKeyRetrieval:add(value=true)
 
+/subsystem=datasources/data-source=LmrDS/connection-properties=useSSL:add(value=false)
+/subsystem=datasources/data-source=LmrDS/connection-properties=allowPublicKeyRetrieval:add(value=true)
+
 # Add Security Domain
 /subsystem=security/security-domain=secureDomain:add(cache-type=default)
 /subsystem=security/security-domain=secureDomain/authentication=classic:add( \

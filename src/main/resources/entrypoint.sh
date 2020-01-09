@@ -16,7 +16,7 @@ if [ ! -e $initfile ]; then
   fi
   
   # Run JasperServer installation
-  cd /usr/src/jasperreports-server/buildomatic &&
+  cd /opt/jasper/jasperreports-server/buildomatic &&
     sed -i 's|dbPassword=.*|dbPassword='"$MYSQL_ROOT_PASSWORD"'|' default_master.properties &&
     yes n | /bin/bash js-install-ce.sh minimal
 

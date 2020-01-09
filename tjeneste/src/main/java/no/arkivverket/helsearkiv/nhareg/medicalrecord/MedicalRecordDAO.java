@@ -280,21 +280,21 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
     private RecordTransferDTO mapFromObjectsToRecordTransferDTO(final Object[] resultRow) {
         final String uuid = Objects.toString(resultRow[0], null);
         final long fanearkid = Long.parseLong(Objects.toString(resultRow[1], "0"));
-        final String daar = Objects.toString(resultRow[2], null);
-        final String faar = Objects.toString(resultRow[3], null);
+        final String deathYear = Objects.toString(resultRow[2], null);
+        final String bornYear = Objects.toString(resultRow[3], null);
         final String pid = Objects.toString(resultRow[4], null);
-        final String pnavn = Objects.toString(resultRow[5], null);
-        final String journalnummer = Objects.toString(resultRow[6], null);
-        final String lopenummer = Objects.toString(resultRow[7], null);
-        final String oppdatertAv = Objects.toString(resultRow[8], null);
+        final String name = Objects.toString(resultRow[5], null);
+        final String recordNumber = Objects.toString(resultRow[6], null);
+        final String serialNumber = Objects.toString(resultRow[7], null);
+        final String updatedBy = Objects.toString(resultRow[8], null);
         final Date creationDate = resultRow[9] == null ? null : (Date) resultRow[9];
-        final Long opprettetDato = creationDate == null ? null : creationDate.getTime();
-        final String avleveringsId = Objects.toString(resultRow[10], null);
-        final String lagringsenhet = Objects.toString(resultRow[11], null);
-        final boolean laast = (boolean) resultRow[12];
+        final Long creationDateLong = creationDate == null ? null : creationDate.getTime();
+        final String transferId = Objects.toString(resultRow[10], null);
+        final String storageUnit = Objects.toString(resultRow[11], null);
+        final boolean transferLocked = (boolean) resultRow[12];
 
-        return new RecordTransferDTO(uuid, lagringsenhet, pid, fanearkid, journalnummer, lopenummer, pnavn, faar, daar,
-                                     oppdatertAv, avleveringsId, opprettetDato, laast);
+        return new RecordTransferDTO(uuid, storageUnit, pid, fanearkid, recordNumber, serialNumber, name, bornYear,
+                                     deathYear, updatedBy, transferId, creationDateLong, transferLocked);
     }
 
 }

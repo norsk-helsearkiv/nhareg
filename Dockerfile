@@ -1,5 +1,8 @@
 # Get node 
-FROM node:latest as web-build
+FROM node:13.6-alpine as web-build
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
 
 WORKDIR /usr/src
 COPY klient-web/ klient-web
@@ -26,7 +29,7 @@ COPY --from=web-build /usr/src/klient-web/src/main klient-web/src/main
 RUN mvn clean package $MAVEN_ARGS
 
 # Get Wildfly 8.2.0.Final
-FROM jboss/wildfly:8.2.0.Final
+FROM jboss/wildfly:8.2.0.Final as wildfly
 
 # Set the relevant environment variables
 ENV WILDFLY_VERSION 8.2.0.Final
@@ -91,23 +94,36 @@ RUN echo "Configuring Wildfly" \
     && chmod -R g+rw ${JBOSS_HOME} \
     && rm -rf $JBOSS_HOME/standalone/configuration/standalone_xml_history/ $JBOSS_HOME/standalone/log/*
 
-# Install Java 8
-RUN yum -y install tar java-1.8.0-openjdk-devel && \
-    yum clean all
-
 # Deploy apps
 COPY --from=build /usr/src/klient-web/target/web.war $JBOSS_HOME/standalone/deployments/
 COPY --from=build /usr/src/tjeneste/target/api.war $JBOSS_HOME/standalone/deployments/
+
+FROM alpine:3.11
+
+ENV JBOSS_HOME /opt/jboss/wildfly
+ENV JBOSS_CLI $JBOSS_HOME/bin/jboss-cli.sh
+
+COPY --from=wildfly $JBOSS_HOME $JBOSS_HOME
+COPY --from=wildfly /usr/src/jasperreports-server /opt/jasper/
+COPY src/main/resources/default_master.properties .
+
+RUN addgroup -S jboss && adduser -S jboss -G jboss
+
+# Install Java 8
+RUN apk add --no-cache openjdk8-jre sed dos2unix bash
+
+COPY src/main/resources/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && chown jboss:0 /entrypoint.sh \
+    && dos2unix /entrypoint.sh \
+    && chown -R jboss:0 $JBOSS_HOME \
+    && chmod +x $JBOSS_HOME
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 # Expose the ports we're interested in
 EXPOSE 8080 8443 9990
-
-COPY src/main/resources/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh \
-    && chown jboss:0 /entrypoint.sh
 
 USER jboss
 
