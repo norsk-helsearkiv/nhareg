@@ -33,4 +33,18 @@
             <!--<property name="hibernate.cache.infinispan.statistics" value="true"/>-->
         </properties>
     </persistence-unit>
+    <persistence-unit name="lmr">
+        <jta-data-source>java:jboss/datasources/LmrDS</jta-data-source>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.lmr.Lmr</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
+        </properties>
+    </persistence-unit>
 </persistence>
