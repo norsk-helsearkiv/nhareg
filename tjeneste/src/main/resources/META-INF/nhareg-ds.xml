@@ -15,12 +15,4 @@
             <password>nhareg</password>
         </security>
     </datasource>
-    <datasource jndi-name="java:jboss/datasources/LmrDS" pool-name="lmrDS">
-        <connection-url>jdbc:mysql://localhost:3306/lmr</connection-url>
-        <driver>com.mysql.jdbc.Driver</driver>
-        <security>
-            <user-name>nhareg</user-name>
-            <password>nhareg</password>
-        </security>
-    </datasource>
 </datasources>
