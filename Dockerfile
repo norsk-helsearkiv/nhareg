@@ -120,7 +120,7 @@ RUN chmod +x /entrypoint.sh \
     && chown -R jboss:0 $JBOSS_HOME \
     && chmod +x $JBOSS_HOME \
     && chown -R jboss:0 /opt/jasper \
-    && chmod +x /opt/jasper    
+    && chmod +x /opt/jasper
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true

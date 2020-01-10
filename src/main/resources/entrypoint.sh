@@ -62,7 +62,7 @@ fi
 # If we updated any datasources we need to reload Wildfly
 if [ -n "$MYSQL_USER" ] || [ -n "$LMR_USER" ]; then
   $JBOSS_CLI --connect reload
-  $JBOSS_CLI --connect reload
+  $JBOSS_CLI --connect reload # It's done twice because api.war crashes if done only once
 fi
 
 # Bring Wildfly to the front, else Docker shuts down the image.

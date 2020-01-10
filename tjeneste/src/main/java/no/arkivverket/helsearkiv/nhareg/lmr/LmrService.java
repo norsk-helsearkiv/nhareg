@@ -22,7 +22,8 @@ public class LmrService implements LmrServiceInterface {
     
     @Override
     public boolean isConfigured() {
-        return configurationDAO.getValue("lmr") != null;
+        final String lmr = configurationDAO.getValue("lmr");
+        return "true".equals(lmr);
     }
 
     @Override

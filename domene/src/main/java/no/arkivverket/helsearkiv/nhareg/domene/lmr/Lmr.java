@@ -1,15 +1,17 @@
 package no.arkivverket.helsearkiv.nhareg.domene.lmr;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "mperson")
-public class Lmr {
+public class Lmr implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +22,7 @@ public class Lmr {
     private String fnr;
     
     @Column
+    @Convert(converter = LocalDateConverter.class)
     private LocalDate fdato;
 
     @Column
@@ -27,6 +30,7 @@ public class Lmr {
     private String status;
 
     @Column
+    @Convert(converter = LocalDateConverter.class)
     private LocalDate ddato;
 
     @Column

@@ -182,10 +182,8 @@ angular.module('nha.register')
         $scope.checkIfLmrIsConfigured = function (nationalIdentity) {
             httpService.get("lmr/valid")
                 .success(function (result) {
-                    if(result === true){
+                    if(result === 'true') {
                         $scope.getDataFromLmr(nationalIdentity);
-                    } else {
-                        return;
                     }
                 })
                 .error(function () {
