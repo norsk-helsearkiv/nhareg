@@ -13,7 +13,7 @@ import java.util.List;
 public class MedicalRecordDTO {
     
     @JsonProperty(value = "persondata")
-    private PersondataDTO personalDataDTO;
+    private PersonalDataDTO personalDataDTO;
 
     @JsonProperty(value = "diagnoser")
     private List<DiagnoseDTO> diagnosisDTOList;

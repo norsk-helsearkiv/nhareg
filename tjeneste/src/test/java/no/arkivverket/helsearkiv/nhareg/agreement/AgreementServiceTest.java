@@ -32,6 +32,9 @@ public class AgreementServiceTest {
 
     @Inject
     private AgreementServiceInterface agreementService;
+    
+    @Inject
+    private AgreementConverterInterface agreementConverter;
 
     @Test
     public void create_missingBusiness_shouldReturnAgreement() {
@@ -82,17 +85,24 @@ public class AgreementServiceTest {
         business.setNavn("Testorganisasjon");
         agreement.setBusiness(business);
 
-        final AgreementDTO agreementDTO = AgreementConverter.convertToAgreementDTO(agreement);
+        final AgreementDTO agreementDTO = agreementConverter.fromAgreement(agreement);
         final AgreementDTO newAgreement = agreementService.create(agreementDTO);
         assertNotNull(newAgreement);
 
         final AgreementDTO deletedAgreement = agreementService.delete(agreementId);
         assertNotNull(deletedAgreement);
     }
+    
+    @Test
+    public void getTransfersByAgreementId_validId_shouldNotReturnDuplicates() {
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("Avtale1", null);
+        assertNotNull(transferDTOList);
+        assertEquals(1, transferDTOList.size());
+    }
 
     @Test
     public void getTransfersByAgreementId_validId_shouldReturnTransfers() {
-        List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
         assertNotNull(transferDTOList);
         assertEquals(1, transferDTOList.size());
     }

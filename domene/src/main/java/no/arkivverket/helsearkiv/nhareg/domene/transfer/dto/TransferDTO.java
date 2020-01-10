@@ -5,8 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Oppdateringsinfo;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -43,32 +42,6 @@ public class TransferDTO implements Serializable {
     private boolean defaultTransfer;
     
     @JsonProperty(value = "oppdateringsinfo")
-    private Oppdateringsinfo updateInfo;
-
-    public TransferDTO(final Transfer transfer) {
-        this.transferId = transfer.getTransferId();
-        this.transferDescription = transfer.getTransferDescription();
-        this.agreement = transfer.getAgreement();
-        this.archiveCreator = transfer.getArkivskaper();
-        this.medicalRecords = transfer.getMedicalRecords();
-        this.medicalRecordCount = transfer.getMedicalRecords().size();
-        this.locked = transfer.isLocked();
-        this.storageUnitFormat = transfer.getStorageUnitFormat();
-        this.updateInfo = transfer.getOppdateringsinfo();
-    }
-
-    public Transfer toTransfer() {
-        final Transfer transfer = new Transfer();
-        transfer.setStorageUnitFormat(getStorageUnitFormat());
-        transfer.setArkivskaper(getArchiveCreator());
-        transfer.setMedicalRecords(getMedicalRecords());
-        transfer.setTransferDescription(getTransferDescription());
-        transfer.setTransferId(getTransferId());
-        transfer.setAgreement(getAgreement());
-        transfer.setLocked(isLocked());
-        transfer.setOppdateringsinfo(getUpdateInfo());
-
-        return transfer;
-    }
+    private UpdateInfo updateInfo;
 
 }

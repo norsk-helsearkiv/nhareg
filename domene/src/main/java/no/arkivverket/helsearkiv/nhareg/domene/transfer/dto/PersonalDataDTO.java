@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersondataDTO implements Serializable {
+public class PersonalDataDTO implements Serializable {
     
     @NotNull
     @Size(min = 1)

@@ -17,6 +17,9 @@ public class LmrService implements LmrServiceInterface {
     @Inject
     private ConfigurationDAO configurationDAO;
     
+    @Inject
+    private LmrConverterInterface lmrConverter;
+    
     @Override
     public boolean isConfigured() {
         return configurationDAO.getValue("lmr") != null;
@@ -31,7 +34,7 @@ public class LmrService implements LmrServiceInterface {
             throw new ValidationErrorException(Collections.singletonList(validationError));       
         }
         
-        return new LmrDTO(lmr);
+        return lmrConverter.toLmrDTO(lmr);
     }
     
 }

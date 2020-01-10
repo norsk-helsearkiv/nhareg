@@ -6,6 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;
@@ -22,6 +23,12 @@ public class AgreementService implements AgreementServiceInterface {
     @Inject
     private BusinessDAO businessDAO;
     
+    @Inject
+    private AgreementConverterInterface agreementConverter;
+    
+    @Inject
+    private TransferConverterInterface transferConverter;
+    
     @Override
     public AgreementDTO create(final AgreementDTO agreementDTO) {
         if (agreementDTO.getBusiness() == null) {
@@ -29,25 +36,25 @@ public class AgreementService implements AgreementServiceInterface {
             agreementDTO.setBusiness(business);
         }
 
-        final Agreement agreement = AgreementConverter.convertToAgreement(agreementDTO);
+        final Agreement agreement = agreementConverter.toAgreement(agreementDTO);
         final Agreement newAgreement = agreementDAO.create(agreement);
         
-        return AgreementConverter.convertToAgreementDTO(newAgreement); 
+        return agreementConverter.fromAgreement(newAgreement); 
     }
 
     @Override
     public AgreementDTO delete(final String id) {
         final Agreement deleted = agreementDAO.delete(id);
         
-        return AgreementConverter.convertToAgreementDTO(deleted);
+        return agreementConverter.fromAgreement(deleted);
     }
 
     @Override
     public AgreementDTO update(final AgreementDTO agreementDTO) {
-        final Agreement agreement = AgreementConverter.convertToAgreement(agreementDTO);
+        final Agreement agreement = agreementConverter.toAgreement(agreementDTO);
         final Agreement updated = agreementDAO.update(agreement);
         
-        return AgreementConverter.convertToAgreementDTO(updated);
+        return agreementConverter.fromAgreement(updated);
     }
 
     @Override
@@ -55,25 +62,25 @@ public class AgreementService implements AgreementServiceInterface {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<Agreement> agreements = agreementDAO.fetchAll(mappedQueries);
 
-        return AgreementConverter.convertToAgreementDTOList(agreements);
+        return agreementConverter.fromAgreementList(agreements);
     }
 
     @Override
     public List<TransferDTO> getTransfersByAgreementId(final String id, final Transfer defaultTransfer) {
         final List<Transfer> transferList = agreementDAO.fetchTransfersByAgreementId(id);
+        final List<TransferDTO> transferDTOList = new ArrayList<>();
 
-        final List<TransferDTO> transferDTOS = new ArrayList<>();
         for (Transfer transfer : transferList) {
-            TransferDTO transferDTO = new TransferDTO(transfer);
+            final TransferDTO transferDTO = transferConverter.fromTransfer(transfer);
             if (defaultTransfer != null) {
                 if (transfer.getTransferId().equals(defaultTransfer.getTransferId())) {
                     transferDTO.setDefaultTransfer(true);
                 }
             }
-            transferDTOS.add(transferDTO);
+            transferDTOList.add(transferDTO);
         }
 
-        return transferDTOS; 
+        return transferDTOList; 
     }
     
 }

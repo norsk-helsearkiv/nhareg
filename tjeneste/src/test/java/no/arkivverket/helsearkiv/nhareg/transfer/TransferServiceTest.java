@@ -27,22 +27,27 @@ public class TransferServiceTest {
     @Inject
     private TransferServiceInterface transferService;
     
+    @Inject
+    private TransferConverterInterface transferConverter;
+    
     @Test(expected = EntityExistsException.class)
     public void create_duplicateEntry_shouldThrowEntityExistsException() {
         final Transfer transfer = new Transfer();
         transfer.setTransferId("Avlevering-1");
-        final TransferDTO transferDTO = new TransferDTO(transfer);
+        final TransferDTO transferDTO = transferConverter.fromTransfer(transfer);
         
         transferService.create(transferDTO, "nhabruker1");
     }
     
     @Test
     public void getById_getValidId_shouldReturnTransfer() {
-        final Transfer transfer = transferService.getById("Avlevering-1").toTransfer();
+        final TransferDTO transferDTO = transferService.getById("Avlevering-1");
+        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+
         assertNotNull(transfer);
         assertNotNull(transfer.getMedicalRecords());
         assertNotNull(transfer.getAgreement());
-        assertNotNull(transfer.getOppdateringsinfo());
+        assertNotNull(transfer.getUpdateInfo());
         transfer.getMedicalRecords().forEach(medicalRecord -> {
             assertNotNull(medicalRecord.getDiagnosis()); 
             assertNotNull(medicalRecord.getStorageUnit());
@@ -58,27 +63,30 @@ public class TransferServiceTest {
     public void update_updateArchiveCreator_shouldReturnUpdated() {
         final String id = "Avlevering-1";
         final String archiveCreator = "JUnit test";
-        final Transfer transfer = transferService.getById(id).toTransfer();
+        final TransferDTO transferDTO = transferService.getById(id);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        
         assertNotNull(transfer);
         assertNotNull(transfer.getAgreement());
         assertNotNull(transfer.getMedicalRecords());
 
-        final TransferDTO transferDTO = new TransferDTO(transfer);
         transferDTO.setArchiveCreator(archiveCreator);
         transferService.update(transferDTO, "nhabruker1");
-        
-        final Transfer updatedTransfer = transferService.getById(id).toTransfer();
+
+        final TransferDTO updatedTransferDTO = transferService.getById(id);
+        final Transfer updatedTransfer = transferConverter.toTransfer(updatedTransferDTO);
         assertNotNull(updatedTransfer);
         assertNotNull(updatedTransfer.getAgreement());
-        assertNotNull(updatedTransfer.getOppdateringsinfo());
+        assertNotNull(updatedTransfer.getUpdateInfo());
         assertEquals(archiveCreator, updatedTransfer.getArkivskaper());
     }
     
     @Test
     public void getTransferForStorageUnit_validId_shouldReturnTransfer() {
         final String storageId = "boks1";
-        
-        final Transfer transfer = transferService.getTransferForStorageUnit(storageId).toTransfer();
+
+        final TransferDTO transferDTO = transferService.getTransferForStorageUnit(storageId);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO);
         assertNotNull(transfer);
         assertNotNull(transfer.getMedicalRecords());
     }

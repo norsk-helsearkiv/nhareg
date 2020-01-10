@@ -2,8 +2,10 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInterface;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -12,10 +14,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class DateOrYearConverterTest {
+    
+    private MedicalRecordConverterInterface medicalRecordConverter;
 
+    @Before
+    public void setUp() {
+        medicalRecordConverter = new MedicalRecordConverter();
+    }
+    
     @Test
     public void toMedicalRecordTest() {
-        final PersondataDTO dto = new PersondataDTO();
+        final PersonalDataDTO dto = new PersonalDataDTO();
         dto.setDead("2009");
         dto.setPid("01010942345");
         dto.setBorn("2009");
@@ -29,7 +38,7 @@ public class DateOrYearConverterTest {
         dto.setFirstContact("2009");
         dto.setLastContact("2009");
 
-        MedicalRecord medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(dto);
+        MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(dto);
 
         assertEquals(dto.getPid(), medicalRecord.getGrunnopplysninger().getIdentifikator().getPid());
         final int dod = medicalRecord.getGrunnopplysninger().getDead().getAar();
@@ -38,10 +47,10 @@ public class DateOrYearConverterTest {
 
     @Test
     public void mapToPersonalDataDTOTest() {
-        final PersondataDTO persondataDTO = MedicalRecordConverter.convertToPersonalDataDTO(getMedicalRecord());
-        assertEquals(1, persondataDTO.getStorageUnits().length);
-        assertEquals("01010942345", persondataDTO.getPid());
-        assertEquals("Natalie", persondataDTO.getName());
+        final PersonalDataDTO personalDataDTO = medicalRecordConverter.toPersonalDataDTO(getMedicalRecord());
+        assertEquals(1, personalDataDTO.getStorageUnits().length);
+        assertEquals("01010942345", personalDataDTO.getPid());
+        assertEquals("Natalie", personalDataDTO.getName());
     }
 
     @Test

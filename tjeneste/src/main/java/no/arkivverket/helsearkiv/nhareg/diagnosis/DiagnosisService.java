@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorExcepti
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Oppdateringsinfo;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
@@ -27,6 +27,9 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     @Inject
     private DiagnosisCodeDAO diagnosisCodeDAO;
     
+    @Inject
+    private DiagnosisConverterInterface diagnosisConverter;
+    
     @Override
     public DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
@@ -44,19 +47,19 @@ public class DiagnosisService implements DiagnosisServiceInterface {
             throw new ValidationErrorException(errors);
         }
 
-        final Oppdateringsinfo updateInfo = createUpdateInfo(username);
+        final UpdateInfo updateInfo = createUpdateInfo(username);
         diagnoseDTO.setUpdatedBy(updateInfo.getOppdatertAv());
 
         final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosisCode());
-        final Diagnosis diagnosis = DiagnosisConverter.convertFromDiagnosisDTO(diagnoseDTO, diagnosisCode);
-        diagnosis.setOppdateringsinfo(updateInfo);
+        final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnoseDTO, diagnosisCode);
+        diagnosis.setUpdateInfo(updateInfo);
         diagnosis.setUuid(UUID.randomUUID().toString());
         
         diagnosisDAO.create(diagnosis);
         medicalRecord.getDiagnosis().add(diagnosis);
-        medicalRecord.setOppdateringsinfo(updateInfo);
+        medicalRecord.setUpdateInfo(updateInfo);
 
-        return DiagnosisConverter.convertToDiagnosisDTO(diagnosis);
+        return diagnosisConverter.toDiagnosisDTO(diagnosis);
     }
 
     @Override 
@@ -91,8 +94,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosisCode());
-        final Diagnosis diagnosis = DiagnosisConverter.convertFromDiagnosisDTO(diagnoseDTO, diagnosisCode);
-        diagnosis.setOppdateringsinfo(createUpdateInfo(username));
+        final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnoseDTO, diagnosisCode);
+        diagnosis.setUpdateInfo(createUpdateInfo(username));
         diagnosisDAO.update(diagnosis);
 
         return diagnosis;
@@ -109,7 +112,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
         medicalRecord.getDiagnosis().remove(diagnosis);
         diagnosisDAO.delete(diagnosis.getUuid());
-        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
+        medicalRecord.setUpdateInfo(createUpdateInfo(username));
 
         return true;
     }
@@ -135,12 +138,12 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
     }
 
-    private Oppdateringsinfo createUpdateInfo(final String username) {
-        Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
-        oppdateringsinfo.setOppdatertAv(username);
-        oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
+    private UpdateInfo createUpdateInfo(final String username) {
+        UpdateInfo updateInfo = new UpdateInfo();
+        updateInfo.setOppdatertAv(username);
+        updateInfo.setSistOppdatert(Calendar.getInstance());
 
-        return oppdateringsinfo;
+        return updateInfo;
     }
 
 }

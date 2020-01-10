@@ -43,8 +43,11 @@ public class AgreementDAO extends EntityDAO<Agreement> {
     }
 
     public List<Transfer> fetchTransfersByAgreementId(final String id) {
-        final String queryString = "SELECT OBJECT(t) "
-            + "FROM Transfer t "
+        final String queryString = "SELECT DISTINCT OBJECT(t) "
+            + "FROM Transfer t " 
+            + "LEFT OUTER JOIN FETCH t.medicalRecords mr " 
+            + "LEFT OUTER JOIN FETCH mr.storageUnit " 
+            + "LEFT OUTER JOIN FETCH mr.diagnosis "
             + "WHERE t.agreement.agreementId = :id ";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", id);

@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.validation;
 
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 /**
@@ -26,7 +26,7 @@ public class PIDValidation {
         return null;
     }
 
-    public static ValidationError validate(final PersondataDTO personalDataDTO) {
+    public static ValidationError validate(final PersonalDataDTO personalDataDTO) {
         final String fnr = personalDataDTO.getPid();
         
         return validate(fnr);

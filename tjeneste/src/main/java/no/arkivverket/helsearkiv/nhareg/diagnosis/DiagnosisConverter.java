@@ -14,16 +14,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DiagnosisConverter {
+public class DiagnosisConverter implements DiagnosisConverterInterface {
 
-    public static Diagnosis convertFromDiagnosisDTO(final DiagnoseDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
+    @Override
+    public Diagnosis fromDiagnosisDTO(final DiagnoseDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
+        if (diagnosisDTO == null) {
+            return null;
+        }
+        
         final String diagnosisDateString = diagnosisDTO.getDiagnosisDate();
         final DateOrYear diagnosisDate = DateOrYearConverter.toDateOrYear(diagnosisDateString);
 
         return new Diagnosis(diagnosisDTO.getUuid(), diagnosisDate, diagnosisCode, diagnosisDTO.getDiagnosisText(), null);
     }
     
-    public static DiagnoseDTO convertToDiagnosisDTO(final Diagnosis diagnosis) {
+    @Override 
+    public DiagnoseDTO toDiagnosisDTO(final Diagnosis diagnosis) {
         if (diagnosis == null) {
             return null;
         }
@@ -34,8 +40,8 @@ public class DiagnosisConverter {
         final String diagnosisCodeString = diagnosisCode != null ? diagnosisCode.getCode() : null;
         final String diagnosisCodingSystem = diagnosisCode != null ? diagnosisCode.getCodeSystemVersion() : null;
         final String diagnosisText = diagnosis.getDiagnosetekst();
-        final String updatedBy = diagnosis.getOppdateringsinfo().getOppdatertAv();
-        final Date date = diagnosis.getOppdateringsinfo().getSistOppdatert().getTime();
+        final String updatedBy = diagnosis.getUpdateInfo().getOppdatertAv();
+        final Date date = diagnosis.getUpdateInfo().getSistOppdatert().getTime();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final LocalDateTime localDate = ValidDateFormats.asLocalDateTime(date);
         final String updatedDate = localDate.format(formatter);
@@ -44,9 +50,12 @@ public class DiagnosisConverter {
                                updatedBy, updatedDate);
     }
     
-    public static List<DiagnoseDTO> convertToDiagnosisDTOList(final Collection<Diagnosis> diagnosisList) {
-        return diagnosisList.stream()
-            .map(DiagnosisConverter::convertToDiagnosisDTO)
-            .collect(Collectors.toList());
+    @Override 
+    public List<DiagnoseDTO> toDiagnosisDTOList(final Collection<Diagnosis> diagnosisList) {
+        if (diagnosisList == null) {
+            return null;
+        }
+        
+        return diagnosisList.stream().map(this::toDiagnosisDTO).collect(Collectors.toList());
     }
 }

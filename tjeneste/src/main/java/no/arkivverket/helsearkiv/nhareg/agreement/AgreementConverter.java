@@ -6,18 +6,30 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class AgreementConverter {
+public class AgreementConverter implements AgreementConverterInterface {
 
-    static Agreement convertToAgreement(final AgreementDTO agreementDTO) {
+    public Agreement toAgreement(final AgreementDTO agreementDTO) {
+        if (agreementDTO == null) {
+            return null;
+        }
+        
         return new Agreement(agreementDTO.getAgreementId(), agreementDTO.getAgreementDate(),
                              agreementDTO.getAgreementDescription(), agreementDTO.getBusiness());
     }
 
-    public static List<Agreement> convertToAgreementList(final List<AgreementDTO> agreementDTOS) {
-        return agreementDTOS.stream().map(AgreementConverter::convertToAgreement).collect(Collectors.toList());
+    public List<Agreement> toAgreementList(final List<AgreementDTO> agreementDTOList) {
+        if (agreementDTOList == null) {
+            return null;
+        }
+        
+        return agreementDTOList.stream().map(this::toAgreement).collect(Collectors.toList());
     }
 
-    static AgreementDTO convertToAgreementDTO(final Agreement agreement) {
+    public AgreementDTO fromAgreement(final Agreement agreement) {
+        if (agreement == null) {
+            return null;
+        }
+        
         return new AgreementDTO(
             agreement.getAgreementId(),
             agreement.getAgreementDate(),
@@ -26,8 +38,12 @@ public class AgreementConverter {
         );
     }
 
-    static List<AgreementDTO> convertToAgreementDTOList(final List<Agreement> agreements) {
-        return agreements.stream().map(AgreementConverter::convertToAgreementDTO).collect(Collectors.toList());
+    public List<AgreementDTO> fromAgreementList(final List<Agreement> agreementList) {
+        if (agreementList == null) {
+            return null;
+        }
+        
+        return agreementList.stream().map(this::fromAgreement).collect(Collectors.toList());
     }
     
 }

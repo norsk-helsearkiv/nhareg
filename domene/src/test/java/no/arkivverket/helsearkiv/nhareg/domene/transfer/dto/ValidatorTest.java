@@ -12,22 +12,22 @@ public class ValidatorTest {
 
     @Test
     public void validator_nullObject_shouldReturnOneError() {
-        final ArrayList<ValidationError> validationErrors = new Validator<>(PersondataDTO.class, null).validate();
+        final ArrayList<ValidationError> validationErrors = new Validator<>(PersonalDataDTO.class, null).validate();
         
         assertEquals(1, validationErrors.size());
     }
     
     @Test
     public void validator_emptyDTO_shouldReturnFiveErrors() {
-        final PersondataDTO emptyDTO = new PersondataDTO();
-        final ArrayList<ValidationError> validationErrors = new Validator<>(PersondataDTO.class, emptyDTO).validate();
+        final PersonalDataDTO emptyDTO = new PersonalDataDTO();
+        final ArrayList<ValidationError> validationErrors = new Validator<>(PersonalDataDTO.class, emptyDTO).validate();
         
         assertEquals(5, validationErrors.size());
     }
     
     @Test
     public void validator_validData_shouldReturnNoErrors() {
-        final PersondataDTO personalDataDTO = new PersondataDTO();
+        final PersonalDataDTO personalDataDTO = new PersonalDataDTO();
         final String[] storageUnits = { "1" };
         personalDataDTO.setStorageUnits(storageUnits);
         personalDataDTO.setRecordNumber("123");
@@ -41,7 +41,7 @@ public class ValidatorTest {
         personalDataDTO.setLastContact("5.1.1999");
         
         final ArrayList<ValidationError> validationErrors =
-            new Validator<>(PersondataDTO.class, personalDataDTO).validate();
+            new Validator<>(PersonalDataDTO.class, personalDataDTO).validate();
         
         assert(validationErrors.isEmpty());
     }

@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface StorageUnitServiceInterface {
 
-    StorageUnit getById(final String id);
+    StorageUnitDTO getById(final String id);
 
-    StorageUnit create(final StorageUnit storageUnit);
- 
-    StorageUnit update(final StorageUnit storageUnit);
+    StorageUnitDTO create(final StorageUnit storageUnit);
+
+    StorageUnitDTO update(final StorageUnit storageUnit);
 
     List<RecordTransferDTO> getMedicalRecordsForId(final String id);
 
     List<StorageUnitDTO> getStorageUnits(final MultivaluedMap<String, String> queryParameters);
 
-    void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnit storageUnit);
+    void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnitDTO storageUnitDTO);
 
     void printMedicalRecord(final String id, final String username);
     

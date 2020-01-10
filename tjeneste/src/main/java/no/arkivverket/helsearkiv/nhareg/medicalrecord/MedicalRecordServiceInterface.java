@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -23,7 +23,7 @@ public interface MedicalRecordServiceInterface {
     
     void validatePID(final String pid);
 
-    MedicalRecordDTO createInTransfer(final String transferId, final PersondataDTO personalDataDTO,
+    MedicalRecordDTO createInTransfer(final String transferId, final PersonalDataDTO personalDataDTO,
                                       final String username);
     
 }

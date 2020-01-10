@@ -1,10 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class StorageUnitDTO {
     
     @JsonProperty(value = "identifikator")
@@ -16,10 +19,4 @@ public class StorageUnitDTO {
     @JsonProperty(value = "utskrift")
     private boolean print;
     
-    public StorageUnitDTO(final StorageUnit storageUnit) {
-        this.id = storageUnit.getId();
-        this.uuid = storageUnit.getUuid();
-        this.print = storageUnit.isPrint();        
-    }
-
 }

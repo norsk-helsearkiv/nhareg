@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
@@ -48,6 +48,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     @Inject
     private UserDAO userDAO;
 
+    @Inject
+    private MedicalRecordConverterInterface medicalRecordConverter;
+
     @Override
     public MedicalRecord create(final MedicalRecord medicalRecord, final String username) {
         medicalRecord.setUuid(UUID.randomUUID().toString());
@@ -63,7 +66,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         createAndAttachStorageUnit(medicalRecord.getStorageUnit());
 
-        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
+        medicalRecord.setUpdateInfo(createUpdateInfo(username));
         medicalRecord.setOpprettetDato(Calendar.getInstance());
 
         return medicalRecordDAO.create(medicalRecord);
@@ -78,7 +81,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     public MedicalRecord delete(final String id, final String username) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchSingleInstance(id);
         medicalRecord.setSlettet(true);
-        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
+        medicalRecord.setUpdateInfo(createUpdateInfo(username));
 
         return medicalRecordDAO.update(medicalRecord);
     }
@@ -94,7 +97,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final Transfer transfer = transferDAO.fetchTransferFromRecordId(id);
         final Business business = businessDAO.fetchBusiness();
 
-        return MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord, transfer, business.getForetaksnavn());
+        return medicalRecordConverter.toMedicalRecordDTO(medicalRecord, transfer, business.getForetaksnavn());
     }
 
     @Override
@@ -110,6 +113,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<RecordTransferDTO> recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries);
         final BigInteger totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
+
         return new ListObject<>(recordTransferDTOList, totalSize.intValueExact(), page, size);
     }
 
@@ -119,7 +123,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         validateBaseData(medicalRecordDTO.getPersonalDataDTO());
 
         //KONVERTERING
-        final MedicalRecord medicalRecord = MedicalRecordConverter.convertFromPersonalDataDTO(medicalRecordDTO.getPersonalDataDTO());
+        final MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(medicalRecordDTO.getPersonalDataDTO());
         createAndAttachStorageUnit(medicalRecord.getStorageUnit());
 
         final MedicalRecord original = medicalRecordDAO.fetchById(medicalRecord.getUuid());
@@ -156,15 +160,15 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         transferDAO.update(transfer);
 
         // Save
-        medicalRecord.setOppdateringsinfo(createUpdateInfo(username));
+        medicalRecord.setUpdateInfo(createUpdateInfo(username));
         if (original != null) {
             medicalRecord.setOpprettetDato(original.getOpprettetDato());
         }
-        
+
         final MedicalRecord updatedMedicalRecord = medicalRecordDAO.update(medicalRecord);
         final String business = businessDAO.fetchBusiness().getForetaksnavn();
 
-        return MedicalRecordConverter.convertToMedicalRecordDTO(updatedMedicalRecord, transfer, business);
+        return medicalRecordConverter.toMedicalRecordDTO(updatedMedicalRecord, transfer, business);
     }
 
     @Override
@@ -177,24 +181,24 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public MedicalRecordDTO createInTransfer(final String transferId,
-                                             final PersondataDTO personalDataDTO,
+                                             final PersonalDataDTO personalDataDTO,
                                              final String username) {
         // Validate personal data
         validateBaseData(personalDataDTO);
 
         // Convert personal data to medical record and create medical record.
-        final MedicalRecord fromPersonalDataDTO = MedicalRecordConverter.convertFromPersonalDataDTO(personalDataDTO);
+        final MedicalRecord fromPersonalDataDTO = medicalRecordConverter.fromPersonalDataDTO(personalDataDTO);
         final MedicalRecord medicalRecord = this.create(fromPersonalDataDTO, username);
-        
+
         final Transfer transfer = transferDAO.fetchSingleInstance(transferId);
         transfer.getMedicalRecords().add(medicalRecord);
 
         // Tracking.
-        transfer.setOppdateringsinfo(createUpdateInfo(username));
+        transfer.setUpdateInfo(createUpdateInfo(username));
         final Business business = businessDAO.fetchBusiness();
-        final MedicalRecordDTO medicalRecordDTO = MedicalRecordConverter.convertToMedicalRecordDTO(medicalRecord,
-                                                                                                   transfer,
-                                                                                                   business.getForetaksnavn());
+        final MedicalRecordDTO medicalRecordDTO = medicalRecordConverter.toMedicalRecordDTO(medicalRecord,
+                                                                                            transfer,
+                                                                                            business.getForetaksnavn());
         final String transferIdForRecord = transferDAO.fetchTransferIdFromRecordId(medicalRecord.getUuid());
         medicalRecordDTO.setTransferId(transferIdForRecord);
 
@@ -208,24 +212,25 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         return medicalRecordDTO;
     }
 
-    private void validateBaseData(final PersondataDTO persondataDTO) {
+    private void validateBaseData(final PersonalDataDTO personalDataDTO) {
         // VALIDERING - Persondata
-        ArrayList<ValidationError> validationError = new Validator<>(PersondataDTO.class, persondataDTO).validate();
+        final ArrayList<ValidationError> validationError =
+            new Validator<>(PersonalDataDTO.class, personalDataDTO).validate();
 
         //Validerer forholdet mellom dataoer
-        DateValidation dateValidation = new DateValidation();
-        validationError.addAll(dateValidation.validate(persondataDTO, configurationDAO));
+        final DateValidation dateValidation = new DateValidation();
+        validationError.addAll(dateValidation.validate(personalDataDTO, configurationDAO));
 
-        ValidationError fnrfeil = PIDValidation.validate(persondataDTO);
-        if (fnrfeil != null) {
-            if (!validationError.contains(fnrfeil)) {
-                validationError.add(fnrfeil);
+        final ValidationError pidError = PIDValidation.validate(personalDataDTO);
+        if (pidError != null) {
+            if (!validationError.contains(pidError)) {
+                validationError.add(pidError);
             }
         }
 
-        ValidationError fanearkidFeil = FanearkidValidation.validate(persondataDTO, configurationDAO);
-        if (fanearkidFeil != null) {
-            validationError.add(fanearkidFeil);
+        final ValidationError fanearkidError = FanearkidValidation.validate(personalDataDTO, configurationDAO);
+        if (fanearkidError != null) {
+            validationError.add(fanearkidError);
         }
 
         if (validationError.size() > 0) {
@@ -244,12 +249,12 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         storageUnits.addAll(existingStorageUnits);
     }
 
-    private Oppdateringsinfo createUpdateInfo(final String username) {
-        Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
-        oppdateringsinfo.setOppdatertAv(username);
-        oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
+    private UpdateInfo createUpdateInfo(final String username) {
+        final UpdateInfo updateInfo = new UpdateInfo();
+        updateInfo.setOppdatertAv(username);
+        updateInfo.setSistOppdatert(Calendar.getInstance());
 
-        return oppdateringsinfo;
+        return updateInfo;
     }
 
 }

@@ -4,7 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
@@ -15,14 +15,18 @@ import java.util.stream.Collectors;
 
 import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.toDateOrYear;
 
-public class MedicalRecordConverter {
-    
-    public static MedicalRecord convertFromPersonalDataDTO(final PersondataDTO personalDataDTO) {
+public class MedicalRecordConverter implements MedicalRecordConverterInterface {
+
+    public MedicalRecord fromPersonalDataDTO(final PersonalDataDTO personalDataDTO) {
+        if (personalDataDTO == null) {
+            return null;
+        }
+        
         final MedicalRecord medicalRecord = new MedicalRecord();
 
         final String uuid = personalDataDTO.getUuid();
         medicalRecord.setUuid(uuid);
-        
+
         final String[] storageUnits = personalDataDTO.getStorageUnits();
         final List<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
         if (storageUnits != null) {
@@ -34,7 +38,7 @@ public class MedicalRecordConverter {
                 }
             );
         }
-        
+
         final RecordId journalId = new RecordId();
         medicalRecord.setRecordId(journalId);
 
@@ -66,7 +70,7 @@ public class MedicalRecordConverter {
             } else if(PIDValidation.isFnummer(pid)) {
                 identifikator.setTypePID("F");
             }
-            
+
             baseProperties.setIdentifikator(identifikator);
         }
 
@@ -112,9 +116,13 @@ public class MedicalRecordConverter {
 
         return medicalRecord;
     }
-    
-    public static PersondataDTO convertToPersonalDataDTO(final MedicalRecord medicalRecord) {
-        final PersondataDTO personalData = new PersondataDTO();
+
+    public PersonalDataDTO toPersonalDataDTO(final MedicalRecord medicalRecord) {
+        if (medicalRecord == null) {
+            return null;
+        }
+        
+        final PersonalDataDTO personalData = new PersonalDataDTO();
 
         personalData.setUuid(medicalRecord.getUuid());
         personalData.setNote(medicalRecord.getMerknad());
@@ -142,7 +150,7 @@ public class MedicalRecordConverter {
             if (baseProperties.getBorn() != null) {
                 personalData.setBorn(baseProperties.getBorn().getStringValue());
             }
-            
+
             if (baseProperties.getDead() != null) {
                 personalData.setDead(baseProperties.getDead().getStringValue());
             }
@@ -176,29 +184,37 @@ public class MedicalRecordConverter {
 
         return personalData;
     }
-    
-    public static MedicalRecordDTO convertToMedicalRecordDTO(final MedicalRecord medicalRecord,
-                                                             final Transfer transfer,
-                                                             final String business) {
-        final PersondataDTO personalData = convertToPersonalDataDTO(medicalRecord);
-        final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO(); 
+
+    public MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord,
+                                               final Transfer transfer,
+                                               final String business) {
+        if (medicalRecord == null) {
+            return null;
+        }
+        
+        final PersonalDataDTO personalData = toPersonalDataDTO(medicalRecord);
+        final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
 
         medicalRecordDTO.setPersonalDataDTO(personalData);
         medicalRecordDTO.setTransferDescription(transfer.getTransferDescription());
         medicalRecordDTO.setTransferId(transfer.getTransferId());
         medicalRecordDTO.setTransferLocked(transfer.isLocked());
-        
+
         final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
-        final List<DiagnoseDTO> diagnoseDTOList = DiagnosisConverter.convertToDiagnosisDTOList(diagnosisSet);
+        final List<DiagnoseDTO> diagnoseDTOList = new DiagnosisConverter().toDiagnosisDTOList(diagnosisSet);
         medicalRecordDTO.setDiagnosisDTOList(diagnoseDTOList);
-        
+
         medicalRecordDTO.setBusiness(business);
-        
+
         return medicalRecordDTO;
     }
-    
-    public static RecordTransferDTO convertToRecordTransferDTO(final MedicalRecord medicalRecord) {
-        RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
+
+    public RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord) {
+        if (medicalRecord == null) {
+            return null;
+        }
+        
+        final RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
 
         final Grunnopplysninger baseInformation = medicalRecord.getGrunnopplysninger();
         if (baseInformation != null) {
@@ -244,12 +260,12 @@ public class MedicalRecordConverter {
             recordTransferDTO.setStorageUnit(storageUnitList.get(0).getId());
         }
 
-        if (medicalRecord.getOppdateringsinfo() != null) {
-            recordTransferDTO.setUpdatedBy(medicalRecord.getOppdateringsinfo().getOppdatertAv());
+        if (medicalRecord.getUpdateInfo() != null) {
+            recordTransferDTO.setUpdatedBy(medicalRecord.getUpdateInfo().getOppdatertAv());
 
-            if (medicalRecord.getOppdateringsinfo().getSistOppdatert() != null) {
+            if (medicalRecord.getUpdateInfo().getSistOppdatert() != null) {
                 try {
-                    recordTransferDTO.setCreationDate(medicalRecord.getOppdateringsinfo().getSistOppdatert().getTimeInMillis());
+                    recordTransferDTO.setCreationDate(medicalRecord.getUpdateInfo().getSistOppdatert().getTimeInMillis());
                 } catch (Throwable ignored) {}
             } else {
                 recordTransferDTO.setCreationDate(0L);
@@ -261,9 +277,12 @@ public class MedicalRecordConverter {
         return recordTransferDTO;
     }
 
-    public static List<RecordTransferDTO> convertToRecordTransferDTOList(final List<MedicalRecord> medicalRecordList) {
-        return medicalRecordList.stream()
-            .map(MedicalRecordConverter::convertToRecordTransferDTO)
-            .collect(Collectors.toList());
+    public List<RecordTransferDTO> toRecordTransferDTOList(final List<MedicalRecord> medicalRecordList) {
+        if (medicalRecordList == null) {
+            return null;
+        }
+        
+        return medicalRecordList.stream().map(this::toRecordTransferDTO).collect(Collectors.toList());
     }
+    
 }

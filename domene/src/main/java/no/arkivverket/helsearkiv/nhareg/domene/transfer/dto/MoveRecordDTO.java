@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FlyttPasientjournalDTO implements Serializable {
+public class MoveRecordDTO implements Serializable {
 
     private List<String> pasientjournalUuids;
     

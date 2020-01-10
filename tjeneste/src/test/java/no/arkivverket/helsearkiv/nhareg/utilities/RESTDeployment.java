@@ -21,7 +21,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorExcepti
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
@@ -65,7 +65,7 @@ public class RESTDeployment {
                                // DTOs
                                .addPackage(BrukerDTO.class.getPackage())
                                .addPackage(MedicalRecordDTO.class.getPackage())
-                               .addPackage(PersondataDTO.class.getPackage())
+                               .addPackage(PersonalDataDTO.class.getPackage())
                                // Entity
                                .addPackage(EntityDAO.class.getPackage())
                                // Agreements

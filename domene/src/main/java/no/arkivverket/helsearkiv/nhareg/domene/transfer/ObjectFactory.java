@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _Oppdateringsinfo_QNAME = new QName("http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv", "oppdateringsinfo");
+    private final static QName _Oppdateringsinfo_QNAME = new QName("http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv", "updateInfo");
     private final static QName _Avlevering_QNAME = new QName("http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv", "Avlevering");
 
     /**
@@ -57,11 +57,11 @@ public class ObjectFactory {
     // }
 
     /**
-     * Create an instance of {@link Oppdateringsinfo }
+     * Create an instance of {@link UpdateInfo }
      * 
      */
-    public Oppdateringsinfo createOppdateringsinfo() {
-        return new Oppdateringsinfo();
+    public UpdateInfo createOppdateringsinfo() {
+        return new UpdateInfo();
     }
 
     /**
@@ -217,12 +217,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Oppdateringsinfo }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link UpdateInfo }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv", name = "oppdateringsinfo")
-    public JAXBElement<Oppdateringsinfo> createOppdateringsinfo(Oppdateringsinfo value) {
-        return new JAXBElement<Oppdateringsinfo>(_Oppdateringsinfo_QNAME, Oppdateringsinfo.class, null, value);
+    @XmlElementDecl(namespace = "http://www.arkivverket.no/arkivverket/Arkivverket/Helsearkiv", name = "updateInfo")
+    public JAXBElement<UpdateInfo> createOppdateringsinfo(UpdateInfo value) {
+        return new JAXBElement<UpdateInfo>(_Oppdateringsinfo_QNAME, UpdateInfo.class, null, value);
     }
 
     /**

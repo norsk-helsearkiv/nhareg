@@ -3,7 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
@@ -39,6 +39,9 @@ public class TransferResource {
     
     @Inject
     private TransferServiceInterface transferService;
+    
+    @Inject
+    private TransferConverterInterface transferConverter;
 
     @GET
     @Path("/{id}")
@@ -124,7 +127,7 @@ public class TransferResource {
     @POST
     @Path("/{id}/pasientjournaler")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createMedicalRecord(@PathParam("id") String id, final PersondataDTO personalDataDTO) {
+    public Response createMedicalRecord(@PathParam("id") String id, final PersonalDataDTO personalDataDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, personalDataDTO, username);
 
@@ -137,7 +140,7 @@ public class TransferResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response getTransferXML(@PathParam("id") String id) {
         final TransferDTO transferDTO = transferService.getById(id);
-        final Transfer transfer = transferDTO.toTransfer();
+        final Transfer transfer = transferConverter.toTransfer(transferDTO);
         
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();

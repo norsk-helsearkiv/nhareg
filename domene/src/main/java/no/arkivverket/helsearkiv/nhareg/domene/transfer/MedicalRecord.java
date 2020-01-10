@@ -45,7 +45,7 @@ public class MedicalRecord implements Serializable {
 
     @Embedded
     @XmlTransient
-    protected Oppdateringsinfo oppdateringsinfo;
+    protected UpdateInfo updateInfo;
 
     @Id
     @XmlAttribute(name = "uuid")
@@ -61,7 +61,7 @@ public class MedicalRecord implements Serializable {
     @Transient
     protected List<Supplerendeopplysninger> supplerendeopplysninger;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "pasientjournal_diagnose",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "diagnose_uuid")

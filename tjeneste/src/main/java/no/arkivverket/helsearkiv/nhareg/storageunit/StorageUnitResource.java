@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.storageunit;
 
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.FlyttPasientjournalDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MoveRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.StorageUnitDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
@@ -44,7 +44,7 @@ public class StorageUnitResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateMedicalRecord(final StorageUnit storageUnit) {
-        final StorageUnit updatedStorageUnit = storageUnitService.update(storageUnit);
+        final StorageUnitDTO updatedStorageUnit = storageUnitService.update(storageUnit);
 
         return Response.ok(updatedStorageUnit).build();
     }
@@ -71,15 +71,16 @@ public class StorageUnitResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/flytt")
-    public Response moveMedicalRecords(final FlyttPasientjournalDTO moveMedicalRecordDTO) {
-        final StorageUnit storageUnit = storageUnitService.getById(moveMedicalRecordDTO.getLagringsenhetIdentifikator());
+    public Response moveMedicalRecords(final MoveRecordDTO moveMedicalRecordDTO) {
+        final StorageUnitDTO storageUnitDTO =
+            storageUnitService.getById(moveMedicalRecordDTO.getLagringsenhetIdentifikator());
 
-        if (storageUnit == null) {
+        if (storageUnitDTO == null) {
             ValidationError feil = new ValidationError("identifikator", "Lagringsenheten finnes ikke");
             return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
         }
 
-        storageUnitService.updateRecordStorageUnit(moveMedicalRecordDTO.getPasientjournalUuids(), storageUnit);
+        storageUnitService.updateRecordStorageUnit(moveMedicalRecordDTO.getPasientjournalUuids(), storageUnitDTO);
 
         return Response.ok().build();
     }
@@ -97,8 +98,8 @@ public class StorageUnitResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/{uuid}/maske")
     public String getStorageUnitMask(@PathParam("uuid") String id) {
-        final StorageUnit storageUnit = storageUnitService.getById(id);
-        final TransferDTO transfer = transferService.getTransferForStorageUnit(storageUnit.getId());
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getById(id);
+        final TransferDTO transfer = transferService.getTransferForStorageUnit(storageUnitDTO.getId());
 
         return transfer.getStorageUnitFormat();
     }

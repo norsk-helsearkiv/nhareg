@@ -7,7 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersondataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import java.util.*;
@@ -78,7 +78,7 @@ public class DateValidation {
     }
 
     //Hjelpemetoder for validering
-    public ArrayList<ValidationError> validate(final PersondataDTO personalDataDTO, final ConfigurationDAO configurationDAO) {
+    public ArrayList<ValidationError> validate(final PersonalDataDTO personalDataDTO, final ConfigurationDAO configurationDAO) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
 
         if (personalDataDTO == null) {
@@ -142,7 +142,7 @@ public class DateValidation {
     }
 
     //skjema 01
-    private ArrayList<ValidationError> fnumCheck(final PersondataDTO person, final Date lowLim, final Date maxLim) {
+    private ArrayList<ValidationError> fnumCheck(final PersonalDataDTO person, final Date lowLim, final Date maxLim) {
         final ArrayList<ValidationError> errors = new ArrayList<>();
         final String fnr = person.getPid();
 
@@ -168,7 +168,7 @@ public class DateValidation {
     }
 
     //skjema 02a
-    private ArrayList<ValidationError> recordDateUnknownFAndMors(final PersondataDTO personalDataDTO,
+    private ArrayList<ValidationError> recordDateUnknownFAndMors(final PersonalDataDTO personalDataDTO,
                                                                  final Date lowLim,
                                                                  final Date maxLim) {
         final ArrayList<ValidationError> feil = new ArrayList<>();
@@ -196,7 +196,7 @@ public class DateValidation {
     }
 
     //skjema 02b
-    private List<ValidationError> recordDateKnownFDateUnkownDeath(final PersondataDTO personalDataDTO, final Date maxAge) {
+    private List<ValidationError> recordDateKnownFDateUnkownDeath(final PersonalDataDTO personalDataDTO, final Date maxAge) {
         final ArrayList<ValidationError> validationErrorList = new ArrayList<>();
 
         if (check(personalDataDTO.getDead()) || gyldigMors.contains(personalDataDTO.getDead())) {
@@ -223,7 +223,7 @@ public class DateValidation {
     }
 
     //skjema 02c
-    private List<ValidationError> recordDateKnownUnkownBornDate(final PersondataDTO personalDataDTO,
+    private List<ValidationError> recordDateKnownUnkownBornDate(final PersonalDataDTO personalDataDTO,
                                                                 final Date lowLim,
                                                                 final Date maxLim) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
@@ -242,7 +242,7 @@ public class DateValidation {
     }
 
     //skjema 02d
-    private List<ValidationError> recordDateKnownBornAndMors(final PersondataDTO personalDataDTO,
+    private List<ValidationError> recordDateKnownBornAndMors(final PersonalDataDTO personalDataDTO,
                                                              final Date lowLim,
                                                              final Date maxLim){
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
@@ -266,7 +266,7 @@ public class DateValidation {
         return validationErrors;
     }
 
-    private List<ValidationError> checkContactDates(final PersondataDTO personalDataDTO) {
+    private List<ValidationError> checkContactDates(final PersonalDataDTO personalDataDTO) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
 
         //første og siste kontaktdato registrert
@@ -319,7 +319,7 @@ public class DateValidation {
      * @param personalDataDTO data to check
      * @return A list of errors, if any
      */
-    private List<ValidationError> checkContactDateBorn(final PersondataDTO personalDataDTO){
+    private List<ValidationError> checkContactDateBorn(final PersonalDataDTO personalDataDTO){
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
         final String firstContact = personalDataDTO.getFirstContact();
         final String lastContact = personalDataDTO.getLastContact();
@@ -359,7 +359,7 @@ public class DateValidation {
      * @param personalDataDTO data to check
      * @return A list containing errors, if any
      */
-    private List<ValidationError> checkContactDateDead(final PersondataDTO personalDataDTO) {
+    private List<ValidationError> checkContactDateDead(final PersonalDataDTO personalDataDTO) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
         final String firstContact = personalDataDTO.getFirstContact();
         final String lastContact = personalDataDTO.getLastContact();

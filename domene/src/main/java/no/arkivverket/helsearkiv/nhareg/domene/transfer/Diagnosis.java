@@ -46,7 +46,7 @@ public class Diagnosis implements Serializable {
     protected String diagnosetekst;
     
     @XmlTransient
-    protected Oppdateringsinfo oppdateringsinfo;
+    protected UpdateInfo updateInfo;
     
     @Override
     public boolean equals(final Object other) {

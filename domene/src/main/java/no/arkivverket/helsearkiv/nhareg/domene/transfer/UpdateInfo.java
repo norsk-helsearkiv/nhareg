@@ -17,7 +17,7 @@ import java.util.Calendar;
 })
 @Data
 @Embeddable
-public class Oppdateringsinfo implements Serializable {
+public class UpdateInfo implements Serializable {
     
     @XmlElement(name = "sist_oppdatert", required = true, type = String.class)
     @XmlJavaTypeAdapter(StringDateTimeAdapter.class)

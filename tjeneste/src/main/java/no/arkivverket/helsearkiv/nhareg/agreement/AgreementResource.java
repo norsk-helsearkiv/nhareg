@@ -3,8 +3,10 @@ package no.arkivverket.helsearkiv.nhareg.agreement;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 
 import javax.annotation.Resource;
@@ -35,6 +37,9 @@ public class AgreementResource {
     
     @Inject
     private BusinessServiceInterface businessService;
+    
+    @Inject
+    private TransferConverterInterface transferConverter;
 
     @POST
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
@@ -78,8 +83,9 @@ public class AgreementResource {
     @Path("/{id}/avleveringer")
     public Response getTransfers(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final TransferDTO defaultTransfer = transferService.getDefaultTransfer(username);
-        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer.toTransfer());
+        final TransferDTO defaultTransferDTO = transferService.getDefaultTransfer(username);
+        final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO);
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);
         
         return Response.ok(transferDTOList).build();
     }

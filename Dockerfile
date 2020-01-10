@@ -112,12 +112,15 @@ RUN addgroup -S jboss && adduser -S jboss -G jboss
 # Install Java 8
 RUN apk add --no-cache openjdk8-jre sed dos2unix bash
 
-COPY src/main/resources/entrypoint.sh /entrypoint.sh
+COPY src/main/resources/entrypoint.sh /
+COPY src/main/resources/update-datasource-credentials.cli /
 RUN chmod +x /entrypoint.sh \
     && chown jboss:0 /entrypoint.sh \
     && dos2unix /entrypoint.sh \
     && chown -R jboss:0 $JBOSS_HOME \
-    && chmod +x $JBOSS_HOME
+    && chmod +x $JBOSS_HOME \
+    && chown -R jboss:0 /opt/jasper \
+    && chmod +x /opt/jasper    
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true

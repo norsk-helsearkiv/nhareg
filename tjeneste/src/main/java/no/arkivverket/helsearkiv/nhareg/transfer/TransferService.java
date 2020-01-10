@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Oppdateringsinfo;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
@@ -25,16 +25,19 @@ public class TransferService implements TransferServiceInterface {
     
     @Inject
     private UserDAO userDAO;
-
+    
+    @Inject
+    private TransferConverterInterface transferConverter;
+    
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
-        final Transfer transfer = transferDTO.toTransfer();
-        transfer.setOppdateringsinfo(createUpdateInfo(username));
+        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        transfer.setUpdateInfo(createUpdateInfo(username));
 
         try {
             final Transfer created = transferDAO.create(transfer);
             
-            return new TransferDTO(created);
+            return transferConverter.fromTransfer(created);
         } catch (EJBTransactionRolledbackException ejb) { // Catch duplicate entries
             Throwable cause = ejb.getCause();
 
@@ -65,26 +68,26 @@ public class TransferService implements TransferServiceInterface {
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
 
         // Set update info
-        existingTransfer.setOppdateringsinfo(createUpdateInfo(username));
+        existingTransfer.setUpdateInfo(createUpdateInfo(username));
 
         // Update
         final Transfer updatedTransfer = transferDAO.update(existingTransfer);
 
-        return new TransferDTO(updatedTransfer);
+        return transferConverter.fromTransfer(updatedTransfer);
     }
 
     @Override
     public TransferDTO delete(final String id) {
         final Transfer deleted = transferDAO.delete(id);
         
-        return new TransferDTO(deleted);
+        return transferConverter.fromTransfer(deleted);
     }
 
     @Override
     public TransferDTO getById(final String id) {
         final Transfer transfer = transferDAO.fetchById(id);
         
-        return new TransferDTO(transfer);
+        return transferConverter.fromTransfer(transfer);
     }
 
     @Override
@@ -93,14 +96,14 @@ public class TransferService implements TransferServiceInterface {
         final List<Transfer> transferList = transferDAO.fetchAll(mappedQueries);
         
         // Convert to TransferDTO list
-        return transferList.stream().map(TransferDTO::new).collect(Collectors.toList());
+        return transferList.stream().map(transferConverter::fromTransfer).collect(Collectors.toList());
     }
 
     @Override 
     public TransferDTO getTransferForStorageUnit(final String id) {
         final Transfer transfer = transferDAO.fetchTransferForStorageUnit(id);
         
-        return new TransferDTO(transfer);
+        return transferConverter.fromTransfer(transfer);
     }
 
     @Override
@@ -128,15 +131,15 @@ public class TransferService implements TransferServiceInterface {
 
         final Transfer transfer = transferDAO.fetchById(defaultUuid);
         
-        return new TransferDTO(transfer);
+        return transferConverter.fromTransfer(transfer);
     }
 
-    private Oppdateringsinfo createUpdateInfo(final String username) {
-        Oppdateringsinfo oppdateringsinfo = new Oppdateringsinfo();
-        oppdateringsinfo.setOppdatertAv(username);
-        oppdateringsinfo.setSistOppdatert(Calendar.getInstance());
+    private UpdateInfo createUpdateInfo(final String username) {
+        UpdateInfo updateInfo = new UpdateInfo();
+        updateInfo.setOppdatertAv(username);
+        updateInfo.setSistOppdatert(Calendar.getInstance());
 
-        return oppdateringsinfo;
+        return updateInfo;
     }
     
 }

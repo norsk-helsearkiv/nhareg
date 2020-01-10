@@ -16,7 +16,7 @@ import java.util.Set;
     "agreement",
     "arkivskaper",
     "medicalRecords",
-    "oppdateringsinfo"
+    "updateInfo"
 })
 @Data
 @Entity
@@ -57,7 +57,7 @@ public class Transfer implements Serializable {
     private boolean locked = false;
 
     @Embedded
-    protected Oppdateringsinfo oppdateringsinfo;
+    protected UpdateInfo updateInfo;
 
     public Set<MedicalRecord> getMedicalRecords() {
         if (medicalRecords == null) {

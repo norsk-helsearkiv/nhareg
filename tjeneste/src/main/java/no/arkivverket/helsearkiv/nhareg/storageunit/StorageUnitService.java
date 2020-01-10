@@ -7,7 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.StorageUnitDTO;
-import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
+import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
@@ -38,26 +38,43 @@ public class StorageUnitService implements StorageUnitServiceInterface {
 
     @Inject
     private ConfigurationDAO configurationDAO;
+    
+    @Inject
+    private MedicalRecordConverterInterface medicalRecordConverter;
+    
+    @Inject
+    private StorageUnitConverterInterface storageUnitConverter;
 
     @Override
-    public StorageUnit getById(String id) {
-        return storageUnitDAO.fetchById(id);
+    public StorageUnitDTO getById(final String id) {
+        final StorageUnit storageUnit = storageUnitDAO.fetchById(id);
+        
+        if (storageUnit == null) {
+            return null;
+        }
+        
+        return storageUnitConverter.fromStorageUnit(storageUnit);
     }
 
     @Override
-    public StorageUnit create(final StorageUnit storageUnit) {
-        return storageUnitDAO.create(storageUnit);
+    public StorageUnitDTO create(final StorageUnit storageUnit) {
+        final StorageUnit newStorageUnit = storageUnitDAO.create(storageUnit);
+        
+        return storageUnitConverter.fromStorageUnit(newStorageUnit);
     }
 
     @Override
-    public StorageUnit update(final StorageUnit storageUnit) {
-        return storageUnitDAO.update(storageUnit);
+    public StorageUnitDTO update(final StorageUnit storageUnit) {
+        final StorageUnit updated = storageUnitDAO.update(storageUnit);
+        
+        return storageUnitConverter.fromStorageUnit(updated);
     }
 
     @Override
     public List<RecordTransferDTO> getMedicalRecordsForId(final String id) {
-        List<MedicalRecord> medicalRecords = storageUnitDAO.fetchMedicalRecordsForStorageUnit(id);
-        return MedicalRecordConverter.convertToRecordTransferDTOList(medicalRecords);
+        final List<MedicalRecord> medicalRecords = storageUnitDAO.fetchMedicalRecordsForStorageUnit(id);
+        
+        return medicalRecordConverter.toRecordTransferDTOList(medicalRecords);
     }
 
     @Override
@@ -65,14 +82,15 @@ public class StorageUnitService implements StorageUnitServiceInterface {
         final Map<String, String> mappedParameters = ParameterConverter.multivaluedToMap(queryParameters);
         final List<StorageUnit> storageUnits = storageUnitDAO.fetchAll(mappedParameters);
         
-        return storageUnits.stream().map(StorageUnitDTO::new).collect(Collectors.toList());
+        return storageUnits.stream().map(storageUnitConverter::fromStorageUnit).collect(Collectors.toList());
     }
 
     @Override
-    public void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnit storageUnit) {
+    public void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnitDTO storageUnitDTO) {
         for (final String recordId: medicalRecordIds) {
             final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(recordId);
             medicalRecord.getStorageUnit().clear();
+            final StorageUnit storageUnit = storageUnitConverter.toStorageUnit(storageUnitDTO);
             medicalRecord.getStorageUnit().add(storageUnit);
         }
     }

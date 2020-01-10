@@ -18,12 +18,5 @@ public class LmrDTO {
     private String middleName;
     
     private LocalDate deathDate;
-
-    public LmrDTO(final Lmr lmr) {
-        this.firstName = lmr.getFnavn();
-        this.middleName = lmr.getMnavn();
-        this.lastName = lmr.getEnavn();
-        this.deathDate = lmr.getDdato();
-    }
     
 }
