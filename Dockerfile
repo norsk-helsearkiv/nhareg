@@ -1,4 +1,4 @@
-# Get node 
+####### NODE #######
 FROM node:13.6-alpine as web-build
 
 RUN apk update && apk upgrade && \
@@ -14,7 +14,8 @@ RUN cd klient-web/src/main/ \
     && npm install -g grunt-cli \
     && grunt
 
-# Get maven with jdk 8
+
+####### MAVEN #######
 FROM library/maven:3.6.3-jdk-8-slim as build
 
 ARG MAVEN_ARGS=""
@@ -28,7 +29,8 @@ COPY --from=web-build /usr/src/klient-web/src/main klient-web/src/main
 
 RUN mvn clean package $MAVEN_ARGS
 
-# Get Wildfly 8.2.0.Final
+
+####### Wildfly #######
 FROM jboss/wildfly:8.2.0.Final as wildfly
 
 # Set the relevant environment variables
@@ -98,29 +100,20 @@ RUN echo "Configuring Wildfly" \
 COPY --from=build /usr/src/klient-web/target/web.war $JBOSS_HOME/standalone/deployments/
 COPY --from=build /usr/src/tjeneste/target/api.war $JBOSS_HOME/standalone/deployments/
 
+####### ALPINE #######
 FROM alpine:3.11
 
 ENV JBOSS_HOME /opt/jboss/wildfly
-ENV JBOSS_CLI $JBOSS_HOME/bin/jboss-cli.sh
-
-COPY --from=wildfly $JBOSS_HOME $JBOSS_HOME
-COPY --from=wildfly /usr/src/jasperreports-server /opt/jasper/
-COPY src/main/resources/default_master.properties .
 
 RUN addgroup -S jboss && adduser -S jboss -G jboss
 
-# Install Java 8
-RUN apk add --no-cache openjdk8-jre sed dos2unix bash
+COPY --from=wildfly --chown=jboss $JBOSS_HOME $JBOSS_HOME
+COPY --from=wildfly --chown=jboss /usr/src/jasperreports-server /opt/jasper/
 
-COPY src/main/resources/entrypoint.sh /
-COPY src/main/resources/update-datasource-credentials.cli /
-RUN chmod +x /entrypoint.sh \
-    && chown jboss:0 /entrypoint.sh \
-    && dos2unix /entrypoint.sh \
-    && chown -R jboss:0 $JBOSS_HOME \
-    && chmod +x $JBOSS_HOME \
-    && chown -R jboss:0 /opt/jasper \
-    && chmod +x /opt/jasper
+COPY --chown=jboss src/main/resources/entrypoint.sh src/main/resources/update-datasource-credentials.cli src/main/resources/default_master.properties /
+
+RUN apk --no-cache add openjdk8-jre sed dos2unix bash
+RUN dos2unix /entrypoint.sh
 
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
