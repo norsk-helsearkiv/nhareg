@@ -14,9 +14,9 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Virksomhet", propOrder = {
-    "organisasjonsnummer",
-    "navn",
-    "foretaksnavn"
+    "organizationNumber",
+    "name",
+    "businessName"
 })
 @Data
 @Entity
@@ -26,11 +26,14 @@ public class Business implements Serializable {
     @Id
     @Column(name = "organisasjonsnummer")
     @XmlElement(required = true)
-    protected String organisasjonsnummer;
+    protected String organizationNumber;
     
-    @XmlElement(required = true)
-    protected String navn;
+    @Column(name = "navn")
+    @XmlElement(required = true, name = "navn")
+    protected String name;
     
-    protected String foretaksnavn;
-    
+    @Column(name = "foretaksnavn")
+    @XmlElement(name = "foretaksnavn")
+    protected String businessName;
+
 }

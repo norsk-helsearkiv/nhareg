@@ -4,7 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorExcepti
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -81,8 +81,8 @@ public class AgreementServiceTest {
         agreement.setAgreementId(agreementId);
         agreement.setAgreementDate(calendar);
 
-        business.setOrganisasjonsnummer("100");
-        business.setNavn("Testorganisasjon");
+        business.setOrganizationNumber("100");
+        business.setName("Testorganisasjon");
         agreement.setBusiness(business);
 
         final AgreementDTO agreementDTO = agreementConverter.fromAgreement(agreement);
@@ -95,14 +95,14 @@ public class AgreementServiceTest {
     
     @Test
     public void getTransfersByAgreementId_validId_shouldNotReturnDuplicates() {
-        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("Avtale1", null);
+        final List<TransferInAgreementDTO> transferDTOList = agreementService.getTransfersByAgreementId("Avtale1", null);
         assertNotNull(transferDTOList);
         assertEquals(1, transferDTOList.size());
     }
 
     @Test
     public void getTransfersByAgreementId_validId_shouldReturnTransfers() {
-        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
+        final List<TransferInAgreementDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
         assertNotNull(transferDTOList);
         assertEquals(1, transferDTOList.size());
     }

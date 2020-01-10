@@ -6,6 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 
@@ -85,14 +86,14 @@ public class AgreementResource {
         final String username = sessionContext.getCallerPrincipal().getName();
         final TransferDTO defaultTransferDTO = transferService.getDefaultTransfer(username);
         final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO);
-        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);
+        final List<TransferInAgreementDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);
         
         return Response.ok(transferDTOList).build();
     }
     
     @GET
     @Path("/virksomhet")
-    public Business getVirksomhet() {
+    public Business getBusiness() {
         return businessService.getBusiness();
     }
     

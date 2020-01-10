@@ -97,7 +97,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final Transfer transfer = transferDAO.fetchTransferFromRecordId(id);
         final Business business = businessDAO.fetchBusiness();
 
-        return medicalRecordConverter.toMedicalRecordDTO(medicalRecord, transfer, business.getForetaksnavn());
+        return medicalRecordConverter.toMedicalRecordDTO(medicalRecord, transfer, business.getBusinessName());
     }
 
     @Override
@@ -166,7 +166,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
 
         final MedicalRecord updatedMedicalRecord = medicalRecordDAO.update(medicalRecord);
-        final String business = businessDAO.fetchBusiness().getForetaksnavn();
+        final String business = businessDAO.fetchBusiness().getBusinessName();
 
         return medicalRecordConverter.toMedicalRecordDTO(updatedMedicalRecord, transfer, business);
     }
@@ -198,7 +198,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final Business business = businessDAO.fetchBusiness();
         final MedicalRecordDTO medicalRecordDTO = medicalRecordConverter.toMedicalRecordDTO(medicalRecord,
                                                                                             transfer,
-                                                                                            business.getForetaksnavn());
+                                                                                            business.getBusinessName());
         final String transferIdForRecord = transferDAO.fetchTransferIdFromRecordId(medicalRecord.getUuid());
         medicalRecordDTO.setTransferId(transferIdForRecord);
 

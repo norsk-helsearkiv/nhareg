@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
@@ -66,12 +66,13 @@ public class AgreementService implements AgreementServiceInterface {
     }
 
     @Override
-    public List<TransferDTO> getTransfersByAgreementId(final String id, final Transfer defaultTransfer) {
+    public List<TransferInAgreementDTO> getTransfersByAgreementId(final String id, final Transfer defaultTransfer) {
         final List<Transfer> transferList = agreementDAO.fetchTransfersByAgreementId(id);
-        final List<TransferDTO> transferDTOList = new ArrayList<>();
+        final List<TransferInAgreementDTO> transferDTOList = new ArrayList<>();
 
         for (Transfer transfer : transferList) {
-            final TransferDTO transferDTO = transferConverter.fromTransfer(transfer);
+            final Business business = businessDAO.fetchBusiness();
+            final TransferInAgreementDTO transferDTO = transferConverter.toInAgreementDTO(transfer, business);
             if (defaultTransfer != null) {
                 if (transfer.getTransferId().equals(defaultTransfer.getTransferId())) {
                     transferDTO.setDefaultTransfer(true);
@@ -80,7 +81,7 @@ public class AgreementService implements AgreementServiceInterface {
             transferDTOList.add(transferDTO);
         }
 
-        return transferDTOList; 
+        return transferDTOList;
     }
     
 }
