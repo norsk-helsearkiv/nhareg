@@ -2,6 +2,8 @@ angular.module('nha.register')
 
     .controller('RegisterUtilitiesCtrl', function($scope, $filter, httpService, errorService) {
 
+        var skipFields = false;
+
         //Setting focus on the right element
         $scope.setFocus = function () {
             //New patient journal
@@ -14,13 +16,11 @@ angular.module('nha.register')
             }
             //Updating patient journal
             else if ($scope.state === 2) {
-                document.getElementById("diagnosedato").focus();
+                document.getElementById("diagnosisDate-input").focus();
             }
         };
 
         $scope.setFocus();
-
-        var hoppOver = false;
 
         $scope.setFocusEtterNavn = function () {
             if ($scope.formData !== undefined) {
@@ -33,10 +33,13 @@ angular.module('nha.register')
                 }
             }
 
-            if (hoppOver) {
-                document.getElementById("ddato").focus();
+            if ($scope.formData.navn && skipFields) {
+                if($scope.formData.dod) {
+                    document.getElementById("fKontakt-input").focus();
+                } else {
+                    document.getElementById("ddato").focus();
+                }
             }
-            hoppOver = false;
         };
 
         var fodselsnummer;
@@ -102,10 +105,10 @@ angular.module('nha.register')
 
         $scope.populerFelt = function () {
             if ($scope.formData.fodselsnummer !== undefined && $scope.formData.fodselsnummer !=='') {
-                var fnrs = $scope.formData.fodselsnummer.replace(/\D/g, '');
-                fnrs = fnrs.substr(0, 11);
-                $scope.formData.fodselsnummer = fnrs;
-            }else{
+                var nationalIdentity = $scope.formData.fodselsnummer.replace(/\D/g, '');
+                nationalIdentity = nationalIdentity.substr(0, 11);
+                $scope.formData.fodselsnummer = nationalIdentity;
+            } else {
                 return;
             }
 
@@ -130,17 +133,17 @@ angular.module('nha.register')
             }
 
             //Valider nr
-            var aarhundre = $scope.getAarhundreFromFnr($scope.formData.fodselsnummer);
-            if (!aarhundre) {
+            var century = $scope.getAarhundreFromFnr($scope.formData.fodselsnummer);
+            if (!century) {
                 return;
             }
 
             var kjonnValidert = false, datoValidert = false;
             if ($scope.formData.fodselsnummer.length == 11) {
 
-                var kjonn = kjonnFromFodselsnummer($scope.formData.fodselsnummer);
-                if (kjonn) {
-                    $scope.formData.kjonn = kjonn;
+                var gender = kjonnFromFodselsnummer($scope.formData.fodselsnummer);
+                if (gender) {
+                    $scope.formData.kjonn = gender;
                     kjonnValidert = true;
                 }
             }
@@ -168,10 +171,46 @@ angular.module('nha.register')
 
             if (dag > 0 && dag < 32 && mnd > 0 && mnd < 13 && aar >= 0) {
                 datoValidert = true;
-                $scope.formData.fodt = dag + "." + mnd + "." + aarhundre + aar;
+                $scope.formData.fodt = dag + "." + mnd + "." + century + aar;
             }
 
-            hoppOver = kjonnValidert && datoValidert;
+            skipFields = kjonnValidert && datoValidert;
+
+            $scope.checkIfLmrIsConfigured($scope.formData.fodselsnummer);
+        };
+
+        $scope.checkIfLmrIsConfigured = function (nationalIdentity) {
+            httpService.get("lmr/valid")
+                .success(function (result) {
+                    if(result === true){
+                        $scope.getDataFromLmr(nationalIdentity);
+                    } else {
+                        return;
+                    }
+                })
+                .error(function () {
+                    errorService.errorCode(status);
+                });
+        };
+
+        $scope.getDataFromLmr = function (nationalIdentity) {
+            httpService.get("lmr/" + nationalIdentity)
+                .success(function (data) {
+                    if(data.mnavn) {
+                        $scope.formData.navn = data.fnavn + ' ' + data.mnavn + ' ' + data.enavn;
+                    } else {
+                        $scope.formData.navn = data.fnavn + ' ' + data.enavn;
+                    }
+                    $scope.formData.dod = data.ddato;
+                    $scope.setFocusEtterNavn();
+                })
+                .error(function (data, status) {
+                    if (status === 400) {
+                        $scope.setFeilmeldinger(data, status);
+                    } else {
+                        errorService.errorCode(status);
+                    }
+                });
         };
 
         $scope.injectCenturiesPJ = function(){
@@ -224,10 +263,10 @@ angular.module('nha.register')
                 $scope.error[element.attribute] = element.constraint;
 
                 var felt = document.getElementById(element.attribute).innerHTML;
+                var predefined = 'formError.' + element.constraint;
 
                 if (felt !== undefined) {
-                    if (element.message !== undefined && element.message !== "may not be null"){ //sett inn variabler i feilmeldingen
-                        var predefined = 'feltfeil.' + element.constraint;
+                    if (element.message !== undefined && element.message !== "may not be null") {
                         var errorMessage = $filter('translate')(predefined, element.message);
                         $scope.feilTekster[element.constraint] = errorMessage;
                     }
