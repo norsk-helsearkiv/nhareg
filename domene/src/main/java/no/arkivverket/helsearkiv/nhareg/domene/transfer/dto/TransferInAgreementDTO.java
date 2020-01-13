@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 
 @Data
 @NoArgsConstructor
@@ -30,6 +29,9 @@ public class TransferInAgreementDTO {
     private String storageUnitFormat;
     
     @JsonProperty(value = "virksomhet")
-    private Business business;
+    private String business;
+    
+    @JsonProperty(value = "avtalebeskrivelse")
+    private String agreementDescription;
    
 }

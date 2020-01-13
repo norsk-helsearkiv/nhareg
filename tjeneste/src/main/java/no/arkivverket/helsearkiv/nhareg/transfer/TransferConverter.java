@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
@@ -47,10 +48,12 @@ public class TransferConverter implements TransferConverterInterface {
     }
 
     @Override
-    public TransferInAgreementDTO toInAgreementDTO(final Transfer transfer, final Business business) {
+    public TransferInAgreementDTO toInAgreementDTO(final Transfer transfer, final Business business,
+                                                   final Agreement agreement) {
         return new TransferInAgreementDTO(transfer.getTransferId(), transfer.getTransferDescription(),
                                           transfer.getArkivskaper(), transfer.isLocked(), false,
-                                          transfer.getStorageUnitFormat(), business);
+                                          transfer.getStorageUnitFormat(), business.getName(),
+                                          agreement.getAgreementDescription());
     }
 
 }
