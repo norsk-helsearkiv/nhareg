@@ -39,6 +39,7 @@ public class MedicalRecordResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public MedicalRecord create(final MedicalRecord medicalRecord) {
         final String username = sessionContext.getCallerPrincipal().getName();
+        
         return medicalRecordService.create(medicalRecord, username);
     }
 
@@ -59,13 +60,14 @@ public class MedicalRecordResource {
     @Path("/{id}")
     public MedicalRecord delete(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
+        
         return medicalRecordService.delete(id, username);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public ListObject getAllWithTransfers(@Context UriInfo uriInfo) {
-        return medicalRecordService.getAllWithTransfers(uriInfo.getQueryParameters());
+        return medicalRecordService.getAllWithTransfers(uriInfo.getQueryParameters(), null);
     }
 
     @GET

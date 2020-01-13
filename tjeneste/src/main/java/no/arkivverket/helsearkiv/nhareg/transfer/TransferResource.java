@@ -112,9 +112,8 @@ public class TransferResource {
     @Produces(MediaType.APPLICATION_JSON)
     public ListObject getMedicalRecordList(@PathParam("id") String id, @Context UriInfo uriInfo) {
         final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
-        queryParameters.add("transferId", id);
         
-        return medicalRecordService.getAllWithTransfers(queryParameters);
+        return medicalRecordService.getAllWithTransfers(queryParameters, id);
     }
 
     /**

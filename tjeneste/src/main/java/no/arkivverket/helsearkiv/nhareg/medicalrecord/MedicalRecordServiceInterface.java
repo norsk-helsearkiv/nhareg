@@ -17,7 +17,7 @@ public interface MedicalRecordServiceInterface {
     
     MedicalRecordDTO getByIdWithTransfer(final String id);
 
-    ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters);
+    ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id);
 
     MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO, final String username);
     

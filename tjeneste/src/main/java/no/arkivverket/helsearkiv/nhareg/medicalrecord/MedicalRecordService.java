@@ -101,7 +101,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     }
 
     @Override
-    public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters) {
+    public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id) {
         int page = 0;
         int size = 0;
 
@@ -111,6 +111,10 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
 
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
+        if (id != null && !id.isEmpty()) {
+            mappedQueries.put("transferId", id);
+        }
+        
         final List<RecordTransferDTO> recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries);
         final BigInteger totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
 
