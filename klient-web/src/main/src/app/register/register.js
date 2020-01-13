@@ -376,7 +376,7 @@ angular.module('nha.register', [
                     funnet = true;
                 }
             }
-            
+
             if (!funnet) {
                 $scope.formData.kjonn = {
                     "code": $scope.formData.kjonn,
