@@ -63,7 +63,7 @@ public class TransferResource {
     @Path("/ny")
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public TransferDTO update(final TransferInAgreementDTO transferDTO) {
+    public TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         
         return transferService.update(transferDTO, username);
@@ -145,6 +145,8 @@ public class TransferResource {
         
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();
+            marshaller.setProperty("jaxb.schemaLocation", "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd");
+            
             final StringWriter stringWriter = new StringWriter();
 
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

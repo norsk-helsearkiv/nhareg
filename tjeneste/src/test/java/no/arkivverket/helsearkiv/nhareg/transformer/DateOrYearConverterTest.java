@@ -40,8 +40,8 @@ public class DateOrYearConverterTest {
 
         MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(dto);
 
-        assertEquals(dto.getPid(), medicalRecord.getGrunnopplysninger().getIdentifikator().getPid());
-        final int dod = medicalRecord.getGrunnopplysninger().getDead().getAar();
+        assertEquals(dto.getPid(), medicalRecord.getBaseProperties().getIdentifikator().getPid());
+        final int dod = medicalRecord.getBaseProperties().getDead().getAar();
         assertEquals(2009, dod);
     }
 
@@ -79,7 +79,7 @@ public class DateOrYearConverterTest {
     private MedicalRecord getMedicalRecord() {
         final MedicalRecord medicalRecord = new MedicalRecord();
         final StorageUnit storageUnit = new StorageUnit();
-        final Grunnopplysninger baseProperties = new Grunnopplysninger();
+        final BaseProperties baseProperties = new BaseProperties();
 
         storageUnit.setId("Boks1");
         storageUnit.setUuid("lagring-1-boks-1");
@@ -90,7 +90,7 @@ public class DateOrYearConverterTest {
         id.setTypePID("fodselsnummer");
         baseProperties.setIdentifikator(id);
 
-        baseProperties.setPnavn("Natalie");
+        baseProperties.setName("Natalie");
         baseProperties.setDead(getDate());
         baseProperties.setDeathDateUnknown(Boolean.FALSE);
         baseProperties.setBorn(getDate());
@@ -100,11 +100,11 @@ public class DateOrYearConverterTest {
         gender.setDisplayName("Kvinne");
         baseProperties.setGender(gender);
 
-        final Kontakt contact = new Kontakt();
+        final Contact contact = new Contact();
         contact.setFoerste(getDate());
         contact.setSiste(getDate());
-        baseProperties.setKontakt(contact);
-        medicalRecord.setGrunnopplysninger(baseProperties);
+        baseProperties.setContact(contact);
+        medicalRecord.setBaseProperties(baseProperties);
 
         final RecordId recordId = new RecordId();
         recordId.setRecordNumber("123");

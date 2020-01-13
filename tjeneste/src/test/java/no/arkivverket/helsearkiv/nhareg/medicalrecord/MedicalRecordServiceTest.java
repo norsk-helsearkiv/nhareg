@@ -95,7 +95,7 @@ public class MedicalRecordServiceTest {
     public void delete_validId_shouldSetDeletedToTrue() {
         MedicalRecord medicalRecord = medicalRecordService.delete("uuid1", USERNAME);
         assertNotNull(medicalRecord);
-        assertEquals(true, medicalRecord.getSlettet());
+        assertEquals(true, medicalRecord.getDeleted());
     }
     
 }

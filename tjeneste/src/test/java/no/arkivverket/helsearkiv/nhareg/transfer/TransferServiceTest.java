@@ -1,9 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
+import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -14,7 +17,6 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
@@ -30,6 +32,9 @@ public class TransferServiceTest {
     
     @Inject
     private TransferConverterInterface transferConverter;
+    
+    @Inject
+    private AgreementConverterInterface agreementConverter;
     
     @Test(expected = EntityExistsException.class)
     public void create_duplicateEntry_shouldThrowEntityExistsException() {
@@ -66,21 +71,23 @@ public class TransferServiceTest {
         final String archiveCreator = "JUnit test";
         final TransferDTO transferDTO = transferService.getById(id);
         final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final AgreementDTO agreementDTO = agreementConverter.fromAgreement(transfer.getAgreement());
         
         assertNotNull(transfer);
-        assertNotNull(transfer.getAgreement());
+        assertNotNull(agreementDTO);
         assertNotNull(transfer.getMedicalRecords());
 
         transferDTO.setArchiveCreator(archiveCreator);
-        transferService.update(transferConverter.toInAgreementDTO(transfer, new Business(), transfer.getAgreement()),
-                               "nhabruker1");
+        final TransferInAgreementDTO transferInAgreementDTO = transferConverter.toInAgreementDTO(transfer,
+                                                                                                 new Business(),
+                                                                                                 agreementDTO);
+        transferService.update(transferInAgreementDTO,"nhabruker1");
 
         final TransferDTO updatedTransferDTO = transferService.getById(id);
         final Transfer updatedTransfer = transferConverter.toTransfer(updatedTransferDTO);
         assertNotNull(updatedTransfer);
         assertNotNull(updatedTransfer.getAgreement());
         assertNotNull(updatedTransfer.getUpdateInfo());
-        assertEquals(archiveCreator, updatedTransfer.getArkivskaper());
     }
     
     @Test

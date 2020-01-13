@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Avtale", propOrder = {
+@XmlType(name = "avtale", propOrder = {
     "agreementId",
     "agreementDate",
     "agreementDescription",

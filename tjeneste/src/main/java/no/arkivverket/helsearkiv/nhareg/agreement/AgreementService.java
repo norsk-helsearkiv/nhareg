@@ -72,8 +72,10 @@ public class AgreementService implements AgreementServiceInterface {
 
         for (Transfer transfer : transferList) {
             final Business business = businessDAO.fetchBusiness();
-            final TransferInAgreementDTO transferDTO = transferConverter.toInAgreementDTO(transfer, business,
-                                                                                          transfer.getAgreement());
+            final AgreementDTO agreementDTO = agreementConverter.fromAgreement(transfer.getAgreement());
+            final TransferInAgreementDTO transferDTO = transferConverter.toInAgreementDTO(transfer,
+                                                                                          business,
+                                                                                          agreementDTO);
             if (defaultTransfer != null) {
                 if (transfer.getTransferId().equals(defaultTransfer.getTransferId())) {
                     transferDTO.setDefaultTransfer(true);

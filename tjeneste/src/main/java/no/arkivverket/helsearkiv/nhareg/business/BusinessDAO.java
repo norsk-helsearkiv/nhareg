@@ -13,11 +13,10 @@ public class BusinessDAO {
 
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
-    
-    private static String GET_BUSINESS_LIST_QUERY = "SELECT v FROM Business v";
-    
+
     public Business fetchBusiness() {
-        final Query query  = entityManager.createQuery(GET_BUSINESS_LIST_QUERY, Business.class);
+        final String queryString = "SELECT v FROM Business v";
+        final Query query  = entityManager.createQuery(queryString, Business.class);
         final List<Business> businessList = query.getResultList();
         return businessList.get(0);
     }

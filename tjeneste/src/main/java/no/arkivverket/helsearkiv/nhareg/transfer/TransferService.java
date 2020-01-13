@@ -1,8 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
+import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
+import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
@@ -17,6 +22,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class TransferService implements TransferServiceInterface {
@@ -28,7 +34,13 @@ public class TransferService implements TransferServiceInterface {
     private UserDAO userDAO;
     
     @Inject
+    private BusinessDAO businessDAO;
+    
+    @Inject
     private TransferConverterInterface transferConverter;
+    
+    @Inject
+    private AgreementConverterInterface agreementConverter;
     
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
@@ -55,7 +67,7 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public TransferDTO update(final TransferInAgreementDTO transferDTO, final String username) {
+    public TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO, final String username) {
         // Validate
         new Validator<>(TransferInAgreementDTO.class).validateWithException(transferDTO);
 
@@ -65,7 +77,19 @@ public class TransferService implements TransferServiceInterface {
         // Copy values
         existingTransfer.setTransferId(transferDTO.getTransferId());
         existingTransfer.setTransferDescription(transferDTO.getTransferDescription());
-        existingTransfer.setArkivskaper(transferDTO.getArchiveCreator());
+        
+        // Get the archive creator
+        final String archiveCreatorString = transferDTO.getArchiveCreator();
+        if (archiveCreatorString != null && !archiveCreatorString.isEmpty()) {
+            int subEnd = Math.min(archiveCreatorString.length(), 3);
+            final String archiveCreatorCode = archiveCreatorString.substring(0, subEnd);
+            final ArchiveCreator archiveCreator = new ArchiveCreator(UUID.randomUUID().toString(), 
+                                                                     archiveCreatorCode,
+                                                                     archiveCreatorString,
+                                                                     null);
+            existingTransfer.setArchiveCreator(archiveCreator);
+        }
+        
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
 
         // Set update info
@@ -73,8 +97,10 @@ public class TransferService implements TransferServiceInterface {
 
         // Update
         final Transfer updatedTransfer = transferDAO.update(existingTransfer);
+        final Business business = businessDAO.fetchBusiness();
+        final AgreementDTO agreementDTO = agreementConverter.fromAgreement(updatedTransfer.getAgreement());
 
-        return transferConverter.fromTransfer(updatedTransfer);
+        return transferConverter.toInAgreementDTO(updatedTransfer, business, agreementDTO);
     }
 
     @Override

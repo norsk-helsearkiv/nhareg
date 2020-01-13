@@ -129,11 +129,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Grunnopplysninger }
+     * Create an instance of {@link BaseProperties }
      * 
      */
-    public Grunnopplysninger createGrunnopplysninger() {
-        return new Grunnopplysninger();
+    public BaseProperties createGrunnopplysninger() {
+        return new BaseProperties();
     }
 
     /**
@@ -169,11 +169,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Kontakt }
+     * Create an instance of {@link Contact }
      * 
      */
-    public Kontakt createKontakt() {
-        return new Kontakt();
+    public Contact createKontakt() {
+        return new Contact();
     }
 
     /**
@@ -201,11 +201,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Supplerendeopplysninger }
+     * Create an instance of {@link AdditionalInfo }
      * 
      */
-    public Supplerendeopplysninger createSupplerendeopplysninger() {
-        return new Supplerendeopplysninger();
+    public AdditionalInfo createSupplerendeopplysninger() {
+        return new AdditionalInfo();
     }
 
     /**

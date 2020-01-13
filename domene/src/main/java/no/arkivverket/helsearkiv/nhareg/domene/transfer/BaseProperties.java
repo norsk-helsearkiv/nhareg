@@ -13,23 +13,23 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Grunnopplysninger", propOrder = {
     "identifikator",
-    "pnavn",
+    "name",
     "born",
     "deathDateUnknown",
     "dead",
-    "kontakt",
+    "contact",
     "gender"
 })
 @Data
 @Embeddable
-public class Grunnopplysninger implements Serializable {
+public class BaseProperties implements Serializable {
 
     protected Identifikator identifikator;
-    
+
     @NotNull
     @Column(name = "pnavn")
     @XmlElement(required = true, name = "pasientnavn")
-    protected String pnavn;
+    protected String name;
     
     @Embedded
     @AttributeOverrides({
@@ -66,6 +66,6 @@ public class Grunnopplysninger implements Serializable {
     protected DateOrYear dead;
 
     @Embedded
-    protected Kontakt kontakt;
+    protected Contact contact;
 
 }

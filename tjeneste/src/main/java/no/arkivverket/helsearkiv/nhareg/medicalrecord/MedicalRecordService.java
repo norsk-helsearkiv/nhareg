@@ -55,7 +55,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     public MedicalRecord create(final MedicalRecord medicalRecord, final String username) {
         medicalRecord.setUuid(UUID.randomUUID().toString());
 
-        final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
+        final BaseProperties baseProperties = medicalRecord.getBaseProperties();
         if (baseProperties != null) {
             if (baseProperties.getGender() != null) {
                 Gender gender = baseProperties.getGender();
@@ -67,7 +67,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         createAndAttachStorageUnit(medicalRecord.getStorageUnit());
 
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
-        medicalRecord.setOpprettetDato(Calendar.getInstance());
+        medicalRecord.setCreatedDate(Calendar.getInstance());
 
         return medicalRecordDAO.create(medicalRecord);
     }
@@ -80,7 +80,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     @Override
     public MedicalRecord delete(final String id, final String username) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchSingleInstance(id);
-        medicalRecord.setSlettet(true);
+        medicalRecord.setDeleted(true);
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
 
         return medicalRecordDAO.update(medicalRecord);
@@ -138,7 +138,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         //Setter verdier
         if (medicalRecordDTO.getPersonalDataDTO().getGender() != null) {
             final Gender gender = genderDAO.fetchSingleInstance(medicalRecordDTO.getPersonalDataDTO().getGender());
-            medicalRecord.getGrunnopplysninger().setGender(gender);
+            medicalRecord.getBaseProperties().setGender(gender);
         }
 
         // Update storageUnit
@@ -166,7 +166,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Save
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
         if (original != null) {
-            medicalRecord.setOpprettetDato(original.getOpprettetDato());
+            medicalRecord.setCreatedDate(original.getCreatedDate());
         }
 
         final MedicalRecord updatedMedicalRecord = medicalRecordDAO.update(medicalRecord);

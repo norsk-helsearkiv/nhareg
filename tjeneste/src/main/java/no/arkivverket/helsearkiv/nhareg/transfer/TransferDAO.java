@@ -33,8 +33,8 @@ public class TransferDAO extends EntityDAO<Transfer> {
 
     public String fetchTransferIdFromRecordId(final String medicalRecordId) {
         final String queryString = "SELECT Avlevering_avleveringsidentifikator "
-                + "FROM avlevering_pasientjournal "
-                + "WHERE pasientjournal_uuid = :id ";
+            + "FROM avlevering_pasientjournal "
+            + "WHERE pasientjournal_uuid = :id ";
 
         final Query query = getEntityManager().createNativeQuery(queryString);
         query.setParameter("id", medicalRecordId);
@@ -44,11 +44,11 @@ public class TransferDAO extends EntityDAO<Transfer> {
     }
 
     public Transfer fetchTransferFromRecordId(final String recordId) {
-        final String queryString = "SELECT * " 
-            + "FROM avlevering a " 
-            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator " 
+        final String queryString = "SELECT * "
+            + "FROM avlevering a "
+            + "JOIN avlevering_pasientjournal aps ON aps.Avlevering_avleveringsidentifikator = a.avleveringsidentifikator "
             + "WHERE aps.pasientjournal_uuid = :id ";
-        
+
         final Query query = getEntityManager().createNativeQuery(queryString, Transfer.class);
         query.setParameter("id", recordId);
 

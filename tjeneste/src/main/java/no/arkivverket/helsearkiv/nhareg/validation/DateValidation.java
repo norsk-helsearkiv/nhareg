@@ -3,8 +3,8 @@ package no.arkivverket.helsearkiv.nhareg.validation;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.BaseProperties;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Grunnopplysninger;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
@@ -37,7 +37,7 @@ public class DateValidation {
      */
     public List<ValidationError> validateDiagnosis(final DiagnoseDTO diagnosis, final MedicalRecord medicalRecord) {
         final List<ValidationError> validationErrors = new ArrayList<>();
-        final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
+        final BaseProperties baseProperties = medicalRecord.getBaseProperties();
 
         //ta diagnosedato som god fisk ettersom både mors og født er ukjent...
         if (baseProperties.getBornDateUnknown() != null &&

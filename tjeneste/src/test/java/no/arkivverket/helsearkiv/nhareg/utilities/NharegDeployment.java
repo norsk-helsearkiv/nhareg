@@ -11,7 +11,6 @@ public class NharegDeployment {
             .create(WebArchive.class, "test.war")
             .addPackage(Resources.class.getPackage())
             .addAsResource("META-INF/test-persistence.xml", "META-INF/persistence.xml")
-            .addAsResource("META-INF/validation.xml")
             .addAsResource("import.sql")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
             // Deploy our test datasource

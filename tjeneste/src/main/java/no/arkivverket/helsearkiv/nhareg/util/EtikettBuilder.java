@@ -21,7 +21,7 @@ public class EtikettBuilder {
                                final Integer storageUnitSize) throws IOException {
         final String content = FileUtils.readFileToString(new File(template), "UTF-8");
 
-        return content.replace(ARKIVSKAPER, transfer.getArkivskaper())
+        return content.replace(ARKIVSKAPER, transfer.getArchiveCreator().getName())
                 .replace(AVTALEIDENTIFIKATOR, transfer.getAgreement().getAgreementId())
                 .replace(AVLEVERINGSIDENTIFIKATOR, transfer.getTransferId())
                 .replace(AVTALEBESKRIVELSE, transfer.getAgreement().getAgreementDescription())

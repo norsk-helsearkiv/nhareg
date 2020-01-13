@@ -12,13 +12,14 @@ import java.util.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "pasientjournal", propOrder = {
     "recordId",
-    "grunnopplysninger",
+    "baseProperties",
     "diagnosis",
-    "supplerendeopplysninger",
+    "additionalInfo",
     "storageUnit",
-    "slettet",
+    "deleted",
     "fanearkid",
-    "merknad"
+    "archiveCreator",
+    "note"
 })
 @Data
 @Entity
@@ -31,7 +32,7 @@ public class MedicalRecord implements Serializable {
 
     @Embedded
     @XmlElement(required = true)
-    protected Grunnopplysninger grunnopplysninger;
+    protected BaseProperties baseProperties;
 
     @NotNull
     @Size(min = 1)
@@ -51,15 +52,17 @@ public class MedicalRecord implements Serializable {
     @XmlAttribute(name = "uuid")
     protected String uuid;
 
+    @Column(name = "merknad")
     @XmlElement(name="merknad")
-    protected String merknad;
+    protected String note;
 
     @XmlTransient
     @Column(name = "opprettetDato", updatable = false)
-    protected Calendar opprettetDato;
+    protected Calendar createdDate;
 
     @Transient
-    protected List<Supplerendeopplysninger> supplerendeopplysninger;
+    @XmlElement(name = "suppleringsinfor")
+    protected List<AdditionalInfo> additionalInfo;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "pasientjournal_diagnose",
@@ -68,12 +71,19 @@ public class MedicalRecord implements Serializable {
     )
     @XmlElement(name = "diagnose")
     protected Set<Diagnosis> diagnosis;
+
+    @Column(name = "slettet")
+    protected Boolean deleted;
     
-    protected Boolean slettet;
-    
+    @Column(name = "fanearkid")
     @XmlElement(name = "fanearkidentifikator", nillable = true)
     protected String fanearkid;
 
+    @OneToOne
+    @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
+    @XmlElement(name = "arkivskaper")
+    protected ArchiveCreator archiveCreator;
+    
     public Set<Diagnosis> getDiagnosis() {
         if (diagnosis == null) {
             diagnosis = new HashSet<>();
@@ -82,12 +92,12 @@ public class MedicalRecord implements Serializable {
         return this.diagnosis;
     }
 
-    public List<Supplerendeopplysninger> getSupplerendeopplysninger() {
-        if (supplerendeopplysninger == null) {
-            supplerendeopplysninger = new ArrayList<>();
+    public List<AdditionalInfo> getAdditionalInfo() {
+        if (additionalInfo == null) {
+            additionalInfo = new ArrayList<>();
         }
         
-        return this.supplerendeopplysninger;
+        return this.additionalInfo;
     }
 
     public List<StorageUnit> getStorageUnit() {

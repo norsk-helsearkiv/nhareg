@@ -52,6 +52,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         put("jnr", "journalnummer");
         put("navn", "pnavn");
         put("lnr", "lopenummer");
+        put("oppdatertAv", "ps.oppdatertAv");
     }};
     
     public MedicalRecordDAO() {
@@ -68,7 +69,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
     }
 
     @Override
-    public MedicalRecord fetchSingleInstance(String id) throws NoResultException {
+    public MedicalRecord fetchSingleInstance(final String id) throws NoResultException {
         final MedicalRecord medicalRecord = super.fetchSingleInstance(id);
         medicalRecord.getDiagnosis().size();
         medicalRecord.getStorageUnit().size();

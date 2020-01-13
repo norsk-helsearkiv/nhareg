@@ -9,14 +9,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "avlevering")
-@XmlType(name = "Avlevering", propOrder = {
+@XmlRootElement
+@XmlType(name = "avlxml", propOrder = {
+    "xmlVersion",
     "transferId",
     "transferDescription",
+    "archiveCreator",
     "agreement",
-    "arkivskaper",
     "medicalRecords",
-    "updateInfo"
 })
 @Data
 @Entity
@@ -32,13 +32,19 @@ public class Transfer implements Serializable {
     @XmlElement(required = true, name = "avleveringsbeskrivelse")
     protected String transferDescription;
 
+    @Transient
+    @XmlElement(name = "avlxmlversjon")
+    protected String xmlVersion = "2.16.578.1.39.100.11.2.2";
+    
     @ManyToOne
     @JoinColumn(name = "avtale_avtaleidentifikator")
     @XmlElement(required = true, name = "avtale")
     protected Agreement agreement;
 
-    @XmlElement(required = true)
-    protected String arkivskaper;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
+    @XmlElement(required = true, name = "arkivskaper")
+    protected ArchiveCreator archiveCreator;
 
     @XmlTransient
     @Column(name = "lagringsenhetformat")
@@ -56,6 +62,7 @@ public class Transfer implements Serializable {
     @Column(name = "laast")
     private boolean locked = false;
 
+    @XmlTransient
     @Embedded
     protected UpdateInfo updateInfo;
 
@@ -66,5 +73,5 @@ public class Transfer implements Serializable {
         
         return medicalRecords;
     }
-    
+
 }

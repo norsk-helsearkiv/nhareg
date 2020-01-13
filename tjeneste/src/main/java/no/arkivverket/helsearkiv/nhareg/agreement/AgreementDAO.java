@@ -21,7 +21,6 @@ public class AgreementDAO extends EntityDAO<Agreement> {
     @Override
     public Agreement delete(final String id) {
         final Agreement agreement = super.fetchSingleInstance(id);
-        System.out.println(agreement);
         final String queryString = "SELECT COUNT(t) "
             + "FROM Transfer t "
             + "WHERE t.agreement = :agreement";

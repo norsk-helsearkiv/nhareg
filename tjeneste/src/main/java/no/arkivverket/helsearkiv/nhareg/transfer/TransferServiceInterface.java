@@ -10,7 +10,7 @@ public interface TransferServiceInterface {
 
     TransferDTO create(final TransferDTO transferDTO, final String username);
 
-    TransferDTO update(final TransferInAgreementDTO transferDTO, final String username);
+    TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO, final String username);
     
     TransferDTO delete(final String id);
     

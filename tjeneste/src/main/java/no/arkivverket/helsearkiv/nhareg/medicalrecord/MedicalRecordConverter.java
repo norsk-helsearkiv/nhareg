@@ -57,7 +57,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             medicalRecord.setFanearkid(fanearkid);
         }
 
-        final Grunnopplysninger baseProperties = new Grunnopplysninger();
+        final BaseProperties baseProperties = new BaseProperties();
         final String pid = personalDataDTO.getPid();
         if (pid != null) {
             final Identifikator identifikator = new Identifikator();
@@ -76,7 +76,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
         final String name = personalDataDTO.getName();
         if (name != null) {
-            baseProperties.setPnavn(name);
+            baseProperties.setName(name);
         }
 
         final String genderString = personalDataDTO.getGender();
@@ -99,7 +99,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         baseProperties.setDeathDateUnknown(baseProperties.getDead() == null);
         baseProperties.setBornDateUnknown(baseProperties.getBorn() == null);
 
-        final Kontakt contact = new Kontakt();
+        final Contact contact = new Contact();
         final String firstContact = personalDataDTO.getFirstContact();
         if (firstContact != null) {
             contact.setFoerste(toDateOrYear(firstContact));
@@ -110,9 +110,9 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             contact.setSiste(toDateOrYear(lastContact));
         }
 
-        baseProperties.setKontakt(contact);
-        medicalRecord.setGrunnopplysninger(baseProperties);
-        medicalRecord.setMerknad(personalDataDTO.getNote());
+        baseProperties.setContact(contact);
+        medicalRecord.setBaseProperties(baseProperties);
+        medicalRecord.setNote(personalDataDTO.getNote());
 
         return medicalRecord;
     }
@@ -125,7 +125,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final PersonalDataDTO personalData = new PersonalDataDTO();
 
         personalData.setUuid(medicalRecord.getUuid());
-        personalData.setNote(medicalRecord.getMerknad());
+        personalData.setNote(medicalRecord.getNote());
         personalData.setFanearkid(medicalRecord.getFanearkid());
 
         final List<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
@@ -135,9 +135,9 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             personalData.setStorageUnits(units);
         }
 
-        final Grunnopplysninger baseProperties = medicalRecord.getGrunnopplysninger();
+        final BaseProperties baseProperties = medicalRecord.getBaseProperties();
         if (baseProperties != null) {
-            personalData.setName(baseProperties.getPnavn());
+            personalData.setName(baseProperties.getName());
 
             if (baseProperties.getIdentifikator() != null) {
                 personalData.setPid(baseProperties.getIdentifikator().getPid());
@@ -163,13 +163,13 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
                 personalData.setBorn("ukjent");
             }
 
-            if (baseProperties.getKontakt() != null) {
-                final DateOrYear firstContactDate = baseProperties.getKontakt().getFoerste();
+            if (baseProperties.getContact() != null) {
+                final DateOrYear firstContactDate = baseProperties.getContact().getFoerste();
                 if (firstContactDate != null) {
                     personalData.setFirstContact(firstContactDate.getStringValue());
                 }
 
-                final DateOrYear lastContactDate = baseProperties.getKontakt().getSiste();
+                final DateOrYear lastContactDate = baseProperties.getContact().getSiste();
                 if (lastContactDate != null) {
                     personalData.setLastContact(lastContactDate.getStringValue());
                 }
@@ -216,9 +216,9 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         
         final RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
 
-        final Grunnopplysninger baseInformation = medicalRecord.getGrunnopplysninger();
+        final BaseProperties baseInformation = medicalRecord.getBaseProperties();
         if (baseInformation != null) {
-            recordTransferDTO.setName(baseInformation.getPnavn());
+            recordTransferDTO.setName(baseInformation.getName());
 
             if (baseInformation.getIdentifikator() != null) {
                 recordTransferDTO.setPid(baseInformation.getIdentifikator().getPid());
