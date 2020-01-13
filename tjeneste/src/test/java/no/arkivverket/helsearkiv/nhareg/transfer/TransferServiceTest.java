@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
@@ -71,7 +72,8 @@ public class TransferServiceTest {
         assertNotNull(transfer.getMedicalRecords());
 
         transferDTO.setArchiveCreator(archiveCreator);
-        transferService.update(transferDTO, "nhabruker1");
+        transferService.update(transferConverter.toInAgreementDTO(transfer, new Business(), transfer.getAgreement()),
+                               "nhabruker1");
 
         final TransferDTO updatedTransferDTO = transferService.getById(id);
         final Transfer updatedTransfer = transferConverter.toTransfer(updatedTransferDTO);

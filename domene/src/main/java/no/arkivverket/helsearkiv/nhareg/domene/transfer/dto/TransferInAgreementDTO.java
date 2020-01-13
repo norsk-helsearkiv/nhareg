@@ -34,4 +34,7 @@ public class TransferInAgreementDTO {
     @JsonProperty(value = "avtalebeskrivelse")
     private String agreementDescription;
    
+    @JsonProperty(value = "avtale")
+    private AgreementDTO agreementDTO;
+    
 }

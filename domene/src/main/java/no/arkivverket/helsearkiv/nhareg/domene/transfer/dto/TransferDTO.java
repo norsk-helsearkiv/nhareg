@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class TransferDTO implements Serializable {
     
     @JsonProperty(value = "avleveringsidentifikator")
@@ -43,5 +45,5 @@ public class TransferDTO implements Serializable {
     
     @JsonProperty(value = "oppdateringsinfo")
     private UpdateInfo updateInfo;
-
+    
 }

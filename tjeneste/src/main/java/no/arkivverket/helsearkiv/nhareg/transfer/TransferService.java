@@ -4,6 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
@@ -54,9 +55,9 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public TransferDTO update(final TransferDTO transferDTO, final String username) {
+    public TransferDTO update(final TransferInAgreementDTO transferDTO, final String username) {
         // Validate
-        new Validator<>(TransferDTO.class).validateWithException(transferDTO);
+        new Validator<>(TransferInAgreementDTO.class).validateWithException(transferDTO);
 
         // Get existing transfer
         final Transfer existingTransfer = transferDAO.fetchById(transferDTO.getTransferId());
