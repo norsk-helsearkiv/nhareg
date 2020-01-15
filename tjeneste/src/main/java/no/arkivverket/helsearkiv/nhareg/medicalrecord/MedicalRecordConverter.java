@@ -41,17 +41,14 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             );
         }
 
-        final RecordId journalId = new RecordId();
-        medicalRecord.setRecordId(journalId);
-
         final String recordNumber = personalDataDTO.getRecordNumber();
         if (recordNumber != null) {
-            journalId.setRecordNumber(recordNumber);
+            medicalRecord.setRecordNumber(recordNumber);
         }
 
         final String serialNumber = personalDataDTO.getSerialNumber();
         if (serialNumber != null) {
-            journalId.setSerialNumber(serialNumber);
+            medicalRecord.setSerialNumber(serialNumber);
         }
 
         final String fanearkid = personalDataDTO.getFanearkid();
@@ -129,6 +126,8 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         personalData.setUuid(medicalRecord.getUuid());
         personalData.setNote(medicalRecord.getNote());
         personalData.setFanearkid(medicalRecord.getFanearkid());
+        personalData.setSerialNumber(medicalRecord.getSerialNumber());
+        personalData.setRecordNumber(medicalRecord.getRecordNumber());
 
         final List<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
         if (storageUnits != null && !storageUnits.isEmpty()) {
@@ -179,13 +178,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
                 }
             }
         }
-
-        final RecordId journalId = medicalRecord.getRecordId();
-        if (journalId != null) {
-            personalData.setSerialNumber(journalId.getSerialNumber());
-            personalData.setRecordNumber(journalId.getRecordNumber());
-        }
-
+        
         return personalData;
     }
 
@@ -251,12 +244,8 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             }
         }
 
-        final RecordId journalId = medicalRecord.getRecordId();
-        if (journalId != null) {
-            recordTransferDTO.setRecordNumber(journalId.getRecordNumber());
-            recordTransferDTO.setSerialNumber(journalId.getSerialNumber());
-        }
-
+        recordTransferDTO.setRecordNumber(medicalRecord.getRecordNumber());
+        recordTransferDTO.setSerialNumber(medicalRecord.getSerialNumber());
         recordTransferDTO.setFanearkid(Long.parseLong(medicalRecord.getFanearkid()));
 
         final List<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
