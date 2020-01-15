@@ -24,6 +24,7 @@ public class ConverterTest {
     @Before
     public void setUp() {
         medicalRecordConverter = new MedicalRecordConverter();
+        dateOrYearConverter = new DateOrYearConverter();
     }
     
     @Test
@@ -59,25 +60,28 @@ public class ConverterTest {
 
     @Test
     public void toDateOrYear() {
-        final DateOrYear dateOrYear = DateOrYearConverter.toDateOrYear("15.03.2015");
+        final DateOrYear dateOrYear = dateOrYearConverter.toDateOrYear("15.03.2015");
         assertNotNull(dateOrYear);
-        assertNotNull(dateOrYear.getDato());
-        assertEquals(15, dateOrYear.getDato().get(Calendar.DAY_OF_MONTH));
-        assertEquals(Calendar.MARCH, dateOrYear.getDato().get(Calendar.MONTH));
-        assertEquals(2015, dateOrYear.getDato().get(Calendar.YEAR));
+
+        final LocalDateTime date = dateOrYear.getDate();
+        assertNotNull(date);
+        assertEquals(15, date.getDayOfMonth());
+        assertEquals(MARCH, date.getMonth());
+        assertEquals(2015, date.getYear());
     }
     
     @Test
     public void validDate_toString() {
-        final String datoString = "15.03.2015";
-        DateOrYear dateOrYear = DateOrYearConverter.toDateOrYear(datoString);
+        final String dateString = "15.03.2015";
+        DateOrYear dateOrYear = dateOrYearConverter.toDateOrYear(dateString);
+        
         assertNotNull(dateOrYear);
-        assertNotNull(dateOrYear.getDato());
-        assertEquals(15, dateOrYear.getDato().get(Calendar.DAY_OF_MONTH));
-        assertEquals(Calendar.MARCH, dateOrYear.getDato().get(Calendar.MONTH));
-        assertEquals(2015, dateOrYear.getDato().get(Calendar.YEAR));
-        //
-        assertEquals(datoString, dateOrYear.getStringValue());
+        final LocalDateTime date = dateOrYear.getDate();
+        assertNotNull(date);
+        assertEquals(15, date.getDayOfMonth());
+        assertEquals(MARCH, date.getMonth());
+        assertEquals(2015, date.getYear());
+        assertEquals(dateString, dateOrYearConverter.fromDateOrYear(dateOrYear));
     }
 
     private MedicalRecord getMedicalRecord() {
@@ -119,7 +123,7 @@ public class ConverterTest {
 
     private DateOrYear getDate() {
         final DateOrYear date = new DateOrYear();
-        date.setAar(2000);
+        date.setYear(2000);
         
         return date;
     }

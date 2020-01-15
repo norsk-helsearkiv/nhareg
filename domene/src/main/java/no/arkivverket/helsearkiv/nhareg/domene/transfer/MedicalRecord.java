@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
 import no.arkivverket.helsearkiv.nhareg.domene.adapter.StorageUnitAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -70,7 +71,8 @@ public class MedicalRecord implements Serializable {
 
     @XmlTransient
     @Column(name = "opprettetDato", updatable = false)
-    protected Calendar createdDate;
+    @Convert(converter = LocalDateTimeConverter.class)
+    protected LocalDateTime createdDate;
 
     @Transient
     @XmlElement(name = "suppleringsinfor")

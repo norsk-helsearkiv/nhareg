@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 
 public class DiagnosisConverter implements DiagnosisConverterInterface {
 
+    private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
+    
     @Override
     public Diagnosis fromDiagnosisDTO(final DiagnoseDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
         if (diagnosisDTO == null) {
@@ -23,7 +26,7 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         }
         
         final String diagnosisDateString = diagnosisDTO.getDiagnosisDate();
-        final DateOrYear diagnosisDate = DateOrYearConverter.toDateOrYear(diagnosisDateString);
+        final DateOrYear diagnosisDate = dateOrYearConverter.toDateOrYear(diagnosisDateString);
 
         return new Diagnosis(diagnosisDTO.getUuid(), diagnosisDate, diagnosisCode, diagnosisDTO.getDiagnosisText(), null);
     }
@@ -35,7 +38,7 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         }
         
         final String uuid = diagnosis.getUuid();
-        final String diagnosisDate = diagnosis.getDiagdato().getStringValue();
+        final String diagnosisDate = dateOrYearConverter.fromDateOrYear(diagnosis.getDiagnosisDate());
         final DiagnosisCode diagnosisCode = diagnosis.getDiagnosisCode();
         final String diagnosisCodeString = diagnosisCode != null ? diagnosisCode.getCode() : null;
         final String diagnosisCodingSystem = diagnosisCode != null ? diagnosisCode.getCodeSystemVersion() : null;

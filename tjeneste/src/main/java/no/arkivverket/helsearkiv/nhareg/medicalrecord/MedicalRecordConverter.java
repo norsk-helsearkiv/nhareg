@@ -1,5 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
@@ -13,10 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter.toDateOrYear;
-
 public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
+    private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
+    
     public MedicalRecord fromPersonalDataDTO(final PersonalDataDTO personalDataDTO) {
         if (personalDataDTO == null) {
             return null;
@@ -88,12 +90,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
         final String born = personalDataDTO.getBorn();
         if (born != null) {
-            baseProperties.setBorn(toDateOrYear(born));
+            baseProperties.setBorn(dateOrYearConverter.toDateOrYear(born));
         }
 
         final String dead = personalDataDTO.getDead();
         if (dead != null) {
-            baseProperties.setDead(toDateOrYear(dead));
+            baseProperties.setDead(dateOrYearConverter.toDateOrYear(dead));
         }
 
         baseProperties.setDeathDateUnknown(baseProperties.getDead() == null);
@@ -102,12 +104,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final Contact contact = new Contact();
         final String firstContact = personalDataDTO.getFirstContact();
         if (firstContact != null) {
-            contact.setFirstContact(firstContact);
+            contact.setFirstContact(dateOrYearConverter.toDateOrYear(firstContact));
         }
 
         final String lastContact = personalDataDTO.getLastContact();
         if (lastContact != null) {
-            contact.setLastContact(lastContact);
+            contact.setLastContact(dateOrYearConverter.toDateOrYear(lastContact));
         }
 
         baseProperties.setContact(contact);
@@ -147,12 +149,14 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
                 personalData.setGender(baseProperties.getGender().getCode());
             }
 
-            if (baseProperties.getBorn() != null) {
-                personalData.setBorn(baseProperties.getBorn().getStringValue());
+            final DateOrYear born = baseProperties.getBorn();
+            if (born != null) {
+                personalData.setBorn(dateOrYearConverter.fromDateOrYear(born));
             }
 
-            if (baseProperties.getDead() != null) {
-                personalData.setDead(baseProperties.getDead().getStringValue());
+            final DateOrYear dead = baseProperties.getDead();
+            if (dead != null) {
+                personalData.setDead(dateOrYearConverter.fromDateOrYear(dead));
             }
 
             if (baseProperties.getDeathDateUnknown() != null && baseProperties.getDeathDateUnknown()) {
@@ -166,12 +170,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             if (baseProperties.getContact() != null) {
                 final DateOrYear firstContactDate = baseProperties.getContact().getFirstContact();
                 if (firstContactDate != null) {
-                    personalData.setFirstContact(firstContactDate.getStringValue());
+                    personalData.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
                 }
 
                 final DateOrYear lastContactDate = baseProperties.getContact().getLastContact();
                 if (lastContactDate != null) {
-                    personalData.setLastContact(lastContactDate.getStringValue());
+                    personalData.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
                 }
             }
         }
@@ -226,7 +230,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
             final DateOrYear born = baseInformation.getBorn();
             if (born != null) {
-                final String yearBorn = String.valueOf(born.getYear());
+                final String yearBorn = String.valueOf(born.getAsYear());
                 recordTransferDTO.setBornYear(yearBorn);
             }
 
@@ -237,7 +241,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
             final DateOrYear dead = baseInformation.getDead();
             if (dead != null) {
-                final String yearDied = String.valueOf(dead.getYear());
+                final String yearDied = String.valueOf(dead.getAsYear());
                 recordTransferDTO.setDeathYear(yearDied);
             }
 

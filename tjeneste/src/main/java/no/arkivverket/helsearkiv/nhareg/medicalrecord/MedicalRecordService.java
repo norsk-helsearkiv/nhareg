@@ -22,6 +22,7 @@ import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         createAndAttachStorageUnit(medicalRecord.getStorageUnit());
 
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
-        medicalRecord.setCreatedDate(Calendar.getInstance());
+        medicalRecord.setCreatedDate(LocalDateTime.now());
 
         return medicalRecordDAO.create(medicalRecord);
     }
