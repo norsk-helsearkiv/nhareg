@@ -6,7 +6,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
-import org.apache.commons.codec.binary.Base64;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 public class UserService implements UserServiceInterface {
@@ -134,10 +134,10 @@ public class UserService implements UserServiceInterface {
 
     private String passwordToHash(final String password) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
 
-            return Base64.encodeBase64String(hash);
+            return Base64.getEncoder().encodeToString(hash);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

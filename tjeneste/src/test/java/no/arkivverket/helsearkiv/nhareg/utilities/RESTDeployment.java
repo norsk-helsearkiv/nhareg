@@ -18,6 +18,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
@@ -36,18 +37,6 @@ import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
-import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
-import org.apache.commons.collections4.keyvalue.AbstractMapEntryDecorator;
-import org.apache.commons.collections4.list.PredicatedList;
-import org.apache.commons.collections4.map.AbstractSortedMapDecorator;
-import org.apache.commons.collections4.sequence.CommandVisitor;
-import org.apache.commons.collections4.set.AbstractSetDecorator;
-import org.apache.commons.lang3.CharSequenceUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 public class RESTDeployment {
@@ -107,23 +96,6 @@ public class RESTDeployment {
                                //util
                                .addPackage(DateValidation.class.getPackage())
                                .addPackage(ParameterConverter.class.getPackage())
-                               //
-                               // Denne blokken er med for å få med commons-collections4 i testene
-                               //
-                               .addPackage(Transformer.class.getPackage())
-                               .addPackage(AbstractMapEntryDecorator.class.getPackage())
-                               .addPackage(AbstractUntypedIteratorDecorator.class.getPackage())
-                               .addPackage(AbstractSetDecorator.class.getPackage())
-                               .addPackage(AbstractCollectionDecorator.class.getPackage())
-                               .addPackage(CommandVisitor.class.getPackage())
-                               .addPackage(AbstractSortedMapDecorator.class.getPackage())
-                               .addPackage(PredicatedList.class.getPackage())
-                               //
-                               // Blokk for StringUtils og relaterte pakker
-                               //
-                               .addPackage(StringUtils.class.getPackage())
-                               .addPackage(CharSequenceUtils.class.getPackage())
-                               .addPackage(CharSequenceTranslator.class.getPackage())
-                               .addPackage(ToStringStyle.class.getPackage());
+                               .addPackage(LocalDateTimeConverter.class.getPackage());
     }
 }
