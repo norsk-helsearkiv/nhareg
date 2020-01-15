@@ -11,8 +11,8 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Kontakt", propOrder = {
-    "foerste",
-    "siste"
+    "firstContact",
+    "lastContact"
 })
 @Data
 @Embeddable
@@ -20,18 +20,18 @@ public class Contact implements Serializable {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "dato", column = @Column(name = "foersteKontaktDato")),
-        @AttributeOverride(name = "aar", column = @Column(name = "foersteKontaktAar"))
+        @AttributeOverride(name = "date", column = @Column(name = "foersteKontaktDato")),
+        @AttributeOverride(name = "year", column = @Column(name = "foersteKontaktAar"))
     })
-    @XmlElement(name = "forstekontakt")
-    protected DateOrYear foerste;
+    @XmlElement(name = "forstekontakt", nillable = true)
+    protected DateOrYear firstContact;
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(name = "dato", column = @Column(name = "sisteKontaktDato")),
-        @AttributeOverride(name = "aar", column = @Column(name = "sisteKontaktAar"))
+        @AttributeOverride(name = "date", column = @Column(name = "sisteKontaktDato")),
+        @AttributeOverride(name = "year", column = @Column(name = "sisteKontaktAar"))
     })
-    @XmlElement(name = "sistekontakt")
-    protected DateOrYear siste;
+    @XmlElement(name = "sistekontakt", nillable = true)
+    protected DateOrYear lastContact;
 
 }

@@ -19,15 +19,13 @@ import java.util.Calendar;
 @Embeddable
 public class UpdateInfo implements Serializable {
     
-    @XmlElement(name = "sist_oppdatert", required = true, type = String.class)
-    @XmlJavaTypeAdapter(StringDateTimeAdapter.class)
-    @XmlSchemaType(name = "dateTime")
-    protected Calendar sistOppdatert;
+    @Column(name = "sistOppdatert")
+    protected Calendar lastUpdated;
 
-    @XmlElement(name = "oppdatert_av", required = true)
-    protected String oppdatertAv;
+    @Column(name = "oppdatertAv")
+    protected String updatedBy;
 
-    @XmlElement(required = true)
-    protected String prosesstrinn;
+    @Column(name = "prosesstrinn")
+    protected String processSteps;
 
 }

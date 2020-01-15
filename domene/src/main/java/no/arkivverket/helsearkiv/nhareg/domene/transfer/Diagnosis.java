@@ -12,9 +12,9 @@ import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "diagnose", propOrder = {
-    "diagdato",
+    "diagnosisDate",
     "diagnosisCode",
-    "diagnosetekst"
+    "diagnosisText"
 })
 @Data
 @NoArgsConstructor
@@ -27,8 +27,8 @@ public class Diagnosis implements Serializable {
     @XmlAttribute(name = "uuid")
     protected String uuid;
     
-    @XmlElement(name = "diagnosedato")
-    protected DateOrYear diagdato;
+    @XmlElement(name = "diagnosedato", nillable = true)
+    protected DateOrYear diagnosisDate;
     
     @ManyToOne
     @JoinColumns({
@@ -43,7 +43,8 @@ public class Diagnosis implements Serializable {
     @Size(min = 2, max = 255)
     @XmlElement(required = true, name = "diagnosetekst")
     @Column(name = "diagnosetekst")
-    protected String diagnosetekst;
+    @XmlElement(required = true, name = "diagnosetekst", nillable = true)
+    protected String diagnosisText;
     
     @XmlTransient
     protected UpdateInfo updateInfo;

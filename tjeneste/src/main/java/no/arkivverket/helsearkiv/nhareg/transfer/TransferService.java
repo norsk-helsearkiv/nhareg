@@ -163,8 +163,8 @@ public class TransferService implements TransferServiceInterface {
 
     private UpdateInfo createUpdateInfo(final String username) {
         UpdateInfo updateInfo = new UpdateInfo();
-        updateInfo.setOppdatertAv(username);
-        updateInfo.setSistOppdatert(Calendar.getInstance());
+        updateInfo.setUpdatedBy(username);
+        updateInfo.setLastUpdated(Calendar.getInstance());
 
         return updateInfo;
     }

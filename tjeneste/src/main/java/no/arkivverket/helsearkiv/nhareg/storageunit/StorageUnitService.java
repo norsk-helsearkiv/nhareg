@@ -11,7 +11,7 @@ import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInte
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
-import no.arkivverket.helsearkiv.nhareg.util.EtikettBuilder;
+import no.arkivverket.helsearkiv.nhareg.util.LabelBuilder;
 import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
@@ -108,15 +108,15 @@ public class StorageUnitService implements StorageUnitServiceInterface {
             printerIp = "127.0.0.1";
         }
 
-        Integer printerPort = configurationDAO.getInt(ConfigurationDAO.KONFIG_PRINTER_PORT);
+        Integer printerPort = configurationDAO.getInt(ConfigurationDAO.CONFIG_PRINTER_PORT);
         if (printerPort == null) {
             printerPort = 9100;
         }
 
-        final String fileTemplatePath = configurationDAO.getValue(ConfigurationDAO.KONFIG_TEMPLATEFILE);
+        final String fileTemplatePath = configurationDAO.getValue(ConfigurationDAO.CONFIG_TEMPLATEFILE);
         try {
-            final String toPrint = new EtikettBuilder().buildContent(fileTemplatePath, storageUnit, transfer,
-                                                            medicalRecordCount);
+            final String toPrint = new LabelBuilder().buildContent(fileTemplatePath, storageUnit, transfer,
+                                                                   medicalRecordCount);
 
             new SocketPrinter().print(toPrint, printerIp, printerPort);
         } catch (IOException ioe) {

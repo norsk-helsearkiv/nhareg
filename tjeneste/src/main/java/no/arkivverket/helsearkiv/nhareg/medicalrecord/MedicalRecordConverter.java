@@ -164,12 +164,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             }
 
             if (baseProperties.getContact() != null) {
-                final DateOrYear firstContactDate = baseProperties.getContact().getFoerste();
+                final DateOrYear firstContactDate = baseProperties.getContact().getFirstContact();
                 if (firstContactDate != null) {
                     personalData.setFirstContact(firstContactDate.getStringValue());
                 }
 
-                final DateOrYear lastContactDate = baseProperties.getContact().getSiste();
+                final DateOrYear lastContactDate = baseProperties.getContact().getLastContact();
                 if (lastContactDate != null) {
                     personalData.setLastContact(lastContactDate.getStringValue());
                 }
@@ -261,11 +261,11 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         }
 
         if (medicalRecord.getUpdateInfo() != null) {
-            recordTransferDTO.setUpdatedBy(medicalRecord.getUpdateInfo().getOppdatertAv());
+            recordTransferDTO.setUpdatedBy(medicalRecord.getUpdateInfo().getUpdatedBy());
 
-            if (medicalRecord.getUpdateInfo().getSistOppdatert() != null) {
+            if (medicalRecord.getUpdateInfo().getLastUpdated() != null) {
                 try {
-                    recordTransferDTO.setCreationDate(medicalRecord.getUpdateInfo().getSistOppdatert().getTimeInMillis());
+                    recordTransferDTO.setCreationDate(medicalRecord.getUpdateInfo().getLastUpdated().getTimeInMillis());
                 } catch (Throwable ignored) {}
             } else {
                 recordTransferDTO.setCreationDate(0L);

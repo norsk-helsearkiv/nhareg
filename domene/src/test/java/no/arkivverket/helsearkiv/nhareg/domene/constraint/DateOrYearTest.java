@@ -43,7 +43,7 @@ public class DateOrYearTest {
     }
     
     @Test
-    public void dagEllerAarValidator_gyldigSkuddaarsDato_skalGiTrue() {
+    public void validator_validLeapYearDate_shouldReturnTrue() {
         boolean returnValue = validator.isValid("29.02.2016", null);
         assertTrue(returnValue);
     }

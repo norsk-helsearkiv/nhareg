@@ -101,8 +101,8 @@ public class DateOrYearConverterTest {
         baseProperties.setGender(gender);
 
         final Contact contact = new Contact();
-        contact.setFoerste(getDate());
-        contact.setSiste(getDate());
+        contact.setFirstContact(getDate());
+        contact.setLastContact(getDate());
         baseProperties.setContact(contact);
         medicalRecord.setBaseProperties(baseProperties);
 

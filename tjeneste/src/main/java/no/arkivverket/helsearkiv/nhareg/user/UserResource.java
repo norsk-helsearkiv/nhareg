@@ -48,7 +48,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/century")
     public String getCentury() {
-        return configurationDAO.getValue(ConfigurationDAO.KONFIG_AARHUNDRE);
+        return configurationDAO.getValue(ConfigurationDAO.CONFIG_CENTURY);
     }
 
     @GET

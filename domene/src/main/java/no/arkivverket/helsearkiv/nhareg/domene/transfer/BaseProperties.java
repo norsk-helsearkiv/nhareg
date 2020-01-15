@@ -33,8 +33,8 @@ public class BaseProperties implements Serializable {
     
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(column = @Column(name = "fdato"), name = "dato"),
-        @AttributeOverride(column = @Column(name = "faar"), name = "aar")
+        @AttributeOverride(column = @Column(name = "fdato"), name = "date"),
+        @AttributeOverride(column = @Column(name = "faar"), name = "year")
     })
     @XmlElement(required = true, name = "fodtdato")
     protected DateOrYear born;
@@ -59,13 +59,14 @@ public class BaseProperties implements Serializable {
 
     @Embedded
     @AttributeOverrides({
-        @AttributeOverride(column = @Column(name = "ddato"), name = "dato"),
-        @AttributeOverride(column = @Column(name = "daar"), name = "aar")
+        @AttributeOverride(column = @Column(name = "ddato"), name = "date"),
+        @AttributeOverride(column = @Column(name = "daar"), name = "year")
     })
     @XmlElement(name = "morsdato", nillable = true)
     protected DateOrYear dead;
 
     @Embedded
+    @XmlElement(name = "kontakt", nillable = true)
     protected Contact contact;
 
 }

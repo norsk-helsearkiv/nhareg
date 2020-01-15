@@ -40,7 +40,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
         new Validator<>(DiagnoseDTO.class).validateWithException(diagnoseDTO);
         final DateValidation dateValidator = new DateValidation();
-        List<ValidationError> errors = dateValidator.validateDiagnosis(diagnoseDTO, medicalRecord);
+        final List<ValidationError> errors = dateValidator.validateDiagnosis(diagnoseDTO, medicalRecord);
         validateDiagnosisCode(diagnoseDTO.getDiagnosisCode());
 
         if (errors.size() > 0) {
@@ -48,7 +48,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         final UpdateInfo updateInfo = createUpdateInfo(username);
-        diagnoseDTO.setUpdatedBy(updateInfo.getOppdatertAv());
+        diagnoseDTO.setUpdatedBy(updateInfo.getUpdatedBy());
 
         final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosisCode());
         final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnoseDTO, diagnosisCode);
@@ -140,8 +140,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
     private UpdateInfo createUpdateInfo(final String username) {
         UpdateInfo updateInfo = new UpdateInfo();
-        updateInfo.setOppdatertAv(username);
-        updateInfo.setSistOppdatert(Calendar.getInstance());
+        updateInfo.setUpdatedBy(username);
+        updateInfo.setLastUpdated(Calendar.getInstance());
 
         return updateInfo;
     }

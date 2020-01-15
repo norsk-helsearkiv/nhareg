@@ -39,9 +39,9 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         final DiagnosisCode diagnosisCode = diagnosis.getDiagnosisCode();
         final String diagnosisCodeString = diagnosisCode != null ? diagnosisCode.getCode() : null;
         final String diagnosisCodingSystem = diagnosisCode != null ? diagnosisCode.getCodeSystemVersion() : null;
-        final String diagnosisText = diagnosis.getDiagnosetekst();
-        final String updatedBy = diagnosis.getUpdateInfo().getOppdatertAv();
-        final Date date = diagnosis.getUpdateInfo().getSistOppdatert().getTime();
+        final String diagnosisText = diagnosis.getDiagnosisText();
+        final String updatedBy = diagnosis.getUpdateInfo().getUpdatedBy();
+        final Date date = diagnosis.getUpdateInfo().getLastUpdated().getTime();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         final LocalDateTime localDate = ValidDateFormats.asLocalDateTime(date);
         final String updatedDate = localDate.format(formatter);
