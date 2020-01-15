@@ -1,10 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.CV;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 
 import javax.ejb.Stateless;
@@ -15,8 +13,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,30 +58,23 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
         if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
             //datostreng kan bestå av kun år eller full dato.
-            final DateOrYear dateOrYear = DateOrYearConverter.toDateOrYear(dateQueryParameter);
-
-            Date date = null;
-            if (dateOrYear != null) {
-                if (dateOrYear.getAar() != null) {
-                    date = ValidDateFormats.getDateFromYear(dateOrYear.getAar());
-                } else {
-                    date = dateOrYear.getDato().getTime();
-                }
-            }
-
-            if (date != null) {
+            final LocalDate localDate = ValidDateFormats.getDate(dateQueryParameter);
+            
+            if (localDate != null) {
                 final String queryString = "SELECT kodeverkversjon "
                     + "FROM Diagnosekodeverk "
                     + "WHERE gyldig_til_dato >= ?1 "
                     + "AND gyldig_fra_dato <= ?1";
+                final ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
+                final Date param = new Date(zonedDateTime.toEpochSecond());
                 final List resultList = getEntityManager().createNativeQuery(queryString)
-                                                          .setParameter(1, new java.sql.Date(date.getTime()))
+                                                          .setParameter(1, param)
                                                           .getResultList();
-                resultList.size();
+                // resultList.size();
                 //kan være flere kodeverk som overlapper her...
                 final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
                 final SingularAttribute<CV, String> attribute =
-                    type.getDeclaredSingularAttribute("codeSystemVersion" , String.class);
+                    type.getDeclaredSingularAttribute("codeSystemVersion", String.class);
                 final Expression<String> expression = root.get(attribute);
                 final Predicate predicate = expression.in(resultList);
                 predicates.add(predicate);

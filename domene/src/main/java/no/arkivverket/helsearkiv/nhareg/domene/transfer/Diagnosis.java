@@ -38,7 +38,7 @@ public class Diagnosis implements Serializable {
     })
     @XmlElement(name = "diagnosekode", nillable = true)
     protected DiagnosisCode diagnosisCode;
-    
+
     @NotNull
     @Size(min = 2, max = 255)
     @Column(name = "diagnosetekst")

@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
+import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
@@ -8,14 +9,17 @@ import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInte
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
+import static java.time.Month.MARCH;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class DateOrYearConverterTest {
+public class ConverterTest {
     
     private MedicalRecordConverterInterface medicalRecordConverter;
+    
+    private DateOrYearConverterInterface dateOrYearConverter;
 
     @Before
     public void setUp() {
@@ -24,25 +28,25 @@ public class DateOrYearConverterTest {
     
     @Test
     public void toMedicalRecordTest() {
-        final PersonalDataDTO dto = new PersonalDataDTO();
-        dto.setDead("2009");
-        dto.setPid("01010942345");
-        dto.setBorn("2009");
-        dto.setRecordNumber("123");
-        dto.setGender("K");
+        final PersonalDataDTO dataDTO = new PersonalDataDTO();
+        dataDTO.setDead("2009");
+        dataDTO.setPid("01010942345");
+        dataDTO.setBorn("2009");
+        dataDTO.setRecordNumber("123");
+        dataDTO.setGender("K");
         String[] lagringsenheter = {"boks1"};
-        dto.setStorageUnits(lagringsenheter);
-        dto.setSerialNumber("234");
-        dto.setName("Natalie");
-        dto.setUuid("uuid1");
-        dto.setFirstContact("2009");
-        dto.setLastContact("2009");
+        dataDTO.setStorageUnits(lagringsenheter);
+        dataDTO.setSerialNumber("234");
+        dataDTO.setName("Natalie");
+        dataDTO.setUuid("uuid1");
+        dataDTO.setFirstContact("2009");
+        dataDTO.setLastContact("2009");
 
-        MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(dto);
+        MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(dataDTO);
 
-        assertEquals(dto.getPid(), medicalRecord.getBaseProperties().getIdentifikator().getPid());
-        final int dod = medicalRecord.getBaseProperties().getDead().getAar();
-        assertEquals(2009, dod);
+        assertEquals(dataDTO.getPid(), medicalRecord.getBaseProperties().getIdentifikator().getPid());
+        final int year = medicalRecord.getBaseProperties().getDead().getAsYear();
+        assertEquals(2009, year);
     }
 
     @Test
@@ -81,6 +85,10 @@ public class DateOrYearConverterTest {
         final StorageUnit storageUnit = new StorageUnit();
         final BaseProperties baseProperties = new BaseProperties();
 
+        medicalRecord.setRecordNumber("123");
+        medicalRecord.setSerialNumber("234");
+        medicalRecord.setUuid("uuid1");
+        
         storageUnit.setId("Boks1");
         storageUnit.setUuid("lagring-1-boks-1");
         medicalRecord.getStorageUnit().add(storageUnit);
@@ -106,13 +114,6 @@ public class DateOrYearConverterTest {
         baseProperties.setContact(contact);
         medicalRecord.setBaseProperties(baseProperties);
 
-        final RecordId recordId = new RecordId();
-        recordId.setRecordNumber("123");
-        recordId.setSerialNumber("234");
-        medicalRecord.setRecordId(recordId);
-
-        medicalRecord.setUuid("uuid1");
-        
         return medicalRecord;
     }
 

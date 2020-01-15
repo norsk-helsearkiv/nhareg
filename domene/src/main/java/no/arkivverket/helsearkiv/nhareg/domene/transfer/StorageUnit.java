@@ -9,13 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StorageUnit", propOrder = {
-    "id"
-})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,15 +19,12 @@ import java.io.Serializable;
 public class StorageUnit implements Serializable {
 
     @NotNull
-    @XmlElement(required = true)
     @Column(unique = true, name = "identifikator")
     protected String id;
 
     @Id
-    @XmlAttribute(name = "uuid")
     protected String uuid;
 
-    @XmlTransient
     @Column(name = "utskrift")
     private boolean print;
 

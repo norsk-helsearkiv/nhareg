@@ -8,7 +8,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -177,10 +176,11 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
                 if (value == null || value.isEmpty()) {
                     query.setParameter(key, "");
                 } else {
-                    // Dates needs to be set as DATE temporal type.
+                    // Dates needs to be converted.
                     if (DATE_PREDICATES.contains(key)) {
-                        final Date date = ValidDateFormats.getDate(value);
-                        query.setParameter(key, date, TemporalType.DATE);
+                        final LocalDate date = ValidDateFormats.getDate(value);
+                        query.setParameter(key, date);
+                        // query.setParameter(key, date, TemporalType.DATE);
                     } else {
                         query.setParameter(key, value);
                     }
@@ -236,7 +236,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
      * @return The {@link #PREDICATE_NATIVE_MAP} value for the given key.
      */
     private String createDatePredicateNativeQuery(final String key, final String value, final Map<String, String> parameters) {
-        final LocalDate date = ValidDateFormats.getLocalDate(value);
+        final LocalDate date = ValidDateFormats.getDate(value);
 
         if (date == null) {
             parameters.put(key, null);
@@ -263,7 +263,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
                 return PREDICATE_NATIVE_MAP.get(key);
             }
         } else {
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-uuuu");
             final String day = date.format(formatter);
             final String nextDay = date.plusDays(1).format(formatter);
 

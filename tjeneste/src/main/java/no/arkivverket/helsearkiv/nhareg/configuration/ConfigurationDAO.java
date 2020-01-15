@@ -5,9 +5,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParame
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Stateless
 public class ConfigurationDAO {
@@ -28,17 +27,10 @@ public class ConfigurationDAO {
         return param == null ? null : param.getVerdi();
     }
 
-    public Date getDate(final String name) {
+    public LocalDate getDate(final String name) {
         final String value = getValue(name);
-        Date date = null;
-
-        try {
-            date = new SimpleDateFormat("dd.MM.yyyy").parse(value);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return date;
+        
+        return LocalDate.parse(value, DateTimeFormatter.ofPattern("dd.MM.uuuu"));
     }
 
     public Integer getInt(final String name) {
@@ -53,15 +45,4 @@ public class ConfigurationDAO {
         return null;
     }
 
-    public Double getDouble(final String name) {
-        final String number = getValue(name);
-
-        try {
-            return Double.parseDouble(number);
-        } catch (NumberFormatException nfe) {
-            nfe.printStackTrace();
-        }
-
-        return null;
-    }
 }

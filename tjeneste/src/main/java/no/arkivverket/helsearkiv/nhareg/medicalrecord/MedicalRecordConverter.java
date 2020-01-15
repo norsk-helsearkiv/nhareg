@@ -102,12 +102,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final Contact contact = new Contact();
         final String firstContact = personalDataDTO.getFirstContact();
         if (firstContact != null) {
-            contact.setFoerste(toDateOrYear(firstContact));
+            contact.setFirstContact(firstContact);
         }
 
         final String lastContact = personalDataDTO.getLastContact();
         if (lastContact != null) {
-            contact.setSiste(toDateOrYear(lastContact));
+            contact.setLastContact(lastContact);
         }
 
         baseProperties.setContact(contact);
