@@ -4,6 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.lmr.Lmr;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -20,7 +21,11 @@ public class LmrDAO {
         final Query query = entityManager.createQuery(queryString, Lmr.class);
         query.setParameter("id", pid);
 
-        return (Lmr) query.getSingleResult();
+        try {
+            return (Lmr) query.getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
     
 }
