@@ -1,37 +1,47 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.StorageUnitAdapter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "pasientjournal", propOrder = {
-    "recordId",
+    "uuid",
+    "fanearkid",    
+    "recordNumber",
+    "serialNumber",
     "baseProperties",
+    "note",
     "diagnosis",
-    "additionalInfo",
     "storageUnit",
-    "deleted",
-    "fanearkid",
-    "archiveCreator",
-    "note"
+    "additionalInfo",
 })
 @Data
 @Entity
 @Table(name = "pasientjournal")
 public class MedicalRecord implements Serializable {
 
-    @Embedded
-    @XmlElement(required = true, name = "journalidentifikator")
-    protected RecordId recordId;
+    @Column(name = "journalnummer")
+    @XmlElement(required = true, name = "journalnummer", nillable = true)
+    protected String recordNumber;
+
+    @Column(name = "lopenummer")
+    @XmlElement(name = "lopenummer", nillable = true)
+    protected String serialNumber;
 
     @Embedded
-    @XmlElement(required = true)
+    @XmlElement(required = true, name = "grunnopplysninger")
     protected BaseProperties baseProperties;
 
     @NotNull
@@ -41,19 +51,21 @@ public class MedicalRecord implements Serializable {
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
     )
-    @XmlElement(required = true, name = "lagringsenhet")
+    @XmlElement(required = true, name = "lagringsenhet", nillable = true)
+    @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
     protected List<StorageUnit> storageUnit;
 
     @Embedded
     @XmlTransient
     protected UpdateInfo updateInfo;
 
+    @Size(min = 1)
     @Id
-    @XmlAttribute(name = "uuid")
+    @XmlElement(required = true, name = "journalidentifikator")
     protected String uuid;
 
     @Column(name = "merknad")
-    @XmlElement(name="merknad")
+    @XmlElement(name="merknad", nillable = true)
     protected String note;
 
     @XmlTransient
@@ -69,9 +81,10 @@ public class MedicalRecord implements Serializable {
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "diagnose_uuid")
     )
-    @XmlElement(name = "diagnose")
+    @XmlElement(name = "diagnose", nillable = true)
     protected Set<Diagnosis> diagnosis;
 
+    @XmlTransient
     @Column(name = "slettet")
     protected Boolean deleted;
     
@@ -81,7 +94,7 @@ public class MedicalRecord implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
-    @XmlElement(name = "arkivskaper")
+    @XmlTransient
     protected ArchiveCreator archiveCreator;
     
     public Set<Diagnosis> getDiagnosis() {

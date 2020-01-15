@@ -12,13 +12,13 @@ import java.util.Date;
 @Stateless
 public class ConfigurationDAO {
 
-    public static final String KONFIG_LOWLIM = "LowLim";
-    public static final String KONFIG_MAXAGE = "MaxAge";
-    public static final String KONFIG_WAITLIM = "WaitLim";
-    public static final String KONFIG_AARHUNDRE = "aarhundre";
-    public static final String KONFIG_TEMPLATEFILE = "templateFilePath";
-    public static final String KONFIG_PRINTER_PORT = "printerPort";
-    public static final String KONFIG_LMR = "lmr";
+    public static final String CONFIG_LOWLIM = "LowLim";
+    public static final String CONFIG_MAXAGE = "MaxAge";
+    public static final String CONFIG_WAITLIM = "WaitLim";
+    public static final String CONFIG_CENTURY = "aarhundre";
+    public static final String CONFIG_TEMPLATEFILE = "templateFilePath";
+    public static final String CONFIG_PRINTER_PORT = "printerPort";
+    public static final String CONFIG_LMR = "lmr";
 
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;

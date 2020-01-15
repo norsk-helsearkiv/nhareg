@@ -17,14 +17,9 @@ import java.util.Calendar;
 
 /**
  * Type for å representere en dato eller et årstall
- * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DatoEllerAar", propOrder = {
-    "dato",
-    "aar"
-})
 @Data
+@NoArgsConstructor
 @Embeddable
 public class DateOrYear implements Serializable {
 

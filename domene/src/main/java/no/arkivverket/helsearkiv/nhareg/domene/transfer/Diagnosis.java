@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class Diagnosis implements Serializable {
 
     @Id
-    @XmlAttribute(name = "uuid")
+    @XmlTransient
     protected String uuid;
     
     @XmlElement(name = "diagnosedato", nillable = true)
@@ -36,12 +36,11 @@ public class Diagnosis implements Serializable {
         @JoinColumn(name = "diagnosekode_codeSystem", referencedColumnName = "codeSystem"),
         @JoinColumn(name = "diagnosekode_codeSystemVersion", referencedColumnName = "codeSystemVersion")
     })
-    @XmlElement(name = "diagnosekode")
+    @XmlElement(name = "diagnosekode", nillable = true)
     protected DiagnosisCode diagnosisCode;
     
     @NotNull
     @Size(min = 2, max = 255)
-    @XmlElement(required = true, name = "diagnosetekst")
     @Column(name = "diagnosetekst")
     @XmlElement(required = true, name = "diagnosetekst", nillable = true)
     protected String diagnosisText;

@@ -1,31 +1,35 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.DateOrYearAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.adapter.DeathDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.GenderAdapter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Grunnopplysninger", propOrder = {
-    "identifikator",
     "name",
     "born",
-    "deathDateUnknown",
     "dead",
+    "deathDateUnknown",
+    "gender",
     "contact",
-    "gender"
 })
 @Data
 @Embeddable
 public class BaseProperties implements Serializable {
 
+    @XmlTransient
     protected Identifikator identifikator;
 
+    @Size(min = 1)
     @NotNull
     @Column(name = "pnavn")
     @XmlElement(required = true, name = "pasientnavn")
@@ -37,13 +41,15 @@ public class BaseProperties implements Serializable {
         @AttributeOverride(column = @Column(name = "faar"), name = "year")
     })
     @XmlElement(required = true, name = "fodtdato")
+    @XmlJavaTypeAdapter(value = DateOrYearAdapter.class)
     protected DateOrYear born;
 
     @NotNull
     @Valid
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "kjonn")
-    @XmlElement(required = true, name = "kjonn")
+    @XmlElement(required = true, name = "kjonn", nillable = true)
+    @XmlJavaTypeAdapter(value = GenderAdapter.class)
     protected Gender gender;
 
     @Basic

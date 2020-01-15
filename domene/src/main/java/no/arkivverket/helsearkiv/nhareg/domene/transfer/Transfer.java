@@ -3,14 +3,15 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-@XmlType(name = "avlxml", propOrder = {
+@XmlRootElement(name = "avlxml")
+@XmlType(name = "avlevering", propOrder = {
     "xmlVersion",
     "transferId",
     "transferDescription",
@@ -28,6 +29,7 @@ public class Transfer implements Serializable {
     @XmlElement(required = true, name = "avleveringsidentifikator")
     protected String transferId;
 
+    @Size(min = 1)
     @Column(name = "avleveringsbeskrivelse")
     @XmlElement(required = true, name = "avleveringsbeskrivelse")
     protected String transferDescription;
@@ -43,7 +45,7 @@ public class Transfer implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
-    @XmlElement(required = true, name = "arkivskaper")
+    @XmlElement(required = true, name = "arkivskaper", nillable = true)
     protected ArchiveCreator archiveCreator;
 
     @XmlTransient

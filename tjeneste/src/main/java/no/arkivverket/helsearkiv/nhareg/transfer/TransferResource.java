@@ -145,11 +145,10 @@ public class TransferResource {
         
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();
-            marshaller.setProperty("jaxb.schemaLocation", "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd");
-            
             final StringWriter stringWriter = new StringWriter();
-
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(marshaller.JAXB_SCHEMA_LOCATION, "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd");
+            marshaller.setProperty(marshaller.JAXB_FORMATTED_OUTPUT, true);
+            
             marshaller.marshal(transfer, stringWriter);
             ResponseBuilder response = Response.ok(stringWriter.toString());
             response.header("Content-Disposition", "attachment; filename=" + id + ".xml");

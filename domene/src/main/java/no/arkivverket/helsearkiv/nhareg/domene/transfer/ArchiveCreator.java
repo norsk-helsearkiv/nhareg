@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
@@ -17,6 +19,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @Table(name = "arkivskaper")
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "arkivskaper", propOrder = {
     "uuid", 
     "code",
@@ -27,7 +30,7 @@ public class ArchiveCreator implements Serializable {
     
     @Id
     private String uuid;
-    
+
     @Column(name = "kode", unique = true, nullable = false)
     @XmlElement(name = "arkivskaperkode")
     private String code;

@@ -7,6 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateAdapter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
@@ -38,6 +39,7 @@ public class Agreement implements Serializable {
     @Column(name = "avtaledato")
     protected Calendar agreementDate;
 
+    @Size(min = 1)
     @NotNull
     @XmlElement(required = true, name = "avtalebeskrivelse")
     @Column(name = "avtalebeskrivelse")
