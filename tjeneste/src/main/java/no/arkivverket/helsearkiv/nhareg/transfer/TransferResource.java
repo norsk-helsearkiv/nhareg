@@ -1,6 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
+import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
@@ -44,6 +46,9 @@ public class TransferResource {
     @Inject
     private TransferConverterInterface transferConverter;
 
+    @Inject
+    private ArchiveCreatorServiceInterface archiveCreatorService;
+    
     @GET
     @Path("/{id}")
     public TransferDTO get(@PathParam("id") String id) {
@@ -141,7 +146,8 @@ public class TransferResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response getTransferXML(@PathParam("id") String id) {
         final TransferDTO transferDTO = transferService.getById(id);
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final ArchiveCreator archiveCreator = archiveCreatorService.getByName(transferDTO.getArchiveCreator());
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveCreator);
         
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();

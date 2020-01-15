@@ -34,4 +34,7 @@ public class TransferInAgreementDTO {
     @JsonProperty(value = "avtale")
     private AgreementDTO agreementDTO;
     
+    @JsonProperty(value = "kanSlettes")
+    private boolean canBeDeleted;
+    
 }

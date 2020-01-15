@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
+import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorDAO;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
@@ -42,9 +43,13 @@ public class TransferService implements TransferServiceInterface {
     @Inject
     private AgreementConverterInterface agreementConverter;
     
+    @Inject
+    private ArchiveCreatorDAO archiveCreatorDAO;
+
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final ArchiveCreator archiveCreator = archiveCreatorDAO.fetchByName(transferDTO.getArchiveCreator());
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveCreator);
         transfer.setUpdateInfo(createUpdateInfo(username));
 
         try {
@@ -81,13 +86,19 @@ public class TransferService implements TransferServiceInterface {
         // Get the archive creator
         final String archiveCreatorString = transferDTO.getArchiveCreator();
         if (archiveCreatorString != null && !archiveCreatorString.isEmpty()) {
-            int subEnd = Math.min(archiveCreatorString.length(), 3);
-            final String archiveCreatorCode = archiveCreatorString.substring(0, subEnd);
-            final ArchiveCreator archiveCreator = new ArchiveCreator(UUID.randomUUID().toString(), 
-                                                                     archiveCreatorCode,
-                                                                     archiveCreatorString,
-                                                                     null);
-            existingTransfer.setArchiveCreator(archiveCreator);
+            final ArchiveCreator creator = archiveCreatorDAO.fetchByName(archiveCreatorString);
+            
+            if (creator != null) {
+                existingTransfer.setArchiveCreator(creator);
+            } else {
+                int subEnd = Math.min(archiveCreatorString.length(), 3);
+                final String archiveCreatorCode = archiveCreatorString.substring(0, subEnd);
+                final ArchiveCreator archiveCreator = new ArchiveCreator(UUID.randomUUID().toString(), 
+                                                                         archiveCreatorCode,
+                                                                         archiveCreatorString,
+                                                                         null);
+                existingTransfer.setArchiveCreator(archiveCreator);
+            }
         }
         
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());

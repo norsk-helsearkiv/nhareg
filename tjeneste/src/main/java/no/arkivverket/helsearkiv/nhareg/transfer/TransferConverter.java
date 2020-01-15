@@ -11,7 +11,7 @@ import java.util.UUID;
 public class TransferConverter implements TransferConverterInterface {
     
     @Override
-    public Transfer toTransfer(final TransferDTO transferDTO) {
+    public Transfer toTransfer(final TransferDTO transferDTO, final ArchiveCreator archiveCreator) {
         if (transferDTO == null) {
             return null;
         }
@@ -24,8 +24,14 @@ public class TransferConverter implements TransferConverterInterface {
         final Agreement agreement = transferDTO.getAgreement();
         final boolean locked = transferDTO.isLocked();
         final UpdateInfo updateInfo = transferDTO.getUpdateInfo();
-        final ArchiveCreator archiveCreator = this.createArchiveCreator(transferDTO.getArchiveCreator());
-
+        
+        if (archiveCreator == null) {
+            final ArchiveCreator newArchiveCreator = this.createArchiveCreator(transferDTO.getArchiveCreator());
+            transfer.setArchiveCreator(newArchiveCreator);
+        } else {
+            transfer.setArchiveCreator(archiveCreator);
+        }
+        
         transfer.setStorageUnitFormat(storageUnitFormat);
         transfer.setMedicalRecords(medicalRecords);
         transfer.setTransferDescription(transferDescription);
@@ -33,7 +39,6 @@ public class TransferConverter implements TransferConverterInterface {
         transfer.setAgreement(agreement);
         transfer.setLocked(locked);
         transfer.setUpdateInfo(updateInfo);
-        transfer.setArchiveCreator(archiveCreator);
 
         return transfer;
     }
@@ -77,9 +82,10 @@ public class TransferConverter implements TransferConverterInterface {
         final boolean locked = transfer.isLocked();
         final String storageUnitFormat = transfer.getStorageUnitFormat();
         final String businessName = business.getName();
+        final boolean canBeDeleted = transfer.getMedicalRecords().size() == 0;
         
         return new TransferInAgreementDTO(transferId, transferDescription, archiveCreator, locked, false,
-                                          storageUnitFormat, businessName, agreementDTO);
+                                          storageUnitFormat, businessName, agreementDTO, canBeDeleted);
     }
 
     private ArchiveCreator createArchiveCreator(final String archiveCreatorString) {

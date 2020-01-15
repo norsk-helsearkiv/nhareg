@@ -43,7 +43,7 @@ public class Transfer implements Serializable {
     @XmlElement(required = true, name = "avtale")
     protected Agreement agreement;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
     @XmlElement(required = true, name = "arkivskaper", nillable = true)
     protected ArchiveCreator archiveCreator;

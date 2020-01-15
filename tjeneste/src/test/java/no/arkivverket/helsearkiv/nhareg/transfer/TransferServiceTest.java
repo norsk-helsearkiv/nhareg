@@ -48,7 +48,7 @@ public class TransferServiceTest {
     @Test
     public void getById_getValidId_shouldReturnTransfer() {
         final TransferDTO transferDTO = transferService.getById("Avlevering-1");
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, null);
 
         assertNotNull(transfer);
         assertNotNull(transfer.getMedicalRecords());
@@ -70,7 +70,7 @@ public class TransferServiceTest {
         final String id = "Avlevering-1";
         final String archiveCreator = "JUnit test";
         final TransferDTO transferDTO = transferService.getById(id);
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, null);
         final AgreementDTO agreementDTO = agreementConverter.fromAgreement(transfer.getAgreement());
         
         assertNotNull(transfer);
@@ -84,7 +84,7 @@ public class TransferServiceTest {
         transferService.update(transferInAgreementDTO,"nhabruker1");
 
         final TransferDTO updatedTransferDTO = transferService.getById(id);
-        final Transfer updatedTransfer = transferConverter.toTransfer(updatedTransferDTO);
+        final Transfer updatedTransfer = transferConverter.toTransfer(updatedTransferDTO, null);
         assertNotNull(updatedTransfer);
         assertNotNull(updatedTransfer.getAgreement());
         assertNotNull(updatedTransfer.getUpdateInfo());
@@ -95,7 +95,7 @@ public class TransferServiceTest {
         final String storageId = "boks1";
 
         final TransferDTO transferDTO = transferService.getTransferForStorageUnit(storageId);
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, null);
         assertNotNull(transfer);
         assertNotNull(transfer.getMedicalRecords());
     }
