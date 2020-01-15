@@ -31,11 +31,11 @@ RUN mvn clean package $MAVEN_ARGS
 
 
 ####### Wildfly #######
-FROM jboss/wildfly:8.2.0.Final as wildfly
+FROM jboss/wildfly:10.1.0.Final as wildfly
 
 # Set the relevant environment variables
-ENV WILDFLY_VERSION 8.2.0.Final
-ENV WILDFLY_SHA1 d78a864386a9bc08812eed9781722e45812a7826
+ENV WILDFLY_VERSION 10.1.0.Final
+ENV WILDFLY_SHA1 9ee3c0255e2e6007d502223916cefad2a1a5e333
 ENV JBOSS_HOME /opt/jboss/wildfly
 ENV JBOSS_CLI $JBOSS_HOME/bin/jboss-cli.sh
 ENV MYSQL_CONNECTOR 5.1.48
@@ -49,9 +49,7 @@ RUN cd $HOME \
     && sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
     && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
     && mv $HOME/wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-    && rm wildfly-$WILDFLY_VERSION.tar.gz \
-    && chown -R jboss:0 ${JBOSS_HOME} \
-    && chmod -R g+rw ${JBOSS_HOME}
+    && rm wildfly-$WILDFLY_VERSION.tar.gz 
 
 # Get and configure JasperServer
 WORKDIR /usr/src
@@ -65,8 +63,6 @@ RUN curl -L -O https://iweb.dl.sourceforge.net/project/jasperserver/JasperServer
     && mv jasperreports-server-cp-6.4.3-bin jasperreports-server \
     && mv mysql-connector-java-$MYSQL_CONNECTOR.jar jasperreports-server/buildomatic/conf_source/db/mysql/jdbc/ \
     && mv default_master.properties jasperreports-server/buildomatic/ \
-    && chown -R jboss:0 jasperreports-server \
-    && chmod -R g+w jasperreports-server \
     && cd jasperreports-server/buildomatic \
     && sed -i 's/<resources>/<resources><resource-root path="WEB-INF\/lib\/mysql-connector-java-5.1.48.jar" use-physical-code-source="true"\/>/' install_resources/jboss7/wildfly/jboss-deployment-structure.xml \
     && sed -i 's|appServerDir = .*|appServerDir = '"$JBOSS_HOME"'|' default_master.properties
