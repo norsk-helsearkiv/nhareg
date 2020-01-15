@@ -18,8 +18,6 @@ public class DiagnoseDTO implements Serializable {
     @JsonProperty(value = "uuid")
     private String uuid;
 
-    @NotNull
-    @Size(min = 1)
     @DateOrYear
     @JsonProperty(value = "diagnosedato")
     private String diagnosisDate;

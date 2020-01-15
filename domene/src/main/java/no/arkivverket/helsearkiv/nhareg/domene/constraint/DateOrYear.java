@@ -9,17 +9,13 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- *
- * @author robing
- */
 @Target( { METHOD, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = DateOrYearValidator.class)
 @Documented
 public @interface DateOrYear {
 
-    String message() default "{no.arkivverket.helsearkiv.nhareg.domene.constraints.DateOrYear}";
+    String message() default "{no.arkivverket.helsearkiv.nhareg.domene.constraints.DagEllerAar}";
 
     Class<?>[] groups() default {};
 

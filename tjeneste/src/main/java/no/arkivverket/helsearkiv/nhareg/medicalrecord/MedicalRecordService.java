@@ -232,8 +232,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
                 validationError.add(pidError);
             }
         }
-
-        final ValidationError fanearkidError = FanearkidValidation.validate(personalDataDTO, configurationDAO);
+    
+        final Integer fieldLength = configurationDAO.getInt(ConfigurationDAO.CONFIG_FANEARKID);
+        final ValidationError fanearkidError = FanearkidValidation.validate(personalDataDTO, fieldLength);
         if (fanearkidError != null) {
             validationError.add(fanearkidError);
         }

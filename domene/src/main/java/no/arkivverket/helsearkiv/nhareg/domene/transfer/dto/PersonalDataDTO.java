@@ -33,17 +33,14 @@ public class PersonalDataDTO implements Serializable {
     private String pid;
     
     @NotNull
-    @Size(min = 1)
     @JsonProperty(value = "navn")
     private String name;
     
     @NotNull
-    @Size(min = 1)
     @JsonProperty(value = "kjonn")
     private String gender;
     
     @NotNull
-    @Size(min = 1)
     @DateOrYear
     @JsonProperty(value = "fodt")
     private String born;

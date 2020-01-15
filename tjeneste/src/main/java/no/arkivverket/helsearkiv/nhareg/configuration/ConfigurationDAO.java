@@ -17,6 +17,7 @@ public class ConfigurationDAO {
     public static final String CONFIG_CENTURY = "aarhundre";
     public static final String CONFIG_TEMPLATEFILE = "templateFilePath";
     public static final String CONFIG_PRINTER_PORT = "printerPort";
+    public static final String CONFIG_FANEARKID = "fanearkid";
     public static final String CONFIG_LMR = "lmr";
 
     @PersistenceContext(name = "primary")
