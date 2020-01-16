@@ -13,6 +13,10 @@ public class GenderAdapter extends XmlAdapter<String, Gender> {
 
     @Override
     public String marshal(final Gender gender) {
+        if (gender == null) {
+            return "";
+        }
+        
         return gender.getCode();
     }
 }

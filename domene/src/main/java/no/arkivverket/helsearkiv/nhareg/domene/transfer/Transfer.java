@@ -1,10 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.ArchiveCreatorAdapter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +47,8 @@ public class Transfer implements Serializable {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
-    @XmlElement(required = true, name = "arkivskaper", nillable = true)
+    @XmlElement(required = true, name = "arkivskaper")
+    @XmlJavaTypeAdapter(value = ArchiveCreatorAdapter.class)
     protected ArchiveCreator archiveCreator;
 
     @XmlTransient

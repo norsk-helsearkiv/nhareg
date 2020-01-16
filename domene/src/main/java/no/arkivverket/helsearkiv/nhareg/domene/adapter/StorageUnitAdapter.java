@@ -15,6 +15,10 @@ public class StorageUnitAdapter extends XmlAdapter<String, StorageUnit> {
 
     @Override
     public String marshal(final StorageUnit storageUnit) {
+        if (storageUnit == null) {
+            return "";
+        }
+        
         return storageUnit.getUuid() + ":" + storageUnit.getId();
     }
     

@@ -23,7 +23,7 @@ public class Contact implements Serializable {
         @AttributeOverride(name = "date", column = @Column(name = "foersteKontaktDato")),
         @AttributeOverride(name = "year", column = @Column(name = "foersteKontaktAar"))
     })
-    @XmlElement(name = "forstekontakt", nillable = true)
+    @XmlElement(name = "forstekontakt")
     protected DateOrYear firstContact;
 
     @Embedded
@@ -31,7 +31,7 @@ public class Contact implements Serializable {
         @AttributeOverride(name = "date", column = @Column(name = "sisteKontaktDato")),
         @AttributeOverride(name = "year", column = @Column(name = "sisteKontaktAar"))
     })
-    @XmlElement(name = "sistekontakt", nillable = true)
+    @XmlElement(name = "sistekontakt")
     protected DateOrYear lastContact;
 
 }

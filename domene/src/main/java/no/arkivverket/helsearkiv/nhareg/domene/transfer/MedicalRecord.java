@@ -34,13 +34,13 @@ import java.util.Set;
 public class MedicalRecord implements Serializable {
 
     @Column(name = "journalnummer")
-    @XmlElement(required = true, name = "journalnummer", nillable = true)
+    @XmlElement(required = true, name = "journalnummer")
     protected String recordNumber;
 
     @Column(name = "lopenummer")
-    @XmlElement(name = "lopenummer", nillable = true)
+    @XmlElement(name = "lopenummer")
     protected String serialNumber;
-
+    
     @Embedded
     @XmlElement(required = true, name = "grunnopplysninger")
     protected BaseProperties baseProperties;
@@ -52,7 +52,7 @@ public class MedicalRecord implements Serializable {
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
     )
-    @XmlElement(required = true, name = "lagringsenhet", nillable = true)
+    @XmlElement(required = true, name = "lagringsenhet")
     @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
     protected List<StorageUnit> storageUnit;
 
@@ -66,7 +66,7 @@ public class MedicalRecord implements Serializable {
     protected String uuid;
 
     @Column(name = "merknad")
-    @XmlElement(name="merknad", nillable = true)
+    @XmlElement(name="merknad")
     protected String note;
 
     @XmlTransient
@@ -83,7 +83,7 @@ public class MedicalRecord implements Serializable {
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "diagnose_uuid")
     )
-    @XmlElement(name = "diagnose", nillable = true)
+    @XmlElement(name = "diagnose")
     protected Set<Diagnosis> diagnosis;
 
     @XmlTransient
@@ -91,7 +91,7 @@ public class MedicalRecord implements Serializable {
     protected Boolean deleted;
     
     @Column(name = "fanearkid")
-    @XmlElement(name = "fanearkidentifikator", nillable = true)
+    @XmlElement(name = "fanearkidentifikator")
     protected String fanearkid;
 
     @OneToOne

@@ -10,6 +10,7 @@ public class DateOrYearAdapter extends XmlAdapter<String, DateOrYear> {
     @Override
     public DateOrYear unmarshal(final String date) {
         final DateOrYear dateOrYear = new DateOrYear();
+
         if (date.length() == 4) {
             dateOrYear.setYear(Integer.parseInt(date));
         } else {
@@ -21,6 +22,10 @@ public class DateOrYearAdapter extends XmlAdapter<String, DateOrYear> {
 
     @Override
     public String marshal(final DateOrYear dateOrYear) {
+        if (dateOrYear == null) {
+            return "";
+        }
+        
         if (dateOrYear.getDate() == null) {
             return String.valueOf(dateOrYear.getAsYear());
         } else {

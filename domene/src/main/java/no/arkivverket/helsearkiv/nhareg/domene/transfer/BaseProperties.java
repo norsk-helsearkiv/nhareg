@@ -41,20 +41,19 @@ public class BaseProperties implements Serializable {
         @AttributeOverride(column = @Column(name = "faar"), name = "year")
     })
     @XmlElement(required = true, name = "fodtdato")
-    @XmlJavaTypeAdapter(value = DateOrYearAdapter.class)
     protected DateOrYear born;
 
     @NotNull
     @Valid
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "kjonn")
-    @XmlElement(required = true, name = "kjonn", nillable = true)
+    @XmlElement(required = true, name = "kjonn")
     @XmlJavaTypeAdapter(value = GenderAdapter.class)
     protected Gender gender;
 
     @Basic
     @Column(name = "dodsdatoUkjent")
-    @XmlElement(name = "sikkermors", nillable = true)
+    @XmlElement(name = "sikkermors")
     @XmlJavaTypeAdapter(DeathDateAdapter.class)
     protected Boolean deathDateUnknown;
 
@@ -68,11 +67,11 @@ public class BaseProperties implements Serializable {
         @AttributeOverride(column = @Column(name = "ddato"), name = "date"),
         @AttributeOverride(column = @Column(name = "daar"), name = "year")
     })
-    @XmlElement(name = "morsdato", nillable = true)
+    @XmlElement(name = "morsdato")
     protected DateOrYear dead;
 
     @Embedded
-    @XmlElement(name = "kontakt", nillable = true)
+    @XmlElement(name = "kontakt")
     protected Contact contact;
 
 }
