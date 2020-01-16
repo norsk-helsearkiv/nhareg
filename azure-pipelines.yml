@@ -125,14 +125,6 @@ stages:
         SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
-    - task: CopyFiles@2
-      name: copy_sql
-      displayName: Copying SQL files
-      inputs:
-        Contents: '**/nha-db/*.sql'
-        SourceFolder: $(Agent.BuildDirectory)
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/SQL/'
-        flattenFolders: true
   - job: fetch_installers
     displayName: Fetching installers
     condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
@@ -155,12 +147,27 @@ stages:
       inputs:
         workingDirectory: '$(Build.ArtifactStagingDirectory)'
         script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
-
+  - job: publish_pipeline_package
+    displayName: Publishing Pipeline artifact
+    steps:
+     - task: PublishPipelineArtifact@1
+       inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'package'
+        publishLocation: 'pipeline'
 ### STAGING ###
 - stage: Staging
   dependsOn: Package
   condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
   jobs:
+  - job: download_pipeline_artifact
+    displayName: Download Pipeline Artifact
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifactName: 'package'
+        buildType: 'current'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
   - job: publish_installer
     displayName: Stage installer zip
     condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
@@ -214,4 +221,3 @@ stages:
         sourceGitRepositoryPersonalAccessToken: $(sourceGitRepositoryToken)
         destinationGitRepositoryUri: 'https://github.com/norsk-helsearkiv/nhareg.git'
         destinationGitRepositoryPersonalAccessToken: $(destGitRepositoryToken)
-
