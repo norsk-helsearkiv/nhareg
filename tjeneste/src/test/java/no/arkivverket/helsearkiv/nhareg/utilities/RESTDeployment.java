@@ -4,6 +4,9 @@ import no.arkivverket.helsearkiv.nhareg.agreement.AgreementDAO;
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementResource;
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementService;
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorDAO;
+import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorService;
+import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessService;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
@@ -20,6 +23,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParame
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
@@ -44,6 +48,7 @@ public class RESTDeployment {
     public static WebArchive deployment() {
         return NharegDeployment.deployment()
                                // Models
+                               .addPackage(ArchiveCreator.class.getPackage())
                                .addPackage(Agreement.class.getPackage())
                                .addPackage(User.class.getPackage())
                                .addPackage(DateOrYear.class.getPackage())
@@ -62,6 +67,10 @@ public class RESTDeployment {
                                .addPackage(AgreementResource.class.getPackage())
                                .addPackage(AgreementService.class.getPackage())
                                .addPackage(AgreementServiceInterface.class.getPackage())
+                               // ArchiveCreator
+                               .addPackage(ArchiveCreatorDAO.class.getPackage())
+                               .addPackage(ArchiveCreatorService.class.getPackage())
+                               .addPackage(ArchiveCreatorServiceInterface.class.getPackage())
                                // Business
                                .addPackage(BusinessDAO.class.getPackage())
                                .addPackage(BusinessService.class.getPackage())
