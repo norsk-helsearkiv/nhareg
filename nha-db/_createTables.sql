@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Konfigparam (
 
 CREATE TABLE IF NOT EXISTS Lagringsenhet (
   uuid varchar(255) NOT NULL,
-  identifikator varchar(255) NOT NULL,
+  identifikator varchar(255) NOT NULL UNIQUE,
   utskrift bit(1) NOT NULL,
   PRIMARY KEY (uuid)
 );

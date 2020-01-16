@@ -30,7 +30,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="Avtale">
+    <xs:complexType name="Agreement">
         <xs:sequence>
             <xs:element name="avtaleidentifikator" type="xs:string">
                 <xs:annotation>
@@ -55,7 +55,7 @@
                     <xs:documentation>utfyllende opplysninger</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="avtale" type="Avtale"/>            
+            <xs:element name="getAgreement" type="Agreement"/>            
             <xs:element name="arkivskaper" type="xs:string"/>
             <xs:element name="pasientjournal" type="Pasientjournal"  maxOccurs="unbounded"/>
             <xs:element ref="oppdateringsinfo" minOccurs="0" maxOccurs="1"/>
@@ -168,7 +168,7 @@
                     <xs:documentation>Første og siste året for innleggelse eller konsultasjon</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="kjønn" type="Kjønn"/>
+            <xs:element name="getGender" type="Kjønn"/>
         </xs:sequence>
     </xs:complexType>
     
@@ -494,7 +494,7 @@
         </xs:sequence>
     </xs:complexType>
     
-    <xs:complexType name="Kjønn">
+    <xs:complexType name="Gender">
         <xs:complexContent>
             <xs:extension base="CS"/>
         </xs:complexContent>

@@ -1,7 +1,7 @@
 # Connect to Wildfly
 connect
 
-# Add datasource
+# Add default datasource
 data-source add \
     --name=NharegDS \
     --jndi-name=java:jboss/datasources/NharegDS \
@@ -16,8 +16,22 @@ data-source add \
     --background-validation=true \
     --background-validation-millis=30000
 
+data-source add \
+    --name=LmrDS \
+    --jndi-name=java:jboss/datasources/LmrDS \
+    --connection-url=jdbc:mysql://${LMR_HOST:host.docker.internal}:3306/${LMR_DATABASE:lmr} \
+    --driver-name=mysql-connector-java-5.1.48.jar_com.mysql.jdbc.Driver_5_1 \
+    --driver-class=com.mysql.jdbc.Driver \
+    --user-name="${LMR_USER:nhareg}" \
+    --password="${LMR_PASSWORD:nhareg}" \
+    --use-ccm=true \
+    --use-java-context=true
+
 /subsystem=datasources/data-source=NharegDS/connection-properties=useSSL:add(value=false)
 /subsystem=datasources/data-source=NharegDS/connection-properties=allowPublicKeyRetrieval:add(value=true)
+
+/subsystem=datasources/data-source=LmrDS/connection-properties=useSSL:add(value=false)
+/subsystem=datasources/data-source=LmrDS/connection-properties=allowPublicKeyRetrieval:add(value=true)
 
 # Add Security Domain
 /subsystem=security/security-domain=secureDomain:add(cache-type=default)

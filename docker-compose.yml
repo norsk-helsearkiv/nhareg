@@ -3,10 +3,12 @@ services:
   nha:
     container_name: "nha-app"
 #    environment:
-#      - MYSQL_ROOT_PASSWORD=admin
-#      - MYSQL_USER=username
+#      - MYSQL_ROOT_PASSWORD=root_password
+#      - MYSQL_USER=user
 #      - MYSQL_PASSWORD=password
-#      - WILDFLY_PASSWORD=admin_password
+#      - WILDFLY_PASSWORD=wildfly_admin_password
+#      - LMR_USER=lmr_username
+#      - LMR_PASSWORD=lmr_password
     build: .
     image: nhareg:latest
     ports:

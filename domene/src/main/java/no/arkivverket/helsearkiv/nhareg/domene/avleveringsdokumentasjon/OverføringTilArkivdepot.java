@@ -8,16 +8,13 @@
 
 package no.arkivverket.helsearkiv.nhareg.domene.avleveringsdokumentasjon;
 
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateAdapter;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Calendar;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -59,7 +56,7 @@ public class OverføringTilArkivdepot
 {
 
     @XmlElement(name = "overf\u00f8rt_dato", required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter2 .class)
+    @XmlJavaTypeAdapter(StringDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected Calendar overførtDato;
     @XmlElement(name = "antall_pasienter_overf\u00f8rt", required = true)

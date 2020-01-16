@@ -1,12 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.web;
 
-import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * http://www.technicaladvices.com/2012/07/08/the-effective-java-logout-servlet-code/
@@ -25,5 +24,5 @@ public class LogoutServlet extends HttpServlet {
         //response.sendRedirect(request.getContextPath() + "/login.jsp");
         response.sendRedirect(request.getContextPath());
     }
+    
 }
-

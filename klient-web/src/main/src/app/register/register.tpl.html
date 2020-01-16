@@ -90,12 +90,12 @@
                 <!-- Død dato -->
                 <div class="span span4">
                     <label id="dod" data-ng-class="{error: error['dod'] !== undefined }">Død</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" id="ddato" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
+                    <input type="text" id="ddato" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.dod" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
                 </div>
                 <!-- første kontakt dato -->
                 <div class="span span4">
                     <label id="fKontakt" data-ng-class="{error: error['fKontakt'] !== undefined }">Første kontakt</label>
-                    <input type="text" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
+                    <input type="text" id="fKontakt-input" class="form-control" placeholder="dd.mm.åååå" data-ng-model="formData.fKontakt" data-ng-enter="nyEllerOppdater()" ng-model-options="{ updateOn: 'default blur' }" data-ng-blur="injectCenturiesPJ($event)" maxlength="10">
                 </div>
                 <!-- Siste kontakt dato -->
                 <div class="span span4">

@@ -1,5 +1,8 @@
-# Get node 
-FROM node:latest as web-build
+####### NODE #######
+FROM node:13.6-alpine as web-build
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
 
 WORKDIR /usr/src
 COPY klient-web/ klient-web
@@ -11,8 +14,9 @@ RUN cd klient-web/src/main/ \
     && npm install -g grunt-cli \
     && grunt
 
-# Get maven with jdk 7
-FROM library/maven:3.6.1-jdk-7-slim as build
+
+####### MAVEN #######
+FROM library/maven:3.6.3-jdk-8-slim as build
 
 ARG MAVEN_ARGS=""
 
@@ -25,8 +29,9 @@ COPY --from=web-build /usr/src/klient-web/src/main klient-web/src/main
 
 RUN mvn clean package $MAVEN_ARGS
 
-# Get Wildfly 8.2.0.Final
-FROM jboss/wildfly:8.2.0.Final
+
+####### Wildfly #######
+FROM jboss/wildfly:8.2.0.Final as wildfly
 
 # Set the relevant environment variables
 ENV WILDFLY_VERSION 8.2.0.Final
@@ -95,15 +100,26 @@ RUN echo "Configuring Wildfly" \
 COPY --from=build /usr/src/klient-web/target/web.war $JBOSS_HOME/standalone/deployments/
 COPY --from=build /usr/src/tjeneste/target/api.war $JBOSS_HOME/standalone/deployments/
 
+####### ALPINE #######
+FROM alpine:3.11
+
+ENV JBOSS_HOME /opt/jboss/wildfly
+
+RUN addgroup -S jboss && adduser -S jboss -G jboss
+
+COPY --from=wildfly --chown=jboss $JBOSS_HOME $JBOSS_HOME
+COPY --from=wildfly --chown=jboss /usr/src/jasperreports-server /opt/jasper/
+
+COPY --chown=jboss src/main/resources/entrypoint.sh src/main/resources/update-datasource-credentials.cli src/main/resources/default_master.properties /
+
+RUN apk --no-cache add openjdk8-jre sed dos2unix bash
+RUN dos2unix /entrypoint.sh
+
 # Ensure signals are forwarded to the JVM process correctly for graceful shutdown
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 # Expose the ports we're interested in
 EXPOSE 8080 8443 9990
-
-COPY src/main/resources/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh \
-    && chown jboss:0 /entrypoint.sh
 
 USER jboss
 

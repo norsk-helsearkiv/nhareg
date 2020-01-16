@@ -1,27 +1,41 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
-import no.arkivverket.helsearkiv.nhareg.auth.UserService;
+import no.arkivverket.helsearkiv.nhareg.agreement.AgreementDAO;
+import no.arkivverket.helsearkiv.nhareg.agreement.AgreementResource;
+import no.arkivverket.helsearkiv.nhareg.agreement.AgreementService;
+import no.arkivverket.helsearkiv.nhareg.agreement.AgreementServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
+import no.arkivverket.helsearkiv.nhareg.business.BusinessService;
+import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
+import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisResource;
+import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisService;
+import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
+import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.DatoEllerAar;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PasientjournalDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.dto.PersondataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.avlevering.wrapper.ListObject;
-import no.arkivverket.helsearkiv.nhareg.domene.constraints.ValideringsfeilException;
-import no.arkivverket.helsearkiv.nhareg.domene.felles.GyldigeDatoformater;
-import no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam;
-import no.arkivverket.helsearkiv.nhareg.exception.IllegalArgumentExceptionMapper;
+import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
+import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
+import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.EntitetsTjeneste;
-import no.arkivverket.helsearkiv.nhareg.tjeneste.KonfigparamTjeneste;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitResource;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitService;
+import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferResource;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferService;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.transformer.DatoEllerAarTilStringTransformer;
-import no.arkivverket.helsearkiv.nhareg.util.DatoValiderer;
+import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
+import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
+import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.collection.AbstractCollectionDecorator;
 import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
@@ -40,56 +54,76 @@ public class RESTDeployment {
 
     public static WebArchive deployment() {
         return NharegDeployment.deployment()
-            //model
-            .addPackage(Avtale.class.getPackage())
-            .addPackage(ListObject.class.getPackage())
-            .addPackage(PersondataDTO.class.getPackage())
-            .addPackage(DatoEllerAar.class.getPackage())
-            .addPackage(GyldigeDatoformater.class.getPackage())
-            .addPackage(Konfigparam.class.getPackage())
-            .addPackage(KonfigparamTjeneste.class.getPackage())
-            .addPackage(ValideringsfeilException.class.getPackage())
-            .addPackage(UserService.class.getPackage())
-            .addPackage(Bruker.class.getPackage())
-            .addPackage(BrukerDTO.class.getPackage())
-            .addPackage(PasientjournalDTO.class.getPackage())
-            .addPackage(EntityDAO.class.getPackage())
-            // Medical Record classes
-            .addPackage(MedicalRecordServiceInterface.class.getPackage())
-            .addPackage(MedicalRecordService.class.getPackage())
-            .addPackage(MedicalRecordMapper.class.getPackage())
-            .addPackage(MedicalRecordResource.class.getPackage())
-            .addPackage(MedicalRecordDAO.class.getPackage())
-            // Transfer classes
-            .addPackage(TransferService.class.getPackage())
-            .addPackage(TransferServiceInterface.class.getPackage())
-            .addPackage(TransferResource.class.getPackage())
-            .addPackage(TransferDAO.class.getPackage())
-            // exception
-            .addPackage(IllegalArgumentExceptionMapper.class.getPackage())
-            // tjeneste
-            .addPackage(EntitetsTjeneste.class.getPackage())
-            //transformer
-            .addPackage(DatoEllerAarTilStringTransformer.class.getPackage())
-            //util
-            .addPackage(DatoValiderer.class.getPackage())
-            //
-            // Denne blokken er med for å få med commons-collections4 i testene
-            //
-            .addPackage(Transformer.class.getPackage())
-            .addPackage(AbstractMapEntryDecorator.class.getPackage())
-            .addPackage(AbstractUntypedIteratorDecorator.class.getPackage())
-            .addPackage(AbstractSetDecorator.class.getPackage())
-            .addPackage(AbstractCollectionDecorator.class.getPackage())
-            .addPackage(CommandVisitor.class.getPackage())
-            .addPackage(AbstractSortedMapDecorator.class.getPackage())
-            .addPackage(PredicatedList.class.getPackage())
-            //
-            // Blokk for StringUtils og relaterte pakker
-            //
-            .addPackage(StringUtils.class.getPackage())
-            .addPackage(CharSequenceUtils.class.getPackage())
-            .addPackage(CharSequenceTranslator.class.getPackage())
-            .addPackage(ToStringStyle.class.getPackage());
+                               // Models
+                               .addPackage(Agreement.class.getPackage())
+                               .addPackage(User.class.getPackage())
+                               .addPackage(DateOrYear.class.getPackage())
+                               .addPackage(ValidDateFormats.class.getPackage())
+                               .addPackage(ConfigurationParameter.class.getPackage())
+                               .addPackage(ListObject.class.getPackage())
+                               .addPackage(ValidationErrorException.class.getPackage())
+                               // DTOs
+                               .addPackage(BrukerDTO.class.getPackage())
+                               .addPackage(MedicalRecordDTO.class.getPackage())
+                               .addPackage(PersonalDataDTO.class.getPackage())
+                               // Entity
+                               .addPackage(EntityDAO.class.getPackage())
+                               // Agreements
+                               .addPackage(AgreementDAO.class.getPackage())
+                               .addPackage(AgreementResource.class.getPackage())
+                               .addPackage(AgreementService.class.getPackage())
+                               .addPackage(AgreementServiceInterface.class.getPackage())
+                               // Business
+                               .addPackage(BusinessDAO.class.getPackage())
+                               .addPackage(BusinessService.class.getPackage())
+                               .addPackage(BusinessServiceInterface.class.getPackage())
+                               // Configuration
+                               .addPackage(ConfigurationDAO.class.getPackage())
+                               // Diagnosis
+                               .addPackage(DiagnosisResource.class.getPackage())
+                               .addPackage(DiagnosisCodeDAO.class.getPackage())
+                               .addPackage(DiagnosisService.class.getPackage())
+                               .addPackage(DiagnosisCodeServiceInterface.class.getPackage())
+                               // Gender
+                               .addPackage(GenderDAO.class.getPackage())
+                               // Medical Record classes
+                               .addPackage(MedicalRecordServiceInterface.class.getPackage())
+                               .addPackage(MedicalRecordService.class.getPackage())
+                               .addPackage(MedicalRecordConverter.class.getPackage())
+                               .addPackage(MedicalRecordResource.class.getPackage())
+                               .addPackage(MedicalRecordDAO.class.getPackage())
+                               // Transfer classes
+                               .addPackage(TransferService.class.getPackage())
+                               .addPackage(TransferServiceInterface.class.getPackage())
+                               .addPackage(TransferResource.class.getPackage())
+                               .addPackage(TransferDAO.class.getPackage())
+                               // Storage Units
+                               .addPackage(StorageUnitResource.class.getPackage())
+                               .addPackage(StorageUnitService.class.getPackage())
+                               .addPackage(StorageUnitServiceInterface.class.getPackage())
+                               .addPackage(StorageUnitDAO.class.getPackage())
+                               // User
+                               .addPackage(UserDAO.class.getPackage())
+                               //util
+                               .addPackage(DateValidation.class.getPackage())
+                               .addPackage(ParameterConverter.class.getPackage())
+                               //
+                               // Denne blokken er med for å få med commons-collections4 i testene
+                               //
+                               .addPackage(Transformer.class.getPackage())
+                               .addPackage(AbstractMapEntryDecorator.class.getPackage())
+                               .addPackage(AbstractUntypedIteratorDecorator.class.getPackage())
+                               .addPackage(AbstractSetDecorator.class.getPackage())
+                               .addPackage(AbstractCollectionDecorator.class.getPackage())
+                               .addPackage(CommandVisitor.class.getPackage())
+                               .addPackage(AbstractSortedMapDecorator.class.getPackage())
+                               .addPackage(PredicatedList.class.getPackage())
+                               //
+                               // Blokk for StringUtils og relaterte pakker
+                               //
+                               .addPackage(StringUtils.class.getPackage())
+                               .addPackage(CharSequenceUtils.class.getPackage())
+                               .addPackage(CharSequenceTranslator.class.getPackage())
+                               .addPackage(ToStringStyle.class.getPackage());
     }
 }

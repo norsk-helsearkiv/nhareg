@@ -1,8 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.exception;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
-import javax.persistence.NoResultException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;

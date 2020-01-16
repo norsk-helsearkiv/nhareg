@@ -1,11 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.auth;
 
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
+import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by haraldk on 15.04.15.
@@ -14,10 +14,11 @@ import java.util.UUID;
 public class AuthServiceBean implements AuthService {
 
     @EJB
-    private UserService userService;
+    private UserDAO userDAO;
 
-    public boolean isAuthorized(String name, Set<String> rolesAllowed){
-        Bruker user = userService.findByUsername(name);
-        return rolesAllowed.contains(user.getRolle().getNavn());
+    public boolean isAuthorized(final String name, final Set<String> rolesAllowed) {
+        User user = userDAO.fetchByUsername(name);
+        return rolesAllowed.contains(user.getRole().getName());
     }
+    
 }

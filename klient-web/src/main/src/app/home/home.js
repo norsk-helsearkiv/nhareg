@@ -234,7 +234,7 @@ angular.module('nha.home', [
                       $scope.defaultAvlevering = avtaleIdent;
 
                       for (var i = 0; i < data.length; i++) {
-                          if (data[i].avtaleidentifikator === avtaleIdent) {
+                          if (data[i].avtaleidentifikator.toLowerCase() === avtaleIdent.toLowerCase()) {
                               $scope.setValgtAvtale(data[i]);
                               break;
                           }
@@ -363,7 +363,7 @@ angular.module('nha.home', [
           registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
           registerService.setAvlevering(avlevering);
 
-          var endpoint = "transfer/" + avlevering.avleveringsidentifikator + "/records";
+          var endpoint = "avleveringer/" + avlevering.avleveringsidentifikator + "/pasientjournaler";
           var params = {
               "page": "1",
               "size": $scope.size
@@ -372,7 +372,7 @@ angular.module('nha.home', [
           httpService.getAll(endpoint, false, params)
             .success(function (data) {
                 var title = {
-                    "tittel": avlevering.avtale.virksomhet.navn + "/" + avlevering.avtale.avtalebeskrivelse + "/" + avlevering.avleveringsbeskrivelse,
+                    "tittel": avlevering.virksomhet + "/" + avlevering.avtale.avtalebeskrivelse + "/" + avlevering.avleveringsbeskrivelse,
                     "underTittel": avlevering.arkivskaper
                 };
 

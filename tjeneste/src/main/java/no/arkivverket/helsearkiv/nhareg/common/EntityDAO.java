@@ -1,6 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.common;
 
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
+
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,27 +16,68 @@ import java.util.Map;
 
 public abstract class EntityDAO<T> {
 
+    protected static final String SIZE = "size";
+    protected static final String PAGE = "page";
+
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
 
     private Class<T> entityClass;
     private String idName;
-    private String orderByName;
 
     public EntityDAO() {}
     
-    public EntityDAO(final Class<T> entityClass,
-                     final String idName) {
+    public EntityDAO(final Class<T> entityClass, final String idName) {
         this.entityClass = entityClass;
         this.idName = idName;
     }
 
-    public EntityDAO(final Class<T> entityClass, final String idName, final String orderByName) {
-        this.entityClass = entityClass;
-        this.idName = idName;
-        this.orderByName = orderByName;
+    public T create(@NotNull final T entity) {
+        new Validator<>(entityClass).validateWithException(entity);
+        
+        entityManager.persist(entity);
+
+        return entity;
     }
 
+    public T update(T entity) {
+        // Validerer.
+        new Validator<T>(entityClass).validateWithException(entity);
+
+        // Oppdaterer.
+        getEntityManager().merge(entity);
+
+        return entity;
+    }
+
+    public T delete(@NotNull final String id) {
+        T entity = fetchSingleInstance(id);
+        getEntityManager().remove(entity);
+
+        return entity;
+    }
+        
+    /**
+     * Fetches a single instance of the entity.
+     * @param id Key for the entity.
+     * @return The entity matching the id, if any
+     * @throws NoResultException If no entity with the given id could be found.
+     */
+    public T fetchSingleInstance(@NotNull final String id) throws NoResultException {
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
+        final Root<T> root = criteriaQuery.from(entityClass);
+        final Predicate condition = criteriaBuilder.equal(root.get(idName), id);
+
+        criteriaQuery.select(criteriaBuilder.createQuery(entityClass).getSelection()).where(condition);
+
+        try {
+            return entityManager.createQuery(criteriaQuery).getSingleResult();
+        } catch (NoResultException nre) {
+            throw new NoResultException(id);
+        }
+    }
+    
     /**
      * Find an entity by its ID.
      * @param id Primary key for the entity.
@@ -49,7 +93,15 @@ public abstract class EntityDAO<T> {
      * @return A list of results of type T.
      */
     public List<T> fetchAll(final Map<String, String> queryParameters) {
-        return fetchAllPaged(queryParameters, 0, 0);
+        int page = 0;
+        int size  = 0;
+
+        if (queryParameters.containsKey(PAGE) && queryParameters.containsKey(SIZE)) {
+            page = Integer.parseInt(queryParameters.get(PAGE));
+            size = Integer.parseInt(queryParameters.get(SIZE));
+        }
+
+        return fetchAllPaged(queryParameters, page, size);
     }
 
     /**
@@ -67,15 +119,7 @@ public abstract class EntityDAO<T> {
 
         criteriaQuery.select(criteriaQuery.getSelection()).where(predicates);
 
-        if (orderByName != null && !orderByName.isEmpty()) {
-            criteriaQuery.orderBy(criteriaBuilder.desc(root.get(orderByName)));
-        }
-//        final String order = queryParameters.get("orderBy");
-//        else if (order != null && !order.isEmpty()) {
-//            // TODO 
-//        }
-
-        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);;
+        TypedQuery<T> query = entityManager.createQuery(criteriaQuery);
 
         if (page > 0 && size > 0) {
             query.setFirstResult((page - 1) * size);
@@ -99,4 +143,5 @@ public abstract class EntityDAO<T> {
     }
     
     protected EntityManager getEntityManager() { return this.entityManager; }
+
 }

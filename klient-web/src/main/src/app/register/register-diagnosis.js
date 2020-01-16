@@ -104,7 +104,7 @@ angular.module('nha.register')
                 $scope.pasientjournalDTO.diagnoser = [];
             }
 
-            httpService.create("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", $scope.formDiagnose)
+            httpService.create("diagnoser/" + $scope.pasientjournalDTO.persondata.uuid, $scope.formDiagnose)
                 .success(function (data) {
                     $scope.formDiagnose.uuid = data.uuid;
                     $scope.formDiagnose.oppdatertAv = data.oppdatertAv;
@@ -164,7 +164,7 @@ angular.module('nha.register')
             if (diagnose.diagnosekode === '') {
                 delete diagnose.diagnosekode;
             }
-            httpService.deleteData("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", diagnose)
+            httpService.deleteData("diagnoser/" + $scope.pasientjournalDTO.persondata.uuid, diagnose)
                 .success(function (data, status, headers, config) {
                     for (var i = 0; i < $scope.pasientjournalDTO.diagnoser.length; i++) {
                         if (diagnose === $scope.pasientjournalDTO.diagnoser[i]) {
@@ -203,7 +203,7 @@ angular.module('nha.register')
             //TODO
             diagnose.diagnosedato = $scope.injectCentury(diagnose.diagnosedato);
             $scope.feilmeldinger = [];
-            httpService.update("pasientjournaler/" + $scope.pasientjournalDTO.persondata.uuid + "/diagnoser", diagnose)
+            httpService.update("diagnoser/" + $scope.pasientjournalDTO.persondata.uuid, diagnose)
                 .success(function (data, status, headers, config) {
                     $scope.editingData[diagnose.uuid] = false;
                 })

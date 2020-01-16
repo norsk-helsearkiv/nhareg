@@ -214,7 +214,17 @@
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-container-test-api</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
         <!-- JUNIT -->
         <dependency>
             <groupId>junit</groupId>
@@ -257,7 +267,6 @@
             <artifactId>picketbox</artifactId>
             <version>4.0.7.Final</version>
         </dependency>
-
 
         <!-- LOMBOK -->
         <dependency>

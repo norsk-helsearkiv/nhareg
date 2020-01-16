@@ -22,13 +22,8 @@ angular.module('nha.common.list-view', [
 
     .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registerService, stateService, pagerService) {
         var size = listService.getSize();
-        // We set the base endpoint URL based on if avlevering is set or not. This is a hack to account for the previous setup which relied on 
-        // setting avlevering as a URL parameter, then handling it in the backend.
-        var transfer = listService.getAvlevering();
-        var transferUrl = transfer !== null ? "transfer/" + transfer.avleveringsidentifikator + "/records/" : "";
-        var medicalRecordUrl = "pasientjournaler/";
-        var baseEndpointUrl = transfer !== null ? transferUrl : medicalRecordUrl;
-
+        var baseEndpointUrl = "pasientjournaler/";
+        
         $scope.$watch(
             function () {
                 return $filter('translate')('konfig.ANTALL');
@@ -98,7 +93,6 @@ angular.module('nha.common.list-view', [
         $scope.sok = stateService.sokState;
 
         $scope.actionSort = function (column, sortDirection) {
-            console.log("sorting by:" + column + " dir:" + sortDirection);
             $scope.sortDirection = sortDirection ? "asc" : "desc";
             $scope.sortColumn = column;
 
@@ -186,7 +180,7 @@ angular.module('nha.common.list-view', [
 
         $scope.actionFjernPasientjournal = function (pasientjournal) {
             modalService.deleteModal($scope.tekster.pasientjournal, pasientjournal.navn + " (" + pasientjournal.fodselsnummer + ") ", function () {
-                httpService.deleteElement(medicalRecordUrl + pasientjournal.uuid)
+                httpService.deleteElement(baseEndpointUrl + pasientjournal.uuid)
                     .success(function () {
                         fjern($scope.data.liste, pasientjournal);
                         --$scope.data.antall;
@@ -201,7 +195,7 @@ angular.module('nha.common.list-view', [
         $scope.actionLeggTilPasientjournal = function () {
             var first = $scope.data.liste[0];
 
-            httpService.get(medicalRecordUrl + first.uuid)
+            httpService.get(baseEndpointUrl + first.uuid)
                 .success(function (data) {
                     registerService.setVirksomhet(data.virksomhet);
                     registerService.setPasientjournalDTO(null);
@@ -229,7 +223,7 @@ angular.module('nha.common.list-view', [
         };
 
         $scope.actionVisJournal = function (pasientjournal) {
-            httpService.get(medicalRecordUrl + pasientjournal)
+            httpService.get(baseEndpointUrl + pasientjournal)
                 .success(function (data, status, headers, config) {
                     registerService.setPasientjournalDTO(data);
                     var avlevering = { lagringsenhetformat: data.lagringsenhetformat };

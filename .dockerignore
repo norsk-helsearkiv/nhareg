@@ -6,5 +6,5 @@
 mysql-storage/
 nha-db/
 .idea/
-nhareg.iml
+*.iml
 .git/

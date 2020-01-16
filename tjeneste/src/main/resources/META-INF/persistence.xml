@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0"
-   xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="
-        http://java.sun.com/xml/ns/persistence
-        http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-   <persistence-unit name="primary">
-       <jta-data-source>java:jboss/datasources/NharegDS</jta-data-source>
-        <mapping-file>META-INF/orm.xml</mapping-file>
-        <jar-file>domene-1.0-SNAPSHOT.jar</jar-file>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avtale</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Avlevering</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Pasientjournal</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.avlevering.Diagnose</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Bruker</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Rolle</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.konfig.Konfigparam</class>
-       <exclude-unlisted-classes>true</exclude-unlisted-classes>
-       <shared-cache-mode>ALL</shared-cache-mode>
+             xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
+             http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="primary">
+        <jta-data-source>java:jboss/datasources/NharegDS</jta-data-source>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.CV</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Business</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.User</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Role</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        
+        <shared-cache-mode>ALL</shared-cache-mode>
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
@@ -25,7 +29,23 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.use_query_cache" value="true"/>
             <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
+            <property name="wildfly.jpa.default-unit" value="true"/>
+
             <!--<property name="hibernate.cache.infinispan.statistics" value="true"/>-->
         </properties>
-   </persistence-unit>
+    </persistence-unit>
+    <persistence-unit name="lmr">
+        <jta-data-source>java:jboss/datasources/LmrDS</jta-data-source>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.lmr.Lmr</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
+        </properties>
+    </persistence-unit>
 </persistence>
