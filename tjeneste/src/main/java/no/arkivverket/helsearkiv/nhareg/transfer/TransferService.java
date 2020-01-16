@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.ws.rs.core.MultivaluedMap;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,8 @@ public class TransferService implements TransferServiceInterface {
         final ArchiveCreator archiveCreator = archiveCreatorDAO.fetchByName(transferDTO.getArchiveCreator());
         final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveCreator);
         transfer.setUpdateInfo(createUpdateInfo(username));
-
+        transfer.setDateGenerated(LocalDate.now());
+        
         try {
             final Transfer created = transferDAO.create(transfer);
             
