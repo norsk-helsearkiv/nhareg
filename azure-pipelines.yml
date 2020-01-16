@@ -125,6 +125,11 @@ stages:
         SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'dockerArtifact'
+        publishLocation: 'pipeline'
   - job: fetch_installers
     displayName: Fetching installers
     condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
@@ -147,13 +152,10 @@ stages:
       inputs:
         workingDirectory: '$(Build.ArtifactStagingDirectory)'
         script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
-  - job: publish_pipeline_package
-    displayName: Publishing Pipeline artifact
-    steps:
-     - task: PublishPipelineArtifact@1
-       inputs:
+    - task: PublishPipelineArtifact@1
+      inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)'
-        artifact: 'package'
+        artifact: 'installerArtifact'
         publishLocation: 'pipeline'
 ### STAGING ###
 - stage: Staging
@@ -165,7 +167,7 @@ stages:
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
-        artifactName: 'package'
+        artifactName: 'dockerArtifact'
         buildType: 'current'
         targetPath: '$(Build.ArtifactStagingDirectory)'
   - job: publish_installer
