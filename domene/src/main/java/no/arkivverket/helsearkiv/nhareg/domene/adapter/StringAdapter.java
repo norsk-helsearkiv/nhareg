@@ -13,4 +13,5 @@ public class StringAdapter extends XmlAdapter<String, String> {
     public String marshal(final String value) {
         return value == null ? "" : value;
     }
+    
 }
