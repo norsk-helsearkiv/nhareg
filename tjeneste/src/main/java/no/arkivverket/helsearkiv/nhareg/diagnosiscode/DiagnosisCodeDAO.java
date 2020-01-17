@@ -6,6 +6,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.CV;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
@@ -40,7 +42,11 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         final Query query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
         query.setParameter("id", id);
 
-        return (DiagnosisCode) query.getSingleResult();
+        try {
+            return (DiagnosisCode) query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException exception) {
+            return null;
+        }
     }
 
     @Override

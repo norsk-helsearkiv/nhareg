@@ -14,21 +14,15 @@ import java.io.Serializable;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(name = "")
-@XmlRootElement(name = "diagnosekode")
+@XmlRootElement(name = "diagnosekode")  
 @Entity
 @Table(name = "diagnosekode")
 public class DiagnosisCode extends CV implements Serializable {
 
-    @XmlElement(name = "diagnosekode", nillable = true)
-    @Override 
+    @XmlElement(name = "diagnosekode")
+    @Override
     public String getCode() {
         return super.getCode();
     }
 
-    @XmlElement(name = "diagnosekodeverk", nillable = true)
-    @Override
-    public String getCodeSystem() {
-        return super.getCodeSystem();
-    }
-    
 }

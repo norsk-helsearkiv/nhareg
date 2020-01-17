@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.validation;
 
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.BaseProperties;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
@@ -22,9 +21,8 @@ public class DateValidation {
 
     public List<ValidationError> validateDiagnosis(final DiagnoseDTO diagnosis, final MedicalRecord medicalRecord) {
         final List<ValidationError> validationErrors = new ArrayList<>();
-        final BaseProperties baseProperties = medicalRecord.getBaseProperties();
-        final Boolean bornDateUnknown = baseProperties.getBornDateUnknown();
-        final Boolean deathDateUnknown = baseProperties.getDeathDateUnknown();
+        final Boolean bornDateUnknown = medicalRecord.getBornDateUnknown();
+        final Boolean deathDateUnknown = medicalRecord.getDeathDateUnknown();
         
         if (bornDateUnknown != null && bornDateUnknown && deathDateUnknown != null && deathDateUnknown) {
             return validationErrors;
@@ -40,7 +38,7 @@ public class DateValidation {
 
         // Check if diagnosis date is before being born
         if (bornDateUnknown == null || !bornDateUnknown) {
-            final DateOrYear born = baseProperties.getBorn();
+            final DateOrYear born = medicalRecord.getBorn();
             final LocalDateTime bornDate = born.getDate();
 
             if (bornDate != null && diagnosisDate.isBefore(bornDate.toLocalDate())) {
@@ -52,7 +50,7 @@ public class DateValidation {
 
         // Check if diagnosis date is after dying
         if (deathDateUnknown == null || !deathDateUnknown) {
-            final DateOrYear dead = baseProperties.getDead();
+            final DateOrYear dead = medicalRecord.getDead();
             final LocalDateTime deadDate = dead.getDate();
             
             if (deadDate != null && diagnosisDate.isAfter(deadDate.toLocalDate())) {

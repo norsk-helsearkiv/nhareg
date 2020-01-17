@@ -2,7 +2,10 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInterface;
@@ -45,9 +48,10 @@ public class ConverterTest {
 
         MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(dataDTO);
 
-        assertEquals(dataDTO.getPid(), medicalRecord.getBaseProperties().getIdentifikator().getPid());
-        final int year = medicalRecord.getBaseProperties().getDead().getAsYear();
-        assertEquals(2009, year);
+        assertEquals(dataDTO.getPid(), medicalRecord.getPid());
+        final Integer year = medicalRecord.getDead().getAsYear();
+        assertNotNull(year);
+        assertEquals(2009, year.intValue());
     }
 
     @Test
@@ -87,36 +91,27 @@ public class ConverterTest {
     private MedicalRecord getMedicalRecord() {
         final MedicalRecord medicalRecord = new MedicalRecord();
         final StorageUnit storageUnit = new StorageUnit();
-        final BaseProperties baseProperties = new BaseProperties();
 
         medicalRecord.setRecordNumber("123");
         medicalRecord.setSerialNumber("234");
         medicalRecord.setUuid("uuid1");
-        
+        medicalRecord.setPid("01010942345");
+        medicalRecord.setTypePID("fodselsnummer");
+        medicalRecord.setName("Natalie");
+        medicalRecord.setDead(getDate());
+        medicalRecord.setDeathDateUnknown(Boolean.FALSE);
+        medicalRecord.setBorn(getDate());
+        medicalRecord.setFirstContact(getDate());
+        medicalRecord.setLastContact(getDate());
+
         storageUnit.setId("Boks1");
         storageUnit.setUuid("lagring-1-boks-1");
         medicalRecord.getStorageUnit().add(storageUnit);
 
-        Identifikator id = new Identifikator();
-        id.setPid("01010942345");
-        id.setTypePID("fodselsnummer");
-        baseProperties.setIdentifikator(id);
-
-        baseProperties.setName("Natalie");
-        baseProperties.setDead(getDate());
-        baseProperties.setDeathDateUnknown(Boolean.FALSE);
-        baseProperties.setBorn(getDate());
-
         final Gender gender = new Gender();
         gender.setCode("K");
         gender.setDisplayName("Kvinne");
-        baseProperties.setGender(gender);
-
-        final Contact contact = new Contact();
-        contact.setFirstContact(getDate());
-        contact.setLastContact(getDate());
-        baseProperties.setContact(contact);
-        medicalRecord.setBaseProperties(baseProperties);
+        medicalRecord.setGender(gender);
 
         return medicalRecord;
     }

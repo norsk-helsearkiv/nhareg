@@ -5,6 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.adapter.ArchiveCreatorAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -28,6 +29,7 @@ import java.util.Set;
 @Table(name = "avlevering")
 public class Transfer implements Serializable {
 
+    @NotNull
     @Id
     @Column(name = "avleveringsidentifikator")
     @XmlElement(required = true, name = "avleveringsidentifikator")
@@ -42,6 +44,7 @@ public class Transfer implements Serializable {
     @XmlElement(name = "avlxmlversjon")
     protected String xmlVersion = "2.16.578.1.39.100.11.2.2";
     
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "avtale_avtaleidentifikator")
     @XmlElement(required = true, name = "avtale")
@@ -57,12 +60,13 @@ public class Transfer implements Serializable {
     @Column(name = "lagringsenhetformat")
     protected String storageUnitFormat;
     
-    @OneToMany(fetch = FetchType.EAGER)
+    @Size(min = 1)
+    @XmlElement(required = true, name = "pasientjournal")
+    @OneToMany
     @JoinTable(name = "avlevering_pasientjournal",
         joinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator"),
         inverseJoinColumns = @JoinColumn(name = "pasientjournal_uuid")
     )
-    @XmlElement(required = true, name = "pasientjournal")
     protected Set<MedicalRecord> medicalRecords;
 
     @XmlTransient

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
@@ -14,7 +17,8 @@ import java.io.Serializable;
 @XmlType(name = "diagnose", propOrder = {
     "diagnosisDate",
     "diagnosisCode",
-    "diagnosisText"
+    "diagnosisText",
+    "diagnosisCodingSystem",
 })
 @Data
 @NoArgsConstructor
@@ -25,28 +29,27 @@ public class Diagnosis implements Serializable {
 
     @Id
     @XmlTransient
-    protected String uuid;
+    private String uuid;
     
-    @XmlElement(name = "diagnosedato", nillable = true)
-    protected DateOrYear diagnosisDate;
+    @XmlElement(name = "diagnosedato")
+    private DateOrYear diagnosisDate;
     
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "diagnosekode_code", referencedColumnName = "code"),
-        @JoinColumn(name = "diagnosekode_codeSystem", referencedColumnName = "codeSystem"),
-        @JoinColumn(name = "diagnosekode_codeSystemVersion", referencedColumnName = "codeSystemVersion")
-    })
-    @XmlElement(name = "diagnosekode", nillable = true)
-    protected DiagnosisCode diagnosisCode;
+    @Column(name = "diagnosekode_code")
+    @XmlElement(name = "diagnosekode")
+    private String diagnosisCode;
 
     @NotNull
     @Size(min = 2, max = 255)
     @Column(name = "diagnosetekst")
-    @XmlElement(required = true, name = "diagnosetekst", nillable = true)
-    protected String diagnosisText;
+    @XmlElement(required = true, name = "diagnosetekst")
+    private String diagnosisText;
+    
+    @Column(name = "diagnosekode_codeSystem")
+    @XmlElement(name = "diagnosekodeverk")
+    private String diagnosisCodingSystem;
     
     @XmlTransient
-    protected UpdateInfo updateInfo;
+    private UpdateInfo updateInfo;
     
     @Override
     public boolean equals(final Object other) {

@@ -20,10 +20,10 @@ public class StorageUnit implements Serializable {
 
     @NotNull
     @Column(unique = true, name = "identifikator")
-    protected String id;
+    private String id;
 
     @Id
-    protected String uuid;
+    private String uuid;
 
     @Column(name = "utskrift")
     private boolean print;

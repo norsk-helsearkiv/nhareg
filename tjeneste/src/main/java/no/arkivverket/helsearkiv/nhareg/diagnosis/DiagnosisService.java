@@ -13,8 +13,10 @@ import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class DiagnosisService implements DiagnosisServiceInterface {
     
@@ -71,18 +73,18 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         // Validate diagnosis
-        final ArrayList<ValidationError> validationError = new Validator<>(DiagnoseDTO.class).validate(diagnoseDTO);
+        final List<ValidationError> diagnosisValidationList = new Validator<>(DiagnoseDTO.class).validate(diagnoseDTO);
         final DateValidation dateValidation = new DateValidation();
-        final List<ValidationError> diagfeil = dateValidation.validateDiagnosis(diagnoseDTO, medicalRecord);
+        final List<ValidationError> dateValidationList = dateValidation.validateDiagnosis(diagnoseDTO, medicalRecord);
         
-        if (diagfeil.size() > 0) {
-            validationError.addAll(diagfeil);
+        if (dateValidationList.size() > 0) {
+            diagnosisValidationList.addAll(dateValidationList);
         }
 
         validateDiagnosisCode(diagnoseDTO.getDiagnosisCode());
         
-        if (validationError.size() != 0) {
-            for (ValidationError feil : validationError) {
+        if (diagnosisValidationList.size() != 0) {
+            for (ValidationError feil : diagnosisValidationList) {
                 if (feil.getAttribute().equals("diagnosedato")) {
                     feil.setAttribute("diagnosedatotab");
                 }
@@ -90,7 +92,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
                     feil.setAttribute("diagnosekodetab");
                 }
             }
-            throw new ValidationErrorException(validationError);
+            throw new ValidationErrorException(diagnosisValidationList);
         }
 
         final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosisCode());
@@ -119,20 +121,12 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
     private void validateDiagnosisCode(final String diagnosisCode) {
         if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
-            Map<String, String> queryParameters = new HashMap<>();
-            queryParameters.put("code", diagnosisCode);
-
-            final List<Diagnosis> diagnosisList = diagnosisDAO.fetchAll(queryParameters);
-            // Convert to diagnosis codes.
-            final List<DiagnosisCode> diagnosisCodeList = diagnosisList.stream()
-                                                                       .map(Diagnosis::getDiagnosisCode)
-                                                                       .collect(Collectors.toList());
+            final DiagnosisCode existingDiagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCode);
             
-            // Check if the diagnosis code exists
-            if (diagnosisCodeList.size() == 0) {
-                ArrayList<ValidationError> validationError = new ArrayList<>();
+            if (existingDiagnosisCode == null) {
+                final ArrayList<ValidationError> validationError = new ArrayList<>();
                 validationError.add(new ValidationError("diagnosekode", "UkjentDiagnosekode"));
-                
+
                 throw new ValidationErrorException(validationError);
             }
         }

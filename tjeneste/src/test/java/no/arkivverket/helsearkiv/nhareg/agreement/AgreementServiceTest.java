@@ -16,7 +16,7 @@ import javax.ejb.EJBException;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -72,7 +72,6 @@ public class AgreementServiceTest {
     @Test
     public void delete_validIdWithoutChildren_shouldReturnAgreement() {
         final Agreement agreement = new Agreement();
-        final Calendar calendar = Calendar.getInstance();
         final Business business = new Business();
         final String agreementId = "test-avtale";
 

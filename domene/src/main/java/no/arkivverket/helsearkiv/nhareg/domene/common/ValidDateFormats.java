@@ -1,14 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.domene.common;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoField;
-import java.util.Date;
 
 public class ValidDateFormats {
     
@@ -43,7 +40,4 @@ public class ValidDateFormats {
         }
     }
 
-    public static LocalDateTime asLocalDateTime(final Date date) {
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-    }
 }
