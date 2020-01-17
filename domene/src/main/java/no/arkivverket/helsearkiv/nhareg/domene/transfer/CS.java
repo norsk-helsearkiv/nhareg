@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.SocialSecurityCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,7 +23,8 @@ import java.io.Serializable;
     "displayName"
 })
 @XmlSeeAlso({
-    Gender.class
+    Gender.class,
+    SocialSecurityCode.class
 })
 @Data
 @NoArgsConstructor
