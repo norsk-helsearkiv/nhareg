@@ -14,7 +14,7 @@ public class RecordTransferDTO {
     private String uuid;
 
     @JsonProperty(value = "lagringsenhet")
-    private String storageUnit;
+    private String storageUnits;
 
     @JsonProperty(value = "fodselsnummer")
     private String pid;

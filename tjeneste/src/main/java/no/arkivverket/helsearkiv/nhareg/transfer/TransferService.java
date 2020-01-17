@@ -21,7 +21,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.ws.rs.core.MultivaluedMap;
 import java.time.LocalDate;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -177,7 +177,7 @@ public class TransferService implements TransferServiceInterface {
     private UpdateInfo createUpdateInfo(final String username) {
         UpdateInfo updateInfo = new UpdateInfo();
         updateInfo.setUpdatedBy(username);
-        updateInfo.setLastUpdated(Calendar.getInstance());
+        updateInfo.setLastUpdated(LocalDateTime.now());
 
         return updateInfo;
     }

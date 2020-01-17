@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class AgreementDTO {
     private String agreementId;
 
     @JsonProperty(value = "avtaledato")
-    private Calendar agreementDate;
+    private LocalDateTime agreementDate;
 
     @JsonProperty(value = "avtalebeskrivelse")
     private String agreementDescription;

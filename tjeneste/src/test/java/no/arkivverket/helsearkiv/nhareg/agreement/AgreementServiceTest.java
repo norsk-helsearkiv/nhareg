@@ -38,8 +38,7 @@ public class AgreementServiceTest {
 
     @Test
     public void create_missingBusiness_shouldReturnAgreement() {
-        final AgreementDTO agreement = new AgreementDTO("enhet-4", Calendar.getInstance(), "boks4", null);
-
+        final AgreementDTO agreement = new AgreementDTO("enhet-4", LocalDateTime.now(), "boks4", null);
         final AgreementDTO newAgreement = agreementService.create(agreement);
 
         assertNotNull(newAgreement);
@@ -79,7 +78,7 @@ public class AgreementServiceTest {
 
         agreement.setAgreementDescription("beskrivelse");
         agreement.setAgreementId(agreementId);
-        agreement.setAgreementDate(calendar);
+        agreement.setAgreementDate(LocalDateTime.now());
 
         business.setOrganizationNumber("100");
         business.setName("Testorganisasjon");

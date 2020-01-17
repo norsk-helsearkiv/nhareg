@@ -141,7 +141,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     private UpdateInfo createUpdateInfo(final String username) {
         UpdateInfo updateInfo = new UpdateInfo();
         updateInfo.setUpdatedBy(username);
-        updateInfo.setLastUpdated(Calendar.getInstance());
+        updateInfo.setLastUpdated(LocalDateTime.now());
 
         return updateInfo;
     }

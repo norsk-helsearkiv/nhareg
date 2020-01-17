@@ -57,7 +57,7 @@ public class DateOrYear implements Serializable {
      * Get the year either from date or aar.
      * @return int value of the year.
      */
-    public int getAsYear() {
+    public Integer getAsYear() {
         if (date != null) {
             return date.getYear();
         }

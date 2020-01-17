@@ -258,7 +258,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
             if (medicalRecord.getUpdateInfo().getLastUpdated() != null) {
                 try {
-                    recordTransferDTO.setCreationDate(medicalRecord.getUpdateInfo().getLastUpdated().getTimeInMillis());
+                    recordTransferDTO.setCreationDate(medicalRecord.getUpdateInfo().getLastUpdated().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond());
                 } catch (Throwable ignored) {}
             } else {
                 recordTransferDTO.setCreationDate(0L);

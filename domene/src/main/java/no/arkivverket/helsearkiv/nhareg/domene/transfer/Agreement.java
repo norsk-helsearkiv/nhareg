@@ -3,7 +3,8 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateTimeAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,7 +12,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "avtale", propOrder = {
@@ -34,10 +35,11 @@ public class Agreement implements Serializable {
 
     @NotNull
     @XmlElement(required = true, type = String.class, name = "avtaledato")
-    @XmlJavaTypeAdapter(StringDateAdapter.class)
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     @XmlSchemaType(name = "date")
     @Column(name = "avtaledato")
-    protected Calendar agreementDate;
+    @Convert(converter = LocalDateTimeConverter.class)
+    protected LocalDateTime agreementDate;
 
     @Size(min = 1)
     @NotNull
