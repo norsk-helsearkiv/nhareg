@@ -162,18 +162,15 @@ stages:
   dependsOn: Package
   condition: and(succeeded(), or(eq(variables['Build.SourceBranchName'], 'dev'), eq(variables['Build.SourceBranchName'], 'master')))
   jobs:
-  - job: download_pipeline_artifact
-    displayName: Download Pipeline Artifact
+  - job: publish_installer
+    displayName: Stage installer zip
+    condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
         artifactName: 'dockerArtifact'
         buildType: 'current'
         targetPath: '$(Build.ArtifactStagingDirectory)'
-  - job: publish_installer
-    displayName: Stage installer zip
-    condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
-    steps:
     - task: Bash@3
       condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
       inputs:
@@ -199,6 +196,11 @@ stages:
   - job: publish_image
     displayName: Publish image
     steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifactName: 'installerArtifact'
+        buildType: 'current'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
       name: stage_image_artifact
       displayName: Stage image artifact
