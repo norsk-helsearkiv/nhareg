@@ -9,7 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
-public class DateOrYearTest {
+public class DateOrYearConstraintTest {
     
     private static DateOrYearValidator validator;
     

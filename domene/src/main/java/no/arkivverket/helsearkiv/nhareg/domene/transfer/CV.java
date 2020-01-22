@@ -1,7 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,18 +27,18 @@ import java.io.Serializable;
     propOrder = {
         "codeSystem",
     })
-@XmlSeeAlso({
-    AdmissionType.class,
-    EpisodeSubject.class,
-    CareLevel.class,
-    ContactType.class,
-    ActivityLocation.class,
-    ActivityType.class,
-    DepartmentAdmissionActivity.class,
-    InitiativeType.class,
-    ServiceSubject.class,
-    ProcedureCode.class,
-})
+// @XmlSeeAlso({
+//     AdmissionType.class,
+//     EpisodeSubject.class,
+//     CareLevel.class,
+//     ContactType.class,
+//     ActivityLocation.class,
+//     ActivityType.class,
+//     DepartmentAdmissionActivity.class,
+//     InitiativeType.class,
+//     ServiceSubject.class,
+//     ProcedureCode.class,
+// })
 @Data
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

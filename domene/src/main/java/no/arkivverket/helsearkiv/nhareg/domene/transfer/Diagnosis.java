@@ -43,10 +43,14 @@ public class Diagnosis implements Serializable {
     @Column(name = "diagnosetekst")
     @XmlElement(required = true, name = "diagnosetekst")
     private String diagnosisText;
-    
+
     @Column(name = "diagnosekode_codeSystem")
     @XmlElement(name = "diagnosekodeverk")
     private String diagnosisCodingSystem;
+
+    @Column(name = "diagnosekode_codeSystemVersion")
+    @XmlTransient
+    private String diagnosisCodingSystemVersion;
     
     @XmlTransient
     private UpdateInfo updateInfo;
