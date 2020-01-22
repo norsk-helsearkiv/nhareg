@@ -168,7 +168,7 @@ stages:
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
-        artifactName: 'dockerArtifact'
+        artifactName: 'installerArtifact'
         buildType: 'current'
         targetPath: '$(Build.ArtifactStagingDirectory)'
     - task: Bash@3
@@ -198,7 +198,7 @@ stages:
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
-        artifactName: 'installerArtifact'
+        artifactName: 'dockerArtifact'
         buildType: 'current'
         targetPath: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
