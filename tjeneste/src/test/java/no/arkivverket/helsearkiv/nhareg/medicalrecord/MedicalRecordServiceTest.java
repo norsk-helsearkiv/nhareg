@@ -63,8 +63,11 @@ public class MedicalRecordServiceTest {
         final MedicalRecord medicalRecord = medicalRecordService.getById(id);
         assertNotNull(medicalRecord);
         assertNotNull(medicalRecord.getStorageUnit());
+        System.out.println(medicalRecord.getStorageUnit());
+        System.out.println(medicalRecord.getDiagnosis());
         assertEquals(3, medicalRecord.getStorageUnit().size());
-
+        assertEquals(2, medicalRecord.getDiagnosis().size());
+        
         MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer(id);
         assertNotNull(medicalRecordDTO);
         assertNotNull(medicalRecordDTO.getPersonalDataDTO());

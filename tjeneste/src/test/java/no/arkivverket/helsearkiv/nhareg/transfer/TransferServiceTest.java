@@ -52,7 +52,7 @@ public class TransferServiceTest {
         medicalRecord.setPid("123");
         medicalRecord.setName("patient");
         medicalRecord.setGender(new Gender());
-        medicalRecord.setStorageUnit(Collections.singletonList(new StorageUnit()));
+        medicalRecord.setStorageUnit(Collections.singleton(new StorageUnit()));
         medicalRecords.add(medicalRecord);
         
         final Agreement agreement = agreementDAO.fetchById("Avtale1");

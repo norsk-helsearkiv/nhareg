@@ -60,11 +60,15 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
 
     @Override
     public MedicalRecord fetchById(final String id) {
-        final MedicalRecord medicalRecord = super.fetchById(id);
-        medicalRecord.getStorageUnit().size();
-        medicalRecord.getDiagnosis().size();
-        
-        return medicalRecord;
+        final String queryString = "SELECT distinct mr " 
+            + "FROM MedicalRecord mr "
+            + "LEFT JOIN FETCH mr.storageUnit "
+            + "LEFT JOIN FETCH mr.diagnosis " 
+            + "WHERE mr.uuid = :id ";
+        final TypedQuery<MedicalRecord> query = getEntityManager().createQuery(queryString, MedicalRecord.class);
+        query.setParameter("id", id);
+
+        return query.getSingleResult();
     }
 
     @Override
@@ -72,7 +76,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         final MedicalRecord medicalRecord = super.fetchSingleInstance(id);
         medicalRecord.getDiagnosis().size();
         medicalRecord.getStorageUnit().size();
-        
+
         return medicalRecord;
     }
 

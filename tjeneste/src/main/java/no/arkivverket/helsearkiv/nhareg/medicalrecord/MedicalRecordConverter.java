@@ -10,6 +10,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +67,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         }
 
         final String[] storageUnits = personalDataDTO.getStorageUnits();
-        final List<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
+        final Set<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
         if (storageUnits != null) {
             // For each storage unit: create a new StorageUnit with random UUID, then add it to the list.
             Arrays.stream(storageUnits).forEach(
@@ -103,7 +104,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         personalData.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
         personalData.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
 
-        final List<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
+        final Set<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
         if (storageUnits != null && !storageUnits.isEmpty()) {
             // Converts storageUnits to a String array of IDs.
             final String[] units = storageUnits.stream().map(StorageUnit::getId).toArray(String[]::new);
@@ -158,7 +159,6 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         }
 
         final RecordTransferDTO recordTransferDTO = new RecordTransferDTO();
-
         recordTransferDTO.setUuid(medicalRecord.getUuid());
         recordTransferDTO.setName(medicalRecord.getName());
         recordTransferDTO.setPid(medicalRecord.getPid());
@@ -194,18 +194,25 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             recordTransferDTO.setDeathYear("mors");
         }
 
-        final List<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
+        final Set<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
         if (storageUnitList != null && storageUnitList.size() > 0) {
-            final String storageUnitsString = storageUnitList.stream().distinct().map(StorageUnit::getId).collect(Collectors.joining(", "));
+            final String storageUnitsString = storageUnitList.stream().distinct()
+                                                             .map(StorageUnit::getId)
+                                                             .collect(Collectors.joining(", "));
             recordTransferDTO.setStorageUnits(storageUnitsString);
         }
 
-        if (medicalRecord.getUpdateInfo() != null) {
-            recordTransferDTO.setUpdatedBy(medicalRecord.getUpdateInfo().getUpdatedBy());
+        final UpdateInfo updateInfo = medicalRecord.getUpdateInfo();
+        if (updateInfo != null) {
+            recordTransferDTO.setUpdatedBy(updateInfo.getUpdatedBy());
 
-            if (medicalRecord.getUpdateInfo().getLastUpdated() != null) {
+            final LocalDateTime lastUpdated = updateInfo.getLastUpdated();
+            if (lastUpdated != null) {
                 try {
-                    recordTransferDTO.setCreationDate(medicalRecord.getUpdateInfo().getLastUpdated().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond());
+                    final long epochSecond = lastUpdated.atZone(ZoneId.systemDefault())
+                                                        .toInstant()
+                                                        .getEpochSecond();
+                    recordTransferDTO.setCreationDate(epochSecond);
                 } catch (Throwable ignored) {}
             } else {
                 recordTransferDTO.setCreationDate(0L);
@@ -215,7 +222,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         return recordTransferDTO;
     }
 
-    public List<RecordTransferDTO> toRecordTransferDTOList(final List<MedicalRecord> medicalRecordList) {
+    public List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList) {
         if (medicalRecordList == null) {
             return null;
         }

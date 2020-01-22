@@ -16,9 +16,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -130,7 +128,7 @@ public class MedicalRecord implements Serializable {
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
     )
-    private List<StorageUnit> storageUnit;
+    private Set<StorageUnit> storageUnit;
 
     @Embedded
     @XmlTransient
@@ -175,8 +173,8 @@ public class MedicalRecord implements Serializable {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;
     }
 
-    public List<StorageUnit> getStorageUnit() {
-        return storageUnit == null ? storageUnit = new ArrayList<>() : storageUnit;
+    public Set<StorageUnit> getStorageUnit() {
+        return storageUnit == null ? storageUnit = new HashSet<>() : storageUnit;
     }
 
     public AdditionalInfo getAdditionalInfo() {

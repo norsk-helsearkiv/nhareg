@@ -103,7 +103,7 @@ public class StorageUnitService implements StorageUnitServiceInterface {
         final Transfer transfer = transferDAO.fetchById(firstTransferId);
         final User user = userDAO.fetchByUsername(username);
 
-        String printerIp = user.getPrinterzpl();
+        String printerIp = user.getPrinter();
         if (printerIp == null) {
             printerIp = "127.0.0.1";
         }

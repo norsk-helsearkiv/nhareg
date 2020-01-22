@@ -16,8 +16,8 @@ public class UserConverter implements UserConverterInterface {
             roleDTO.setName(role.getName());
         }
         
-        return new UserDTO(user.getBrukernavn(), roleDTO, user.getPassord(),
-                           user.getPassord(), false, user.getPrinterzpl());
+        return new UserDTO(user.getUsername(), roleDTO, user.getPassword(),
+                           user.getPassword(), false, user.getPrinter());
     }
 
     @Override
@@ -25,15 +25,15 @@ public class UserConverter implements UserConverterInterface {
         final User user = new User();
         final Role role = new Role();
 
-        user.setBrukernavn(userDTO.getUsername());
-        user.setPassord(userDTO.getPassword());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
 
         if (userDTO.getRole() != null) {
             role.setName(userDTO.getRole().getName());
         }
 
         user.setRole(role);
-        user.setPrinterzpl(userDTO.getPrinterzpl());
+        user.setPrinter(userDTO.getPrinterzpl());
 
         return user;
     }

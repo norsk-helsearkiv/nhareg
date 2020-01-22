@@ -139,10 +139,10 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
 
         // Update storageUnit
-        final StorageUnit storageUnit = medicalRecord.getStorageUnit().get(0);
+        final StorageUnit storageUnit = medicalRecord.getStorageUnit().iterator().next();
         final String storageUnitId = storageUnit.getId();
         if (storageUnitId != null && !storageUnitId.isEmpty()) {
-            userDAO.updateLagringsenhet(username, storageUnit.getId());
+            userDAO.updateStorageUnit(username, storageUnit.getId());
         }
 
         // Update transfer
@@ -153,9 +153,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
             transfer.setTransferDescription(transferDescription);
         }
 
-        final String lagringsenhetFormat = medicalRecordDTO.getStorageUnitFormat();
-        if (lagringsenhetFormat != null && !lagringsenhetFormat.isEmpty()) {
-            transfer.setStorageUnitFormat(lagringsenhetFormat);
+        final String storageUnitFormat = medicalRecordDTO.getStorageUnitFormat();
+        if (storageUnitFormat != null && !storageUnitFormat.isEmpty()) {
+            transfer.setStorageUnitFormat(storageUnitFormat);
         }
 
         // Save transfer
@@ -201,14 +201,15 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final MedicalRecordDTO medicalRecordDTO = medicalRecordConverter.toMedicalRecordDTO(medicalRecord,
                                                                                             transfer,
                                                                                             business.getBusinessName());
-        final String transferIdForRecord = transferDAO.fetchTransferIdFromRecordId(medicalRecord.getUuid());
-        medicalRecordDTO.setTransferId(transferIdForRecord);
+        final String uuid = medicalRecord.getUuid();
+        final Transfer transferFromRecord = transferDAO.fetchTransferFromRecordId(uuid);
+        medicalRecordDTO.setTransferId(transferFromRecord.getTransferId());
 
         // Update the users last used storage unit
-        final StorageUnit storageUnit = medicalRecord.getStorageUnit().get(0);
+        final StorageUnit storageUnit = medicalRecord.getStorageUnit().iterator().next();
         final String storageUnitId = storageUnit.getId();
         if (storageUnitId != null && !storageUnitId.isEmpty()) {
-            userDAO.updateLagringsenhet(username, storageUnitId);
+            userDAO.updateStorageUnit(username, storageUnitId);
         }
 
         return medicalRecordDTO;
@@ -241,7 +242,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
     }
 
-    private void createAndAttachStorageUnit(final List<StorageUnit> storageUnits) {
+    private void createAndAttachStorageUnit(final Set<StorageUnit> storageUnits) {
         // Create new storage units, ignores existing units
         storageUnits.forEach(storageUnitDAO::create);
 

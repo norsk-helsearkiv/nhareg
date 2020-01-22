@@ -35,17 +35,17 @@ public class UserService implements UserServiceInterface {
         }
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
-        final String loggedInRole = userDAO.getRolle(username);
+        final String loggedInRole = userDAO.getRole(username);
         if (loggedInRole.equals("admin") && userDTO.getUsername().equals(username)) {
             user.getRole().setName(loggedInRole);
         }
 
         boolean resetPass = false;
         if (userDTO.getResetPassword() != null && userDTO.getResetPassword()) {
-            user.setResetPassord("Y"); // enkel resetpassord-indikator kan forfines ved behov...
+            user.setResetPassword("Y"); // enkel resetpassord-indikator kan forfines ved behov...
             resetPass = true;
         } else {
-            user.setResetPassord("");
+            user.setResetPassword("");
         }
 
         if (!resetPass) { // lite poeng å validere passord hvis det skal resettes
@@ -55,12 +55,12 @@ public class UserService implements UserServiceInterface {
             }
         }
 
-        validatePrinterIP(user.getPrinterzpl());
+        validatePrinterIP(user.getPrinter());
 
-        String b64Pwd = passwordToHash(user.getPassord());
-        user.setPassord(b64Pwd);
+        String b64Pwd = passwordToHash(user.getPassword());
+        user.setPassword(b64Pwd);
 
-        final User newUser = userDAO.createBruker(user);
+        final User newUser = userDAO.createUser(user);
         
         return userConverter.fromUser(newUser);
     }
@@ -75,14 +75,14 @@ public class UserService implements UserServiceInterface {
             throw new ValidationErrorException(feil);
         }
 
-        user.setPassord(b64pwd);
-        user.setResetPassord("");
+        user.setPassword(b64pwd);
+        user.setResetPassword("");
     }
 
     @Override
     public List<UserDTO> getUsers() {
         final List<UserDTO> dtos = new ArrayList<>();
-        for (User user : userDAO.getAllBrukere()) {
+        for (User user : userDAO.getAllUsers()) {
             final UserDTO userDto = userConverter.fromUser(user);
             dtos.add(userDto);
         }
@@ -99,7 +99,7 @@ public class UserService implements UserServiceInterface {
     public Boolean checkPasswordReset(final String username) {
         final User user = userDAO.fetchByUsername(username);
 
-        return "Y".equals(user.getResetPassord());
+        return "Y".equals(user.getResetPassword());
     }
 
     @Override
@@ -109,12 +109,12 @@ public class UserService implements UserServiceInterface {
 
     @Override 
     public void updateDefaultTransferForUser(final String username, final String transferId) {
-        userDAO.updateDefaultAvlevering(username, transferId);
+        userDAO.updateDefaultTransfer(username, transferId);
     }
 
     @Override
     public String getRole(final String username) {
-        return userDAO.getRolle(username);
+        return userDAO.getRole(username);
     }
 
     @Override

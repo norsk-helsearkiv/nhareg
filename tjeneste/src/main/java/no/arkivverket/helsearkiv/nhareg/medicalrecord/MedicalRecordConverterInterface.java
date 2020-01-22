@@ -6,6 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface MedicalRecordConverterInterface {
@@ -18,6 +19,6 @@ public interface MedicalRecordConverterInterface {
 
     RecordTransferDTO toRecordTransferDTO(MedicalRecord medicalRecord);
 
-    List<RecordTransferDTO> toRecordTransferDTOList(List<MedicalRecord> medicalRecordList);
+    List<RecordTransferDTO> toRecordTransferDTOList(Collection<MedicalRecord> medicalRecordList);
     
 }
