@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
@@ -112,12 +113,13 @@ public class TransferServiceTest {
 
     @Test
     public void getTransferForStorageUnit_validId_shouldReturnTransfer() {
-        final String storageId = "boks1";
+        final String storageId = "boks3";
 
         final TransferDTO transferDTO = transferService.getTransferForStorageUnit(storageId);
         
         assertNotNull(transferDTO);
         assertNotNull(transferDTO.getMedicalRecords());
+        assertEquals("Avlevering-2", transferDTO.getTransferId());
     }
 
 }
