@@ -21,7 +21,6 @@ import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,23 +99,27 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
     @Override
     public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id) {
+        final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
+        final String pageString = mappedQueries.remove("page");
+        final String sizeString = mappedQueries.remove("size");
         int page = 0;
         int size = 0;
-
-        if (queryParameters.containsKey("size") && queryParameters.containsKey("page")) {
-            page = Integer.parseInt(queryParameters.getFirst("page"));
-            size = Integer.parseInt(queryParameters.getFirst("size"));
+        
+        if (pageString != null && sizeString != null) {
+            page = Integer.parseInt(pageString);
+            size = Integer.parseInt(sizeString);
         }
 
-        final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         if (id != null && !id.isEmpty()) {
             mappedQueries.put("transferId", id);
         }
         
-        final List<RecordTransferDTO> recordTransferDTOList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries);
-        final BigInteger totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
-
-        return new ListObject<>(recordTransferDTOList, totalSize.intValueExact(), page, size);
+        final List<MedicalRecord> recordList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
+        final int totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
+        final List<RecordTransferDTO> recordTransferDTOList = 
+            new ArrayList<>(medicalRecordConverter.toRecordTransferDTOList(recordList));
+        
+        return new ListObject<>(recordTransferDTOList, totalSize, page, size);
     }
 
     @Override
