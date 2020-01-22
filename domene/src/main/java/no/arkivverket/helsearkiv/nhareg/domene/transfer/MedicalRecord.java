@@ -147,6 +147,7 @@ public class MedicalRecord implements Serializable {
 
     @Transient
     @XmlElement(name = "supplerendeopplysninger")
+    @XmlJavaTypeAdapter(value = AdditionalInfoAdapter.class)
     private AdditionalInfo additionalInfo;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

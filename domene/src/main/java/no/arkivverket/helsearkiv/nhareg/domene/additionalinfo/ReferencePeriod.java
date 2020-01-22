@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(
-    namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
+    // namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
     propOrder = {
         "id",
         "refFromInstitutionId",
@@ -26,7 +26,8 @@ import java.util.List;
 public class ReferencePeriod implements Serializable {
 
     @NotNull
-    @XmlAttribute(name = "henvisningsperiodeID", namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
+    @XmlAttribute(name = "henvisningsperiodeID")
+    // , namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
     private String id;
 
     @XmlElement(name = "henvTilInstitusjonID")

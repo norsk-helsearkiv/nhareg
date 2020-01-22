@@ -23,11 +23,13 @@ import java.util.List;
 public class AdditionalInfo implements Serializable {
 
     @NotNull
-    @XmlElement(name = "avleveringsidentifikator", namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
+    @XmlElement(name = "avleveringsidentifikator")
+        // , namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
     private String transferId;
     
     @Size(min = 1)
-    @XmlElement(name = "journalidentifikator", namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
+    @XmlElement(name = "journalidentifikator")
+        // , namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
     private String recordId;
     
     @XmlElement(name = "saksreferanser")

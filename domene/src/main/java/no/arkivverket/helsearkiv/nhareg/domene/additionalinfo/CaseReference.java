@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(
     name = "saksreferanser",
-    namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
+    // namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
     propOrder = {
         "caseReferenceDate",
         "caseReferenceNumber",
