@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.constraint.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.DateOrYearConstraint;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -41,21 +41,21 @@ public class PersonalDataDTO implements Serializable {
     private String gender;
     
     @NotNull
-    @DateOrYear
+    @DateOrYearConstraint
     @JsonProperty(value = "fodt")
     private String born;
 
     @NotNull
     @Size(min = 1)
-    @DateOrYear
+    @DateOrYearConstraint
     @JsonProperty(value = "dod")
     private String dead;
 
-    @DateOrYear
+    @DateOrYearConstraint
     @JsonProperty("fKontakt")
     private String firstContact;
 
-    @DateOrYear
+    @DateOrYearConstraint
     @JsonProperty("sKontakt")
     private String lastContact;
 

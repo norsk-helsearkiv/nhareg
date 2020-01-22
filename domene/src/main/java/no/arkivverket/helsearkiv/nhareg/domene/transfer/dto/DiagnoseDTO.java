@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.constraint.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.DateOrYearConstraint;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,7 +18,7 @@ public class DiagnoseDTO implements Serializable {
     @JsonProperty(value = "uuid")
     private String uuid;
 
-    @DateOrYear
+    @DateOrYearConstraint
     @JsonProperty(value = "diagnosedato")
     private String diagnosisDate;
 

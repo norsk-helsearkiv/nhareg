@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-public class DeathDateAdapter extends XmlAdapter<Integer, Boolean> {
+public class DeathDateKnownAdapter extends XmlAdapter<Integer, Boolean> {
 
     @Override
     public Boolean unmarshal(final Integer value) {

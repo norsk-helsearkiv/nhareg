@@ -3,7 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.user;
 import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
@@ -21,9 +21,12 @@ public class UserService implements UserServiceInterface {
     @Inject
     private UserDAO userDAO;
 
+    @Inject
+    private UserConverterInterface userConverter;
+    
     @Override
-    public BrukerDTO updateUser(final BrukerDTO userDTO, final String username) {
-        final User user = userDTO.toBruker();
+    public UserDTO updateUser(final UserDTO userDTO, final String username) {
+        final User user = userConverter.toUser(userDTO);
 
         //defaulter til bruker-rolle hvis det mangler..
         final String userName = user.getRole().getName();
@@ -33,7 +36,7 @@ public class UserService implements UserServiceInterface {
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
         final String loggedInRole = userDAO.getRolle(username);
-        if (loggedInRole.equals("admin") && userDTO.getBrukernavn().equals(username)) {
+        if (loggedInRole.equals("admin") && userDTO.getUsername().equals(username)) {
             user.getRole().setName(loggedInRole);
         }
 
@@ -58,7 +61,8 @@ public class UserService implements UserServiceInterface {
         user.setPassord(b64Pwd);
 
         final User newUser = userDAO.createBruker(user);
-        return new BrukerDTO(newUser);
+        
+        return userConverter.fromUser(newUser);
     }
 
     @Override
@@ -76,10 +80,11 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<BrukerDTO> getUsers() {
-        final List<BrukerDTO> dtos = new ArrayList<>();
+    public List<UserDTO> getUsers() {
+        final List<UserDTO> dtos = new ArrayList<>();
         for (User user : userDAO.getAllBrukere()) {
-            dtos.add(new BrukerDTO(user));
+            final UserDTO userDto = userConverter.fromUser(user);
+            dtos.add(userDto);
         }
 
         return dtos;

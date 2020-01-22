@@ -27,7 +27,8 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         final DateOrYear diagnosisDate = dateOrYearConverter.toDateOrYear(diagnosisDateString);
 
         return new Diagnosis(diagnosisDTO.getUuid(), diagnosisDate, diagnosisCode.getCode(), 
-                             diagnosisDTO.getDiagnosisText(), diagnosisCode.getCodeSystem(), null);
+                             diagnosisDTO.getDiagnosisText(), diagnosisCode.getCodeSystem(),    
+                             diagnosisCode.getCodeSystemVersion(), null);
     }
     
     @Override 

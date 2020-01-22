@@ -1,7 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.DeathDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.AdditionalInfoAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.DeathDateKnownAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.adapter.GenderAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.adapter.StorageUnitAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
@@ -89,7 +90,7 @@ public class MedicalRecord implements Serializable {
 
     @Column(name = "dodsdatoUkjent")
     @XmlElement(name = "sikkermors")
-    @XmlJavaTypeAdapter(DeathDateAdapter.class)
+    @XmlJavaTypeAdapter(DeathDateKnownAdapter.class)
     private Boolean deathDateUnknown;
 
     @Column(name = "fodtdatoUkjent")
