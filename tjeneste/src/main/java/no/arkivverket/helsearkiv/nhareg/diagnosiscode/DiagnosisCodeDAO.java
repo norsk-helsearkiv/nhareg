@@ -8,7 +8,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
@@ -39,7 +39,7 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         final String queryString = "SELECT OBJECT(dc) "
             + "FROM DiagnosisCode dc "
             + "WHERE dc.code = :id ";
-        final Query query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
+        final TypedQuery query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
         query.setParameter("id", id);
 
         try {

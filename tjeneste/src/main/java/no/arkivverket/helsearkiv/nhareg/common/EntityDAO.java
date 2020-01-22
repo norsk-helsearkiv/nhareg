@@ -16,8 +16,8 @@ import java.util.Map;
 
 public abstract class EntityDAO<T> {
 
-    protected static final String SIZE = "size";
-    protected static final String PAGE = "page";
+    private static final String SIZE = "size";
+    private static final String PAGE = "page";
 
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;

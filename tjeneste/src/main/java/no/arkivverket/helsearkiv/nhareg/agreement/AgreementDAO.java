@@ -7,7 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import javax.ejb.Stateless;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,11 +24,10 @@ public class AgreementDAO extends EntityDAO<Agreement> {
         final String queryString = "SELECT COUNT(t) "
             + "FROM Transfer t "
             + "WHERE t.agreement = :agreement";
-        final Query query = getEntityManager().createQuery(queryString);
+        final TypedQuery query = getEntityManager().createQuery(queryString, Long.class);
         query.setParameter("agreement", agreement);
         
         final Long size = (Long) query.getSingleResult();
-        System.out.println(size);
         
         if (size != 0) {
             final ValidationError validationError = new ValidationError("Avtale", "HasChildren");
@@ -44,11 +43,12 @@ public class AgreementDAO extends EntityDAO<Agreement> {
     public List<Transfer> fetchTransfersByAgreementId(final String id) {
         final String queryString = "SELECT DISTINCT OBJECT(t) "
             + "FROM Transfer t " 
+            + "LEFT JOIN FETCH t.medicalRecords " 
             + "WHERE t.agreement.agreementId = :id ";
-        final Query query = getEntityManager().createQuery(queryString);
+        final TypedQuery query = getEntityManager().createQuery(queryString, Transfer.class);
         query.setParameter("id", id);
 
-        return (List<Transfer>) query.getResultList();
+        return query.getResultList();
     }
     
 }
