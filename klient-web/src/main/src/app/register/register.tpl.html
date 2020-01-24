@@ -70,7 +70,7 @@
                 <!-- Navn -->
                 <div class="span span43 padding-bottom">
                     <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'register.NAME' | translate }}</label>
-                    <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="uppercaseNameAndSetFocus()" data-ng-enter="nyEllerOppdater()">
                 </div>
                 <!-- Kjønn -->
                 <div class="span span4">
