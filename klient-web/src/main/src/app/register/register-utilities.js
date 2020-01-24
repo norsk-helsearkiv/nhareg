@@ -204,7 +204,7 @@ angular.module('nha.register')
                         $scope.formData.navn = data.fnavn + ' ' + data.enavn;
                     }
                     $scope.formData.dod = data.ddato;
-                    $scope.uppercaseNameAndSetFocus();
+                    $scope.formatNameAndSetFocus();
                 })
                 .error(function (data, status) {
                     if (status === 400) {
