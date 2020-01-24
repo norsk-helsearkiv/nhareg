@@ -22,8 +22,8 @@ angular.module('nha.register')
 
         $scope.setFocus();
 
-        $scope.uppercaseNameAndSetFocus = function () {
-            //Setting first char of all names to uppercase
+        $scope.formatNameAndSetFocus = function () {
+            //Setting first char of all names to uppercase, splitting on spaces and dashes
             if ($scope.formData.navn !== undefined && $scope.formData.navn.length > 0) {
                 var input = $scope.formData.navn;
                 var words = input.split(/(\s|-)+/);
@@ -204,7 +204,7 @@ angular.module('nha.register')
                         $scope.formData.navn = data.fnavn + ' ' + data.enavn;
                     }
                     $scope.formData.dod = data.ddato;
-                    $scope.uppercaseNameAndSetFocus();
+                    $scope.formatNameAndSetFocus();
                 })
                 .error(function (data, status) {
                     if (status === 400) {
