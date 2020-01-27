@@ -1,241 +1,240 @@
 {
-  "common" : {
+  "common": {
     "APP_TITLE": "Registreringstøtte for pasientjournaler",
     "USER": "Bruker",
     "OK": "Ok",
     "SEARCH": "Søk",
     "CLEAR_SEARCH": "Rens søkefelt",
     "CANCEL": "Avbryt",
-    "ADD" : "Ny",
+    "ADD": "Ny",
     "NEW_STORAGE_UNIT": "Ny lagringsenhet",
     "SAVE": "Lagre og lukk",
-    "PRINT" :"Utskrift",
-    "tooltip" :{
-      "NEW_STORAGE_UNIT" : "Legger til inntastet lagringsenhet i registreringen",
-      "SAVE" :"Lagrer valgte lagringsenhet(er) på registreringen",
-      "SAVE_STORAGE_UNIT" : "Lagrer ny identifikator på lagringsenheten",
-      "PRINT" : "Skriver ut etikett til boksen",
-      "CANCEL" : "Avbryter registreringen",
-      "LAGRE_PASSORD":"Lagrer nytt passord på brukeren"
+    "PRINT": "Utskrift",
+    "tooltip": {
+      "NEW_STORAGE_UNIT": "Legger til inntastet lagringsenhet i registreringen",
+      "SAVE": "Lagrer valgte lagringsenhet(er) på registreringen",
+      "SAVE_STORAGE_UNIT": "Lagrer ny identifikator på lagringsenheten",
+      "PRINT": "Skriver ut etikett til boksen",
+      "CANCEL": "Avbryter registreringen",
+      "LAGRE_PASSORD": "Lagrer nytt passord på brukeren"
     },
-    "VIS_HURTIGTASTER" : "Vis hurtigtaster",
-    "table" : {
-      "ARKIVSKAPER" : "Arkivskaper",
-      "BESKRIVELSE" : "Beskrivelse",
-      "ID" : "ID",
-      "AVTALE_ID":"Avtaleidentifikator",
-      "AVTALE_BESKRIVELSE":"Avtalebeskrivelse",
-      "AVTALE_DATO":"Avtaledato",
-      "AVLEVERING_ID":"Avleveringsidentifikator",
-      "AVLEVERING_SKAPER":"Avleveringsarkivskaper",
-      "AVLEVERING_BESKRIVELSE":"Avleveringsbeskrivelse",
-      "NAVN" : "Navn",
-      "DATO" : "Dato",
-      "VERSJON" : "Versjon",
-      "KODE_SYSTEM" : "Kodesett",
-      "STORAGE_UNIT_FORMAT" : "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
+    "VIS_HURTIGTASTER": "Vis hurtigtaster",
+    "table": {
+      "ARKIVSKAPER": "Arkivskaper",
+      "BESKRIVELSE": "Beskrivelse",
+      "ID": "ID",
+      "AVTALE_ID": "Avtaleidentifikator",
+      "AVTALE_BESKRIVELSE": "Avtalebeskrivelse",
+      "AVTALE_DATO": "Avtaledato",
+      "AVLEVERING_ID": "Avleveringsidentifikator",
+      "AVLEVERING_SKAPER": "Avleveringsarkivskaper",
+      "AVLEVERING_BESKRIVELSE": "Avleveringsbeskrivelse",
+      "NAVN": "Navn",
+      "DATO": "Dato",
+      "VERSJON": "Versjon",
+      "KODE_SYSTEM": "Kodesett",
+      "STORAGE_UNIT_FORMAT": "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
       "STORAGE_UNIT": "Lagringsenhet, format: ",
-      "UUID" : "UUID",
-      "USERNAME" : "Brukernavn",
-      "ROLLENAVN" : "Rolle",
-      "PRINTER" : "Printer-IP"
+      "UUID": "UUID",
+      "USERNAME": "Brukernavn",
+      "ROLLENAVN": "Rolle",
+      "PRINTER": "Printer-IP"
     },
-    "PASIENTJOURNAL" : "Pasientjournal",
+    "PASIENTJOURNAL": "Pasientjournal",
     "OPPDATERT_AV": "Oppdatert av",
     "OPPDATERT_DATO": "Registreringstidspunkt"
   },
-  "home" : {
-    "AVTALE" : "Avtale",
-    "AVTALER" : "Avtaler",
-    "AVLEVERING" : "Avlevering",
-    "AVLEVERINGER" : "Avleveringer",
-    "FOR" : "for",
-    "PASIENTSOK" : "Pasientsøk",
-    "LAGRINGSENHETER" : "Lagringsenheter",
+  "home": {
+    "AVTALE": "Avtale",
+    "AVTALER": "Avtaler",
+    "AVLEVERING": "Avlevering",
+    "AVLEVERINGER": "Avleveringer",
+    "FOR": "for",
+    "PASIENTSOK": "Pasientsøk",
+    "LAGRINGSENHETER": "Lagringsenheter",
     "BRUKERADMIN": "Brukeradministrasjon",
-    "SOK" : "Søk",
-    "SOKERESULTAT" : "Søkeresultat",
-    "VISER" : "viser",
-    "ADM_LAGRINGSENHET" : "Administrasjon av lagringsenheter",
+    "SOK": "Søk",
+    "SOKERESULTAT": "Søkeresultat",
+    "VISER": "viser",
+    "ADM_LAGRINGSENHET": "Administrasjon av lagringsenheter",
     "ADM_BRUKERE": "Administrasjon av brukere",
-    "TILBAKE" : "Tilbake",
-    "lagringsenheter" : {
-      "SOK_LAGRINGSENHET" : "Søk lagringsenhet",
-      "HENT_PASIENTJOURNAL" : "Hent pasientjournaler i valgt lagringsenhet",
-      "VELG" : "Velg alle/ingen",
-      "FLYTT_VALGTE" : "Flytt valgte til",
-      "VALGT" : "Valgt",
-      "FLYTT" : "Flytt",
-      "tooltip" : {
-        "ENDRE_LAGRINGSENHET" : "Klikk for å endre identifikator på lagringsenheten"
+    "TILBAKE": "Tilbake",
+    "lagringsenheter": {
+      "SOK_LAGRINGSENHET": "Søk lagringsenhet",
+      "HENT_PASIENTJOURNAL": "Hent pasientjournaler i valgt lagringsenhet",
+      "VELG": "Velg alle/ingen",
+      "FLYTT_VALGTE": "Flytt valgte til",
+      "VALGT": "Valgt",
+      "FLYTT": "Flytt",
+      "tooltip": {
+        "ENDRE_LAGRINGSENHET": "Klikk for å endre identifikator på lagringsenheten"
       }
     },
-    "brukere" : {
-      "EPOST" : "E-post",
-      "ROLLE" : "Rolle",
-      "PASSORD" : "Passord",
-      "PASSORD_BEKREFT" : "Bekreft passord",
-      "PASSORD_FEIL" : "Passordet har feil lengde, må være 5 tegn eller mer",
-      "PASSORD_ULIKT" : "Passordene er ikke like",
-      "NYTT_PASSORD" :"Nytt passord",
-      "ENDRE_PASSORD" : "Endre passordet mitt",
-      "NYTTPASSORD" : "Sett nytt passord ved neste pålogging",
-      "HENT" : "Hent",
-      "LAGRE" : "Lagre",
-      "tooltip" : {
-        "ENDRE_BRUKER" : "Klikk for å gjøre endringer på brukeren"
+    "brukere": {
+      "EPOST": "E-post",
+      "ROLLE": "Rolle",
+      "PASSORD": "Passord",
+      "PASSORD_BEKREFT": "Bekreft passord",
+      "PASSORD_FEIL": "Passordet har feil lengde, må være 5 tegn eller mer",
+      "PASSORD_ULIKT": "Passordene er ikke like",
+      "NYTT_PASSORD": "Nytt passord",
+      "ENDRE_PASSORD": "Endre passordet mitt",
+      "NYTTPASSORD": "Sett nytt passord ved neste pålogging",
+      "HENT": "Hent",
+      "LAGRE": "Lagre",
+      "tooltip": {
+        "ENDRE_BRUKER": "Klikk for å gjøre endringer på brukeren"
       }
     },
-    "VIRKSOMHET" : "Virksomhet :",
-    "LAGRINGSENHET" : "Lagringsenhet",
-    "FANEARKID" : "Fanearkid",
-    "JNR" : "Journalnummer",
-    "LNR" : "Løpenummer",
-    "FNR" : "Fnum",
+    "VIRKSOMHET": "Virksomhet :",
+    "LAGRINGSENHET": "Lagringsenhet",
+    "FANEARKID": "Fanearkid",
+    "JNR": "Journalnummer",
+    "LNR": "Løpenummer",
+    "FNR": "Fnum",
     "FAAR": "Født",
     "DAAR": "Død",
-
-    "tooltip" : {
-      "LIST" : "Vis pasientjournaler i avleveringen",
-      "ADD" : "Legg til pasientjournal i avleveringen",
-      "FOLDER" : "Generer leveranse",
-      "ENDRE" : "Endre",
-      "DELETE" : "Slett",
-      "FAVORITE" : "Klikk for å sette til favoritt avlevering",
-      "LAAS" : "Lås avlevering",
-      "LAAST" : "Avleveringen er låst, kan kun åpnes av administrator"
+    "tooltip": {
+      "LIST": "Vis pasientjournaler i avleveringen",
+      "ADD": "Legg til pasientjournal i avleveringen",
+      "FOLDER": "Generer leveranse",
+      "ENDRE": "Endre",
+      "DELETE": "Slett",
+      "FAVORITE": "Klikk for å sette til favoritt avlevering",
+      "LAAS": "Lås avlevering",
+      "LAAST": "Avleveringen er låst, kan kun åpnes av administrator"
     }
   },
-  "register" : {
+  "register": {
     "REGISTRATION": "Registrering",
-    "gender" : {
-      "MALE" : "Mann",
-      "FEMALE" : "Kvinne",
-      "UNKNOWN" : "Ikke kjent",
-      "NOT_SPECIFIED" : "Ikke spesifisert"
+    "gender": {
+      "MALE": "Mann",
+      "FEMALE": "Kvinne",
+      "UNKNOWN": "Ikke kjent",
+      "NOT_SPECIFIED": "Ikke spesifisert"
     },
-    "NAME" : "Navn",
-    "DIAGNOSIS_YEAR" :"År/dato",
-    "DIAGNOSIS_CODE_SYSTEM_VERSION" :"Diagnosekodeverk",
-    "DIAGNOSIS_CODE_SYSTEM" : "Diagnosekode",
-    "DIAGNOSIS_CODE_SYSTEM_VERSION_SHORT" :"Kodeverk",
-    "DIAGNOSIS_CODE_SYSTEM_SHORT" : "Kode",
+    "NAME": "Navn",
+    "DIAGNOSIS_YEAR": "År/dato",
+    "DIAGNOSIS_CODE_SYSTEM_VERSION": "Diagnosekodeverk",
+    "DIAGNOSIS_CODE_SYSTEM": "Diagnosekode",
+    "DIAGNOSIS_CODE_SYSTEM_VERSION_SHORT": "Kodeverk",
+    "DIAGNOSIS_CODE_SYSTEM_SHORT": "Kode",
     "DIAGNOSIS_DISPLAY_NAME": "Diagnosetekst",
     "NOTE": "Merknad",
     "VALIDATION_ERRORS": "Valideringsfeil",
     "STORAGE_UNITS": "Lagringsenheter (klikk for å endre)"
   },
-  "login" : {
-    "TITTEL" : "Logg inn",
-    "USERNAME" : "Brukernavn",
+  "login": {
+    "TITTEL": "Logg inn",
+    "USERNAME": "Brukernavn",
     "PASSORD": "Passord",
     "HUSK_MEG": "Husk meg",
-    "LOGG_UT" : "Logg ut",
-    "ERROR" : "Feil brukernavn eller passord"
+    "LOGG_UT": "Logg ut",
+    "ERROR": "Feil brukernavn eller passord"
   },
-  "modal" : {
-    "delete" : {
-      "TITLE" : "Er du sikker på at du vil slette?",
-      "CONFIRM" : "Er du sikker på at du vil slette",
-      "WITH_ID" : ", "
+  "modal": {
+    "delete": {
+      "TITLE": "Er du sikker på at du vil slette?",
+      "CONFIRM": "Er du sikker på at du vil slette",
+      "WITH_ID": ", "
     },
-    "storage_unit" : {
-      "TITLE" : "Lagringsenhet"
+    "storage_unit": {
+      "TITLE": "Lagringsenhet"
     },
-    "change_storage_unit" : {
-      "TITLE" : "Endre lagringsenhet",
-      "IDENTIFICATION" : "Identifikator",
-      "NEW_IDENTIFICATION" : "Ny identifikator"
+    "change_storage_unit": {
+      "TITLE": "Endre lagringsenhet",
+      "IDENTIFICATION": "Identifikator",
+      "NEW_IDENTIFICATION": "Ny identifikator"
     },
-    "legg_til" : {
-      "TITTEL" : "Opprett ny",
+    "legg_til": {
+      "TITTEL": "Opprett ny",
       "TITTEL_AVLEVERING": "Avlevering",
-      "TITTEL_AVTALE":"Avtale"
+      "TITTEL_AVTALE": "Avtale"
     },
-    "warning_laas" :{
-      "TITTEL" : "Er du sikker på at du vil låse avlevering?",
-      "BESKRIVELSE" : "Du vil ikke kunne legge til eller endre pasientjournalene i avleveringen i etterkant."
+    "warning_laas": {
+      "TITTEL": "Er du sikker på at du vil låse avlevering?",
+      "BESKRIVELSE": "Du vil ikke kunne legge til eller endre pasientjournalene i avleveringen i etterkant."
     },
-    "warning_diagnose" :{
-      "TITTEL" : "Det finnes en ulagret diagnose",
-      "BESKRIVELSE" : "Klikk ok for å forkaste, eller avbryt for å gå tilbake og lagre diagnosen."
+    "warning_diagnose": {
+      "TITTEL": "Det finnes en ulagret diagnose",
+      "BESKRIVELSE": "Klikk ok for å forkaste, eller avbryt for å gå tilbake og lagre diagnosen."
     },
-    "warning_flytt" :{
-      "TITTEL" : "Flytte journaler til ny lagringsenhet",
-      "BESKRIVELSE" : "Er du sikker på at du vil flytte valgte pasientjournaler til ny lagringsenhet?"
+    "warning_flytt": {
+      "TITTEL": "Flytte journaler til ny lagringsenhet",
+      "BESKRIVELSE": "Er du sikker på at du vil flytte valgte pasientjournaler til ny lagringsenhet?"
     },
-    "endre_passord":{
+    "endre_passord": {
       "TITTEL": "Sett nytt passord for brukeren din"
     },
-    "warning_laas_opp" :{
-      "TITTEL" : "Er du siker på at du vil låse opp avleveringen?"
+    "warning_laas_opp": {
+      "TITTEL": "Er du siker på at du vil låse opp avleveringen?"
     },
-    "velg" : {
-      "TITTEL" : "Velg en diagnose"
+    "velg": {
+      "TITTEL": "Velg en diagnose"
     },
-    "FlyttLagringsenhetFeil" : {
-      "msg":"Lagringsenheten det ble forsøkt å flytte til finnes ikke i systemet",
-      "title":"Feil ved flytting",
-      "descr":""
+    "FlyttLagringsenhetFeil": {
+      "msg": "Lagringsenheten det ble forsøkt å flytte til finnes ikke i systemet",
+      "title": "Feil ved flytting",
+      "descr": ""
     }
   },
-  "error" :  {
-    "BAD_REQUEST_STATUS_CODE":      "400 Skjema feil",
-    "BAD_REQUEST":                  "Det er feil i skjema eller inputverdiene",
-    "SERVER_ERROR_STATUS_CODE":     "500 Intern server feil",
-    "SERVER_ERROR":                 "Det har oppstått en problem på serveren. Vennligst prøv igjen senere",
-    "CONFIRM_DELETE":               "Er du sikker på at du vil slette: ",
-    "NOT_FOUND":                    "Ressursen på serveren finnes ikke på angitt plassering.",
-    "NOT_FOUND_STATUS_CODE":        "404 Ressursen finnes ikke",
-    "RESOURCE_CONFLICT_CODE":		"409 Konsistensfeil",
-    "RESOURCE_CONFLICT": 			"Kan ikke slette elementet, fjern alle underliggende først",
-    "UNAUTHORIZED_STATUS_CODE":     "Brukeren har ikke tilgang til ressursen.",
-    "UNAUTHORIZED_STATUS_CODE_TITLE":"Mangler tilgang for funksjon",
-    "EXPECTATION_FAILED_STATUS_CODE":"Entiteten finnes fra før",
-    "EXPECTATION_FAILED":           "Det finnes en entitet med samme Id"
+  "error": {
+    "BAD_REQUEST_STATUS_CODE": "400 Skjema feil",
+    "BAD_REQUEST": "Det er feil i skjema eller inputverdiene",
+    "SERVER_ERROR_STATUS_CODE": "500 Intern server feil",
+    "SERVER_ERROR": "Det har oppstått en problem på serveren. Vennligst prøv igjen senere",
+    "CONFIRM_DELETE": "Er du sikker på at du vil slette: ",
+    "NOT_FOUND": "Ressursen på serveren finnes ikke på angitt plassering.",
+    "NOT_FOUND_STATUS_CODE": "404 Ressursen finnes ikke",
+    "RESOURCE_CONFLICT_CODE": "409 Konsistensfeil",
+    "RESOURCE_CONFLICT": "Kan ikke slette elementet, fjern alle underliggende først",
+    "UNAUTHORIZED_STATUS_CODE": "Brukeren har ikke tilgang til ressursen.",
+    "UNAUTHORIZED_STATUS_CODE_TITLE": "Mangler tilgang for funksjon",
+    "EXPECTATION_FAILED_STATUS_CODE": "Entiteten finnes fra før",
+    "EXPECTATION_FAILED": "Det finnes en entitet med samme Id"
   },
-  "formError" : {
-    "DagEllerAar" : "Feil datoformat, eksempel på format (01.01.1990)",
-    "NotNull" : "Kan ikke være tom",
-    "Size" : "Kan ikke være tom",
-    "EnObligatorisk" : "Ett av feltene må fylles inn (*)",
-    "NotUnique" : "Lagringsenhet finnes i annen avlevering",
-    "FodtEtterDodt" : "Fødsel kan ikke være etter død",
-    "UtenforGyldigPeriode" : "Dato/år utenfor gyldighetsområde",
-    "UkjentDiagnosekode" : "Ukjent diagnosekode",
-    "FeilFodselsnummer" : "Fødselsnr (alt. H/D-nummer) er ugyldig",
-    "fKontaktForFodt" : "Første kontakt kan ikke være før fødsel",
-    "sKontaktForFodt" : "Siste kontakt kan ikke være før fødsel",
-    "fKontaktEtterDod" : "Første kontakt kan ikke være etter død",
-    "sKontaktEtterDod" : "Siste kontakt kan ikke være etter død",
+  "formError": {
+    "DagEllerAar": "Feil datoformat, eksempel på format (01.01.1990)",
+    "NotNull": "Kan ikke være tom",
+    "Size": "Kan ikke være tom",
+    "EnObligatorisk": "Ett av feltene må fylles inn (*)",
+    "NotUnique": "Lagringsenhet finnes i annen avlevering",
+    "FodtEtterDodt": "Fødsel kan ikke være etter død",
+    "UtenforGyldigPeriode": "Dato/år utenfor gyldighetsområde",
+    "UkjentDiagnosekode": "Ukjent diagnosekode",
+    "FeilFodselsnummer": "Fødselsnr (alt. H/D-nummer) er ugyldig",
+    "fKontaktForFodt": "Første kontakt kan ikke være før fødsel",
+    "sKontaktForFodt": "Siste kontakt kan ikke være før fødsel",
+    "fKontaktEtterDod": "Første kontakt kan ikke være etter død",
+    "sKontaktEtterDod": "Siste kontakt kan ikke være etter død",
     "fKontaktEttersKontakt": "Første kontakt kan ikke være etter siste kontakt",
-    "manglermors" : "Sikker mors eller morsdato må angis",
-    "sKontaktNotNull" : "Siste kontakt kan ikke være tom når Født er ukjent",
-    "DiagEtterDod" : "Diagnosedato kan ikke være etter død",
-    "DiagForFodt" : "Diagnosedato kan ikke være før fødsel",
-    "DiagFormatFeil" : "Feltet krever gyldig dato/årstall, vennligst korriger",
-    "FeilFanearkidNull" : "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-    "FeilFanearkid" : "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
-    "FeilPassord" : "Passordet kan ikke være tomt og må være minimum 5 tegn",
-    "NotIdentical" : "Passordene er ikke like",
-    "Empty printer IP" : "Printer-IP kan ikke være tom",
-    "Error in IP address length" : "Feil lengde på printer-IP",
-    "Error in IP format" : "Feil format på printer-IP",
-    "Error with integers in IP" : "Printer-IP kan kun inneholde tall",
-    "NationalIdentityDoesNotExist" : "Fødselsnummeret finnes ikke i LMR"
+    "manglermors": "Sikker mors eller morsdato må angis",
+    "sKontaktNotNull": "Siste kontakt kan ikke være tom når Født er ukjent",
+    "DiagEtterDod": "Diagnosedato kan ikke være etter død",
+    "DiagForFodt": "Diagnosedato kan ikke være før fødsel",
+    "DiagFormatFeil": "Feltet krever gyldig dato/årstall, vennligst korriger",
+    "FeilFanearkidNull": "Fanearkid kan ikke være null, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
+    "FeilFanearkid": "Fanearkid har feil lengde, konfigurasjon er satt til feltlengde={{fanearkidfeltlengde}}",
+    "FeilPassord": "Passordet kan ikke være tomt og må være minimum 5 tegn",
+    "NotIdentical": "Passordene er ikke like",
+    "Empty printer IP": "Printer-IP kan ikke være tom",
+    "Error in IP address length": "Feil lengde på printer-IP",
+    "Error in IP format": "Feil format på printer-IP",
+    "Error with integers in IP": "Printer-IP kan kun inneholde tall",
+    "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR"
   },
-  "attributes" :  {
-    "born" : "fodt",
-    "name" : "navn",
-    "gender" : "kjonn",
-    "dead" : "dod",
-    "firstContact" : "fKontakt",
-    "lastContact" : "sKontakt",
-    "note" : "merknad",
-    "recordNumber" : "journalnummer",
-    "serialNumber" : "lopenummer"
+  "attributes": {
+    "born": "fodt",
+    "name": "navn",
+    "gender": "kjonn",
+    "dead": "dod",
+    "firstContact": "fKontakt",
+    "lastContact": "sKontakt",
+    "note": "merknad",
+    "recordNumber": "journalnummer",
+    "serialNumber": "lopenummer"
   },
-  "konfig" : {
-    "ANTALL" : "15"
+  "konfig": {
+    "ANTALL": "15"
   }
 }
