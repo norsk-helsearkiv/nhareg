@@ -8,11 +8,12 @@ angular.module('nha.register', [
         'cfp.hotkeys'
     ])
 
-    .filter('parseCustomDate', function(){
-        return function(date){
-            if (date==='mors'||date=="ukjent"){
+    .filter('parseCustomDate', function() {
+        return function(date) {
+            if (date === 'mors' || date === "ukjent") {
                 return new Date("01.01.1000").getTime();
             }
+
             var sliceDay = date.slice(0, 3);
             var sliceMonth = date.slice(3, 6);
             var sliceYear = date.slice(6, 10);
@@ -64,7 +65,6 @@ angular.module('nha.register', [
         //Setter verdier for å sørge for at undefined (null) blir håndtert riktig
         $scope.feilmeldinger = [];
         $scope.error = [];
-
         $scope.kjonn = [{kode: "M", tekst: ""}, {kode: "K", tekst: ""}, {kode: "U", tekst: ""}, {kode: "I", tekst: ""}];
 
         //Tekster fra i18n
@@ -283,7 +283,7 @@ angular.module('nha.register', [
         $scope.formData = {
             lagringsenheter: []
         };
-        $scope.lagringseneheterModel = $scope.formData.lagringsenheter.map(function(el){return el.name;}).join(",");
+        $scope.lagringseneheterModel = $scope.formData.lagringsenheter.map(function(el){ return el.name; }).join(",");
 
         $scope.formDiagnose = {};
         $scope.avlevering = registerService.getAvlevering();
@@ -298,8 +298,7 @@ angular.module('nha.register', [
 
             if ($scope.avlevering.lagringsenhetformat) {
                 lagringsenhetmaske = $scope.avlevering.lagringsenhetformat;
-            }
-            else if ($scope.pasientjournalDTO.lagringsenhetformat){
+            } else if ($scope.pasientjournalDTO.lagringsenhetformat) {
                 lagringsenhetmaske = $scope.pasientjournalDTO.lagringsenhetformat;
             }
 
@@ -309,12 +308,12 @@ angular.module('nha.register', [
 
             httpService.lastUsedStorageUnit()
                 .success(function (data) {
-                    if ($scope.formData.lagringsenheter.length === 0 && data){
+                    if ($scope.formData.lagringsenheter.length === 0 && data) {
                         $scope.formData.lagringsenheter.push(data);
                     }
 
                     var modal = modalService.manageStorageUnits('common/modal-service/lagringsenhet-modal.tpl.html',
-                        function(){
+                        function() {
                             //TODO, callback for NHA-038
                         },
                         lagringsenhetmaske,
@@ -377,33 +376,32 @@ angular.module('nha.register', [
             $scope.diagnoseDatoErSatt = false;
             diagnosekode = "";
 
-            if (keepDate){
+            if (keepDate) {
                 document.getElementById("diagnosisDate-input").focus();
                 $scope.formDiagnose.diagnosedato = oldDiagnosedato;
             }
 
         };
 
-        $scope.sjekkDiagnoseFeltTomt = function(caller){
+        $scope.sjekkDiagnoseFeltTomt = function(caller) {
 
-            if ($scope.formDiagnose.diagnosekode ||
-                $scope.formDiagnose.diagnosetekst){
-
+            if ($scope.formDiagnose.diagnosekode || $scope.formDiagnose.diagnosetekst) {
                 var tpl = 'common/modal-service/warning-modal.tpl.html';
                 var tittel = $filter('translate')('modal.warning_diagnose.TITTEL');
                 var beskrivelse = $filter('translate')('modal.warning_diagnose.BESKRIVELSE');
+
                 modalService.warningModal(tpl, null, '', tittel, beskrivelse, function () {
-                    $scope.formDiagnose.diagnosekode=null;
-                    $scope.formDiagnose.diagnosedato=null;
-                    $scope.formDiagnose.diagnosetekst=null;
+                    $scope.formDiagnose.diagnosekode = null;
+                    $scope.formDiagnose.diagnosedato = null;
+                    $scope.formDiagnose.diagnosetekst = null;
                     caller();
                 });
-            }else{
+            } else {
                 caller();
             }
         };
 
-        $scope.nyJournal = function(){
+        $scope.nyJournal = function() {
             $scope.sjekkDiagnoseFeltTomt($scope.nyJournalCallback);
         };
 
@@ -415,13 +413,13 @@ angular.module('nha.register', [
             $scope.manageStorageUnits();
         };
 
-        $scope.nyEllerOppdater = function(){
+        $scope.nyEllerOppdater = function() {
             $scope.sjekkDiagnoseFeltTomt($scope.nyEllerOppdaterCallback);
         };
 
         $scope.nyEllerOppdaterCallback = function () {
 
-            if (!$scope.sjekkDiagnoseFeltTomt){//ikke ny journal hvis ikke feltet er tomt..
+            if (!$scope.sjekkDiagnoseFeltTomt) {//ikke ny journal hvis ikke feltet er tomt..
                 return;
             }
 
