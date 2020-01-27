@@ -1,14 +1,13 @@
 angular.module('nha.home')
 
     .controller('UserAdminCtrl', function($rootScope, $scope, $location, $filter, httpService, errorService){
-
         $scope.bruker = {};
         $scope.bruker.printerzpl = '127.0.0.1';
         $scope.brukere = [];
+        $scope.selectedBrukerRow = null;
+        $scope.error = [];
 
-        $scope.selectedBrukerRow = null;  // initialize our variable to null
-
-        $scope.velgBruker = function (valgtBruker, index) {
+        $scope.selectUser = function (selectedUser, index) {
             if (index === $scope.selectedBrukerRow) {
                 $scope.selectedBrukerRow = null;
                 $scope.bruker.brukernavn = null;
@@ -17,68 +16,62 @@ angular.module('nha.home')
             } else {
                 var rolleIndex = $scope.roller.map(function (e) {
                     return e.navn;
-                }).indexOf(valgtBruker.rolle.navn);
+                }).indexOf(selectedUser.rolle.navn);
                 $scope.selectedBrukerRow = index;
-                $scope.bruker.brukernavn = valgtBruker.brukernavn;
-                $scope.bruker.printerzpl = valgtBruker.printerzpl;
+                $scope.bruker.brukernavn = selectedUser.brukernavn;
+                $scope.bruker.printerzpl = selectedUser.printerzpl;
                 $scope.bruker.rolle = $scope.roller[rolleIndex];
             }
         };
 
-        $scope.hentBrukere = function () {
-
+        $scope.getUsers = function () {
             httpService.getAll("admin/brukere", false)
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     $scope.brukere = data;
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
+                }).error(function (data, status) {
+                    errorService.errorCode(status);
+                });
         };
 
-        var resetBruker = function () {
+        var resetUser = function () {
             $scope.bruker = {};
         };
 
-        var sjekkPassord = function () {
+        var arePasswordsIdentical = function () {
             return $scope.bruker.password === $scope.bruker.passwordConfirm;
         };
 
-        $scope.oppdaterBruker = function () {
+        $scope.updateUser = function () {
             $scope.error = [];
-            if (!sjekkPassord()) {
-                $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_ULIKT');
+
+            if (!arePasswordsIdentical()) {
+                $scope.error['passord'] = $filter('translate')('formError.NotIdentical');
                 return;
             }
 
             httpService.create("admin/brukere", $scope.bruker)
-                .success(function (data, status, headers, config) {
-                    $scope.hentBrukere();
-                    resetBruker();
-
-                }).error(function (data, status, headers, config) {
-                if (status != 400) {
-                    errorService.errorCode(status);
-                    return;
-                } else {
-                    if (data[0].attributt === 'passord') {
-                        $scope.error['passord'] = $filter('translate')('home.brukere.PASSORD_FEIL');
+                .success(function () {
+                    $scope.getUsers();
+                    resetUser();
+                })
+                .error(function (data, status) {
+                    if (status != 400) {
+                        errorService.errorCode(status);
+                        return;
+                    } else {
+                        setErrorMessages(data);
                     }
-                }
-            });
+                });
         };
 
-        $scope.error = [];
-
-        $scope.checkError = function (attributt) {
-            var err = $scope.error[attributt] !== undefined;
-            return err;
+        $scope.showError = function (attribute) {
+            var error = $scope.error[attribute] !== undefined;
+            return error;
         };
 
-        var setFeilmeldinger = function (data, status) {
-
+        var setErrorMessages = function (data) {
             angular.forEach(data, function (element) {
-                $scope.error[element.attributt] = element.constriant;
+                $scope.error[element.attribute] = $filter('translate')('formError.' + element.constraint);
             });
         };
-
     });

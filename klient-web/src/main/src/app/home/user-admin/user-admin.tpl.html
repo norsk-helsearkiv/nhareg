@@ -17,7 +17,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}" ng-click="velgBruker(bruker, $index)" ts-repeat>
+                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}" ng-click="selectUser(bruker, $index)" ts-repeat>
                             <td>{{ bruker.brukernavn }}</td>
                             <td>{{ bruker.rolle.navn }}</td>
                         </tr>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="span span5 padding-bottom">
                     <label>&nbsp;</label>
-                    <button class="form-control btn btn-primary" type="submit" data-ng-click="hentBrukere()">{{ 'home.brukere.HENT' | translate }}</button>
+                    <button class="form-control btn btn-primary" type="submit" data-ng-click="getUsers()">{{ 'home.brukere.HENT' | translate }}</button>
                 </div>
             </div>
         </div>
@@ -42,7 +42,13 @@
             <div class="span span4 padding-bottom">
                 <label>{{'home.brukere.ROLLE' | translate}}</label>
                 <select class="form-control" data-ng-model="bruker.rolle" ng-options="rolle.navn for rolle in roller">
+                    <option value="Velg rolle..." selected hidden />
                 </select>
+            </div>
+        </div>
+        <div class="row" data-ng-show="showError('printer')">
+            <div class="span span4">
+                <label id="labelPrinterError"  data-ng-class="{error: error['printer'] !== undefined }">{{ error['printer'] }}</label>
             </div>
         </div>
         <div class="row">
@@ -51,7 +57,7 @@
                 <input type="text" data-ng-model="bruker.printerzpl" class="form-control" placeholder="Printer-ip">
             </div>
         </div>
-        <div class="row" data-ng-show="checkError('passord')">
+        <div class="row" data-ng-show="showError('passord')">
             <div class="span span4">
                 <label id="labelPassordFeil"  data-ng-class="{error: error['passord'] !== undefined }">{{ error['passord'] }}</label>
             </div>
@@ -63,7 +69,6 @@
                 {{ 'home.brukere.NYTTPASSORD' | translate }}
                 </label>
                 <input type="password" data-ng-model="bruker.password" class="form-control" placeholder="Passord">
-
             </div>
         </div>
         <div class="row">
@@ -75,7 +80,7 @@
         </div>
         <div class="span span5 padding-bottom">
             <label>&nbsp;</label>
-            <button class="form-control btn btn-primary" type="submit" data-ng-click="oppdaterBruker()">{{ 'home.brukere.LAGRE' | translate }}</button>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateUser()">{{ 'home.brukere.LAGRE' | translate }}</button>
         </div>
     </form>
 

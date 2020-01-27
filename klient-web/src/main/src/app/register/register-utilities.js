@@ -267,7 +267,7 @@ angular.module('nha.register')
               $scope.error[attribute] = element.constraint;
 
               var felt = document.getElementById(attribute).innerHTML;
-              var predefined = 'feltfeil.' + element.constraint;
+              var predefined = 'formError.' + element.constraint;
 
               if (felt !== undefined) {
                   if (element.message !== undefined && element.message !== "may not be null") {
