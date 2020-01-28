@@ -1,6 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.adapter.ArchiveCreatorAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
 
@@ -25,6 +28,9 @@ import java.util.Set;
     "medicalRecords",
 })
 @Data
+@EqualsAndHashCode(exclude = {"medicalRecords", "agreement"})
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "avlevering")
 public class Transfer implements Serializable {
@@ -33,41 +39,41 @@ public class Transfer implements Serializable {
     @Id
     @Column(name = "avleveringsidentifikator")
     @XmlElement(required = true, name = "avleveringsidentifikator")
-    protected String transferId;
+    private String transferId;
 
     @Size(min = 1)
     @Column(name = "avleveringsbeskrivelse")
     @XmlElement(required = true, name = "avleveringsbeskrivelse")
-    protected String transferDescription;
+    private String transferDescription;
 
     @Transient
     @XmlElement(name = "avlxmlversjon")
-    protected String xmlVersion = "2.16.578.1.39.100.11.2.2";
+    private String xmlVersion = "2.16.578.1.39.100.11.2.2";
     
     @NotNull
     @ManyToOne
     @JoinColumn(name = "avtale_avtaleidentifikator")
     @XmlElement(required = true, name = "avtale")
-    protected Agreement agreement;
+    private Agreement agreement;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
     @XmlElement(required = true, name = "arkivskaper")
     @XmlJavaTypeAdapter(value = ArchiveCreatorAdapter.class)
-    protected ArchiveCreator archiveCreator;
+    private ArchiveCreator archiveCreator;
 
+    @NotNull
     @XmlTransient
     @Column(name = "lagringsenhetformat")
-    protected String storageUnitFormat;
+    private String storageUnitFormat;
     
-    @Size(min = 1)
-    @XmlElement(required = true, name = "pasientjournal")
+    @XmlElement(required = true, name = "pasientjournal", nillable = true)
     @OneToMany
     @JoinTable(name = "avlevering_pasientjournal",
         joinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator"),
         inverseJoinColumns = @JoinColumn(name = "pasientjournal_uuid")
     )
-    protected Set<MedicalRecord> medicalRecords;
+    private Set<MedicalRecord> medicalRecords;
 
     @XmlTransient
     @Column(name = "laast")
@@ -75,12 +81,12 @@ public class Transfer implements Serializable {
 
     @XmlTransient
     @Embedded
-    protected UpdateInfo updateInfo;
+    private UpdateInfo updateInfo;
 
     @XmlTransient
     @Column(name = "dateGenerated")
     @Convert(converter = LocalDateConverter.class)
-    protected LocalDate dateGenerated; 
+    private LocalDate dateGenerated; 
     
     public Set<MedicalRecord> getMedicalRecords() {
         if (medicalRecords == null) {

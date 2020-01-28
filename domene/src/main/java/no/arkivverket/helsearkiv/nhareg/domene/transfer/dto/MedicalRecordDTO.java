@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicalRecordDTO {
+public class MedicalRecordDTO implements Serializable {
     
     @JsonProperty(value = "persondata")
     private PersonalDataDTO personalDataDTO;

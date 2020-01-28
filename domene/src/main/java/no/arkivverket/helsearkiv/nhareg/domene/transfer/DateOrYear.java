@@ -32,12 +32,12 @@ public class DateOrYear implements Serializable {
     @XmlSchemaType(name = "date")
     @Column(name = "dato")
     @Convert(converter = LocalDateTimeConverter.class)
-    protected LocalDateTime date;
+    private LocalDateTime date;
 
     @Min(value = 1800)
     @Max(value = 2099)
     @Column(name = "aar")
-    protected Integer year;
+    private Integer year;
 
     /**
      * Transforms the value to string.

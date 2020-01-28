@@ -4,18 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AgreementDTO {
+public class AgreementDTO implements Serializable {
     
     @JsonProperty(value = "avtaleidentifikator")
     private String agreementId;
-
+    
     @JsonProperty(value = "avtaledato")
     private LocalDateTime agreementDate;
 

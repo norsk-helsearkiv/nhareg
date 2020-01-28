@@ -1,7 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +22,8 @@ import java.io.Serializable;
     "organizationNumber"
 })
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "virksomhet")
 public class Business implements Serializable {
@@ -28,16 +31,15 @@ public class Business implements Serializable {
     @Id
     @Column(name = "organisasjonsnummer")
     @XmlElement(required = true, name = "organisasjonsnummer")
-    protected String organizationNumber;
+    private String organizationNumber;
     
-    @JsonProperty(value = "navn")
     @Size(min = 1)
     @Column(name = "navn")
     @XmlElement(required = true, name = "virksomhetsnavn")
-    protected String name;
+    private String name;
     
     @Column(name = "foretaksnavn")
-    @XmlElement(name = "foretaksnavn", nillable = true)
-    protected String businessName;
+    @XmlElement(name = "foretaksnavn")
+    private String businessName;
 
 }

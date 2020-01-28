@@ -15,4 +15,5 @@ public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
     public String marshal(final LocalDate localDate) {
         return localDate.format(DateTimeFormatter.ofPattern("uuuu-MM-dd"));
     }
+    
 }

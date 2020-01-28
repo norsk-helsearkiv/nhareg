@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiagnoseDTO implements Serializable {
+public class DiagnosisDTO implements Serializable {
 
     @JsonProperty(value = "uuid")
     private String uuid;

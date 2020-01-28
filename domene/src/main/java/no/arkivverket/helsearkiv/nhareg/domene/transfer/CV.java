@@ -2,10 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
@@ -25,32 +22,25 @@ import java.io.Serializable;
 @XmlType(
     name = "CV",
     propOrder = {
+        "xmlns",
         "codeSystem",
     })
-// @XmlSeeAlso({
-//     AdmissionType.class,
-//     EpisodeSubject.class,
-//     CareLevel.class,
-//     ContactType.class,
-//     ActivityLocation.class,
-//     ActivityType.class,
-//     DepartmentAdmissionActivity.class,
-//     InitiativeType.class,
-//     ServiceSubject.class,
-//     ProcedureCode.class,
-// })
 @Data
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class CV implements Serializable {
 
+    @Transient
+    @XmlAttribute(name = "xmlns")
+    private String xmlns = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup-mdk";
+    
     @NotNull
     @Id
     protected String code;
 
     @NotNull
     @Id
-    @XmlElement(name = "CodeSystem", namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup-mdk")
+    @XmlElement(name = "CodeSystem")
     protected String codeSystem;
 
     @NotNull

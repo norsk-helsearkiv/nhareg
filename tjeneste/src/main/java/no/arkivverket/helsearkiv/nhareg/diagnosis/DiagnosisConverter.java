@@ -5,12 +5,12 @@ import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DiagnosisConverter implements DiagnosisConverterInterface {
@@ -18,7 +18,7 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
     private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
     
     @Override
-    public Diagnosis fromDiagnosisDTO(final DiagnoseDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
+    public Diagnosis fromDiagnosisDTO(final DiagnosisDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
         if (diagnosisDTO == null || diagnosisCode == null) {
             return null;
         }
@@ -32,7 +32,7 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
     }
     
     @Override 
-    public DiagnoseDTO toDiagnosisDTO(final Diagnosis diagnosis) {
+    public DiagnosisDTO toDiagnosisDTO(final Diagnosis diagnosis) {
         if (diagnosis == null) {
             return null;
         }
@@ -47,16 +47,16 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss");
         final String updatedDate = lastUpdated.format(formatter);
 
-        return new DiagnoseDTO(uuid, diagnosisDate, diagnosisCodingSystem, diagnosisCode, diagnosisText, 
-                               updatedBy, updatedDate);
+        return new DiagnosisDTO(uuid, diagnosisDate, diagnosisCodingSystem, diagnosisCode, diagnosisText,
+                                updatedBy, updatedDate);
     }
     
     @Override 
-    public List<DiagnoseDTO> toDiagnosisDTOList(final Collection<Diagnosis> diagnosisList) {
+    public Set<DiagnosisDTO> toDiagnosisDTOSet(final Collection<Diagnosis> diagnosisList) {
         if (diagnosisList == null) {
             return null;
         }
         
-        return diagnosisList.stream().map(this::toDiagnosisDTO).collect(Collectors.toList());
+        return diagnosisList.stream().map(this::toDiagnosisDTO).collect(Collectors.toSet());
     }
 }

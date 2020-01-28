@@ -3,8 +3,9 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
+import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
@@ -12,16 +13,16 @@ import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
     private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
 
+    private DiagnosisConverterInterface diagnosisConverter = new DiagnosisConverter();
+    
+    @Override
     public MedicalRecord fromPersonalDataDTO(final PersonalDataDTO personalDataDTO) {
         if (personalDataDTO == null) {
             return null;
@@ -81,6 +82,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         return medicalRecord;
     }
 
+    @Override
     public PersonalDataDTO toPersonalDataDTO(final MedicalRecord medicalRecord) {
         if (medicalRecord == null) {
             return null;
@@ -129,6 +131,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         return personalData;
     }
 
+    @Override
     public MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord,
                                                final Transfer transfer,
                                                final String business) {
@@ -138,16 +141,14 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
         final PersonalDataDTO personalData = toPersonalDataDTO(medicalRecord);
         final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
+        final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
+        final Set<DiagnosisDTO> diagnoses = diagnosisConverter.toDiagnosisDTOSet(diagnosisSet);
 
         medicalRecordDTO.setPersonalDataDTO(personalData);
         medicalRecordDTO.setTransferDescription(transfer.getTransferDescription());
         medicalRecordDTO.setTransferId(transfer.getTransferId());
         medicalRecordDTO.setTransferLocked(transfer.isLocked());
-
-        final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
-        final List<DiagnoseDTO> diagnoseDTOList = new DiagnosisConverter().toDiagnosisDTOList(diagnosisSet);
-        medicalRecordDTO.setDiagnosisDTOList(diagnoseDTOList);
-
+        medicalRecordDTO.setDiagnoses(diagnoses);
         medicalRecordDTO.setBusiness(business);
 
         return medicalRecordDTO;
@@ -222,6 +223,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         return recordTransferDTO;
     }
 
+    @Override
     public List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList) {
         if (medicalRecordList == null) {
             return null;

@@ -31,7 +31,7 @@ public class Agreement implements Serializable {
     @Id
     @Column(name = "avtaleidentifikator")
     @XmlElement(required = true, name = "avtaleidentifikator")
-    protected String agreementId;
+    private String agreementId;
 
     @NotNull
     @XmlElement(required = true, type = String.class, name = "avtaledato")
@@ -39,18 +39,18 @@ public class Agreement implements Serializable {
     @XmlSchemaType(name = "date")
     @Column(name = "avtaledato")
     @Convert(converter = LocalDateTimeConverter.class)
-    protected LocalDateTime agreementDate;
+    private LocalDateTime agreementDate;
 
     @Size(min = 1)
     @NotNull
     @XmlElement(required = true, name = "avtalebeskrivelse")
     @Column(name = "avtalebeskrivelse")
-    protected String agreementDescription;
+    private String agreementDescription;
     
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "virksomhet_organisasjonsnummer")
     @XmlElement(required = true, name = "virksomhet")
-    protected Business business;
+    private Business business;
     
 }
