@@ -38,8 +38,8 @@ public class AgreementServiceTest {
     @Inject
     private AgreementConverterInterface agreementConverter;
 
-    @Test(expected = ValidationErrorException.class)
-    public void create_missingBusiness_shouldThrowValidationError() {
+    @Test
+    public void create_missingBusiness_shouldFindBusiness() {
         final String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMuuuu"));
         final AgreementDTO agreement = new AgreementDTO("enhet-4", now, "boks4", null);
         final AgreementDTO newAgreement = agreementService.create(agreement);
@@ -52,7 +52,7 @@ public class AgreementServiceTest {
     public void create_validAgreement_shouldReturnAgreement() {
         final String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMuuuu"));
         final BusinessDTO businessDTO = new BusinessDTO("100", "Testorganisasjon", null);
-        final AgreementDTO agreement = new AgreementDTO("enhet-4", now, "boks4", businessDTO);
+        final AgreementDTO agreement = new AgreementDTO("enhet-5", now, "boks5", businessDTO);
         final AgreementDTO newAgreement = agreementService.create(agreement);
         
         assertNotNull(newAgreement);

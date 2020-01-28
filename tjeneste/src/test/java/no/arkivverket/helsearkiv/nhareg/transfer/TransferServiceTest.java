@@ -1,9 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -14,8 +12,6 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.*;
 
@@ -32,22 +28,15 @@ public class TransferServiceTest {
     @Inject
     private TransferServiceInterface transferService;
 
-    @Inject
-    private TransferConverterInterface transferConverter;
-    
     @Test(expected = EntityExistsException.class)
     public void create_duplicateEntry_shouldThrowEntityExistsException() {
         final TransferDTO transferDTO = new TransferDTO();
         final AgreementDTO agreementDTO = new AgreementDTO();
-        final BusinessDTO businessDTO = new BusinessDTO("100", "Testorganisasjon", null);
-        final String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuu-MM-dd"));
 
-        agreementDTO.setAgreementId("test");
-        agreementDTO.setAgreementDate(now);
-        agreementDTO.setAgreementDescription("Test");
-        agreementDTO.setBusiness(businessDTO);
+        agreementDTO.setAgreementId("Avtale1");
         transferDTO.setTransferId("Avlevering-1");
         transferDTO.setTransferDescription("test");
+        transferDTO.setStorageUnitFormat("TST-[0-9]{1}");
         transferDTO.setAgreement(agreementDTO);
 
         transferService.create(transferDTO, USERNAME);
@@ -72,14 +61,11 @@ public class TransferServiceTest {
         final String id = "Avlevering-1";
         final String archiveCreator = "JUnit test";
         final TransferDTO transferDTO = transferService.getById(id);
-        final Transfer transfer = transferConverter.toTransfer(transferDTO, null);
-
-        assertNotNull(transfer);
-
+        
+        assertNotNull(transferDTO);
         transferDTO.setArchiveCreator(archiveCreator);
 
-        final TransferDTO updateDTO = transferConverter.fromTransfer(transfer);
-        transferService.update(updateDTO, USERNAME);
+        transferService.update(transferDTO, USERNAME);
 
         final TransferDTO updatedTransferDTO = transferService.getById(id);
         assertNotNull(updatedTransferDTO);

@@ -37,7 +37,7 @@ public class ValidDateFormats {
 
         try {
             return formatter.parse(date, LocalDate::from);
-        } catch (DateTimeParseException ignored) {
+        } catch (NullPointerException | DateTimeParseException ignored) {
             return null;
         }
     }

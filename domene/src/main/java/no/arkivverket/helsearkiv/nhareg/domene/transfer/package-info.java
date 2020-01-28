@@ -3,7 +3,6 @@
  **/
 
 @XmlSchema(
-    namespace = "http://www.arkivverket.no/standarder/nha/avlxml",
     elementFormDefault = XmlNsForm.QUALIFIED,
     xmlns = {
         @XmlNs(prefix = "", namespaceURI = "http://www.arkivverket.no/standarder/nha/avlxml")
