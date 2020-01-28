@@ -5,15 +5,18 @@ import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class DateOrYearValidator implements ConstraintValidator<DateOrYear, String> {
+public class DateOrYearValidator implements ConstraintValidator<DateOrYearConstraint, String> {
     
-    public void initialize(DateOrYear constraintAnnotation) {
+    public void initialize(DateOrYearConstraint constraintAnnotation) {
     }
 
-    public boolean isValid(String object, ConstraintValidatorContext constraintContext) {
-        if (object == null || object.isEmpty()
-                || object.toLowerCase().equals("mors") || object.toLowerCase().equals("m")
-                || object.toLowerCase().equals("ukjent") || object.toLowerCase().equals("u")) {
+    public boolean isValid(final String object, final ConstraintValidatorContext constraintContext) {
+        if (object == null || 
+            object.isEmpty() ||
+            object.toLowerCase().equals("mors") || 
+            object.toLowerCase().equals("m") ||
+            object.toLowerCase().equals("ukjent") || 
+            object.toLowerCase().equals("u")) {
             return true;
         }
 

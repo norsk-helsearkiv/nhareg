@@ -29,7 +29,7 @@ public class Validator<T> {
     }
 
     public ArrayList<ValidationError> validate(T obj) {
-        final ArrayList<ValidationError> validationError = new ArrayList<ValidationError>();
+        final ArrayList<ValidationError> validationError = new ArrayList<>();
 
         // Håndterer null objekt
         if (obj == null) {
@@ -51,7 +51,7 @@ public class Validator<T> {
             final String attribute = violation.getPropertyPath().toString();
             final String constraint = messageTemplate.substring(start, stop);
 
-            validationError.add((new ValidationError(attribute, constraint, violation.getMessage())));
+            validationError.add((new ValidationError(attribute, constraint)));
         }
 
         return validationError;

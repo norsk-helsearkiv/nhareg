@@ -1,12 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
-import org.apache.commons.codec.binary.Base64;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 public class UserService implements UserServiceInterface {
@@ -21,9 +21,12 @@ public class UserService implements UserServiceInterface {
     @Inject
     private UserDAO userDAO;
 
+    @Inject
+    private UserConverterInterface userConverter;
+    
     @Override
-    public BrukerDTO updateUser(final BrukerDTO userDTO, final String username) {
-        final User user = userDTO.toBruker();
+    public UserDTO updateUser(final UserDTO userDTO, final String username) {
+        final User user = userConverter.toUser(userDTO);
 
         //defaulter til bruker-rolle hvis det mangler..
         final String userName = user.getRole().getName();
@@ -32,17 +35,17 @@ public class UserService implements UserServiceInterface {
         }
 
         //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
-        final String loggedInRole = userDAO.getRolle(username);
-        if (loggedInRole.equals("admin") && userDTO.getBrukernavn().equals(username)) {
+        final String loggedInRole = userDAO.getRole(username);
+        if (loggedInRole.equals("admin") && userDTO.getUsername().equals(username)) {
             user.getRole().setName(loggedInRole);
         }
 
         boolean resetPass = false;
         if (userDTO.getResetPassword() != null && userDTO.getResetPassword()) {
-            user.setResetPassord("Y"); // enkel resetpassord-indikator kan forfines ved behov...
+            user.setResetPassword("Y"); // enkel resetpassord-indikator kan forfines ved behov...
             resetPass = true;
         } else {
-            user.setResetPassord("");
+            user.setResetPassword("");
         }
 
         if (!resetPass) { // lite poeng å validere passord hvis det skal resettes
@@ -52,13 +55,14 @@ public class UserService implements UserServiceInterface {
             }
         }
 
-        validatePrinterIP(user.getPrinterzpl());
+        validatePrinterIP(user.getPrinter());
 
-        String b64Pwd = passwordToHash(user.getPassord());
-        user.setPassord(b64Pwd);
+        String b64Pwd = passwordToHash(user.getPassword());
+        user.setPassword(b64Pwd);
 
-        final User newUser = userDAO.createBruker(user);
-        return new BrukerDTO(newUser);
+        final User newUser = userDAO.createUser(user);
+        
+        return userConverter.fromUser(newUser);
     }
 
     @Override
@@ -71,15 +75,16 @@ public class UserService implements UserServiceInterface {
             throw new ValidationErrorException(feil);
         }
 
-        user.setPassord(b64pwd);
-        user.setResetPassord("");
+        user.setPassword(b64pwd);
+        user.setResetPassword("");
     }
 
     @Override
-    public List<BrukerDTO> getUsers() {
-        final List<BrukerDTO> dtos = new ArrayList<>();
-        for (User user : userDAO.getAllBrukere()) {
-            dtos.add(new BrukerDTO(user));
+    public List<UserDTO> getUsers() {
+        final List<UserDTO> dtos = new ArrayList<>();
+        for (User user : userDAO.getAllUsers()) {
+            final UserDTO userDto = userConverter.fromUser(user);
+            dtos.add(userDto);
         }
 
         return dtos;
@@ -94,7 +99,7 @@ public class UserService implements UserServiceInterface {
     public Boolean checkPasswordReset(final String username) {
         final User user = userDAO.fetchByUsername(username);
 
-        return "Y".equals(user.getResetPassord());
+        return "Y".equals(user.getResetPassword());
     }
 
     @Override
@@ -104,12 +109,12 @@ public class UserService implements UserServiceInterface {
 
     @Override 
     public void updateDefaultTransferForUser(final String username, final String transferId) {
-        userDAO.updateDefaultAvlevering(username, transferId);
+        userDAO.updateDefaultTransfer(username, transferId);
     }
 
     @Override
     public String getRole(final String username) {
-        return userDAO.getRolle(username);
+        return userDAO.getRole(username);
     }
 
     @Override
@@ -134,10 +139,10 @@ public class UserService implements UserServiceInterface {
 
     private String passwordToHash(final String password) {
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
 
-            return Base64.encodeBase64String(hash);
+            return Base64.getEncoder().encodeToString(hash);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

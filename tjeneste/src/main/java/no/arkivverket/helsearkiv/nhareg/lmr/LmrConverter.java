@@ -12,7 +12,7 @@ public class LmrConverter implements LmrConverterInterface {
         if (lmr == null) {
             return null;
         }
-        final String deathDate =  lmr.getDdato().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        final String deathDate =  lmr.getDdato().format(DateTimeFormatter.ofPattern("dd.MM.uuuu"));
         
         return new LmrDTO(lmr.getFnavn(), lmr.getEnavn(), lmr.getMnavn(), deathDate);
     }

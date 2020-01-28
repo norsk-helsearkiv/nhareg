@@ -3,18 +3,24 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.DiagnosisCodingSystemAdapter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "diagnose", propOrder = {
-    "diagdato",
+    "diagnosisDate",
     "diagnosisCode",
-    "diagnosetekst"
+    "diagnosisText",
+    "diagnosisCodingSystem",
 })
 @Data
 @NoArgsConstructor
@@ -24,29 +30,33 @@ import java.io.Serializable;
 public class Diagnosis implements Serializable {
 
     @Id
-    @XmlAttribute(name = "uuid")
-    protected String uuid;
+    @XmlTransient
+    private String uuid;
     
     @XmlElement(name = "diagnosedato")
-    protected DateOrYear diagdato;
+    private DateOrYear diagnosisDate;
     
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name = "diagnosekode_code", referencedColumnName = "code"),
-        @JoinColumn(name = "diagnosekode_codeSystem", referencedColumnName = "codeSystem"),
-        @JoinColumn(name = "diagnosekode_codeSystemVersion", referencedColumnName = "codeSystemVersion")
-    })
+    @Column(name = "diagnosekode_code")
     @XmlElement(name = "diagnosekode")
-    protected DiagnosisCode diagnosisCode;
-    
+    private String diagnosisCode;
+
     @NotNull
     @Size(min = 2, max = 255)
-    @XmlElement(required = true, name = "diagnosetekst")
     @Column(name = "diagnosetekst")
-    protected String diagnosetekst;
+    @XmlElement(required = true, name = "diagnosetekst")
+    private String diagnosisText;
+
+    @Column(name = "diagnosekode_codeSystem")
+    @XmlElement(name = "diagnosekodeverk")
+    @XmlJavaTypeAdapter(DiagnosisCodingSystemAdapter.class)
+    private String diagnosisCodingSystem;
+
+    @Column(name = "diagnosekode_codeSystemVersion")
+    @XmlTransient
+    private String diagnosisCodingSystemVersion;
     
     @XmlTransient
-    protected UpdateInfo updateInfo;
+    private UpdateInfo updateInfo;
     
     @Override
     public boolean equals(final Object other) {

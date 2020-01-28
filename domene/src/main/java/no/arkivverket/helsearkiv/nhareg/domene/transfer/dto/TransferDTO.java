@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
 
 import java.io.Serializable;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -23,19 +19,13 @@ public class TransferDTO implements Serializable {
     private String transferDescription;
 
     @JsonProperty(value = "avtale")
-    private Agreement agreement;
+    private AgreementDTO agreement;
 
     @JsonProperty(value = "arkivskaper")
     private String archiveCreator;
 
     @JsonProperty(value = "lagringsenhetformat")
     private String storageUnitFormat;
-
-    @JsonProperty(value = "pasientjournal")
-    private Set<MedicalRecord> medicalRecords;
-    
-    @JsonProperty(value = "antallPasientjournaler")
-    private int medicalRecordCount;
 
     @JsonProperty(value = "laast")
     private boolean locked;
@@ -44,6 +34,9 @@ public class TransferDTO implements Serializable {
     private boolean defaultTransfer;
     
     @JsonProperty(value = "oppdateringsinfo")
-    private UpdateInfo updateInfo;
-    
+    private UpdateInfoDTO updateInfo;
+
+    @JsonProperty(value = "kanSlettes")
+    private boolean canBeDeleted;
+
 }

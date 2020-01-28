@@ -1,11 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
@@ -40,9 +39,6 @@ public class TransferResource {
     
     @Inject
     private TransferServiceInterface transferService;
-    
-    @Inject
-    private TransferConverterInterface transferConverter;
 
     @GET
     @Path("/{id}")
@@ -63,7 +59,7 @@ public class TransferResource {
     @Path("/ny")
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO) {
+    public TransferDTO update(final TransferDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         
         return transferService.update(transferDTO, username);
@@ -140,16 +136,14 @@ public class TransferResource {
     @Produces(MediaType.APPLICATION_XML)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response getTransferXML(@PathParam("id") String id) {
-        final TransferDTO transferDTO = transferService.getById(id);
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final Transfer transfer = transferService.getTransferById(id);
         
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();
-            marshaller.setProperty("jaxb.schemaLocation", "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd");
-            
             final StringWriter stringWriter = new StringWriter();
-
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(marshaller.JAXB_SCHEMA_LOCATION, "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd");
+            marshaller.setProperty(marshaller.JAXB_FORMATTED_OUTPUT, true);
+            
             marshaller.marshal(transfer, stringWriter);
             ResponseBuilder response = Response.ok(stringWriter.toString());
             response.header("Content-Disposition", "attachment; filename=" + id + ".xml");

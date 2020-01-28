@@ -1,68 +1,68 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateAdapter;
+import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateTimeAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 
 /**
  * Type for å representere en dato eller et årstall
- * 
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DatoEllerAar", propOrder = {
-    "dato",
-    "aar"
-})
 @Data
+@NoArgsConstructor
 @Embeddable
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class DateOrYear implements Serializable {
 
     @XmlElement(type = String.class)
-    @XmlJavaTypeAdapter(StringDateAdapter.class)
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     @XmlSchemaType(name = "date")
-    protected Calendar dato;
+    @Column(name = "dato")
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime date;
 
     @Min(value = 1800)
     @Max(value = 2099)
-    protected Integer aar;
+    @Column(name = "aar")
+    private Integer year;
 
     /**
      * Transforms the value to string.
      * @return The string value of either the date or year.
      */
     public String toString() {
-        return this.dato != null ? this.dato.toString() : this.aar.toString();
+        if (date != null) {
+            return date.toString();
+        } else if (year != null) {
+            return year.toString();
+        }
+        
+        return null;
     }
 
     /**
      * Get the year either from date or aar.
      * @return int value of the year.
      */
-    public int getYear() {
-        if (dato != null) {
-            return dato.get(Calendar.YEAR);
+    public Integer getAsYear() {
+        if (date != null) {
+            return date.getYear();
         }
         
-        return aar;
+        return year;
     }
     
-    public String getStringValue() {
-        if (dato != null) {
-            final LocalDate localDate = LocalDateTime.ofInstant(dato.toInstant(), ZoneId.systemDefault()).toLocalDate();
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            return localDate.format(formatter);
-        }
-        return aar.toString();
-    }
 }

@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
@@ -48,7 +48,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/century")
     public String getCentury() {
-        return configurationDAO.getValue(ConfigurationDAO.KONFIG_AARHUNDRE);
+        return configurationDAO.getValue(ConfigurationDAO.CONFIG_CENTURY);
     }
 
     @GET
@@ -79,7 +79,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/brukere")
-    public List<BrukerDTO> getBrukere() {
+    public List<UserDTO> getBrukere() {
         return userService.getUsers();
     }
 
@@ -88,9 +88,9 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/brukere")
-    public Response oppdaterBruker(final BrukerDTO brukerDTO) {
+    public Response oppdaterBruker(final UserDTO userDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        final BrukerDTO updatedUser = userService.updateUser(brukerDTO, username);
+        final UserDTO updatedUser = userService.updateUser(userDTO, username);
         return Response.ok(updatedUser).build();
     }
 

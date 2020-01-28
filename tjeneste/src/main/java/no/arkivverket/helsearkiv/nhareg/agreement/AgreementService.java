@@ -1,13 +1,14 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
@@ -22,30 +23,33 @@ public class AgreementService implements AgreementServiceInterface {
 
     @Inject
     private BusinessDAO businessDAO;
-    
+
     @Inject
     private AgreementConverterInterface agreementConverter;
-    
+
     @Inject
     private TransferConverterInterface transferConverter;
-    
+
     @Override
     public AgreementDTO create(final AgreementDTO agreementDTO) {
         if (agreementDTO.getBusiness() == null) {
             final Business business = businessDAO.fetchBusiness();
-            agreementDTO.setBusiness(business);
+            final BusinessDTO businessDTO = new BusinessDTO(business.getOrganizationNumber(),
+                                                            business.getName(),
+                                                            business.getBusinessName());
+            agreementDTO.setBusiness(businessDTO);
         }
 
         final Agreement agreement = agreementConverter.toAgreement(agreementDTO);
         final Agreement newAgreement = agreementDAO.create(agreement);
-        
-        return agreementConverter.fromAgreement(newAgreement); 
+
+        return agreementConverter.fromAgreement(newAgreement);
     }
 
     @Override
     public AgreementDTO delete(final String id) {
         final Agreement deleted = agreementDAO.delete(id);
-        
+
         return agreementConverter.fromAgreement(deleted);
     }
 
@@ -53,7 +57,7 @@ public class AgreementService implements AgreementServiceInterface {
     public AgreementDTO update(final AgreementDTO agreementDTO) {
         final Agreement agreement = agreementConverter.toAgreement(agreementDTO);
         final Agreement updated = agreementDAO.update(agreement);
-        
+
         return agreementConverter.fromAgreement(updated);
     }
 
@@ -66,16 +70,12 @@ public class AgreementService implements AgreementServiceInterface {
     }
 
     @Override
-    public List<TransferInAgreementDTO> getTransfersByAgreementId(final String id, final Transfer defaultTransfer) {
+    public List<TransferDTO> getTransfersByAgreementId(final String id, final Transfer defaultTransfer) {
         final List<Transfer> transferList = agreementDAO.fetchTransfersByAgreementId(id);
-        final List<TransferInAgreementDTO> transferDTOList = new ArrayList<>();
+        final List<TransferDTO> transferDTOList = new ArrayList<>();
 
         for (Transfer transfer : transferList) {
-            final Business business = businessDAO.fetchBusiness();
-            final AgreementDTO agreementDTO = agreementConverter.fromAgreement(transfer.getAgreement());
-            final TransferInAgreementDTO transferDTO = transferConverter.toInAgreementDTO(transfer,
-                                                                                          business,
-                                                                                          agreementDTO);
+            final TransferDTO transferDTO = transferConverter.fromTransfer(transfer);
             if (defaultTransfer != null) {
                 if (transfer.getTransferId().equals(defaultTransfer.getTransferId())) {
                     transferDTO.setDefaultTransfer(true);
@@ -86,5 +86,5 @@ public class AgreementService implements AgreementServiceInterface {
 
         return transferDTOList;
     }
-    
+
 }

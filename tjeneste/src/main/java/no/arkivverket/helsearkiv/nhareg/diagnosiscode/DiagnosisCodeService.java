@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;

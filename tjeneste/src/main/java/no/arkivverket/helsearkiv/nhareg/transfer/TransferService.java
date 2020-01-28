@@ -1,29 +1,27 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
-import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverterInterface;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorDAO;
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class TransferService implements TransferServiceInterface {
     
@@ -34,22 +32,25 @@ public class TransferService implements TransferServiceInterface {
     private UserDAO userDAO;
     
     @Inject
-    private BusinessDAO businessDAO;
-    
-    @Inject
     private TransferConverterInterface transferConverter;
     
     @Inject
-    private AgreementConverterInterface agreementConverter;
+    private ArchiveAuthorDAO archiveAuthorDAO;
+
+    @Inject
+    private ArchiveAuthorConverterInterface archiveAuthorConverter;
     
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
-        final Transfer transfer = transferConverter.toTransfer(transferDTO);
+        final ArchiveAuthor archiveAuthor = archiveAuthorDAO.fetchByName(transferDTO.getArchiveCreator());
+        final ArchiveAuthorDTO archiveAuthorDTO = archiveAuthorConverter.fromArchiveAuthor(archiveAuthor);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveAuthorDTO);
         transfer.setUpdateInfo(createUpdateInfo(username));
-
+        transfer.setDateGenerated(LocalDate.now());
+        
         try {
             final Transfer created = transferDAO.create(transfer);
-            
+
             return transferConverter.fromTransfer(created);
         } catch (EJBTransactionRolledbackException ejb) { // Catch duplicate entries
             Throwable cause = ejb.getCause();
@@ -67,9 +68,9 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO, final String username) {
+    public TransferDTO update(final TransferDTO transferDTO, final String username) {
         // Validate
-        new Validator<>(TransferInAgreementDTO.class).validateWithException(transferDTO);
+        new Validator<>(TransferDTO.class).validateWithException(transferDTO);
 
         // Get existing transfer
         final Transfer existingTransfer = transferDAO.fetchById(transferDTO.getTransferId());
@@ -81,13 +82,17 @@ public class TransferService implements TransferServiceInterface {
         // Get the archive creator
         final String archiveCreatorString = transferDTO.getArchiveCreator();
         if (archiveCreatorString != null && !archiveCreatorString.isEmpty()) {
-            int subEnd = Math.min(archiveCreatorString.length(), 3);
-            final String archiveCreatorCode = archiveCreatorString.substring(0, subEnd);
-            final ArchiveCreator archiveCreator = new ArchiveCreator(UUID.randomUUID().toString(), 
-                                                                     archiveCreatorCode,
-                                                                     archiveCreatorString,
-                                                                     null);
-            existingTransfer.setArchiveCreator(archiveCreator);
+            final ArchiveAuthor creator = archiveAuthorDAO.fetchByName(archiveCreatorString);
+            
+            if (creator != null) {
+                existingTransfer.setArchiveAuthor(creator);
+            } else {
+                final ArchiveAuthor archiveAuthor = new ArchiveAuthor(UUID.randomUUID().toString(),
+                                                                      null,
+                                                                      archiveCreatorString,
+                                                                      null);
+                existingTransfer.setArchiveAuthor(archiveAuthor);
+            }
         }
         
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
@@ -97,16 +102,14 @@ public class TransferService implements TransferServiceInterface {
 
         // Update
         final Transfer updatedTransfer = transferDAO.update(existingTransfer);
-        final Business business = businessDAO.fetchBusiness();
-        final AgreementDTO agreementDTO = agreementConverter.fromAgreement(updatedTransfer.getAgreement());
 
-        return transferConverter.toInAgreementDTO(updatedTransfer, business, agreementDTO);
+        return transferConverter.fromTransfer(updatedTransfer);
     }
 
     @Override
     public TransferDTO delete(final String id) {
         final Transfer deleted = transferDAO.delete(id);
-        
+
         return transferConverter.fromTransfer(deleted);
     }
 
@@ -118,12 +121,16 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
+    public Transfer getTransferById(final String id) {
+        return transferDAO.fetchById(id);
+    }
+
+    @Override
     public List<TransferDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<Transfer> transferList = transferDAO.fetchAll(mappedQueries);
         
-        // Convert to TransferDTO list
-        return transferList.stream().map(transferConverter::fromTransfer).collect(Collectors.toList());
+        return transferConverter.fromTransferList(transferList);
     }
 
     @Override 
@@ -134,23 +141,27 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public void lockTransfer(final String id) {
+    public TransferDTO lockTransfer(final String id) {
         final Transfer transfer = transferDAO.fetchById(id);
         transfer.setLocked(true);
-        transferDAO.update(transfer);
+        final Transfer updated = transferDAO.update(transfer);
+        
+        return transferConverter.fromTransfer(updated);
     }
 
     @Override 
-    public void unlockTransfer(final String id) {
+    public TransferDTO unlockTransfer(final String id) {
         final Transfer transfer = transferDAO.fetchById(id);
         transfer.setLocked(false);
-        transferDAO.update(transfer);
+        final Transfer updated = transferDAO.update(transfer);
+        
+        return transferConverter.fromTransfer(updated);
     }
 
     @Override
     public TransferDTO getDefaultTransfer(final String username) {
         final User user = userDAO.fetchByUsername(username);
-        final String defaultUuid = user.getDefaultAvleveringsUuid();
+        final String defaultUuid = user.getDefaultTransferId();
 
         if (defaultUuid == null || defaultUuid.isEmpty()) {
             return null;
@@ -163,8 +174,8 @@ public class TransferService implements TransferServiceInterface {
 
     private UpdateInfo createUpdateInfo(final String username) {
         UpdateInfo updateInfo = new UpdateInfo();
-        updateInfo.setOppdatertAv(username);
-        updateInfo.setSistOppdatert(Calendar.getInstance());
+        updateInfo.setUpdatedBy(username);
+        updateInfo.setLastUpdated(LocalDateTime.now());
 
         return updateInfo;
     }

@@ -392,7 +392,7 @@ angular.module('nha.home', [
           httpService.getAll(endpoint, false, params)
             .success(function (data) {
                 var title = {
-                    "tittel": avlevering.virksomhet + "/" + avlevering.avtale.avtalebeskrivelse + "/" + avlevering.avleveringsbeskrivelse,
+                    "tittel": $scope.virksomhet.navn + "/" + avlevering.avtale.avtalebeskrivelse + "/" + avlevering.avleveringsbeskrivelse,
                     "underTittel": avlevering.arkivskaper
                 };
 

@@ -5,16 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecordTransferDTO {
+public class RecordTransferDTO implements Serializable {
 
     @JsonProperty(value = "uuid")
     private String uuid;
 
     @JsonProperty(value = "lagringsenhet")
-    private String storageUnit;
+    private String storageUnits;
 
     @JsonProperty(value = "fodselsnummer")
     private String pid;

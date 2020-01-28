@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MoveRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;

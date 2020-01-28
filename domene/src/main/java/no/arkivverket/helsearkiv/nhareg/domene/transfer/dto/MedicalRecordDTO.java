@@ -5,18 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicalRecordDTO {
+public class MedicalRecordDTO implements Serializable {
     
     @JsonProperty(value = "persondata")
     private PersonalDataDTO personalDataDTO;
 
     @JsonProperty(value = "diagnoser")
-    private List<DiagnoseDTO> diagnosisDTOList;
+    private Set<DiagnosisDTO> diagnoses;
  
     @JsonProperty(value = "virksomhet")
     private String business;
@@ -36,4 +37,7 @@ public class MedicalRecordDTO {
     @JsonProperty(value = "avleveringLaast")
     private boolean transferLocked;
 
+    @JsonProperty(value = "lagringsenheter")
+    private Set<StorageUnitDTO> storageUnits;
+    
 }

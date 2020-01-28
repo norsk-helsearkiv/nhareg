@@ -233,16 +233,20 @@
     "Error with integers in IP": "Printer-IP kan kun inneholde tall",
     "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR"
   },
-  "attributes": {
-    "born": "fodt",
-    "name": "navn",
-    "gender": "kjonn",
-    "dead": "dod",
-    "firstContact": "fKontakt",
-    "lastContact": "sKontakt",
-    "note": "merknad",
-    "recordNumber": "journalnummer",
-    "serialNumber": "lopenummer"
+  "attributes" :  {
+    "born" : "fodt",
+    "name" : "navn",
+    "gender" : "kjonn",
+    "dead" : "dod",
+    "pid" : "fodselsnummer",
+    "firstContact" : "fKontakt",
+    "lastContact" : "sKontakt",
+    "note" : "merknad",
+    "date" : "dato",
+    "recordNumber" : "journalnummer",
+    "serialNumber" : "lopenummer",
+    "diagnosisDate" : "diagnosedato",
+    "agreementDate" : "avtaledato"
   },
   "konfig": {
     "ANTALL": "15"

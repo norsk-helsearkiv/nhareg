@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,7 +32,7 @@ public class ConfigurationDAOTest {
 
     @Test
     public void getDate_LowLim_shouldNotBeNull() {
-        final Date date = configurationDAO.getDate("LowLim");
+        final LocalDate date = configurationDAO.getDate("LowLim");
         assertNotNull(date);
     }
 

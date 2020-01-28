@@ -7,9 +7,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.Set;
 
-/**
- * Created by haraldk on 15.04.15.
- */
 @Stateless(name = "AuthService")
 public class AuthServiceBean implements AuthService {
 

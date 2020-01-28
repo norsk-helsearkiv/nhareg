@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StorageUnitDTO {
+public class StorageUnitDTO implements Serializable {
     
     @JsonProperty(value = "identifikator")
     private String id;

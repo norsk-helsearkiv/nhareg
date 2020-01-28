@@ -33,7 +33,7 @@ public class MedicalRecordServiceTest {
         final MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         assertEquals("Hunden Fido", medicalRecordDTO.getPersonalDataDTO().getName());
         assertEquals(3, medicalRecordDTO.getPersonalDataDTO().getStorageUnits().length);
-        assertFalse(medicalRecordDTO.getDiagnosisDTOList().isEmpty());
+        assertFalse(medicalRecordDTO.getDiagnoses().isEmpty());
     }
 
     @Test
@@ -64,7 +64,8 @@ public class MedicalRecordServiceTest {
         assertNotNull(medicalRecord);
         assertNotNull(medicalRecord.getStorageUnit());
         assertEquals(3, medicalRecord.getStorageUnit().size());
-
+        assertEquals(2, medicalRecord.getDiagnosis().size());
+        
         MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer(id);
         assertNotNull(medicalRecordDTO);
         assertNotNull(medicalRecordDTO.getPersonalDataDTO());

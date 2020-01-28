@@ -14,7 +14,7 @@
         <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Business</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.User</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Role</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter</class>
@@ -30,8 +30,8 @@
             <property name="hibernate.cache.use_query_cache" value="true"/>
             <property name="hibernate.cache.default_cache_concurrency_strategy" value="transactional"/>
             <property name="wildfly.jpa.default-unit" value="true"/>
-
             <!--<property name="hibernate.cache.infinispan.statistics" value="true"/>-->
+
         </properties>
     </persistence-unit>
     <persistence-unit name="lmr">

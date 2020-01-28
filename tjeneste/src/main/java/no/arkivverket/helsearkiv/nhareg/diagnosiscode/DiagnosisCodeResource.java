@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 
 import javax.annotation.security.RolesAllowed;

@@ -2,13 +2,13 @@ package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.BrukerDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 
 import java.util.List;
 
 public interface UserServiceInterface {
 
-    BrukerDTO updateUser(final BrukerDTO userDTO, final String username);
+    UserDTO updateUser(final UserDTO userDTO, final String username);
 
     void updatePassword(final String newPassword, final String username);
 
@@ -16,7 +16,7 @@ public interface UserServiceInterface {
 
     String getRole(final String username);
 
-    List<BrukerDTO> getUsers();
+    List<UserDTO> getUsers();
 
     List<Role> getRoles();
 

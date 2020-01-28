@@ -3,46 +3,47 @@ package no.arkivverket.helsearkiv.nhareg.common;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class DateOrYearConverter {
+public class DateOrYearConverter implements DateOrYearConverterInterface {
 
-    public static String fromDateOrYear(final DateOrYear dateOrYear) {
-        final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        
+    @Override
+    public String fromDateOrYear(final DateOrYear dateOrYear) {
         if (dateOrYear == null) {
             return null;
         }
+        
+        if (dateOrYear.getDate() != null) {
+            final LocalDateTime localDate = dateOrYear.getDate();
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.uuuu");
 
-        if (dateOrYear.getDato() != null) {
-            return format.format(dateOrYear.getDato().getTime());
-        } else {
-            return dateOrYear.getAar().toString();
+            return localDate.format(formatter);
         }
+
+        return dateOrYear.getYear().toString();
     }
-    
-    public static DateOrYear toDateOrYear(final String time) {
-        if (time.toLowerCase().equals("mors") ||
-                time.isEmpty() ||
-                time.toLowerCase().equals("m") ||
-                time.toLowerCase().equals("ukjent") ||
-                time.toLowerCase().equals("u")) {
+
+    @Override
+    public DateOrYear toDateOrYear(final String date) {
+        if (date == null) {
             return null;
         }
-
+        
         final DateOrYear dateOrYear = new DateOrYear();
-        if (time.length() == 4) {
-            dateOrYear.setAar(Integer.parseInt(time));
-            return dateOrYear;
+        final LocalDate localDate = ValidDateFormats.getDate(date);
+        
+        if (localDate == null) {
+            return null;
         }
-
-        final Date date = ValidDateFormats.getDate(time);
-        Calendar instance = Calendar.getInstance();
-        instance.setTime(date);
-        dateOrYear.setDato(instance);
-
+        
+        if (date.length() == 4) {
+            dateOrYear.setYear(localDate.getYear());
+        } else {
+            dateOrYear.setDate(localDate.atStartOfDay());
+        }
+        
         return dateOrYear;
     }
     
