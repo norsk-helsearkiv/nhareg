@@ -31,11 +31,11 @@ public class ArchiveCreator implements Serializable {
     @Id
     private String uuid;
 
-    @Column(name = "kode", unique = true, nullable = false)
+    @Column(name = "kode", unique = true)
     @XmlElement(name = "arkivskaperkode")
     private String code;
     
-    @Column(name = "navn")
+    @Column(name = "navn", unique = true, nullable = false)
     @XmlElement(name = "arkivskaper")
     private String name;
     

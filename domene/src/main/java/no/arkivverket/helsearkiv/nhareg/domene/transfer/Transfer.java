@@ -52,12 +52,12 @@ public class Transfer implements Serializable {
     
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "avtale_avtaleidentifikator")
+    @JoinColumn(name = "avtale_avtaleidentifikator", referencedColumnName = "avtaleidentifikator")
     @XmlElement(required = true, name = "avtale")
     private Agreement agreement;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
+    @JoinColumn(name = "arkivskaper_uuid")
     @XmlElement(required = true, name = "arkivskaper")
     @XmlJavaTypeAdapter(value = ArchiveCreatorAdapter.class)
     private ArchiveCreator archiveCreator;

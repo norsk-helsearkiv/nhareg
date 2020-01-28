@@ -148,7 +148,7 @@ public class MedicalRecord implements Serializable {
     @XmlJavaTypeAdapter(value = AdditionalInfoAdapter.class)
     private AdditionalInfo additionalInfo;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pasientjournal_diagnose",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "diagnose_uuid")
@@ -165,7 +165,7 @@ public class MedicalRecord implements Serializable {
     private String fanearkid;
 
     @OneToOne
-    @JoinColumn(name = "arkivskaper_kode", referencedColumnName = "kode")
+    @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
     @XmlTransient
     private ArchiveCreator archiveCreator;
     
