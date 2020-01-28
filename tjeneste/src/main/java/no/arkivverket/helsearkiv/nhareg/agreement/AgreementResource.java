@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;

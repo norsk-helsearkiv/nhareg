@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.auth;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -15,16 +15,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by haraldk on 15.04.15.
- */
 @Provider
 public class AuthSecurityInterceptor implements ContainerRequestFilter {
 
     // 401 - Access denied
     private static final Response ACCESS_UNAUTHORIZED = Response.status(Response.Status.UNAUTHORIZED).entity("Not authorized.").build();
 
-    @EJB
+    @Inject
     private AuthService authService;
 
     @Context

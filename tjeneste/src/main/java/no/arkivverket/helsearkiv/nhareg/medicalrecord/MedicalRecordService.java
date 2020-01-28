@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
@@ -14,7 +15,6 @@ import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.storageunit.StorageUnitDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 import no.arkivverket.helsearkiv.nhareg.validation.FanearkidValidation;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;

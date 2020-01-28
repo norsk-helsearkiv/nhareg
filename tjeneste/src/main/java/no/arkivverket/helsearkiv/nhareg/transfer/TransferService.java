@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorDAO;
-import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
@@ -13,7 +13,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;

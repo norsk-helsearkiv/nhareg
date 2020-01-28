@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.util;
+package no.arkivverket.helsearkiv.nhareg.common;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.MultivaluedMap;

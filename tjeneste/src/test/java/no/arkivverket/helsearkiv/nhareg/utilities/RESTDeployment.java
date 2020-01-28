@@ -8,6 +8,7 @@ import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessService;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
@@ -34,7 +35,6 @@ import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
 import no.arkivverket.helsearkiv.nhareg.storageunit.*;
 import no.arkivverket.helsearkiv.nhareg.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.user.*;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -47,9 +47,9 @@ public class RESTDeployment {
                                .addPackage(ConfigurationParameter.class.getPackage())
                                // DTOs
                                .addPackage(AgreementDTO.class.getPackage())
-                               .addPackage(UserDTO.class.getPackage())
                                .addPackage(MedicalRecordDTO.class.getPackage())
                                .addPackage(PersonalDataDTO.class.getPackage())
+                               .addPackage(UserDTO.class.getPackage())
                                // Entity
                                .addPackage(EntityDAO.class.getPackage())
                                // Agreements
@@ -107,14 +107,15 @@ public class RESTDeployment {
                                .addPackage(UserConverterInterface.class.getPackage())
                                .addPackage(UserConverter.class.getPackage())
                                .addPackage(UserDAO.class.getPackage())
-                               //util
+                               // Util
                                .addPackage(DateValidation.class.getPackage())
                                .addPackage(ListObject.class.getPackage())
                                .addPackage(LocalDateTimeConverter.class.getPackage())
                                .addPackage(ParameterConverter.class.getPackage())
                                .addPackage(ValidDateFormats.class.getPackage())
                                .addPackage(ValidationError.class.getPackage())
-                               .addPackage(ValidationErrorException.class.getPackage());
+                               .addPackage(ValidationErrorException.class.getPackage())
+            ;
     }
     
 }

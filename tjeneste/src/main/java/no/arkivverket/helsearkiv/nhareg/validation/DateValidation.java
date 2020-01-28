@@ -4,7 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
@@ -19,7 +19,7 @@ public class DateValidation {
     private final List<String> validMors = Arrays.asList("mors", "m", "M");
     private final List<String> validUnknown = Arrays.asList("ukjent", "u", "U");
 
-    public List<ValidationError> validateDiagnosis(final DiagnoseDTO diagnosis, final MedicalRecord medicalRecord) {
+    public List<ValidationError> validateDiagnosis(final DiagnosisDTO diagnosis, final MedicalRecord medicalRecord) {
         final List<ValidationError> validationErrors = new ArrayList<>();
         final Boolean bornDateUnknown = medicalRecord.getBornDateUnknown();
         final Boolean deathDateUnknown = medicalRecord.getDeathDateUnknown();

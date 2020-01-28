@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.storageunit;
 
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
@@ -12,7 +13,6 @@ import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferDAO;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 import no.arkivverket.helsearkiv.nhareg.util.LabelBuilder;
-import no.arkivverket.helsearkiv.nhareg.util.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.util.SocketPrinter;
 
 import javax.inject.Inject;

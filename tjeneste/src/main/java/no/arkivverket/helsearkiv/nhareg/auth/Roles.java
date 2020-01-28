@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.common;
+package no.arkivverket.helsearkiv.nhareg.auth;
 
 public final class Roles {
     public final static String ROLE_ADMIN = "admin";

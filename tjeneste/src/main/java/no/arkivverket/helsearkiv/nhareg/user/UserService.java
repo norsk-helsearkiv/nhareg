@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;

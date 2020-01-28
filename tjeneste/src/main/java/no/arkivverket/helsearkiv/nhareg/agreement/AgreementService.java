@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
+import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;

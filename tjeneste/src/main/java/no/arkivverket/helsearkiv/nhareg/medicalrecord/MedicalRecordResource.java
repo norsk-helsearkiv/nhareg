@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
