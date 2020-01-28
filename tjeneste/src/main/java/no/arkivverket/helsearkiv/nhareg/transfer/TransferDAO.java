@@ -22,7 +22,6 @@ public class TransferDAO extends EntityDAO<Transfer> {
     public Transfer fetchById(final String id) {
         final String queryString = "SELECT t "
             + "FROM Transfer t " 
-            + "LEFT JOIN FETCH t.medicalRecords " 
             + "WHERE t.transferId = :id ";
 
         final TypedQuery<Transfer> query = getEntityManager().createQuery(queryString, Transfer.class);

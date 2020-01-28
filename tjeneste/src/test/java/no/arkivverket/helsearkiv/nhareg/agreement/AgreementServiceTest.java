@@ -107,14 +107,14 @@ public class AgreementServiceTest {
 
     @Test
     public void getTransfersByAgreementId_validId_shouldNotReturnDuplicates() {
-        final List<TransferInAgreementDTO> transferDTOList = agreementService.getTransfersByAgreementId("Avtale1", null);
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("Avtale1", null);
         assertNotNull(transferDTOList);
         assertEquals(1, transferDTOList.size());
     }
 
     @Test
     public void getTransfersByAgreementId_validId_shouldReturnTransfers() {
-        final List<TransferInAgreementDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
+        final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId("A1234", null);
         assertNotNull(transferDTOList);
         assertEquals(1, transferDTOList.size());
     }

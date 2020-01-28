@@ -5,7 +5,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
@@ -40,13 +39,7 @@ public class TransferResource {
     
     @Inject
     private TransferServiceInterface transferService;
-    
-    @Inject
-    private TransferConverterInterface transferConverter;
 
-    @Inject
-    private ArchiveCreatorServiceInterface archiveCreatorService;
-    
     @GET
     @Path("/{id}")
     public TransferDTO get(@PathParam("id") String id) {
@@ -66,7 +59,7 @@ public class TransferResource {
     @Path("/ny")
     @Consumes(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
-    public TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO) {
+    public TransferDTO update(final TransferDTO transferDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         
         return transferService.update(transferDTO, username);
@@ -143,9 +136,7 @@ public class TransferResource {
     @Produces(MediaType.APPLICATION_XML)
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     public Response getTransferXML(@PathParam("id") String id) {
-        final TransferDTO transferDTO = transferService.getById(id);
-        final ArchiveCreator archiveCreator = archiveCreatorService.getByName(transferDTO.getArchiveCreator());
-        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveCreator);
+        final Transfer transfer = transferService.getTransferById(id);
         
         try {
             final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();

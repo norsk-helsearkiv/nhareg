@@ -1,10 +1,10 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -95,5 +95,34 @@ public class TransferServiceTest {
         assertNotNull(transferDTO);
         assertEquals("Avlevering-2", transferDTO.getTransferId());
     }
+    
+    @Test
+    public void getDefaultTransfer_noDefault_shouldReturnNull() {
+        final TransferDTO transferDTO = transferService.getDefaultTransfer(USERNAME);
+        assertNull(transferDTO);
+    }
 
+    @Test
+    public void lockTransfer_setLocked_shouldReturnLocked() {
+        final String id = "Avlevering-1";
+        final TransferDTO transferDTO = transferService.getById(id);
+        assertFalse(transferDTO.isLocked());
+
+        final TransferDTO lockedDTO = transferService.lockTransfer(id);
+        assertTrue(lockedDTO.isLocked());
+    }
+
+    @Test
+    public void unlockTransfer_setUnlocked_shouldReturnUnlocked() {
+        final String id = "Avlevering-1";
+        final TransferDTO transferDTO = transferService.getById(id);
+
+        assertFalse(transferDTO.isLocked());
+
+        final TransferDTO lockedDTO = transferService.lockTransfer(id);
+        assertTrue(lockedDTO.isLocked());
+
+        final TransferDTO unlockedDTO = transferService.unlockTransfer(id);
+        assertFalse(unlockedDTO.isLocked());
+    }
 }

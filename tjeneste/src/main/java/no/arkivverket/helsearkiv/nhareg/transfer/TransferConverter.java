@@ -8,7 +8,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.UpdateInfoDTO;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;

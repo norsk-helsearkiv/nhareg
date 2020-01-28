@@ -62,9 +62,9 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public TransferInAgreementDTO update(final TransferInAgreementDTO transferDTO, final String username) {
+    public TransferDTO update(final TransferDTO transferDTO, final String username) {
         // Validate
-        new Validator<>(TransferInAgreementDTO.class).validateWithException(transferDTO);
+        new Validator<>(TransferDTO.class).validateWithException(transferDTO);
 
         // Get existing transfer
         final Transfer existingTransfer = transferDAO.fetchById(transferDTO.getTransferId());
@@ -96,10 +96,8 @@ public class TransferService implements TransferServiceInterface {
 
         // Update
         final Transfer updatedTransfer = transferDAO.update(existingTransfer);
-        final Business business = businessDAO.fetchBusiness();
-        final AgreementDTO agreementDTO = agreementConverter.fromAgreement(updatedTransfer.getAgreement());
 
-        return transferConverter.toInAgreementDTO(updatedTransfer, business, agreementDTO);
+        return transferConverter.fromTransfer(updatedTransfer);
     }
 
     @Override
@@ -126,8 +124,7 @@ public class TransferService implements TransferServiceInterface {
         final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
         final List<Transfer> transferList = transferDAO.fetchAll(mappedQueries);
         
-        // Convert to TransferDTO list
-        return transferList.stream().map(transferConverter::fromTransfer).collect(Collectors.toList());
+        return transferConverter.fromTransferList(transferList);
     }
 
     @Override 
