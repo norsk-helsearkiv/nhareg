@@ -66,4 +66,12 @@ public class ArchiveAuthorResource {
         }
     }
     
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") final String id) {
+        authorService.delete(id);
+        
+        return Response.ok().build();
+    }
+    
 }

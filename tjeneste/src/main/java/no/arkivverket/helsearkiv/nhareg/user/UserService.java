@@ -164,7 +164,7 @@ public class UserService implements UserServiceInterface {
 
             try {
                 boolean correctFormat = Arrays.stream(ipGroups)
-                                              .filter(group -> group.length() > 1 && group.startsWith("0"))
+                                              .filter(ipGroup -> ipGroup.length() > 0)
                                               .map(Integer::parseInt)
                                               .filter(group -> (group >= 0 && group <= 255))
                                               .count() == 4;

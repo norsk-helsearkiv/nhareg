@@ -56,4 +56,9 @@ public class ArchiveAuthorService implements ArchiveAuthorServiceInterface {
         return archiveAuthorConverter.fromArchiveAuthor(archiveAuthor);
     }
 
+    @Override
+    public void delete(final String id) {
+        archiveAuthorDAO.delete(id);
+    }
+
 }

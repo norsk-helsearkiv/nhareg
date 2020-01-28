@@ -16,5 +16,7 @@ public interface ArchiveAuthorServiceInterface {
     ArchiveAuthorDTO update(final ArchiveAuthorDTO archiveAuthorDTO);
 
     ArchiveAuthorDTO getByCode(final String code);
+
+    void delete(final String id);
     
 }
