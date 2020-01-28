@@ -42,6 +42,15 @@ angular.module('nha.home', [
               }
           }
       });
+      $stateProvider.state('archiveCreators', {
+          url: '/arkivskapere',
+          views: {
+              "main": {
+                  controller: 'HomeCtrl',
+                  templateUrl: 'home/home.tpl.html'
+              }
+          }
+      });
 
   })
 
@@ -52,6 +61,7 @@ angular.module('nha.home', [
           $scope.sokVisible = false;
           $scope.lagringsenheterVisible = false;
           $scope.brukereVisible = false;
+          $scope.arkivskapereVisible = false;
 
           var path = $location.path();
 
@@ -61,6 +71,8 @@ angular.module('nha.home', [
               $scope.lagringsenheterVisible = true;
           } else if (path === '/brukere') {
               $scope.brukereVisible = true;
+          } else if (path === '/arkivskapere') {
+              $scope.arkivskapereVisible = true;
           }
       });
 

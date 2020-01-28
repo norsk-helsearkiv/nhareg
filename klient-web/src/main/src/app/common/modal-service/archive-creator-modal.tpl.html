@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{ 'home.ARCHIVE_CREATOR' | translate }}</h3>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+            <label>{{ 'common.table.ARCHIVE_CREATOR' | translate }}</label>
+            <!--<input type="text" class="form-control" ng-model="formData.archiveCreator" ng-enter="newArchiveCreator()" focus-on-show>-->
+            <select class="form-control" data-ng-model="formData.archiveCreator" ng-options="item for item in archiveCreators">
+                <option value="" disabled selected>Velg arkivskaper...</option>
+            </select>
+            <ul id="storage-unit-list">
+                <li data-ng-repeat="archiveCreator in formData.archiveCreators" data-ng-show="state !== 1">
+                    <button type="button" class="btn" data-ng-click="removeArchiveCreator(archiveCreator)"></button>
+                    {{ archiveCreator }}
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default btn-primary" ng-click="newArchiveCreator()" tooltip="{{ 'common.tooltip.NEW_ARCHIVE_CREATOR' | translate }}">{{ 'common.NEW_ARCHIVE_CREATOR' | translate }}</button>
+    <button class="btn btn-default btn-primary" ng-click="save()" tooltip="{{ 'common.tooltip.SAVE_ARCHIVE_CREATOR' | translate }}">{{ 'common.SAVE' | translate }}</button>
+    <button class="btn btn-default btn-danger" ng-click="cancel()" tooltip="{{ 'common.tooltip.CANCEL' | translate }}">{{ 'common.CANCEL' | translate }}</button>
+</div>

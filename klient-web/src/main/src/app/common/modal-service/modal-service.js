@@ -133,6 +133,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = entitet;
             $scope.erEndring = true;
+            $scope.archiveCreators = [ "arkivskaper1", "arkivskaper2" ];
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
@@ -425,6 +426,57 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
+    function manageArchiveCreators(templateUrl, callback, allArchiveCreators, selectedArchiveCreators){
+        template.templateUrl = templateUrl;
+
+        template.controller = function( $scope, $modalInstance){
+            $scope.archiveCreators = allArchiveCreators;
+            $scope.formData = {
+                "archiveCreators": selectedArchiveCreators
+            };
+
+            $scope.save = function(){
+                if ($scope.newArchiveCreator()){
+                    callback($scope.formData);
+                    $modalInstance.close();
+                }
+            };
+
+            $scope.removeArchiveCreator = function(archiveCreator){
+                for (var i = 0; i < $scope.formData.archiveCreators.length; i++) {
+                    if (archiveCreator === $scope.formData.archiveCreators[i]) {
+                        $scope.formData.archiveCreators.splice(i, 1);
+                        document.getElementById("archiveCreator").focus();
+                    }
+                }
+            };
+
+            $scope.newArchiveCreator = function() {
+                if ($scope.formData.archiveCreator === undefined || $scope.formData.archiveCreator === '') {
+                    return true;
+                }
+
+                for (var i = 0; i < $scope.formData.archiveCreators.length; i++) {
+                    if ($scope.formData.archiveCreator === $scope.formData.archiveCreators[i]) {
+                        $scope.formData.archiveCreator = "";
+                        return true;
+                    }
+                }
+
+                $scope.formData.archiveCreators.push($scope.formData.archiveCreator);
+                $scope.formData.archiveCreator = "";
+                return true;
+            };
+
+            $scope.cancel = function(){
+                $modalInstance.close();
+            };
+        };
+
+        template.controller.$inject = ['$scope', '$modalInstance'];
+
+        return $modal.open(template);
+    }
 
     return {
         deleteModal : deleteModal,
@@ -434,6 +486,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         warningMessageModal : warningMessageModal,
         velgModal : velgModal,
         manageStorageUnits : manageStorageUnits,
+        manageArchiveCreators : manageArchiveCreators,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
         changeStorageUnit : changeStorageUnit,
         endrePassord : endrePassord

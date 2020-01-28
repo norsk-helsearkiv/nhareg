@@ -1,0 +1,63 @@
+<div ng-controller="ArchiveCreatorsCtrl" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <a href="#/" class="btn btn-default">{{'home.TILBAKE' | translate }}</a>
+    <h2>{{ 'home.ADM_ARCHIVE_CREATORS' | translate }}</h2>
+    <br>
+    <br>
+
+    <div class="row">
+        <div class="span span43 panel panel-default">
+            <div class="panel-heading"><b>{{ 'home.ARCHIVE_CREATORS' | translate }}</b> <i>{{ 'home.CHOOSE_FROM_LIST_TO_EDIT' | translate }}</i></div>
+            <div class="panel-body">
+                <div class="sokeresultat-wrapper">
+                    <table class="table" ts-wrapper>
+                        <thead>
+                        <tr>
+                            <th ts-criteria="uuid">{{ 'common.table.UUID' | translate }}</th>
+                            <th ts-criteria="kortkode">{{ 'home.CARD_CODE' | translate }}</th>
+                            <th ts-criteria="navn">{{ 'common.table.NAVN' | translate }}</th>
+                            <th ts-criteria="beskrivelse">{{ 'common.table.BESKRIVELSE' | translate }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="archiveCreator in archiveCreators" ng-class="{ 'sokeresultat-selected':$index == selectedArchiveCreatorRow }" ng-click="selectArchiveCreator(archiveCreator, $index)" ts-repeat>
+                            <td>{{ archiveCreator.uuid }}</td>
+                            <td>{{ archiveCreator.kortkode }}</td>
+                            <td>{{ archiveCreator.navn }}</td>
+                            <td>{{ archiveCreator.beskrivelse }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="span span5 padding-bottom">
+                    <label>&nbsp;</label>
+                    <button class="form-control btn btn-primary" type="submit" data-ng-click="getArchiveCreators()">{{ 'home.brukere.HENT' | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form class="row input-group form-group">
+        <div class="row">
+            <div class="span span4 padding-bottom">
+                <label>{{'home.CARD_CODE' | translate}}</label>
+                <input type="text" data-ng-model="archiveCreator.kortkode" class="form-control" placeholder="Kortkode">
+            </div>
+        </div>
+        <div class="row">
+            <div class="span span4 padding-bottom">
+                <label>{{'common.table.NAVN' | translate}}</label>
+                <input type="text" data-ng-model="archiveCreator.navn" class="form-control" placeholder="Navn">
+            </div>
+        </div>
+        <div class="row">
+            <div class="span span4 padding-bottom">
+                <label>{{'common.table.BESKRIVELSE' | translate}}</label>
+                <input type="text" data-ng-model="archiveCreator.beskrivelse" class="form-control" placeholder="Beskrivelse">
+            </div>
+        </div>
+        <div class="span span5 padding-bottom">
+            <label>&nbsp;</label>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateArchiveCreator()">{{ 'home.brukere.LAGRE' | translate }}</button>
+        </div>
+    </form>
+
+</div>

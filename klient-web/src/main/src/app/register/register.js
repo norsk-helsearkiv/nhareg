@@ -8,8 +8,8 @@ angular.module('nha.register', [
         'cfp.hotkeys'
     ])
 
-    .filter('parseCustomDate', function() {
-        return function(date) {
+    .filter('parseCustomDate', function () {
+        return function (date) {
             if (date === 'mors' || date === "ukjent") {
                 return new Date("01.01.1000").getTime();
             }
@@ -66,6 +66,7 @@ angular.module('nha.register', [
         $scope.feilmeldinger = [];
         $scope.error = [];
         $scope.kjonn = [{kode: "M", tekst: ""}, {kode: "K", tekst: ""}, {kode: "U", tekst: ""}, {kode: "I", tekst: ""}];
+        $scope.archiveCreators = [ "arkivskaper1", "arkivskaper2" ];
 
         //Tekster fra i18n
         $scope.$watch(
@@ -276,14 +277,14 @@ angular.module('nha.register', [
 
         httpService.getAll("admin/century", false).success(function (data) {
             $scope.century = data;
-        }).error(function(status){
+        }).error(function (status) {
             errorService.errorCode(status);
         });
 
         $scope.formData = {
-            lagringsenheter: []
+            lagringsenheter: [],
+            archiveCreators: []
         };
-        $scope.lagringseneheterModel = $scope.formData.lagringsenheter.map(function(el){ return el.name; }).join(",");
 
         $scope.formDiagnose = {};
         $scope.avlevering = registerService.getAvlevering();
@@ -293,7 +294,7 @@ angular.module('nha.register', [
         $scope.valgtAvtale = registerService.getValgtAvtale();
         $scope.avleveringsbeskrivelse = registerService.getAvleveringsbeskrivelse();
 
-        $scope.manageStorageUnits = function() {
+        $scope.manageStorageUnits = function () {
             var lagringsenhetmaske;
 
             if ($scope.avlevering.lagringsenhetformat) {
@@ -313,7 +314,7 @@ angular.module('nha.register', [
                     }
 
                     var modal = modalService.manageStorageUnits('common/modal-service/lagringsenhet-modal.tpl.html',
-                        function() {
+                        function () {
                             //TODO, callback for NHA-038
                         },
                         lagringsenhetmaske,
@@ -331,6 +332,32 @@ angular.module('nha.register', [
                         }
                     });
                 });
+        };
+
+        $scope.manageArchiveCreators = function () {
+
+            if ($scope.formData.archiveCreators === undefined || $scope.formData.archiveCreators === null) {
+                $scope.formData.archiveCreators = [];
+            }
+
+            var modal = modalService.manageArchiveCreators('common/modal-service/archive-creator-modal.tpl.html',
+                function () {
+                    //TODO, callback for NHA-038
+                },
+                $scope.archiveCreators,
+                $scope.formData.archiveCreators);
+
+            modal.result.then(function () {
+                switch ($scope.formData.fanearkid) {
+                    case undefined:
+                    case null:
+                    case '':
+                        document.getElementById("fanearkidInput").focus();
+                        break;
+                    default:
+                        break;
+                }
+            });
         };
 
         //Setter verdier fra registrering-service
@@ -383,7 +410,7 @@ angular.module('nha.register', [
 
         };
 
-        $scope.sjekkDiagnoseFeltTomt = function(caller) {
+        $scope.sjekkDiagnoseFeltTomt = function (caller) {
 
             if ($scope.formDiagnose.diagnosekode || $scope.formDiagnose.diagnosetekst) {
                 var tpl = 'common/modal-service/warning-modal.tpl.html';
@@ -401,7 +428,7 @@ angular.module('nha.register', [
             }
         };
 
-        $scope.nyJournal = function() {
+        $scope.nyJournal = function () {
             $scope.sjekkDiagnoseFeltTomt($scope.nyJournalCallback);
         };
 
@@ -413,7 +440,7 @@ angular.module('nha.register', [
             $scope.manageStorageUnits();
         };
 
-        $scope.nyEllerOppdater = function() {
+        $scope.nyEllerOppdater = function () {
             $scope.sjekkDiagnoseFeltTomt($scope.nyEllerOppdaterCallback);
         };
 
