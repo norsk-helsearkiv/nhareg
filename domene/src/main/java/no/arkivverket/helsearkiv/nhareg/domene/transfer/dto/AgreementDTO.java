@@ -16,12 +16,12 @@ public class AgreementDTO implements Serializable {
     private String agreementId;
     
     @JsonProperty(value = "avtaledato")
-    private LocalDateTime agreementDate;
+    private String agreementDate;
 
     @JsonProperty(value = "avtalebeskrivelse")
     private String agreementDescription;
 
     @JsonProperty(value = "virksomhet")
-    private Business business;
+    private BusinessDTO business;
 
 }

@@ -1,7 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
-import no.arkivverket.helsearkiv.nhareg.agreement.AgreementDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
@@ -16,15 +14,15 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
 public class TransferServiceTest {
+
+    private final String USERNAME = "nhabruker1";
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -35,37 +33,24 @@ public class TransferServiceTest {
     private TransferServiceInterface transferService;
 
     @Inject
-    private AgreementDAO agreementDAO;
-    
-    @Inject
     private TransferConverterInterface transferConverter;
-
-    @Inject
-    private AgreementConverterInterface agreementConverter;
-
+    
     @Test(expected = EntityExistsException.class)
     public void create_duplicateEntry_shouldThrowEntityExistsException() {
         final TransferDTO transferDTO = new TransferDTO();
-        final Set<MedicalRecord> medicalRecords = new HashSet<>();
-        final MedicalRecord medicalRecord = new MedicalRecord();
-        medicalRecord.setUuid("test");
-        medicalRecord.setPid("123");
-        medicalRecord.setName("patient");
-        medicalRecord.setGender(new Gender());
-        medicalRecord.setStorageUnit(Collections.singleton(new StorageUnit()));
-        medicalRecords.add(medicalRecord);
-        
-        final Agreement agreement = agreementDAO.fetchById("Avtale1");
+        final AgreementDTO agreementDTO = new AgreementDTO();
+        final BusinessDTO businessDTO = new BusinessDTO("100", "Testorganisasjon", null);
+        final String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuu-MM-dd"));
+
+        agreementDTO.setAgreementId("test");
+        agreementDTO.setAgreementDate(now);
+        agreementDTO.setAgreementDescription("Test");
+        agreementDTO.setBusiness(businessDTO);
         transferDTO.setTransferId("Avlevering-1");
         transferDTO.setTransferDescription("test");
-        transferDTO.setAgreement(agreement);
-        transferDTO.setMedicalRecords(medicalRecords);
+        transferDTO.setAgreement(agreementDTO);
 
-        final TransferDTO newTransfer = transferService.create(transferDTO, "nhabruker1");
-        
-        assertNotNull(newTransfer);
-        assertNotNull(newTransfer.getMedicalRecords());
-        assertNotNull(newTransfer.getAgreement());
+        transferService.create(transferDTO, USERNAME);
     }
 
     @Test
@@ -73,13 +58,8 @@ public class TransferServiceTest {
         final TransferDTO transferDTO = transferService.getById("Avlevering-1");
 
         assertNotNull(transferDTO);
-        assertNotNull(transferDTO.getMedicalRecords());
         assertNotNull(transferDTO.getAgreement());
         assertNotNull(transferDTO.getUpdateInfo());
-        transferDTO.getMedicalRecords().forEach(medicalRecord -> {
-            assertNotNull(medicalRecord.getDiagnosis());
-            assertNotNull(medicalRecord.getStorageUnit());
-        });
     }
 
     @Test(expected = ValidationErrorException.class)
@@ -93,17 +73,13 @@ public class TransferServiceTest {
         final String archiveCreator = "JUnit test";
         final TransferDTO transferDTO = transferService.getById(id);
         final Transfer transfer = transferConverter.toTransfer(transferDTO, null);
-        final AgreementDTO agreementDTO = agreementConverter.fromAgreement(transfer.getAgreement());
 
         assertNotNull(transfer);
-        assertNotNull(agreementDTO);
-        assertNotNull(transfer.getMedicalRecords());
 
         transferDTO.setArchiveCreator(archiveCreator);
-        final TransferInAgreementDTO transferInAgreementDTO = transferConverter.toInAgreementDTO(transfer,
-                                                                                                 new Business(),
-                                                                                                 agreementDTO);
-        transferService.update(transferInAgreementDTO,"nhabruker1");
+
+        final TransferDTO updateDTO = transferConverter.fromTransfer(transfer);
+        transferService.update(updateDTO, USERNAME);
 
         final TransferDTO updatedTransferDTO = transferService.getById(id);
         assertNotNull(updatedTransferDTO);
@@ -114,11 +90,9 @@ public class TransferServiceTest {
     @Test
     public void getTransferForStorageUnit_validId_shouldReturnTransfer() {
         final String storageId = "boks3";
-
         final TransferDTO transferDTO = transferService.getTransferForStorageUnit(storageId);
-        
+
         assertNotNull(transferDTO);
-        assertNotNull(transferDTO.getMedicalRecords());
         assertEquals("Avlevering-2", transferDTO.getTransferId());
     }
 

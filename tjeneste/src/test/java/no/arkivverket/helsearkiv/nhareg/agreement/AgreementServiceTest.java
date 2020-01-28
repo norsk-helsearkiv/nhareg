@@ -4,7 +4,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorExcepti
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.MultivaluedHashMap;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
 public class AgreementServiceTest {
-    
+
     @Deployment
     public static WebArchive deployment() {
         return RESTDeployment.deployment();
@@ -32,19 +34,31 @@ public class AgreementServiceTest {
 
     @Inject
     private AgreementServiceInterface agreementService;
-    
+
     @Inject
     private AgreementConverterInterface agreementConverter;
 
-    @Test
-    public void create_missingBusiness_shouldReturnAgreement() {
-        final AgreementDTO agreement = new AgreementDTO("enhet-4", LocalDateTime.now(), "boks4", null);
+    @Test(expected = ValidationErrorException.class)
+    public void create_missingBusiness_shouldThrowValidationError() {
+        final String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMuuuu"));
+        final AgreementDTO agreement = new AgreementDTO("enhet-4", now, "boks4", null);
         final AgreementDTO newAgreement = agreementService.create(agreement);
 
         assertNotNull(newAgreement);
         assertEquals(newAgreement, agreement);
     }
-    
+
+    @Test
+    public void create_validAgreement_shouldReturnAgreement() {
+        final String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMuuuu"));
+        final BusinessDTO businessDTO = new BusinessDTO("100", "Testorganisasjon", null);
+        final AgreementDTO agreement = new AgreementDTO("enhet-4", now, "boks4", businessDTO);
+        final AgreementDTO newAgreement = agreementService.create(agreement);
+        
+        assertNotNull(newAgreement);
+        assertEquals(agreement, newAgreement);
+    }
+
     @Test
     public void getAll_emptyQuery_shouldReturnTwo() {
         final List<AgreementDTO> agreementList = agreementService.getAll(new MultivaluedHashMap<>());
@@ -59,7 +73,7 @@ public class AgreementServiceTest {
             if (ejb.getCause().getClass() == NoResultException.class) {
                 throw new NoResultException();
             }
-            
+
             throw ejb;
         }
     }
@@ -90,7 +104,7 @@ public class AgreementServiceTest {
         final AgreementDTO deletedAgreement = agreementService.delete(agreementId);
         assertNotNull(deletedAgreement);
     }
-    
+
     @Test
     public void getTransfersByAgreementId_validId_shouldNotReturnDuplicates() {
         final List<TransferInAgreementDTO> transferDTOList = agreementService.getTransfersByAgreementId("Avtale1", null);
@@ -104,5 +118,5 @@ public class AgreementServiceTest {
         assertNotNull(transferDTOList);
         assertEquals(1, transferDTOList.size());
     }
-    
+
 }

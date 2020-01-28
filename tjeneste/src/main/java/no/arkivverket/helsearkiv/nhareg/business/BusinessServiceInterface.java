@@ -1,9 +1,9 @@
 package no.arkivverket.helsearkiv.nhareg.business;
 
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
 
 public interface BusinessServiceInterface {
     
-    Business getBusiness();
+    BusinessDTO getBusiness();
     
 }

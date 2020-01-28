@@ -224,12 +224,15 @@
     "name" : "navn",
     "gender" : "kjonn",
     "dead" : "dod",
+    "pid" : "fodselsnummer",
     "firstContact" : "fKontakt",
     "lastContact" : "sKontakt",
     "note" : "merknad",
+    "date" : "dato",
     "recordNumber" : "journalnummer",
     "serialNumber" : "lopenummer",
-    "diagnosisDate" : "diagnosedato"
+    "diagnosisDate" : "diagnosedato",
+    "agreementDate" : "avtaledato"
   },
   "konfig" : {
     "ANTALL" : "15"

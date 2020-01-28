@@ -1,16 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorDAO;
 import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
 
@@ -24,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class TransferService implements TransferServiceInterface {
     
@@ -35,13 +30,7 @@ public class TransferService implements TransferServiceInterface {
     private UserDAO userDAO;
     
     @Inject
-    private BusinessDAO businessDAO;
-    
-    @Inject
     private TransferConverterInterface transferConverter;
-    
-    @Inject
-    private AgreementConverterInterface agreementConverter;
     
     @Inject
     private ArchiveCreatorDAO archiveCreatorDAO;
@@ -55,7 +44,7 @@ public class TransferService implements TransferServiceInterface {
         
         try {
             final Transfer created = transferDAO.create(transfer);
-            
+
             return transferConverter.fromTransfer(created);
         } catch (EJBTransactionRolledbackException ejb) { // Catch duplicate entries
             Throwable cause = ejb.getCause();
@@ -92,10 +81,8 @@ public class TransferService implements TransferServiceInterface {
             if (creator != null) {
                 existingTransfer.setArchiveCreator(creator);
             } else {
-                int subEnd = Math.min(archiveCreatorString.length(), 3);
-                final String archiveCreatorCode = archiveCreatorString.substring(0, subEnd);
                 final ArchiveCreator archiveCreator = new ArchiveCreator(UUID.randomUUID().toString(), 
-                                                                         archiveCreatorCode,
+                                                                         null,
                                                                          archiveCreatorString,
                                                                          null);
                 existingTransfer.setArchiveCreator(archiveCreator);
@@ -118,7 +105,7 @@ public class TransferService implements TransferServiceInterface {
     @Override
     public TransferDTO delete(final String id) {
         final Transfer deleted = transferDAO.delete(id);
-        
+
         return transferConverter.fromTransfer(deleted);
     }
 
@@ -127,6 +114,11 @@ public class TransferService implements TransferServiceInterface {
         final Transfer transfer = transferDAO.fetchById(id);
         
         return transferConverter.fromTransfer(transfer);
+    }
+
+    @Override
+    public Transfer getTransferById(final String id) {
+        return transferDAO.fetchById(id);
     }
 
     @Override
@@ -146,17 +138,21 @@ public class TransferService implements TransferServiceInterface {
     }
 
     @Override
-    public void lockTransfer(final String id) {
+    public TransferDTO lockTransfer(final String id) {
         final Transfer transfer = transferDAO.fetchById(id);
         transfer.setLocked(true);
-        transferDAO.update(transfer);
+        final Transfer updated = transferDAO.update(transfer);
+        
+        return transferConverter.fromTransfer(updated);
     }
 
     @Override 
-    public void unlockTransfer(final String id) {
+    public TransferDTO unlockTransfer(final String id) {
         final Transfer transfer = transferDAO.fetchById(id);
         transfer.setLocked(false);
-        transferDAO.update(transfer);
+        final Transfer updated = transferDAO.update(transfer);
+        
+        return transferConverter.fromTransfer(updated);
     }
 
     @Override
