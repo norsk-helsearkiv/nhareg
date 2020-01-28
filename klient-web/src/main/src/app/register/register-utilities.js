@@ -278,10 +278,8 @@ angular.module('nha.register')
                         $scope.feilTekster[element.constraint] = $filter('translate')(predefined, element.message);
                     }
                     var txt = $scope.feilTekster[element.constraint];
-                    var elm = {indeks: index, feilmelding: txt, felt: felt};
-                    var pos = $scope.feilmeldinger.map(function (e) {
-                        return e.indeks;
-                    }).indexOf(elm.index);
+                    var elm = { indeks: index, feilmelding: txt, felt: felt };
+                    var pos = $scope.feilmeldinger.map(function (e) { return e.indeks; }).indexOf(elm.index);
 
                     if (pos === -1) {
                         $scope.feilmeldinger.push(elm);
