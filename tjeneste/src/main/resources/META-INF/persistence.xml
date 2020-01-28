@@ -14,7 +14,7 @@
         <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.Business</class>
-        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator</class>
+        <class>no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.User</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.auth.Role</class>
         <class>no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter</class>

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.ArchiveCreatorAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.ArchiveAuthorAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ import java.util.Set;
     "xmlVersion",
     "transferId",
     "transferDescription",
-    "archiveCreator",
+    "archiveAuthor",
     "agreement",
     "medicalRecords",
 })
@@ -59,8 +59,8 @@ public class Transfer implements Serializable {
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_uuid")
     @XmlElement(required = true, name = "arkivskaper")
-    @XmlJavaTypeAdapter(value = ArchiveCreatorAdapter.class)
-    private ArchiveCreator archiveCreator;
+    @XmlJavaTypeAdapter(value = ArchiveAuthorAdapter.class)
+    private ArchiveAuthor archiveAuthor;
 
     @NotNull
     @XmlTransient

@@ -23,7 +23,7 @@ public class LabelBuilder {
         final byte[] encodedContent = Files.readAllBytes(Paths.get(template));
         final String content = new String(encodedContent, StandardCharsets.UTF_8);
 
-        return content.replace(ARCHIVECREATOR, transfer.getArchiveCreator().getName())
+        return content.replace(ARCHIVECREATOR, transfer.getArchiveAuthor().getName())
                 .replace(AGREEMENTID, transfer.getAgreement().getAgreementId())
                 .replace(TRANSFERID, transfer.getTransferId())
                 .replace(AGREEMENTDESCRIPTION, transfer.getAgreement().getAgreementDescription())

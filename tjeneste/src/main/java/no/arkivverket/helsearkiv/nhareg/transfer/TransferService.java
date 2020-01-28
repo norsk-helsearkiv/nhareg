@@ -1,11 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorDAO;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverterInterface;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorDAO;
 import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
@@ -33,12 +35,16 @@ public class TransferService implements TransferServiceInterface {
     private TransferConverterInterface transferConverter;
     
     @Inject
-    private ArchiveCreatorDAO archiveCreatorDAO;
+    private ArchiveAuthorDAO archiveAuthorDAO;
 
+    @Inject
+    private ArchiveAuthorConverterInterface archiveAuthorConverter;
+    
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
-        final ArchiveCreator archiveCreator = archiveCreatorDAO.fetchByName(transferDTO.getArchiveCreator());
-        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveCreator);
+        final ArchiveAuthor archiveAuthor = archiveAuthorDAO.fetchByName(transferDTO.getArchiveCreator());
+        final ArchiveAuthorDTO archiveAuthorDTO = archiveAuthorConverter.fromArchiveAuthor(archiveAuthor);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveAuthorDTO);
         transfer.setUpdateInfo(createUpdateInfo(username));
         transfer.setDateGenerated(LocalDate.now());
         
@@ -76,16 +82,16 @@ public class TransferService implements TransferServiceInterface {
         // Get the archive creator
         final String archiveCreatorString = transferDTO.getArchiveCreator();
         if (archiveCreatorString != null && !archiveCreatorString.isEmpty()) {
-            final ArchiveCreator creator = archiveCreatorDAO.fetchByName(archiveCreatorString);
+            final ArchiveAuthor creator = archiveAuthorDAO.fetchByName(archiveCreatorString);
             
             if (creator != null) {
-                existingTransfer.setArchiveCreator(creator);
+                existingTransfer.setArchiveAuthor(creator);
             } else {
-                final ArchiveCreator archiveCreator = new ArchiveCreator(UUID.randomUUID().toString(), 
-                                                                         null,
-                                                                         archiveCreatorString,
-                                                                         null);
-                existingTransfer.setArchiveCreator(archiveCreator);
+                final ArchiveAuthor archiveAuthor = new ArchiveAuthor(UUID.randomUUID().toString(),
+                                                                      null,
+                                                                      archiveCreatorString,
+                                                                      null);
+                existingTransfer.setArchiveAuthor(archiveAuthor);
             }
         }
         

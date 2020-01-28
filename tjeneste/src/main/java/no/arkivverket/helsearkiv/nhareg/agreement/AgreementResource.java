@@ -1,11 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
-import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveCreator;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
@@ -44,7 +44,7 @@ public class AgreementResource {
     private TransferConverterInterface transferConverter;
     
     @Inject
-    private ArchiveCreatorServiceInterface archiveCreatorService;
+    private ArchiveAuthorServiceInterface archiveCreatorService;
 
     @POST
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
@@ -90,8 +90,8 @@ public class AgreementResource {
         final String username = sessionContext.getCallerPrincipal().getName();
         final TransferDTO defaultTransferDTO = transferService.getDefaultTransfer(username);
         final String archiveCreatorString = defaultTransferDTO == null ? null : defaultTransferDTO.getArchiveCreator();
-        final ArchiveCreator archiveCreator = archiveCreatorService.getByName(archiveCreatorString);
-        final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO, archiveCreator);
+        final ArchiveAuthorDTO archiveAuthor = archiveCreatorService.getByName(archiveCreatorString);
+        final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO, archiveAuthor);
         final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);
         
         return Response.ok(transferDTOList).build();

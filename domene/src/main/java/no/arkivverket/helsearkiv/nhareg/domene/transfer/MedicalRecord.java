@@ -167,7 +167,7 @@ public class MedicalRecord implements Serializable {
     @OneToOne
     @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
     @XmlTransient
-    private ArchiveCreator archiveCreator;
+    private ArchiveAuthor archiveAuthor;
     
     public Set<Diagnosis> getDiagnosis() {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;

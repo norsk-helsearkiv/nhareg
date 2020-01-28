@@ -1,9 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
 import no.arkivverket.helsearkiv.nhareg.agreement.*;
-import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorDAO;
-import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorService;
-import no.arkivverket.helsearkiv.nhareg.archivecreator.ArchiveCreatorServiceInterface;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.*;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessService;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
@@ -58,10 +56,12 @@ public class RESTDeployment {
                                .addPackage(AgreementServiceInterface.class.getPackage())
                                .addPackage(AgreementConverterInterface.class.getPackage())
                                .addPackage(AgreementConverter.class.getPackage())
-                               // ArchiveCreator
-                               .addPackage(ArchiveCreatorDAO.class.getPackage())
-                               .addPackage(ArchiveCreatorService.class.getPackage())
-                               .addPackage(ArchiveCreatorServiceInterface.class.getPackage())
+                               // ArchiveAuthor
+                               .addPackage(ArchiveAuthorDAO.class.getPackage())
+                               .addPackage(ArchiveAuthorService.class.getPackage())
+                               .addPackage(ArchiveAuthorServiceInterface.class.getPackage())
+                               .addPackage(ArchiveAuthorConverterInterface.class.getPackage())
+                               .addPackage(ArchiveAuthorConverter.class.getPackage())
                                // Business
                                .addPackage(BusinessDAO.class.getPackage())
                                .addPackage(BusinessService.class.getPackage())

@@ -26,7 +26,7 @@ import java.io.Serializable;
     "name",
     "description"
 })
-public class ArchiveCreator implements Serializable {
+public class ArchiveAuthor implements Serializable {
     
     @Id
     private String uuid;
