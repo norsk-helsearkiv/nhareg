@@ -128,18 +128,18 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function endreModal(tpl, list, relativUrl, valideringFunction, entitet) {
+    function endreModal(tpl, list, relativUrl, valideringFunction, entitet, allArchiveAuthors) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = entitet;
             $scope.erEndring = true;
-            $scope.archiveCreators = [ "arkivskaper1", "arkivskaper2" ];
+            $scope.allArchiveAuthors = allArchiveAuthors;
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
                 if(success) {
                     httpService.update(relativUrl, $scope.formData)
-                        .error(function(data, status, headers, config) {
+                        .error(function(data, status) {
                             errorService.errorCode(status);
                         });
                     $modalInstance.close();
@@ -426,45 +426,45 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function manageArchiveCreators(templateUrl, callback, allArchiveCreators, selectedArchiveCreators){
+    function manageArchiveAuthors(templateUrl, callback, selectedArchiveAuthors, allArchiveAuthors){
         template.templateUrl = templateUrl;
 
         template.controller = function( $scope, $modalInstance){
-            $scope.archiveCreators = allArchiveCreators;
+            $scope.allArchiveAuthors = allArchiveAuthors;
             $scope.formData = {
-                "archiveCreators": selectedArchiveCreators
+                "archiveAuthors": selectedArchiveAuthors
             };
 
             $scope.save = function(){
-                if ($scope.newArchiveCreator()){
+                if ($scope.newArchiveAuthor()){
                     callback($scope.formData);
                     $modalInstance.close();
                 }
             };
 
-            $scope.removeArchiveCreator = function(archiveCreator){
-                for (var i = 0; i < $scope.formData.archiveCreators.length; i++) {
-                    if (archiveCreator === $scope.formData.archiveCreators[i]) {
-                        $scope.formData.archiveCreators.splice(i, 1);
-                        document.getElementById("archiveCreator").focus();
+            $scope.removeArchiveAuthor = function(archiveAuthor){
+                for (var i = 0; i < $scope.formData.archiveAuthors.length; i++) {
+                    if (archiveAuthor === $scope.formData.archiveAuthors[i]) {
+                        $scope.formData.archiveAuthors.splice(i, 1);
+                        document.getElementById("archiveAuthor").focus();
                     }
                 }
             };
 
-            $scope.newArchiveCreator = function() {
-                if ($scope.formData.archiveCreator === undefined || $scope.formData.archiveCreator === '') {
+            $scope.newArchiveAuthor = function() {
+                if ($scope.formData.archiveAuthor === undefined || $scope.formData.archiveAuthor === '') {
                     return true;
                 }
 
-                for (var i = 0; i < $scope.formData.archiveCreators.length; i++) {
-                    if ($scope.formData.archiveCreator === $scope.formData.archiveCreators[i]) {
-                        $scope.formData.archiveCreator = "";
+                for (var i = 0; i < $scope.formData.archiveAuthors.length; i++) {
+                    if ($scope.formData.archiveAuthor === $scope.formData.archiveAuthors[i]) {
+                        $scope.formData.archiveAuthor = "";
                         return true;
                     }
                 }
 
-                $scope.formData.archiveCreators.push($scope.formData.archiveCreator);
-                $scope.formData.archiveCreator = "";
+                $scope.formData.archiveAuthors.push($scope.formData.archiveAuthors);
+                $scope.formData.archiveAuthor = "";
                 return true;
             };
 
@@ -486,7 +486,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         warningMessageModal : warningMessageModal,
         velgModal : velgModal,
         manageStorageUnits : manageStorageUnits,
-        manageArchiveCreators : manageArchiveCreators,
+        manageArchiveAuthors : manageArchiveAuthors,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
         changeStorageUnit : changeStorageUnit,
         endrePassord : endrePassord

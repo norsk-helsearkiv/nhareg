@@ -66,7 +66,6 @@ angular.module('nha.register', [
         $scope.feilmeldinger = [];
         $scope.error = [];
         $scope.kjonn = [{kode: "M", tekst: ""}, {kode: "K", tekst: ""}, {kode: "U", tekst: ""}, {kode: "I", tekst: ""}];
-        $scope.archiveCreators = [ "arkivskaper1", "arkivskaper2" ];
 
         //Tekster fra i18n
         $scope.$watch(
@@ -281,9 +280,16 @@ angular.module('nha.register', [
             errorService.errorCode(status);
         });
 
+        /*httpService.getAll("archiveAuthors", false).success(function (data) {
+            $scope.allArchiveAuthors = data;
+        }).error(function (status) {
+            errorService.errorCode(status);
+        });*/
+
+        $scope.allArchiveAuthors = ["arkivskaper1", "arkivskaper2", "arkivskaper3"];
+
         $scope.formData = {
-            lagringsenheter: [],
-            archiveCreators: []
+            lagringsenheter: []
         };
 
         $scope.formDiagnose = {};
@@ -334,18 +340,18 @@ angular.module('nha.register', [
                 });
         };
 
-        $scope.manageArchiveCreators = function () {
+        $scope.manageArchiveAuthors = function () {
 
-            if ($scope.formData.archiveCreators === undefined || $scope.formData.archiveCreators === null) {
-                $scope.formData.archiveCreators = [];
+            if ($scope.formData.archiveAuthors === undefined || $scope.formData.archiveAuthors === null) {
+                $scope.formData.archiveAuthors = [];
             }
 
-            var modal = modalService.manageArchiveCreators('common/modal-service/archive-creator-modal.tpl.html',
+            var modal = modalService.manageArchiveAuthors('common/modal-service/archive-author-modal.tpl.html',
                 function () {
                     //TODO, callback for NHA-038
                 },
-                $scope.archiveCreators,
-                $scope.formData.archiveCreators);
+                $scope.formData.archiveAuthors,
+                $scope.allArchiveAuthors);
 
             modal.result.then(function () {
                 switch ($scope.formData.fanearkid) {
@@ -365,6 +371,7 @@ angular.module('nha.register', [
             //Ny pasientjouranl
             $scope.prevState = 0;
             $scope.state = 0;
+            $scope.formData.archiveAuthors = $scope.avlevering.archiveAuthor;
             $scope.manageStorageUnits();
 
         } else if ($scope.pasientjournalDTO !== undefined) {

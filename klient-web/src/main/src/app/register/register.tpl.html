@@ -41,10 +41,10 @@
                     <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()">{{ formData.lagringsenheter.join(', ') }}</label>
                 </div>
 
-                <!-- Add archive creators -->
+                <!-- Add archive authors -->
                 <div class="span col-sm-6">
-                    <label id="archiveCreators" data-ng-class="{error: error['archiveCreators'] !== undefined }">{{ 'register.ARCHIVE_CREATORS' | translate }}</label>
-                    <label id="archiveCreator" class="form-control" data-ng-click="manageArchiveCreators()">{{ formData.archiveCreators.join(', ') }}</label>
+                    <label id="archiveAuthors" data-ng-class="{error: error['archiveAuthors'] !== undefined }">{{ 'register.ARCHIVE_AUTHORS' | translate }}</label>
+                    <label id="archiveAuthor" class="form-control" data-ng-click="manageArchiveAuthors()">{{ formData.archiveAuthors.join(', ') }}</label>
                 </div>
             </div>
             <hr/>

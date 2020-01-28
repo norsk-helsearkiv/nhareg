@@ -42,7 +42,7 @@ angular.module('nha.home', [
               }
           }
       });
-      $stateProvider.state('archiveCreators', {
+      $stateProvider.state('archiveAuthors', {
           url: '/arkivskapere',
           views: {
               "main": {
@@ -100,6 +100,14 @@ angular.module('nha.home', [
               $scope.endrePassord();
           }
       });
+
+      /*httpService.getAll("archiveAuthors", false).success(function (data) {
+          $scope.archiveAuthors = data;
+      }).error(function (status) {
+          errorService.errorCode(status);
+      });*/
+
+      $scope.allArchiveAuthors = ["arkivskaper1", "arkivskaper2", "arkivskaper3"];
 
       $scope.size = listService.getSize();
 
@@ -265,7 +273,7 @@ angular.module('nha.home', [
         .success(function (data) {
             $scope.virksomhet = data;
         }).error(function (data, status) {
-          errorService.errorCode(status);
+            errorService.errorCode(status);
       });
 
       //Avtale
@@ -348,7 +356,7 @@ angular.module('nha.home', [
       };
 
       $scope.actionEndreAvlevering = function (avlevering) {
-          modalService.endreModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering);
+          modalService.endreModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
       };
 
       $scope.actionFjernAvlevering = function (elementType, id, element) {

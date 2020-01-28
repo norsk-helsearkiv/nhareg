@@ -1,12 +1,12 @@
-<div ng-controller="ArchiveCreatorsCtrl" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<div ng-controller="ArchiveAuthorsCtrl" class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
     <a href="#/" class="btn btn-default">{{'home.TILBAKE' | translate }}</a>
-    <h2>{{ 'home.ADM_ARCHIVE_CREATORS' | translate }}</h2>
+    <h2>{{ 'home.ADM_ARCHIVE_AUTHORS' | translate }}</h2>
     <br>
     <br>
 
     <div class="row">
         <div class="span span43 panel panel-default">
-            <div class="panel-heading"><b>{{ 'home.ARCHIVE_CREATORS' | translate }}</b> <i>{{ 'home.CHOOSE_FROM_LIST_TO_EDIT' | translate }}</i></div>
+            <div class="panel-heading"><b>{{ 'home.ARCHIVE_AUTHORS' | translate }}</b> <i>{{ 'home.CHOOSE_FROM_LIST_TO_EDIT' | translate }}</i></div>
             <div class="panel-body">
                 <div class="sokeresultat-wrapper">
                     <table class="table" ts-wrapper>
@@ -19,18 +19,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-ng-repeat="archiveCreator in archiveCreators" ng-class="{ 'sokeresultat-selected':$index == selectedArchiveCreatorRow }" ng-click="selectArchiveCreator(archiveCreator, $index)" ts-repeat>
-                            <td>{{ archiveCreator.uuid }}</td>
-                            <td>{{ archiveCreator.kortkode }}</td>
-                            <td>{{ archiveCreator.navn }}</td>
-                            <td>{{ archiveCreator.beskrivelse }}</td>
+                        <tr data-ng-repeat="archiveAuthor in archiveAuthors" ng-class="{ 'sokeresultat-selected':$index == selectedArchiveAuthorRow }" ng-click="selectArchiveAuthor(archiveAuthor, $index)" ts-repeat>
+                            <td>{{ archiveAuthor.uuid }}</td>
+                            <td>{{ archiveAuthor.kortkode }}</td>
+                            <td>{{ archiveAuthor.navn }}</td>
+                            <td>{{ archiveAuthor.beskrivelse }}</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="span span5 padding-bottom">
                     <label>&nbsp;</label>
-                    <button class="form-control btn btn-primary" type="submit" data-ng-click="getArchiveCreators()">{{ 'home.brukere.HENT' | translate }}</button>
+                    <button class="form-control btn btn-primary" type="submit" data-ng-click="getArchiveAuthors()">{{ 'home.brukere.HENT' | translate }}</button>
                 </div>
             </div>
         </div>
@@ -39,24 +39,24 @@
         <div class="row">
             <div class="span span4 padding-bottom">
                 <label>{{'home.CARD_CODE' | translate}}</label>
-                <input type="text" data-ng-model="archiveCreator.kortkode" class="form-control" placeholder="Kortkode">
+                <input type="text" data-ng-model="archiveAuthor.kortkode" class="form-control" placeholder="Kortkode">
             </div>
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
                 <label>{{'common.table.NAVN' | translate}}</label>
-                <input type="text" data-ng-model="archiveCreator.navn" class="form-control" placeholder="Navn">
+                <input type="text" data-ng-model="archiveAuthor.navn" class="form-control" placeholder="Navn">
             </div>
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
                 <label>{{'common.table.BESKRIVELSE' | translate}}</label>
-                <input type="text" data-ng-model="archiveCreator.beskrivelse" class="form-control" placeholder="Beskrivelse">
+                <input type="text" data-ng-model="archiveAuthor.beskrivelse" class="form-control" placeholder="Beskrivelse">
             </div>
         </div>
         <div class="span span5 padding-bottom">
             <label>&nbsp;</label>
-            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateArchiveCreator()">{{ 'home.brukere.LAGRE' | translate }}</button>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateArchiveAuthor()">{{ 'home.brukere.LAGRE' | translate }}</button>
         </div>
     </form>
 
