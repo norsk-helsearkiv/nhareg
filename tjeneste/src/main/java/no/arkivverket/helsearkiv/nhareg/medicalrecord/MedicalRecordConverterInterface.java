@@ -11,14 +11,15 @@ import java.util.List;
 
 public interface MedicalRecordConverterInterface {
     
-    MedicalRecord fromPersonalDataDTO(PersonalDataDTO personalDataDTO);
+    MedicalRecord fromPersonalDataDTO(final PersonalDataDTO personalDataDTO);
 
-    PersonalDataDTO toPersonalDataDTO(MedicalRecord medicalRecord);
+    PersonalDataDTO toPersonalDataDTO(final MedicalRecord medicalRecord);
     
-    MedicalRecordDTO toMedicalRecordDTO(MedicalRecord medicalRecord, Transfer transfer, String business);
+    MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord, final Transfer transfer, 
+                                        final String business);
 
-    RecordTransferDTO toRecordTransferDTO(MedicalRecord medicalRecord);
+    RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord);
 
-    List<RecordTransferDTO> toRecordTransferDTOList(Collection<MedicalRecord> medicalRecordList);
-    
+    List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList);
+
 }

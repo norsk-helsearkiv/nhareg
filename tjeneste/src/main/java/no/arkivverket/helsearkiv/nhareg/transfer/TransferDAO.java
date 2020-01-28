@@ -32,10 +32,17 @@ public class TransferDAO extends EntityDAO<Transfer> {
 
     @Override
     public Transfer delete(final String id) {
-        final Transfer transfer = fetchSingleInstance(id);
-
+        final String queryString = "SELECT COUNT(mr) " 
+            + "FROM Transfer t " 
+            + "LEFT JOIN t.medicalRecords mr " 
+            + "WHERE (mr.deleted IS NULL OR mr.deleted = FALSE) "
+            + "AND t.transferId = :id ";
+        final TypedQuery<Long> query = getEntityManager().createQuery(queryString, Long.class);
+        query.setParameter("id", id);
+        final Long size = query.getSingleResult();
+        
         // Cannot delete non-empty transfers
-        if (!transfer.getMedicalRecords().isEmpty()) {
+        if (size > 0) {
             final ValidationError validationError = new ValidationError("Avlevering", "HasChildren");
             final List<ValidationError> validationErrors = Collections.singletonList(validationError);
             throw new ValidationErrorException(validationErrors);

@@ -13,7 +13,10 @@ import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MedicalRecordConverter implements MedicalRecordConverterInterface {
@@ -158,6 +161,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         return medicalRecordDTO;
     }
 
+    @Override
     public RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord) {
         if (medicalRecord == null) {
             return null;
