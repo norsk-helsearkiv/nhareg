@@ -17,7 +17,7 @@ public class MedicalRecordDTO implements Serializable {
     private PersonalDataDTO personalDataDTO;
 
     @JsonProperty(value = "diagnoser")
-    private List<DiagnoseDTO> diagnosisDTOList;
+    private Set<DiagnosisDTO> diagnoses;
  
     @JsonProperty(value = "virksomhet")
     private String business;
@@ -37,4 +37,7 @@ public class MedicalRecordDTO implements Serializable {
     @JsonProperty(value = "avleveringLaast")
     private boolean transferLocked;
 
+    @JsonProperty(value = "lagringsenheter")
+    private Set<StorageUnitDTO> storageUnits;
+    
 }
