@@ -33,7 +33,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final String uuid = personalDataDTO.getUuid();
         final String recordNumber = personalDataDTO.getRecordNumber();
         final String serialNumber = personalDataDTO.getSerialNumber();
-        final String fanearkid = personalDataDTO.getFanearkid();
+        final Long fanearkid = personalDataDTO.getFanearkid();
         final String pid = personalDataDTO.getPid();
         final String name = personalDataDTO.getName();
         final String genderString = personalDataDTO.getGender();
@@ -47,7 +47,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         medicalRecord.setNote(personalDataDTO.getNote());
         medicalRecord.setRecordNumber(recordNumber);
         medicalRecord.setSerialNumber(serialNumber);
-        medicalRecord.setFanearkid(fanearkid);
+        medicalRecord.setFanearkid(fanearkid == null ? null : fanearkid.toString());
         medicalRecord.setPid(pid);
         medicalRecord.setName(name);
         medicalRecord.setGender(gender);
@@ -96,7 +96,6 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
         personalData.setUuid(medicalRecord.getUuid());
         personalData.setNote(medicalRecord.getNote());
-        personalData.setFanearkid(medicalRecord.getFanearkid());
         personalData.setSerialNumber(medicalRecord.getSerialNumber());
         personalData.setRecordNumber(medicalRecord.getRecordNumber());
         personalData.setName(medicalRecord.getName());
@@ -106,6 +105,11 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         personalData.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
         personalData.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
 
+        final String fanearkid = medicalRecord.getFanearkid();
+        if (fanearkid != null && !fanearkid.isEmpty()) {
+            personalData.setFanearkid(Long.parseLong(fanearkid));
+        }
+        
         final Set<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
         if (storageUnits != null && !storageUnits.isEmpty()) {
             // Converts storageUnits to a String array of IDs.

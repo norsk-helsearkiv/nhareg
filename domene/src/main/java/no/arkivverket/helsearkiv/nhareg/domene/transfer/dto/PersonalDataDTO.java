@@ -21,7 +21,7 @@ public class PersonalDataDTO implements Serializable {
     private String[] storageUnits;
     
     @JsonProperty(value = "fanearkid")
-    private String fanearkid;
+    private Long fanearkid;
     
     @JsonProperty(value = "journalnummer")
     private String recordNumber;
