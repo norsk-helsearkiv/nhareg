@@ -8,14 +8,14 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(
-    // namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
     propOrder = {
         "id",
+        "xmlns",
         "refFromInstitutionId",
         "ansiDate",
         "socialSecurityCode",
@@ -27,9 +27,11 @@ public class ReferencePeriod implements Serializable {
 
     @NotNull
     @XmlAttribute(name = "henvisningsperiodeID")
-    // , namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
     private String id;
 
+    @XmlAttribute(name = "xmlns")
+    private String xmlns = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup";
+    
     @XmlElement(name = "henvTilInstitusjonID")
     private String refFromInstitutionId;
 
@@ -47,6 +49,6 @@ public class ReferencePeriod implements Serializable {
     private String refToInstitutionId;
 
     @XmlElement(name = "episode")
-    private List<Episode> admissions;
+    private Set<Episode> admissions;
     
 }
