@@ -73,7 +73,6 @@ public class TransferService implements TransferServiceInterface {
         
         // Get the archive creator
         final ArchiveAuthor archiveAuthor = archiveAuthorConverter.toArchiveAuthor(transferDTO.getArchiveAuthor());
-        
         existingTransfer.setArchiveAuthor(archiveAuthor);
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
         existingTransfer.setUpdateInfo(createUpdateInfo(username));

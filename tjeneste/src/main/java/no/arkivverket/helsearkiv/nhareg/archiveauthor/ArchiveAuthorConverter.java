@@ -40,6 +40,10 @@ public class ArchiveAuthorConverter implements ArchiveAuthorConverterInterface {
 
     @Override
     public Set<ArchiveAuthor> toArchiveAuthorSet(final Set<ArchiveAuthorDTO> archiveAuthorDTOSet) {
+        if (archiveAuthorDTOSet == null) {
+            return null;
+        }
+        
         return archiveAuthorDTOSet.stream().map(this::toArchiveAuthor).collect(Collectors.toSet());
     }
 

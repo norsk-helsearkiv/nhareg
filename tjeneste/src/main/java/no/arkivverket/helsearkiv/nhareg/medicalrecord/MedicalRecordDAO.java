@@ -25,10 +25,11 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
 
     @Override
     public MedicalRecord fetchById(final String id) {
-        final String queryString = "SELECT distinct mr " 
+        final String queryString = "SELECT DISTINCT mr " 
             + "FROM MedicalRecord mr "
             + "LEFT JOIN FETCH mr.storageUnit "
             + "LEFT JOIN FETCH mr.diagnosis " 
+            + "LEFT JOIN FETCH mr.archiveAuthors " 
             + "WHERE mr.uuid = :id ";
         final TypedQuery<MedicalRecord> query = getEntityManager().createQuery(queryString, MedicalRecord.class);
         query.setParameter("id", id);

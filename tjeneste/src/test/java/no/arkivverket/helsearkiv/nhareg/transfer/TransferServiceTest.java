@@ -61,9 +61,12 @@ public class TransferServiceTest {
     public void update_updateArchiveCreator_shouldReturnUpdated() {
         final String id = "Avlevering-1";
         final TransferDTO transferDTO = transferService.getById(id);
-        
         assertNotNull(transferDTO);
-        transferDTO.setArchiveAuthor(new ArchiveAuthorDTO());
+        
+        final ArchiveAuthorDTO archiveAuthor = new ArchiveAuthorDTO();
+        archiveAuthor.setUuid("1");
+        archiveAuthor.setName("Meg");
+        transferDTO.setArchiveAuthor(archiveAuthor);
 
         transferService.update(transferDTO, USERNAME);
 
