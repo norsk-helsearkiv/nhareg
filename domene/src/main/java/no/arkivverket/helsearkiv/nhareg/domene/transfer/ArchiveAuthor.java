@@ -8,10 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 @Data
@@ -29,6 +26,7 @@ import java.io.Serializable;
 public class ArchiveAuthor implements Serializable {
     
     @Id
+    @XmlTransient
     private String uuid;
 
     @Column(name = "kode", unique = true)

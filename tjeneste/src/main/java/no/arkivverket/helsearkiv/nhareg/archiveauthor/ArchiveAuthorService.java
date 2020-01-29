@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static no.arkivverket.helsearkiv.nhareg.common.ParameterConverter.multivaluedToMap;
 
@@ -36,6 +37,7 @@ public class ArchiveAuthorService implements ArchiveAuthorServiceInterface {
     @Override 
     public ArchiveAuthorDTO create(final ArchiveAuthorDTO archiveAuthorDTO) {
         final ArchiveAuthor archiveAuthor = archiveAuthorConverter.toArchiveAuthor(archiveAuthorDTO);
+        archiveAuthor.setUuid(UUID.randomUUID().toString());
         final ArchiveAuthor newAuthor = archiveAuthorDAO.create(archiveAuthor);
         
         return archiveAuthorConverter.fromArchiveAuthor(newAuthor);
