@@ -40,7 +40,4 @@ public class MedicalRecordDTO implements Serializable {
     @JsonProperty(value = "lagringsenheter")
     private Set<StorageUnitDTO> storageUnits;
     
-    @JsonProperty(value = "archiveAuthors")
-    private Set<ArchiveAuthorDTO> archiveAuthors;
-    
 }

@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.utilities.RESTDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -59,11 +60,10 @@ public class TransferServiceTest {
     @Test
     public void update_updateArchiveCreator_shouldReturnUpdated() {
         final String id = "Avlevering-1";
-        final String archiveCreator = "JUnit test";
         final TransferDTO transferDTO = transferService.getById(id);
         
         assertNotNull(transferDTO);
-        transferDTO.setArchiveAuthor(archiveCreator);
+        transferDTO.setArchiveAuthor(new ArchiveAuthorDTO());
 
         transferService.update(transferDTO, USERNAME);
 

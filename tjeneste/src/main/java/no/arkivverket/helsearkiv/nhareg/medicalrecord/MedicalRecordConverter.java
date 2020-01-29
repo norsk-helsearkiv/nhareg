@@ -7,7 +7,10 @@ import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import java.time.LocalDateTime;
@@ -46,7 +49,9 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final String dead = personalDataDTO.getDead();
         final String firstContact = personalDataDTO.getFirstContact();
         final String lastContact = personalDataDTO.getLastContact();
+        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(personalDataDTO.getArchiveAuthors());
 
+        medicalRecord.setArchiveAuthors(authors);
         medicalRecord.setUuid(uuid);
         medicalRecord.setNote(personalDataDTO.getNote());
         medicalRecord.setRecordNumber(recordNumber);
@@ -97,7 +102,9 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final DateOrYear dead = medicalRecord.getDead();
         final DateOrYear firstContactDate = medicalRecord.getFirstContact();
         final DateOrYear lastContactDate = medicalRecord.getLastContact();
+        final Set<ArchiveAuthor> authors = medicalRecord.getArchiveAuthors();
 
+        personalData.setArchiveAuthors(archiveAuthorConverter.fromArchiveAuthorCollection(authors));
         personalData.setUuid(medicalRecord.getUuid());
         personalData.setNote(medicalRecord.getNote());
         personalData.setSerialNumber(medicalRecord.getSerialNumber());
@@ -151,9 +158,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
         final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
         final Set<DiagnosisDTO> diagnoses = diagnosisConverter.toDiagnosisDTOSet(diagnosisSet);
-        final Set<ArchiveAuthorDTO> authors = archiveAuthorConverter.fromArchiveAuthorCollection(medicalRecord.getArchiveAuthors());
         
-        medicalRecordDTO.setArchiveAuthors(authors);
         medicalRecordDTO.setPersonalDataDTO(personalData);
         medicalRecordDTO.setTransferDescription(transfer.getTransferDescription());
         medicalRecordDTO.setTransferId(transfer.getTransferId());

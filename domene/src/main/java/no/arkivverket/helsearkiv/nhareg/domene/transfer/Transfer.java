@@ -57,7 +57,7 @@ public class Transfer implements Serializable {
     private Agreement agreement;
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "arkivskaper_uuid")
+    @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
     @XmlElement(required = true, name = "arkivskaper")
     @XmlJavaTypeAdapter(value = ArchiveAuthorAdapter.class)
     private ArchiveAuthor archiveAuthor;

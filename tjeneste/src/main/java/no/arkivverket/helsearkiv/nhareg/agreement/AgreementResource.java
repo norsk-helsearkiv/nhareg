@@ -5,7 +5,6 @@ import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.BusinessDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.transfer.TransferConverterInterface;
@@ -89,9 +88,7 @@ public class AgreementResource {
     public Response getTransfers(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
         final TransferDTO defaultTransferDTO = transferService.getDefaultTransfer(username);
-        final String archiveCreatorString = defaultTransferDTO == null ? null : defaultTransferDTO.getArchiveAuthor();
-        final ArchiveAuthorDTO archiveAuthor = archiveCreatorService.getByName(archiveCreatorString);
-        final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO, archiveAuthor);
+        final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO);
         final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);
         
         return Response.ok(transferDTOList).build();

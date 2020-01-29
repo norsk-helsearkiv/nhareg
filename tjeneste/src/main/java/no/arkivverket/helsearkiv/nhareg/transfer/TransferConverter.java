@@ -2,6 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverter;
 import no.arkivverket.helsearkiv.nhareg.agreement.AgreementConverterInterface;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverter;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Agreement;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
@@ -13,15 +15,16 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.UpdateInfoDTO;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class TransferConverter implements TransferConverterInterface {
 
     private AgreementConverterInterface agreementConverter = new AgreementConverter();
+    
+    private ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
 
     @Override
-    public Transfer toTransfer(final TransferDTO transferDTO, final ArchiveAuthorDTO archiveAuthorDTO) {
+    public Transfer toTransfer(final TransferDTO transferDTO) {
         if (transferDTO == null) {
             return null;
         }
@@ -32,16 +35,9 @@ public class TransferConverter implements TransferConverterInterface {
         final String transferId = transferDTO.getTransferId();
         final Agreement agreement = agreementConverter.toAgreement(transferDTO.getAgreement());
         final boolean locked = transferDTO.isLocked();
+        final ArchiveAuthor archiveAuthor = archiveAuthorConverter.toArchiveAuthor(transferDTO.getArchiveAuthor());
 
-        if (archiveAuthorDTO == null) {
-            final ArchiveAuthor newArchiveAuthor = this.createArchiveCreator(transferDTO.getArchiveAuthor());
-            transfer.setArchiveAuthor(newArchiveAuthor);
-        } else {
-            final ArchiveAuthor archiveAuthor = new ArchiveAuthor(archiveAuthorDTO.getUuid(), archiveAuthorDTO.getCode(),
-                                                                  archiveAuthorDTO.getName(), archiveAuthorDTO.getDescription()); 
-            transfer.setArchiveAuthor(archiveAuthor);
-        }
-
+        transfer.setArchiveAuthor(archiveAuthor);
         transfer.setStorageUnitFormat(storageUnitFormat);
         transfer.setTransferDescription(transferDescription);
         transfer.setTransferId(transferId);
@@ -61,17 +57,17 @@ public class TransferConverter implements TransferConverterInterface {
         final String transferId = transfer.getTransferId();
         final String transferDescription = transfer.getTransferDescription();
         final AgreementDTO agreement = agreementConverter.fromAgreement(transfer.getAgreement());
-        final String archiveCreator = transfer.getArchiveAuthor() != null ? transfer.getArchiveAuthor().getName() : null;
         final boolean locked = transfer.isLocked();
         final String storageUnitFormat = transfer.getStorageUnitFormat();
         final UpdateInfo updateInfo = transfer.getUpdateInfo();
         final String updateDate = updateInfo.getLastUpdated().format(DateTimeFormatter.ofPattern("ddMMuuuu"));
         final UpdateInfoDTO updateInfoDTO = new UpdateInfoDTO(updateDate, updateInfo.getUpdatedBy(), updateInfo.getProcessSteps());
+        final ArchiveAuthorDTO archiveAuthor = archiveAuthorConverter.fromArchiveAuthor(transfer.getArchiveAuthor());
 
         transferDTO.setTransferId(transferId);
         transferDTO.setTransferDescription(transferDescription);
         transferDTO.setAgreement(agreement);
-        transferDTO.setArchiveAuthor(archiveCreator);
+        transferDTO.setArchiveAuthor(archiveAuthor);
         transferDTO.setLocked(locked);
         transferDTO.setStorageUnitFormat(storageUnitFormat);
         transferDTO.setUpdateInfo(updateInfoDTO);
@@ -83,14 +79,6 @@ public class TransferConverter implements TransferConverterInterface {
     @Override
     public List<TransferDTO> fromTransferList(final List<Transfer> transferList) {
         return transferList.stream().map(this::fromTransfer).collect(Collectors.toList());
-    }
-
-    private ArchiveAuthor createArchiveCreator(final String archiveCreatorString) {
-        if (archiveCreatorString != null && !archiveCreatorString.isEmpty()) {
-            return new ArchiveAuthor(UUID.randomUUID().toString(), null, archiveCreatorString, null);
-        }
-
-        return null;
     }
 
 }

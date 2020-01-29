@@ -9,6 +9,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.constraint.DateOrYearConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -64,5 +65,8 @@ public class PersonalDataDTO implements Serializable {
 
     @JsonProperty(value = "merknad")
     private String note;
+
+    @JsonProperty(value = "archiveAuthors")
+    private Set<ArchiveAuthorDTO> archiveAuthors;
 
 }

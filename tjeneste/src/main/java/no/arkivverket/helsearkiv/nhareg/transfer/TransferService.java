@@ -1,13 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverterInterface;
-import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorDAO;
 import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.user.UserDAO;
@@ -32,18 +30,13 @@ public class TransferService implements TransferServiceInterface {
     
     @Inject
     private TransferConverterInterface transferConverter;
-    
-    @Inject
-    private ArchiveAuthorDAO archiveAuthorDAO;
 
     @Inject
     private ArchiveAuthorConverterInterface archiveAuthorConverter;
     
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
-        final ArchiveAuthor archiveAuthor = archiveAuthorDAO.fetchByCode(transferDTO.getArchiveAuthor());
-        final ArchiveAuthorDTO archiveAuthorDTO = archiveAuthorConverter.fromArchiveAuthor(archiveAuthor);
-        final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveAuthorDTO);
+        final Transfer transfer = transferConverter.toTransfer(transferDTO);
         transfer.setUpdateInfo(createUpdateInfo(username));
         transfer.setDateGenerated(LocalDate.now());
         
@@ -79,13 +72,10 @@ public class TransferService implements TransferServiceInterface {
         existingTransfer.setTransferDescription(transferDTO.getTransferDescription());
         
         // Get the archive creator
-        final String archiveCreatorString = transferDTO.getArchiveAuthor();
-        final ArchiveAuthor creator = archiveAuthorDAO.fetchByCode(archiveCreatorString);
-        existingTransfer.setArchiveAuthor(creator);
+        final ArchiveAuthor archiveAuthor = archiveAuthorConverter.toArchiveAuthor(transferDTO.getArchiveAuthor());
         
+        existingTransfer.setArchiveAuthor(archiveAuthor);
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
-
-        // Set update info
         existingTransfer.setUpdateInfo(createUpdateInfo(username));
 
         // Update

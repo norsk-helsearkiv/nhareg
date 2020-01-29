@@ -1,6 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.archiveauthor;
 
-
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 

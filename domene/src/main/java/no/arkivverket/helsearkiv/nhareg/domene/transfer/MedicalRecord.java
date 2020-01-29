@@ -164,8 +164,11 @@ public class MedicalRecord implements Serializable {
     @XmlElement(name = "fanearkidentifikator")
     private String fanearkid;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
+    @ManyToMany
+    @JoinTable(name = "pasientjournal_arkivskaper",
+        joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
+        inverseJoinColumns = @JoinColumn(name = "arkivskaper_uuid")
+    )
     @XmlTransient
     private Set<ArchiveAuthor> archiveAuthors;
     
