@@ -106,7 +106,6 @@ angular.module('nha.register')
 
             httpService.create("diagnoser/" + $scope.pasientjournalDTO.persondata.uuid, $scope.formDiagnose)
                 .success(function (data) {
-                    console.log(data);
                     $scope.formDiagnose.uuid = data.uuid;
                     $scope.formDiagnose.oppdatertAv = data.oppdatertAv;
                     $scope.formDiagnose.oppdatertDato = data.oppdatertDato;
