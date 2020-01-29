@@ -7,14 +7,15 @@ angular.module('nha.home')
         $scope.isCurrentAuthorNew = true;
 
         $scope.selectArchiveAuthor = function (selectedArchiveAuthor, index) {
-            $scope.isCurrentAuthorNew = false;
             if (index === $scope.selectedArchiveAuthorRow) {
+                $scope.isCurrentAuthorNew = true;
                 $scope.selectedArchiveAuthorRow = null;
                 $scope.archiveAuthor.uuid = null;
                 $scope.archiveAuthor.code = null;
                 $scope.archiveAuthor.name = null;
                 $scope.archiveAuthor.description = null;
             } else {
+                $scope.isCurrentAuthorNew = false;
                 $scope.selectedArchiveAuthorRow = index;
                 $scope.archiveAuthor.uuid = selectedArchiveAuthor.uuid;
                 $scope.archiveAuthor.code = selectedArchiveAuthor.code;
@@ -35,6 +36,7 @@ angular.module('nha.home')
 
         var resetArchiveAuthor = function () {
             $scope.archiveAuthor = {};
+            $scope.isCurrentAuthorNew = true;
         };
 
         $scope.createArchiveAuthor = function () {
@@ -48,8 +50,19 @@ angular.module('nha.home')
                 });
         };
 
+        $scope.updateArchiveAuthor = function () {
+            httpService.update("authors", $scope.archiveAuthor)
+                .success(function () {
+                    $scope.getArchiveAuthors();
+                    resetArchiveAuthor();
+                })
+                .error(function (data, status) {
+                    errorService.errorCode(status);
+                });
+        };
+
         $scope.deleteArchiveAuthor = function () {
-            httpService.deleteElement("authors", $scope.archiveAuthor)
+            httpService.deleteElement("authors/" + $scope.archiveAuthor.uuid)
                 .success(function () {
                     $scope.getArchiveAuthors();
                     resetArchiveAuthor();

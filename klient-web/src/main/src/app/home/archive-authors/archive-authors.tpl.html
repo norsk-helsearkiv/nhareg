@@ -13,9 +13,9 @@
                         <thead>
                         <tr>
                             <th ts-criteria="uuid">{{ 'common.table.UUID' | translate }}</th>
-                            <th ts-criteria="kortkode">{{ 'home.CARD_CODE' | translate }}</th>
-                            <th ts-criteria="navn">{{ 'common.table.NAVN' | translate }}</th>
-                            <th ts-criteria="beskrivelse">{{ 'common.table.BESKRIVELSE' | translate }}</th>
+                            <th ts-criteria="code">{{ 'home.CARD_CODE' | translate }}</th>
+                            <th ts-criteria="name">{{ 'common.table.NAVN' | translate }}</th>
+                            <th ts-criteria="description">{{ 'common.table.BESKRIVELSE' | translate }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -57,7 +57,10 @@
         <div class="span span5 padding-bottom">
             <label>&nbsp;</label>
             <button class="form-control btn btn-primary" type="submit" data-ng-click="createArchiveAuthor()" data-ng-show="isCurrentAuthorNew">{{ 'home.brukere.CREATE' | translate }}</button>
-            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateArchiveAuthor()" data-ng-show="!isCurrentAuthorNew">{{ 'home.brukere.UPDATE' | translate }}</button>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateArchiveAuthor()" data-ng-show="!isCurrentAuthorNew">{{ 'home.brukere.LAGRE' | translate }}</button>
+        </div>
+        <div class="span span5 padding-bottom">
+            <label>&nbsp;</label>
             <button class="form-control btn btn-danger" type="submit" data-ng-click="deleteArchiveAuthor()" data-ng-show="!isCurrentAuthorNew">{{ 'home.brukere.DELETE' | translate }}</button>
         </div>
     </form>

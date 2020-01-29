@@ -324,11 +324,11 @@ angular.module('nha.home', [
       };
 
       $scope.actionLeggTilAvtale = function () {
-          modalService.nyModal('common/modal-service/new-agreement.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
+          modalService.nyModal('common/modal-service/agreement-modal.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
       };
 
       $scope.actionEndreAvtale = function (avtale) {
-          modalService.endreModal('common/modal-service/new-agreement.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
+          modalService.endreModal('common/modal-service/agreement-modal.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
       };
 
       //Avlevering
@@ -350,11 +350,11 @@ angular.module('nha.home', [
       };
 
       $scope.actionLeggTilAvlevering = function () {
-          modalService.nyModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering);
+          modalService.nyModal('common/modal-service/transfer-modal.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, $scope.allArchiveAuthors);
       };
 
       $scope.actionEndreAvlevering = function (avlevering) {
-          modalService.endreModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
+          modalService.endreModal('common/modal-service/transfer-modal.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
       };
 
       $scope.actionFjernAvlevering = function (elementType, id, element) {

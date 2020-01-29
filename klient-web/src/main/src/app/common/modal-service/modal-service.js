@@ -50,12 +50,13 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             gikk bra.
     */
 
-    function nyModal(tpl, list, relativUrl, valideringFunction) {
+    function nyModal(tpl, list, relativUrl, valideringFunction, allArchiveAuthors) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
                 "error" : {}
             };
+            $scope.allArchiveAuthors = allArchiveAuthors;
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
@@ -463,7 +464,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     }
                 }
 
-                $scope.formData.archiveAuthors.push($scope.formData.archiveAuthors);
+                $scope.formData.archiveAuthors.push($scope.formData.archiveAuthor);
                 $scope.formData.archiveAuthor = "";
                 return true;
             };

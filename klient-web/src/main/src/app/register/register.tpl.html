@@ -38,13 +38,13 @@
                 <!-- Add storage units -->
                 <div class="span col-sm-6">
                     <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">{{ 'register.STORAGE_UNITS' | translate }}</label>
-                    <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()">{{ formData.lagringsenheter.join(', ') }}</label>
+                    <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()" >{{ formData.lagringsenheter.join(', ') }}</label>
                 </div>
 
                 <!-- Add archive authors -->
                 <div class="span col-sm-6">
                     <label id="archiveAuthors" data-ng-class="{error: error['archiveAuthors'] !== undefined }">{{ 'register.ARCHIVE_AUTHORS' | translate }}</label>
-                    <label id="archiveAuthor" class="form-control" data-ng-click="manageArchiveAuthors()">{{ formData.archiveAuthors.join(', ') }}</label>
+                    <label id="archiveAuthor" class="form-control" data-ng-click="manageArchiveAuthors()">{{ showArchiveAuthors().join(', ') }}</label>
                 </div>
             </div>
             <hr/>

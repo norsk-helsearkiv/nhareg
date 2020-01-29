@@ -6,7 +6,7 @@
     <form>
         <div class="form-group">
             <label>{{ 'common.table.ARCHIVE_AUTHOR' | translate }}</label>
-            <select class="form-control" data-ng-model="formData.archiveAuthor" ng-options="item for item in allArchiveAuthors">
+            <select class="form-control" data-ng-model="formData.archiveAuthor" ng-options="item as (item.code + ' - ' + item.name) for item in allArchiveAuthors">
                 <option value="" disabled selected>Velg arkivskaper...</option>
             </select>
             <ul id="storage-unit-list">

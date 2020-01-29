@@ -317,7 +317,7 @@ angular.module('nha.register', [
                         $scope.formData.lagringsenheter.push(data);
                     }
 
-                    var modal = modalService.manageStorageUnits('common/modal-service/lagringsenhet-modal.tpl.html',
+                    var modal = modalService.manageStorageUnits('common/modal-service/storage-unit-modal.tpl.html',
                         function () {
                             //TODO, callback for NHA-038
                         },
@@ -362,6 +362,17 @@ angular.module('nha.register', [
                         break;
                 }
             });
+        };
+
+        $scope.showArchiveAuthors = function () {
+            var selectedArchiveAuthors = [];
+
+            if ($scope.formData.archiveAuthors) {
+                $scope.formData.archiveAuthors.map( function (element) {
+                    selectedArchiveAuthors.push(element.code);
+                });
+            }
+            return selectedArchiveAuthors;
         };
 
         //Setter verdier fra registrering-service
