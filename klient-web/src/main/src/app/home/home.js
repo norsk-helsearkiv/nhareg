@@ -101,13 +101,12 @@ angular.module('nha.home', [
           }
       });
 
-      /*httpService.getAll("archiveAuthors", false).success(function (data) {
-          $scope.archiveAuthors = data;
+      httpService.getAll("authors/all").success(function (data) {
+          $scope.allArchiveAuthors = data;
+          $scope.allArchiveAuthors = [{ navn: "arkivskaper123", kode: "kode123" }];
       }).error(function (status) {
           errorService.errorCode(status);
-      });*/
-
-      $scope.allArchiveAuthors = ["arkivskaper1", "arkivskaper2", "arkivskaper3"];
+      });
 
       $scope.size = listService.getSize();
 

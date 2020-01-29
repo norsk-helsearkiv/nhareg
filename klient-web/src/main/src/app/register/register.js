@@ -280,13 +280,11 @@ angular.module('nha.register', [
             errorService.errorCode(status);
         });
 
-        /*httpService.getAll("archiveAuthors", false).success(function (data) {
+        httpService.getAll("authors/all").success(function (data) {
             $scope.allArchiveAuthors = data;
         }).error(function (status) {
             errorService.errorCode(status);
-        });*/
-
-        $scope.allArchiveAuthors = ["arkivskaper1", "arkivskaper2", "arkivskaper3"];
+        });
 
         $scope.formData = {
             lagringsenheter: []

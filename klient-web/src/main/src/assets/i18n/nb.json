@@ -91,6 +91,9 @@
       "NYTTPASSORD": "Sett nytt passord ved neste pålogging",
       "HENT": "Hent",
       "LAGRE": "Lagre",
+      "UPDATE": "Oppdater",
+      "CREATE": "Opprett",
+      "DELETE": "Slett",
       "tooltip": {
         "ENDRE_BRUKER": "Klikk for å gjøre endringer på brukeren"
       }
