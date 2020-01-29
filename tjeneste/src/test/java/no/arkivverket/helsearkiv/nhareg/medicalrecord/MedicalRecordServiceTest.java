@@ -40,7 +40,7 @@ public class MedicalRecordServiceTest {
     public void updateMedicalRecord_newJournalNumber() {
         MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         medicalRecordDTO.getPersonalDataDTO().setRecordNumber("12345");
-        medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
+        medicalRecordService.update(medicalRecordDTO, USERNAME);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class MedicalRecordServiceTest {
 
         final String beskrivelse = "ny beskrivelse";
         medicalRecordDTO.setTransferDescription(beskrivelse);
-        medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
+        medicalRecordService.update(medicalRecordDTO, USERNAME);
 
         final MedicalRecordDTO updatedMedicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         assertNotNull(updatedMedicalRecordDTO);
@@ -73,7 +73,7 @@ public class MedicalRecordServiceTest {
         assertEquals(3, medicalRecordDTO.getPersonalDataDTO().getStorageUnits().length);
 
         // Do an update
-        medicalRecordService.updateMedicalRecord(medicalRecordDTO, USERNAME);
+        medicalRecordService.update(medicalRecordDTO, USERNAME);
 
         // Checks the number of diagnosis that are saved
         medicalRecordDTO = medicalRecordService.getByIdWithTransfer(id);

@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class TransferService implements TransferServiceInterface {
     
@@ -42,7 +41,7 @@ public class TransferService implements TransferServiceInterface {
     
     @Override
     public TransferDTO create(final TransferDTO transferDTO, final String username) {
-        final ArchiveAuthor archiveAuthor = archiveAuthorDAO.fetchByName(transferDTO.getArchiveCreator());
+        final ArchiveAuthor archiveAuthor = archiveAuthorDAO.fetchByCode(transferDTO.getArchiveAuthor());
         final ArchiveAuthorDTO archiveAuthorDTO = archiveAuthorConverter.fromArchiveAuthor(archiveAuthor);
         final Transfer transfer = transferConverter.toTransfer(transferDTO, archiveAuthorDTO);
         transfer.setUpdateInfo(createUpdateInfo(username));
@@ -80,20 +79,9 @@ public class TransferService implements TransferServiceInterface {
         existingTransfer.setTransferDescription(transferDTO.getTransferDescription());
         
         // Get the archive creator
-        final String archiveCreatorString = transferDTO.getArchiveCreator();
-        if (archiveCreatorString != null && !archiveCreatorString.isEmpty()) {
-            final ArchiveAuthor creator = archiveAuthorDAO.fetchByName(archiveCreatorString);
-            
-            if (creator != null) {
-                existingTransfer.setArchiveAuthor(creator);
-            } else {
-                final ArchiveAuthor archiveAuthor = new ArchiveAuthor(UUID.randomUUID().toString(),
-                                                                      null,
-                                                                      archiveCreatorString,
-                                                                      null);
-                existingTransfer.setArchiveAuthor(archiveAuthor);
-            }
-        }
+        final String archiveCreatorString = transferDTO.getArchiveAuthor();
+        final ArchiveAuthor creator = archiveAuthorDAO.fetchByCode(archiveCreatorString);
+        existingTransfer.setArchiveAuthor(creator);
         
         existingTransfer.setStorageUnitFormat(transferDTO.getStorageUnitFormat());
 

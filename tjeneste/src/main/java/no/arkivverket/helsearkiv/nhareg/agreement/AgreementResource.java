@@ -89,7 +89,7 @@ public class AgreementResource {
     public Response getTransfers(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
         final TransferDTO defaultTransferDTO = transferService.getDefaultTransfer(username);
-        final String archiveCreatorString = defaultTransferDTO == null ? null : defaultTransferDTO.getArchiveCreator();
+        final String archiveCreatorString = defaultTransferDTO == null ? null : defaultTransferDTO.getArchiveAuthor();
         final ArchiveAuthorDTO archiveAuthor = archiveCreatorService.getByName(archiveCreatorString);
         final Transfer defaultTransfer = transferConverter.toTransfer(defaultTransferDTO, archiveAuthor);
         final List<TransferDTO> transferDTOList = agreementService.getTransfersByAgreementId(id, defaultTransfer);

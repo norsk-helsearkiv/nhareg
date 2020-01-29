@@ -3,13 +3,13 @@ package no.arkivverket.helsearkiv.nhareg.archiveauthor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.List;
+import java.util.Set;
 
 public interface ArchiveAuthorServiceInterface {
     
     ArchiveAuthorDTO getByName(final String name);
 
-    List<ArchiveAuthorDTO> getAll(final MultivaluedMap<String, String> queryParameters);
+    Set<ArchiveAuthorDTO> getAll(final MultivaluedMap<String, String> queryParameters);
 
     ArchiveAuthorDTO create(final ArchiveAuthorDTO archiveAuthorDTO);
 

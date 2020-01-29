@@ -12,7 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
+import java.util.Set;
 
 @Stateless
 @Path("/authors")
@@ -23,20 +23,20 @@ public class ArchiveAuthorResource {
     private ArchiveAuthorServiceInterface authorService;
     
     @GET
-    @Path("/{code}")
+    @Path("/{code}/code")
     public ArchiveAuthorDTO getByCode(@PathParam("code") final String code) {
         return authorService.getByCode(code);
     }
     
     @GET
-    @Path("/{name}")
+    @Path("/{name}/name")
     public ArchiveAuthorDTO getByName(@PathParam("name") final String name) {
         return authorService.getByName(name);
     }
     
     @GET
     @Path("/all")
-    public List<ArchiveAuthorDTO> getAll(@Context UriInfo uriInfo) {
+    public Set<ArchiveAuthorDTO> getAll(@Context UriInfo uriInfo) {
         return authorService.getAll(uriInfo.getQueryParameters());
     }
     

@@ -48,8 +48,8 @@ public class MedicalRecordResource {
     public Response update(final MedicalRecordDTO medicalRecordDTO) {
         try {
             final String username = sessionContext.getCallerPrincipal().getName();
-            final MedicalRecordDTO updatedMedicalRecord = medicalRecordService.updateMedicalRecord(medicalRecordDTO,
-                                                                                                   username);
+            final MedicalRecordDTO updatedMedicalRecord = medicalRecordService.update(medicalRecordDTO,
+                                                                                      username);
             return Response.ok(updatedMedicalRecord).build();
         } catch (ValidationErrorException ve) {
             return Response.status(Response.Status.BAD_REQUEST).entity(ve.getValidationError()).build();

@@ -12,7 +12,7 @@
             <ul id="storage-unit-list">
                 <li data-ng-repeat="archiveAuthor in formData.archiveAuthors" data-ng-show="state !== 1">
                     <button type="button" class="btn" data-ng-click="removeArchiveAuthor(archiveAuthor)"></button>
-                    {{ archiveAuthor }}
+                    {{ archiveAuthor.code }}
                 </li>
             </ul>
         </div>

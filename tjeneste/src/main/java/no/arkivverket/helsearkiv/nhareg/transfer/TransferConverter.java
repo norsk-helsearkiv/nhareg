@@ -34,7 +34,7 @@ public class TransferConverter implements TransferConverterInterface {
         final boolean locked = transferDTO.isLocked();
 
         if (archiveAuthorDTO == null) {
-            final ArchiveAuthor newArchiveAuthor = this.createArchiveCreator(transferDTO.getArchiveCreator());
+            final ArchiveAuthor newArchiveAuthor = this.createArchiveCreator(transferDTO.getArchiveAuthor());
             transfer.setArchiveAuthor(newArchiveAuthor);
         } else {
             final ArchiveAuthor archiveAuthor = new ArchiveAuthor(archiveAuthorDTO.getUuid(), archiveAuthorDTO.getCode(),
@@ -71,7 +71,7 @@ public class TransferConverter implements TransferConverterInterface {
         transferDTO.setTransferId(transferId);
         transferDTO.setTransferDescription(transferDescription);
         transferDTO.setAgreement(agreement);
-        transferDTO.setArchiveCreator(archiveCreator);
+        transferDTO.setArchiveAuthor(archiveCreator);
         transferDTO.setLocked(locked);
         transferDTO.setStorageUnitFormat(storageUnitFormat);
         transferDTO.setUpdateInfo(updateInfoDTO);

@@ -1,14 +1,13 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverter;
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.*;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
 import java.time.LocalDateTime;
@@ -24,6 +23,8 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
     private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
 
     private DiagnosisConverterInterface diagnosisConverter = new DiagnosisConverter();
+    
+    private ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
     
     @Override
     public MedicalRecord fromPersonalDataDTO(final PersonalDataDTO personalDataDTO) {
@@ -150,7 +151,9 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
         final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
         final Set<DiagnosisDTO> diagnoses = diagnosisConverter.toDiagnosisDTOSet(diagnosisSet);
-
+        final Set<ArchiveAuthorDTO> authors = archiveAuthorConverter.fromArchiveAuthorCollection(medicalRecord.getArchiveAuthors());
+        
+        medicalRecordDTO.setArchiveAuthors(authors);
         medicalRecordDTO.setPersonalDataDTO(personalData);
         medicalRecordDTO.setTransferDescription(transfer.getTransferDescription());
         medicalRecordDTO.setTransferId(transfer.getTransferId());

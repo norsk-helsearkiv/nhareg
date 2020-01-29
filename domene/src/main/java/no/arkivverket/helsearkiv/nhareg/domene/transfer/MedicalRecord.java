@@ -164,10 +164,10 @@ public class MedicalRecord implements Serializable {
     @XmlElement(name = "fanearkidentifikator")
     private String fanearkid;
 
-    @OneToOne
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
     @XmlTransient
-    private ArchiveAuthor archiveAuthor;
+    private Set<ArchiveAuthor> archiveAuthors;
     
     public Set<Diagnosis> getDiagnosis() {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;

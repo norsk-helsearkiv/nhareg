@@ -22,7 +22,7 @@ public class TransferDTO implements Serializable {
     private AgreementDTO agreement;
 
     @JsonProperty(value = "arkivskaper")
-    private String archiveCreator;
+    private String archiveAuthor;
 
     @JsonProperty(value = "lagringsenhetformat")
     private String storageUnitFormat;

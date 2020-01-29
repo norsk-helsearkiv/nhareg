@@ -11,6 +11,8 @@ public interface MedicalRecordServiceInterface {
 
     MedicalRecord create(final MedicalRecord medicalRecord, final String username);
     
+    MedicalRecordDTO update(final MedicalRecordDTO medicalRecordDTO, final String username);
+    
     MedicalRecord delete(final String id, final String username);
     
     MedicalRecord getById(final String id);
@@ -18,8 +20,6 @@ public interface MedicalRecordServiceInterface {
     MedicalRecordDTO getByIdWithTransfer(final String id);
 
     ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id);
-
-    MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO, final String username);
     
     void validatePID(final String pid);
 

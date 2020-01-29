@@ -63,7 +63,7 @@ public class TransferServiceTest {
         final TransferDTO transferDTO = transferService.getById(id);
         
         assertNotNull(transferDTO);
-        transferDTO.setArchiveCreator(archiveCreator);
+        transferDTO.setArchiveAuthor(archiveCreator);
 
         transferService.update(transferDTO, USERNAME);
 

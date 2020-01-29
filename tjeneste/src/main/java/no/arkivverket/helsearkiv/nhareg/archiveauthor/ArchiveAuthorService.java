@@ -5,9 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static no.arkivverket.helsearkiv.nhareg.common.ParameterConverter.multivaluedToMap;
 
@@ -27,11 +25,11 @@ public class ArchiveAuthorService implements ArchiveAuthorServiceInterface {
     }
 
     @Override 
-    public List<ArchiveAuthorDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
+    public Set<ArchiveAuthorDTO> getAll(final MultivaluedMap<String, String> queryParameters) {
         final Map<String, String> mappedQueries = multivaluedToMap(queryParameters);
         List<ArchiveAuthor> archiveAuthors = archiveAuthorDAO.fetchAll(mappedQueries);
         
-        return archiveAuthorConverter.fromArchiveAuthorList(archiveAuthors);
+        return new HashSet<>(archiveAuthorConverter.fromArchiveAuthorCollection(archiveAuthors));
     }
 
     @Override 

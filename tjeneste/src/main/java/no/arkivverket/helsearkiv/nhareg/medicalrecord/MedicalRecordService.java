@@ -1,10 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
+import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
 import no.arkivverket.helsearkiv.nhareg.common.ParameterConverter;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
@@ -51,6 +53,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
     @Inject
     private MedicalRecordConverterInterface medicalRecordConverter;
 
+    @Inject
+    private ArchiveAuthorConverterInterface archiveAuthorConverter;
+
     @Override
     public MedicalRecord create(final MedicalRecord medicalRecord, final String username) {
         medicalRecord.setUuid(UUID.randomUUID().toString());
@@ -69,67 +74,19 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         return medicalRecordDAO.create(medicalRecord);
     }
 
-    /**
-     * "Deletes" a medical record in the database by setting the "slettet" value to true.
-     * @param id Id for the medical record to be deleted.
-     * @return The updated medical record.
-     */
     @Override
-    public MedicalRecord delete(final String id, final String username) {
-        final MedicalRecord medicalRecord = medicalRecordDAO.fetchSingleInstance(id);
-        medicalRecord.setDeleted(true);
-        medicalRecord.setUpdateInfo(createUpdateInfo(username));
-
-        return medicalRecordDAO.update(medicalRecord);
-    }
-
-    @Override
-    public MedicalRecord getById(final String id) {
-        return medicalRecordDAO.fetchById(id);
-    }
-
-    @Override
-    public MedicalRecordDTO getByIdWithTransfer(final String id) {
-        final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
-        final Transfer transfer = transferDAO.fetchTransferFromRecordId(id);
-        final Business business = businessDAO.fetchBusiness();
-
-        return medicalRecordConverter.toMedicalRecordDTO(medicalRecord, transfer, business.getBusinessName());
-    }
-
-    @Override
-    public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id) {
-        final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
-        final String pageString = mappedQueries.remove("page");
-        final String sizeString = mappedQueries.remove("size");
-        int page = 0;
-        int size = 0;
-        
-        if (pageString != null && sizeString != null) {
-            page = Integer.parseInt(pageString);
-            size = Integer.parseInt(sizeString);
-        }
-
-        if (id != null && !id.isEmpty()) {
-            mappedQueries.put("transferId", id);
-        }
-        
-        final List<MedicalRecord> recordList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
-        final int totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
-        final List<RecordTransferDTO> recordTransferDTOList = 
-            new ArrayList<>(medicalRecordConverter.toRecordTransferDTOList(recordList));
-        
-        return new ListObject<>(recordTransferDTOList, totalSize, page, size);
-    }
-
-    @Override
-    public MedicalRecordDTO updateMedicalRecord(final MedicalRecordDTO medicalRecordDTO, final String username) {
+    public MedicalRecordDTO update(final MedicalRecordDTO medicalRecordDTO, final String username) {
         // Validation - Personal data
         validateBaseData(medicalRecordDTO.getPersonalDataDTO());
 
         // Converting
         final MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(medicalRecordDTO.getPersonalDataDTO());
         createAndAttachStorageUnit(medicalRecord.getStorageUnit());
+    
+        // Add ArchiveAuthors
+        final Set<ArchiveAuthorDTO> authorDTOs = medicalRecordDTO.getArchiveAuthors();
+        final Set<ArchiveAuthor> archiveAuthors = archiveAuthorConverter.toArchiveAuthorSet(authorDTOs);
+        medicalRecord.setArchiveAuthors(archiveAuthors);
 
         final MedicalRecord original = medicalRecordDAO.fetchById(medicalRecord.getUuid());
         if (original != null) {
@@ -174,6 +131,59 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final String business = businessDAO.fetchBusiness().getBusinessName();
 
         return medicalRecordConverter.toMedicalRecordDTO(updatedMedicalRecord, transfer, business);
+    }
+
+    /**
+     * "Deletes" a medical record in the database by setting the "slettet" value to true.
+     * @param id Id for the medical record to be deleted.
+     * @return The updated medical record.
+     */
+    @Override
+    public MedicalRecord delete(final String id, final String username) {
+        final MedicalRecord medicalRecord = medicalRecordDAO.fetchSingleInstance(id);
+        medicalRecord.setDeleted(true);
+        medicalRecord.setUpdateInfo(createUpdateInfo(username));
+
+        return medicalRecordDAO.update(medicalRecord);
+    }
+
+    @Override
+    public MedicalRecord getById(final String id) {
+        return medicalRecordDAO.fetchById(id);
+    }
+
+    @Override
+    public MedicalRecordDTO getByIdWithTransfer(final String id) {
+        final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
+        final Transfer transfer = transferDAO.fetchTransferFromRecordId(id);
+        final Business business = businessDAO.fetchBusiness();
+
+        return medicalRecordConverter.toMedicalRecordDTO(medicalRecord, transfer, business.getBusinessName());
+    }
+
+    @Override
+    public ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id) {
+        final Map<String, String> mappedQueries = ParameterConverter.multivaluedToMap(queryParameters);
+        final String pageString = mappedQueries.remove("page");
+        final String sizeString = mappedQueries.remove("size");
+        int page = 0;
+        int size = 0;
+
+        if (pageString != null && sizeString != null) {
+            page = Integer.parseInt(pageString);
+            size = Integer.parseInt(sizeString);
+        }
+
+        if (id != null && !id.isEmpty()) {
+            mappedQueries.put("transferId", id);
+        }
+
+        final List<MedicalRecord> recordList = medicalRecordDAO.fetchAllRecordTransfers(mappedQueries, page, size);
+        final int totalSize = medicalRecordDAO.fetchAllRecordTransferCount(mappedQueries);
+        final List<RecordTransferDTO> recordTransferDTOList =
+            new ArrayList<>(medicalRecordConverter.toRecordTransferDTOList(recordList));
+
+        return new ListObject<>(recordTransferDTOList, totalSize, page, size);
     }
 
     @Override
@@ -233,7 +243,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
                 validationError.add(pidError);
             }
         }
-    
+
         final Integer fieldLength = configurationDAO.getInt(ConfigurationDAO.CONFIG_FANEARKID);
         final ValidationError fanearkidError = FanearkidValidation.validate(personalDataDTO, fieldLength);
         if (fanearkidError != null) {
@@ -249,9 +259,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Create new storage units, ignores existing units
         storageUnits.forEach(storageUnitDAO::create);
 
-        final List<StorageUnit> existingStorageUnits = storageUnits.stream()
-                                                                   .map(unit -> storageUnitDAO.fetchById(unit.getId()))
-                                                                   .collect(Collectors.toList());
+        final Set<StorageUnit> existingStorageUnits = storageUnits.stream()
+                                                                  .map(unit -> storageUnitDAO.fetchById(unit.getId()))
+                                                                  .collect(Collectors.toSet());
         storageUnits.clear();
         storageUnits.addAll(existingStorageUnits);
     }

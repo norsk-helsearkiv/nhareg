@@ -103,7 +103,6 @@ angular.module('nha.home', [
 
       httpService.getAll("authors/all").success(function (data) {
           $scope.allArchiveAuthors = data;
-          $scope.allArchiveAuthors = [{ navn: "arkivskaper123", kode: "kode123" }];
       }).error(function (status) {
           errorService.errorCode(status);
       });
