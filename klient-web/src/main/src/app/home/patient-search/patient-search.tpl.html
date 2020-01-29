@@ -68,7 +68,7 @@
             <tbody>
             <tr data-ng-repeat="avlevering in avleveringer" ts-repeat>
                 <td>{{ avlevering.avleveringsidentifikator }}</td>
-                <td>{{ avlevering.arkivskaper }}</td>
+                <td>{{ avlevering.arkivskaper.name }}</td>
                 <td>{{ avlevering.avleveringsbeskrivelse }}</td>
                 <td>
                     <button class="icon favorite" data-ng-click="actionSettDefaultAvlevering(avlevering)" favorite-class avlevering="avlevering"

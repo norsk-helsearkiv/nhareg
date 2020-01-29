@@ -80,7 +80,7 @@ public class MedicalRecord implements Serializable {
 
     @NotNull
     @Valid
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "kjonn")
     @XmlElement(required = true, name = "kjonn")
     @XmlJavaTypeAdapter(value = GenderAdapter.class)
