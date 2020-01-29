@@ -42,6 +42,15 @@ angular.module('nha.home', [
               }
           }
       });
+      $stateProvider.state('archiveAuthors', {
+          url: '/arkivskapere',
+          views: {
+              "main": {
+                  controller: 'HomeCtrl',
+                  templateUrl: 'home/home.tpl.html'
+              }
+          }
+      });
 
   })
 
@@ -52,6 +61,7 @@ angular.module('nha.home', [
           $scope.sokVisible = false;
           $scope.lagringsenheterVisible = false;
           $scope.brukereVisible = false;
+          $scope.arkivskapereVisible = false;
 
           var path = $location.path();
 
@@ -61,6 +71,8 @@ angular.module('nha.home', [
               $scope.lagringsenheterVisible = true;
           } else if (path === '/brukere') {
               $scope.brukereVisible = true;
+          } else if (path === '/arkivskapere') {
+              $scope.arkivskapereVisible = true;
           }
       });
 
@@ -87,6 +99,13 @@ angular.module('nha.home', [
           if (data === 'true') {
               $scope.endrePassord();
           }
+      });
+
+      httpService.getAll("authors/all").success(function (data) {
+          $scope.allArchiveAuthors = data;
+          $scope.allArchiveAuthors = [{ navn: "arkivskaper123", kode: "kode123" }];
+      }).error(function (status) {
+          errorService.errorCode(status);
       });
 
       $scope.size = listService.getSize();
@@ -253,7 +272,7 @@ angular.module('nha.home', [
         .success(function (data) {
             $scope.virksomhet = data;
         }).error(function (data, status) {
-          errorService.errorCode(status);
+            errorService.errorCode(status);
       });
 
       //Avtale
@@ -336,7 +355,7 @@ angular.module('nha.home', [
       };
 
       $scope.actionEndreAvlevering = function (avlevering) {
-          modalService.endreModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering);
+          modalService.endreModal('common/modal-service/new-delivery.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
       };
 
       $scope.actionFjernAvlevering = function (elementType, id, element) {

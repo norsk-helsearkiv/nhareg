@@ -125,14 +125,11 @@ stages:
         SourceFolder: $(System.DefaultWorkingDirectory)
         TargetFolder: $(Build.ArtifactStagingDirectory)
         flattenFolders: true
-    - task: CopyFiles@2
-      name: copy_sql
-      displayName: Copying SQL files
+    - task: PublishPipelineArtifact@1
       inputs:
-        Contents: '**/nha-db/*.sql'
-        SourceFolder: $(Agent.BuildDirectory)
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/SQL/'
-        flattenFolders: true
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'dockerArtifact'
+        publishLocation: 'pipeline'
   - job: fetch_installers
     displayName: Fetching installers
     condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
@@ -155,7 +152,11 @@ stages:
       inputs:
         workingDirectory: '$(Build.ArtifactStagingDirectory)'
         script: 'curl -L -O https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-community-5.7.28.0.msi'
-
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'installerArtifact'
+        publishLocation: 'pipeline'
 ### STAGING ###
 - stage: Staging
   dependsOn: Package
@@ -165,6 +166,11 @@ stages:
     displayName: Stage installer zip
     condition: and(succeeded(),  ne(variables['SKIP_FIRST_TIME_ARTIFACT'], 'true'))
     steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifactName: 'installerArtifact'
+        buildType: 'current'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
     - task: Bash@3
       condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'master'))
       inputs:
@@ -190,6 +196,11 @@ stages:
   - job: publish_image
     displayName: Publish image
     steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifactName: 'dockerArtifact'
+        buildType: 'current'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
     - task: PublishBuildArtifacts@1
       name: stage_image_artifact
       displayName: Stage image artifact
@@ -214,4 +225,3 @@ stages:
         sourceGitRepositoryPersonalAccessToken: $(sourceGitRepositoryToken)
         destinationGitRepositoryUri: 'https://github.com/norsk-helsearkiv/nhareg.git'
         destinationGitRepositoryPersonalAccessToken: $(destGitRepositoryToken)
-

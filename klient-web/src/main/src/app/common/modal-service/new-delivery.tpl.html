@@ -11,9 +11,10 @@
             <label class="label-error" data-ng-show="formData.error.avleveringsidentifikator">{{formData.error.avleveringsidentifikator}}</label>
         </div>
         <div class="form-group">
-            <label>{{ 'common.table.AVLEVERING_SKAPER' | translate }}</label>
-            <input type="text" class="form-control" ng-model="formData.arkivskaper">
-            <label class="label-error" data-ng-show="formData.error.arkivskaper">{{formData.error.arkivskaper}}</label>
+            <label>{{ 'common.table.ARKIVSKAPER' | translate }}</label>
+            <select class="form-control" data-ng-model="formData.arkivskaper" ng-options="item.kode as (item.kode + ' - ' + item.navn) for item in allArchiveAuthors">
+                <option value="" disabled selected>Velg arkivskaper...</option>
+            </select>
         </div>
         <div class="form-group">
             <label>{{ 'common.table.AVLEVERING_BESKRIVELSE' | translate }}</label>

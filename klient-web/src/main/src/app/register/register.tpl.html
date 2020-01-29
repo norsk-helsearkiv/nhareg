@@ -34,13 +34,21 @@
         </h1>
 
         <div class="well">
-            <!-- Add storage units -->
-            <div>
-                <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">{{ 'register.STORAGE_UNITS' | translate }}</label>
-                <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()">{{ formData.lagringsenheter.join(', ') }}</label>
+            <div class="row padding-bottom">
+                <!-- Add storage units -->
+                <div class="span col-sm-6">
+                    <label id="lagringsenheter" data-ng-class="{error: error['lagringsenheter'] !== undefined }">{{ 'register.STORAGE_UNITS' | translate }}</label>
+                    <label id="lagringsenhet" class="form-control" data-ng-click="manageStorageUnits()">{{ formData.lagringsenheter.join(', ') }}</label>
+                </div>
+
+                <!-- Add archive authors -->
+                <div class="span col-sm-6">
+                    <label id="archiveAuthors" data-ng-class="{error: error['archiveAuthors'] !== undefined }">{{ 'register.ARCHIVE_AUTHORS' | translate }}</label>
+                    <label id="archiveAuthor" class="form-control" data-ng-click="manageArchiveAuthors()">{{ formData.archiveAuthors.join(', ') }}</label>
+                </div>
             </div>
             <hr/>
-            <div class="row">
+            <div class="row padding-bottom">
                 <!-- Fanearkid -->
                 <div class="span span4">
                     <label id="fanearkid" data-ng-class="{error: error['fanearkid'] !== undefined }">Fanearkid</label>
@@ -66,9 +74,9 @@
                 </div>
             </div>
             <hr/>
-            <div class="row">
+            <div class="row padding-bottom">
                 <!-- Navn -->
-                <div class="span span43 padding-bottom">
+                <div class="span span43">
                     <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'register.NAME' | translate }}</label>
                     <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
                 </div>
@@ -81,7 +89,7 @@
                 </div>
             </div>
             <hr/>
-            <div class="row">
+            <div class="row padding-bottom">
                 <!-- Født dato -->
                 <div class="span span4">
                     <label id="fodt" data-ng-class="{error: error['fodt'] !== undefined }">Født</label>
@@ -123,7 +131,7 @@
             <label>Diagnoser</label>
         </div>
         <div ng-controller="RegisterDiagnosisCtrl" class="well" data-ng-show="state !== 0">
-            <div class="row">
+            <div class="row padding-bottom">
                 <!-- Diagnosedato -->
                 <div class="span span4">
                     <label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">

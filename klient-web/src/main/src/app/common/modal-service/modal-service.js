@@ -128,17 +128,18 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function endreModal(tpl, list, relativUrl, valideringFunction, entitet) {
+    function endreModal(tpl, list, relativUrl, valideringFunction, entitet, allArchiveAuthors) {
         template.templateUrl = tpl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = entitet;
             $scope.erEndring = true;
+            $scope.allArchiveAuthors = allArchiveAuthors;
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
                 if(success) {
                     httpService.update(relativUrl, $scope.formData)
-                        .error(function(data, status, headers, config) {
+                        .error(function(data, status) {
                             errorService.errorCode(status);
                         });
                     $modalInstance.close();
@@ -425,6 +426,57 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
+    function manageArchiveAuthors(templateUrl, callback, selectedArchiveAuthors, allArchiveAuthors){
+        template.templateUrl = templateUrl;
+
+        template.controller = function( $scope, $modalInstance){
+            $scope.allArchiveAuthors = allArchiveAuthors;
+            $scope.formData = {
+                "archiveAuthors": selectedArchiveAuthors
+            };
+
+            $scope.save = function(){
+                if ($scope.newArchiveAuthor()){
+                    callback($scope.formData);
+                    $modalInstance.close();
+                }
+            };
+
+            $scope.removeArchiveAuthor = function(archiveAuthor){
+                for (var i = 0; i < $scope.formData.archiveAuthors.length; i++) {
+                    if (archiveAuthor === $scope.formData.archiveAuthors[i]) {
+                        $scope.formData.archiveAuthors.splice(i, 1);
+                        document.getElementById("archiveAuthor").focus();
+                    }
+                }
+            };
+
+            $scope.newArchiveAuthor = function() {
+                if ($scope.formData.archiveAuthor === undefined || $scope.formData.archiveAuthor === '') {
+                    return true;
+                }
+
+                for (var i = 0; i < $scope.formData.archiveAuthors.length; i++) {
+                    if ($scope.formData.archiveAuthor === $scope.formData.archiveAuthors[i]) {
+                        $scope.formData.archiveAuthor = "";
+                        return true;
+                    }
+                }
+
+                $scope.formData.archiveAuthors.push($scope.formData.archiveAuthors);
+                $scope.formData.archiveAuthor = "";
+                return true;
+            };
+
+            $scope.cancel = function(){
+                $modalInstance.close();
+            };
+        };
+
+        template.controller.$inject = ['$scope', '$modalInstance'];
+
+        return $modal.open(template);
+    }
 
     return {
         deleteModal : deleteModal,
@@ -434,6 +486,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         warningMessageModal : warningMessageModal,
         velgModal : velgModal,
         manageStorageUnits : manageStorageUnits,
+        manageArchiveAuthors : manageArchiveAuthors,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
         changeStorageUnit : changeStorageUnit,
         endrePassord : endrePassord

@@ -51,6 +51,9 @@
                         <li data-ng-class="{ active: brukereVisible}" data-access-level-admin>
                             <a href="#/brukere">{{'home.BRUKERADMIN' | translate }}</a>
                         </li>
+                        <li data-ng-class="{ active: arkivskapereVisible}" data-access-level-admin>
+                            <a href="#/arkivskapere">{{'home.ARCHIVE_AUTHORS' | translate }}</a>
+                        </li>
                         <li>
                             <a href data-ng-click="endrePassord()">{{'home.brukere.ENDRE_PASSORD' | translate }}</a>
                         </li>
@@ -63,6 +66,7 @@
             <div ng-include src="'home/patient-search/patient-search.tpl.html'" data-ng-show="sokVisible"></div>
             <div ng-include src="'home/storage-units/storage-units.tpl.html'" data-ng-show="lagringsenheterVisible && userrole === 'admin'"></div>
             <div ng-include src="'home/user-admin/user-admin.tpl.html'" data-ng-show="brukereVisible && userrole === 'admin'"></div>
+            <div ng-include src="'home/archive-authors/archive-authors.tpl.html'" data-ng-show="arkivskapereVisible && userrole === 'admin'"></div>
 
         </div>
     </div>
