@@ -6,7 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInterface;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class ConverterTest {
     
     @Test
     public void toMedicalRecordTest() {
-        final PersonalDataDTO dataDTO = new PersonalDataDTO();
+        final MedicalRecordDTO dataDTO = new MedicalRecordDTO();
         dataDTO.setDead("2009");
         dataDTO.setPid("01010942345");
         dataDTO.setBorn("2009");
@@ -46,7 +46,7 @@ public class ConverterTest {
         dataDTO.setFirstContact("2009");
         dataDTO.setLastContact("2009");
 
-        MedicalRecord medicalRecord = medicalRecordConverter.fromPersonalDataDTO(dataDTO);
+        MedicalRecord medicalRecord = medicalRecordConverter.fromMedicalRecordDTO(dataDTO);
 
         assertEquals(dataDTO.getPid(), medicalRecord.getPid());
         final Integer year = medicalRecord.getDead().getAsYear();
@@ -56,10 +56,10 @@ public class ConverterTest {
 
     @Test
     public void mapToPersonalDataDTOTest() {
-        final PersonalDataDTO personalDataDTO = medicalRecordConverter.toPersonalDataDTO(getMedicalRecord());
-        assertEquals(1, personalDataDTO.getStorageUnits().length);
-        assertEquals("01010942345", personalDataDTO.getPid());
-        assertEquals("Natalie", personalDataDTO.getName());
+        final MedicalRecordDTO medicalRecordDTO = medicalRecordConverter.toMedicalRecordDTO(getMedicalRecord());
+        assertEquals(1, medicalRecordDTO.getStorageUnits().length);
+        assertEquals("01010942345", medicalRecordDTO.getPid());
+        assertEquals("Natalie", medicalRecordDTO.getName());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ConverterTest {
 
         storageUnit.setId("Boks1");
         storageUnit.setUuid("lagring-1-boks-1");
-        medicalRecord.getStorageUnit().add(storageUnit);
+        medicalRecord.getStorageUnits().add(storageUnit);
 
         final Gender gender = new Gender();
         gender.setCode("K");

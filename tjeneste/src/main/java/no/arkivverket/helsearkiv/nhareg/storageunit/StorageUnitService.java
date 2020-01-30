@@ -89,9 +89,9 @@ public class StorageUnitService implements StorageUnitServiceInterface {
     public void updateRecordStorageUnit(final List<String> medicalRecordIds, final StorageUnitDTO storageUnitDTO) {
         for (final String recordId: medicalRecordIds) {
             final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(recordId);
-            medicalRecord.getStorageUnit().clear();
+            medicalRecord.getStorageUnits().clear();
             final StorageUnit storageUnit = storageUnitConverter.toStorageUnit(storageUnitDTO);
-            medicalRecord.getStorageUnit().add(storageUnit);
+            medicalRecord.getStorageUnits().add(storageUnit);
         }
     }
 

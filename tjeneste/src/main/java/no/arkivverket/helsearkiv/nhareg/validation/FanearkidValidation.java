@@ -1,12 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.validation;
 
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 public class FanearkidValidation {
 
-    public static ValidationError validate(final PersonalDataDTO personalDataDTO, final Integer fieldLength) {
-        final Long fanearkid = personalDataDTO.getFanearkid();
+    public static ValidationError validate(final MedicalRecordDTO medicalRecordDTO, final Integer fieldLength) {
+        final Long fanearkid = medicalRecordDTO.getFanearkid();
         
         if (fieldLength != null) {
             if (fanearkid == null) {

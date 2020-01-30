@@ -37,10 +37,11 @@ public class MedicalRecordResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public MedicalRecord create(final MedicalRecord medicalRecord) {
+    public Response create(final MedicalRecordDTO medicalRecordDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
-        
-        return medicalRecordService.create(medicalRecord, username);
+        final MedicalRecordDTO createdRecord = medicalRecordService.create(medicalRecordDTO, username);
+
+        return Response.ok(createdRecord).build();
     }
 
     @PUT

@@ -25,7 +25,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
@@ -46,7 +45,6 @@ public class RESTDeployment {
                                // DTOs
                                .addPackage(AgreementDTO.class.getPackage())
                                .addPackage(MedicalRecordDTO.class.getPackage())
-                               .addPackage(PersonalDataDTO.class.getPackage())
                                .addPackage(UserDTO.class.getPackage())
                                // Entity
                                .addPackage(EntityDAO.class.getPackage())

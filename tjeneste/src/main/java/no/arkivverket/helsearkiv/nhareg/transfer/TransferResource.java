@@ -97,40 +97,6 @@ public class TransferResource {
         return transferService.getAll(uriInfo.getQueryParameters());
     }
 
-    /**
-     * Gets medical records for a transfer. Only returns medical records for a transfer that is not deleted. 
-     * Can also be paged with 'page' and 'size'.
-     * 
-     * @param id transfer id to fetch
-     * @param uriInfo Uri information containing query parameters
-     * @return List of Medical Records in a {@link ListObject}
-     */
-    @GET
-    @Path("/{id}/pasientjournaler")
-    @Produces(MediaType.APPLICATION_JSON)
-    public ListObject getMedicalRecordList(@PathParam("id") String id, @Context UriInfo uriInfo) {
-        final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
-        
-        return medicalRecordService.getAllWithTransfers(queryParameters, id);
-    }
-
-    /**
-     * Create a new medical record under a given transfer.
-     *
-     * @param id Create medical record under transfer matching this id.
-     * @param personalDataDTO Personal information used to create medical record.
-     * @return Response Containing the final DTO object.
-     */
-    @POST
-    @Path("/{id}/pasientjournaler")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createMedicalRecord(@PathParam("id") String id, final PersonalDataDTO personalDataDTO) {
-        final String username = sessionContext.getCallerPrincipal().getName();
-        final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, personalDataDTO, username);
-
-        return Response.ok(medicalRecordDTO).build();
-    }
-
     @GET
     @Path("/{id}/leveranse")
     @Produces(MediaType.APPLICATION_XML)

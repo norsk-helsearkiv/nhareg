@@ -1,9 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.exception;
 
-/**
- * ExceptionMapper for å gi klienter respons på IllegalArgumentException.
- * @author arnfinns
- */
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;

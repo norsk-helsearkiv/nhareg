@@ -5,7 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import java.time.LocalDate;
@@ -65,12 +65,12 @@ public class DateValidation {
                                                final ConfigurationDAO configurationDAO) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
 
-        if (personalDataDTO == null) {
+        if (medicalRecordDTO == null) {
             return validationErrors;
         }
 
-        final String born = personalDataDTO.getBorn();
-        final String dead = personalDataDTO.getDead();
+        final String born = medicalRecordDTO.getBorn();
+        final String dead = medicalRecordDTO.getDead();
         
         if (checkMorsUnknown(born, "mors") && checkMorsUnknown(born, "m")) {
             validationErrors.add(new ValidationError("fodt", "DagEllerAar"));
@@ -91,30 +91,30 @@ public class DateValidation {
         final LocalDate minLim = LocalDate.now().minusYears(maxAge);
         
         //skjema 1
-        final List<ValidationError> pidErrors = pidCheck(personalDataDTO, lowLim, maxLim);
+        final List<ValidationError> pidErrors = pidCheck(medicalRecordDTO, lowLim, maxLim);
         validationErrors.addAll(pidErrors);
 
         //skjema 2a
         if (validUnknown.contains(born)) { //mors sjekkes i metoden pga feilmelding hvis den mangler
-            final List<ValidationError> errors = recordDateUnknownFAndMors(personalDataDTO, lowLim, maxLim);
+            final List<ValidationError> errors = recordDateUnknownFAndMors(medicalRecordDTO, lowLim, maxLim);
             validationErrors.addAll(errors);
         }
 
         //skjema 2b
         if (validMors.contains(dead) && check(born)) {
-            final List<ValidationError> errors = recordDateKnownFDateUnknownDeath(personalDataDTO, minLim);
+            final List<ValidationError> errors = recordDateKnownFDateUnknownDeath(medicalRecordDTO, minLim);
             validationErrors.addAll(errors);
         }
 
         //skjema 2c
         if (validUnknown.contains(born) && check(dead)) {
-            final List<ValidationError> errors = recordDateKnownUnknownBornDate(personalDataDTO, lowLim, maxLim);
+            final List<ValidationError> errors = recordDateKnownUnknownBornDate(medicalRecordDTO, lowLim, maxLim);
             validationErrors.addAll(errors);
         }
 
         //skjema 2d
         if (check(born) && check(dead)) {
-            final List<ValidationError> errors = recordDateKnownBornAndMors(personalDataDTO, lowLim, maxLim);
+            final List<ValidationError> errors = recordDateKnownBornAndMors(medicalRecordDTO, lowLim, maxLim);
             validationErrors.addAll(errors);
         }
 
@@ -122,7 +122,7 @@ public class DateValidation {
     }
 
     //skjema 01
-    private ArrayList<ValidationError> pidCheck(final PersonalDataDTO person,
+    private ArrayList<ValidationError> pidCheck(final MedicalRecordDTO person,
                                                 final LocalDate lowLim,
                                                 final LocalDate maxLim) {
         final ArrayList<ValidationError> errors = new ArrayList<>();

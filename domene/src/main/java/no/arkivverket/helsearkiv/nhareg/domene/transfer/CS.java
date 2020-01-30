@@ -24,10 +24,6 @@ import java.io.Serializable;
     "code",
     "displayName"
 })
-// @XmlSeeAlso({
-//     Gender.class,
-//     SocialSecurityCode.class
-// })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,7 +37,6 @@ public class CS implements Serializable {
     @XmlElement(required = true)
     protected String code;
     
-    @NotNull
     @XmlElement(required = true)
     protected String displayName;
 

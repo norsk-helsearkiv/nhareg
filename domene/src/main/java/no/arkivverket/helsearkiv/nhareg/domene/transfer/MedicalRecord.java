@@ -35,7 +35,7 @@ import java.util.Set;
     "lastContact",
     "note",
     "diagnosis",
-    "storageUnit",
+    "storageUnits",
     "additionalInfo",
 })
 @Data
@@ -80,7 +80,7 @@ public class MedicalRecord implements Serializable {
 
     @NotNull
     @Valid
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne
     @JoinColumn(name = "kjonn")
     @XmlElement(required = true, name = "kjonn")
     @XmlJavaTypeAdapter(value = GenderAdapter.class)
@@ -123,12 +123,12 @@ public class MedicalRecord implements Serializable {
     @Size(min = 1)
     @XmlElement(required = true, name = "lagringsenhet")
     @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "pasientjournal_lagringsenhet",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
     )
-    private Set<StorageUnit> storageUnit;
+    private Set<StorageUnit> storageUnits;
 
     @Embedded
     @XmlTransient
@@ -176,8 +176,8 @@ public class MedicalRecord implements Serializable {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;
     }
 
-    public Set<StorageUnit> getStorageUnit() {
-        return storageUnit == null ? storageUnit = new HashSet<>() : storageUnit;
+    public Set<StorageUnit> getStorageUnits() {
+        return storageUnits == null ? storageUnits = new HashSet<>() : storageUnits;
     }
 
     public AdditionalInfo getAdditionalInfo() {

@@ -292,7 +292,7 @@ angular.module('nha.register', [
 
         $scope.formDiagnose = {};
         $scope.avlevering = registerService.getAvlevering();
-        $scope.pasientjournalDTO = registerService.getPasientjournalDTO();
+        $scope.medicalRecordDTO = registerService.getPasientjournalDTO();
         $scope.avleveringsidentifikator = registerService.getAvleveringsidentifikator();
         $scope.virksomhet = registerService.getVirksomhet();
         $scope.valgtAvtale = registerService.getValgtAvtale();
@@ -301,12 +301,11 @@ angular.module('nha.register', [
         $scope.manageStorageUnits = function () {
             var lagringsenhetmaske;
 
-            if ($scope.avlevering.lagringsenhetformat) {
-                lagringsenhetmaske = $scope.avlevering.lagringsenhetformat;
-            } else if ($scope.pasientjournalDTO.lagringsenhetformat) {
-                lagringsenhetmaske = $scope.pasientjournalDTO.lagringsenhetformat;
+            var avlevering = registerService.getAvlevering();
+            if (avlevering !== null && avlevering !== undefined) {
+                lagringsenhetmaske = avlevering.lagringsenhetformat;
             }
-
+            
             if ($scope.formData.lagringsenheter === undefined || $scope.formData.lagringsenheter === null) {
                 $scope.formData.lagringsenheter = [];
             }
@@ -376,19 +375,19 @@ angular.module('nha.register', [
         };
 
         //Setter verdier fra registrering-service
-        if ($scope.avlevering && !$scope.pasientjournalDTO) {
+        if ($scope.avlevering && !$scope.medicalRecordDTO) {
             //Ny pasientjouranl
             $scope.prevState = 0;
             $scope.state = 0;
             $scope.formData.archiveAuthors = $scope.avlevering.archiveAuthor;
             $scope.manageStorageUnits();
 
-        } else if ($scope.pasientjournalDTO !== undefined) {
+        } else if ($scope.medicalRecordDTO !== undefined) {
             //Endre pasientjournal
             $scope.prevState = 2;
             $scope.state = 2;
 
-            $scope.formData = $scope.pasientjournalDTO.persondata;
+            $scope.formData = $scope.medicalRecordDTO;
 
             //Håndtering av kjønn - Sender kode til server, viser Tekst basert på i18n
             if ($scope.formData.kjonn !== undefined) {
@@ -483,8 +482,8 @@ angular.module('nha.register', [
                 //TODO popup for å finne lagringsenhet..
                 httpService.create("avleveringer/" + $scope.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
                     .success(function (data) {
-                        $scope.pasientjournalDTO = data;
-                        $scope.formData = data.persondata;
+                        $scope.medicalRecordDTO = data;
+                        $scope.formData = data;
                         $scope.formData.kjonn = kjonn;
                         $scope.prevState = $scope.state;
                         $scope.state = 2;
@@ -496,11 +495,12 @@ angular.module('nha.register', [
 
             //Endre
             if ($scope.state === 2) {
-                httpService.update("pasientjournaler/", $scope.pasientjournalDTO)
+                $scope.formData.avleveringsidentifikator = $scope.avleveringsidentifikator;
+                httpService.update("pasientjournaler/", $scope.medicalRecordDTO)
                     .success(function (data) {
                         var lagringsenheter = $scope.formData.lagringsenheter;
-                        $scope.pasientjournalDTO = data;
-                        $scope.formData = data.persondata;
+                        $scope.medicalRecordDTO = data;
+                        $scope.formData = data;
                         $scope.formData.kjonn = kjonn;
                         $scope.formData.lagringsenheter = lagringsenheter;
                         $scope.prevState = $scope.state;
@@ -513,10 +513,11 @@ angular.module('nha.register', [
             }
             //start en ny journal
             if ($scope.state === 3) {
-                if (!$scope.pasientjournalDTO) {
+                if (!$scope.medicalRecordDTO) {
                     return;
                 }
-                httpService.update("pasientjournaler/", $scope.pasientjournalDTO)
+                $scope.formData.avleveringsidentifikator = $scope.avleveringsidentifikator;
+                httpService.update("pasientjournaler/", $scope.medicalRecordDTO)
                     .success(function () {
                         var lagringsenheter = $scope.formData.lagringsenheter;
                         $scope.prevState = $scope.state;
