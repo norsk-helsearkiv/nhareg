@@ -114,7 +114,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
                     if ("fodt".equals(key)) {
                         if (value.length() == 4) {
                             query.setParameter(key, date.getYear());
-                            query.setParameter(key + "End", date.plusYears(1).getYear());
+                            query.setParameter(key + "End", date.getYear());
                         } else {
                             query.setParameter(key, dateTime);
                             query.setParameter(key + "End", dateTime.plusDays(1));
