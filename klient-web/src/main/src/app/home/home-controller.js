@@ -379,9 +379,10 @@ angular.module('nha.home', [
 
       $scope.actionVisAvlevering = function (avlevering) {
           registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
+          registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
           registerService.setAvlevering(avlevering);
 
-          var endpoint = "avleveringer/" + avlevering.avleveringsidentifikator + "/pasientjournaler";
+          var endpoint = "pasientjournaler/" + avlevering.avleveringsidentifikator + "/all";
           var params = {
               "page": "1",
               "size": $scope.size

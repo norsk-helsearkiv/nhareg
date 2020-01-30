@@ -45,9 +45,7 @@ public abstract class EntityDAO<T> {
         new Validator<T>(entityClass).validateWithException(entity);
 
         // Oppdaterer.
-        getEntityManager().merge(entity);
-
-        return entity;
+        return getEntityManager().merge(entity);
     }
 
     public T delete(@NotNull final String id) {

@@ -480,7 +480,8 @@ angular.module('nha.register', [
             //NY
             if ($scope.state === 0) {
                 //TODO popup for å finne lagringsenhet..
-                httpService.create("avleveringer/" + $scope.avleveringsidentifikator + "/pasientjournaler", $scope.formData)
+                $scope.formData.avleveringsidentifikator = $scope.avleveringsidentifikator;
+                httpService.create("pasientjournaler/", $scope.formData)
                     .success(function (data) {
                         $scope.medicalRecordDTO = data;
                         $scope.formData = data;

@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 
@@ -59,7 +58,7 @@ public class MedicalRecordResource {
 
     @DELETE
     @Path("/{id}")
-    public MedicalRecord delete(@PathParam("id") String id) {
+    public MedicalRecordDTO delete(@PathParam("id") String id) {
         final String username = sessionContext.getCallerPrincipal().getName();
         
         return medicalRecordService.delete(id, username);
@@ -71,6 +70,21 @@ public class MedicalRecordResource {
         return medicalRecordService.getAllWithTransfers(uriInfo.getQueryParameters(), null);
     }
 
+    /**
+     * Gets medical records for a transfer. Only returns medical records for a transfer that is not deleted. 
+     * Can also be paged with 'page' and 'size'.
+     *
+     * @param transferId transfer id to fetch
+     * @param uriInfo Uri information containing query parameters
+     * @return List of Medical Records in a {@link ListObject}
+     */
+    @GET
+    @Path("/{transferId}/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ListObject getMedicalRecordList(@PathParam("transferId") String transferId, @Context UriInfo uriInfo) {
+        return medicalRecordService.getAllWithTransfers(uriInfo.getQueryParameters(), transferId);
+    }
+    
     @GET
     @Path("/valider/{fnr}")
     public Response validatePersonalIDNumber(@PathParam("fnr") String pid) {

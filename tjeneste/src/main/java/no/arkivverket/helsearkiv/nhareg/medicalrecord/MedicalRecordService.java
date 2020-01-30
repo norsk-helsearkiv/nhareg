@@ -202,7 +202,10 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Validerer forholdet mellom dataoer
         final DateValidation dateValidation = new DateValidation();
-        validationError.addAll(dateValidation.validate(personalDataDTO, configurationDAO));
+        final LocalDate lowLim = configurationDAO.getDate(ConfigurationDAO.CONFIG_LOWLIM);
+        final Integer waitLim = configurationDAO.getInt(ConfigurationDAO.CONFIG_WAITLIM);
+        final Integer maxAge = configurationDAO.getInt(ConfigurationDAO.CONFIG_MAXAGE);
+        validationError.addAll(dateValidation.validate(medicalRecordDTO, lowLim, waitLim, maxAge));
 
         final ValidationError pidError = PIDValidation.validate(medicalRecordDTO);
         if (pidError != null) {
