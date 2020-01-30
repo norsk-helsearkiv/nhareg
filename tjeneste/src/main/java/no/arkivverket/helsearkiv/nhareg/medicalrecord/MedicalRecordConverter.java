@@ -162,11 +162,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
         final DateOrYear born = medicalRecord.getBorn();
         if (born != null) {
-            final Integer asYear = born.getAsYear();
-            if (asYear != null) {
-                final String yearBorn = String.valueOf(asYear);
-                recordTransferDTO.setBornYear(yearBorn);
-            }
+            recordTransferDTO.setBornYear(born.toString());
         }
 
         final Boolean bornDateUnknown = medicalRecord.getBornDateUnknown();
@@ -176,11 +172,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
         final DateOrYear dead = medicalRecord.getDead();
         if (dead != null) {
-            final Integer asYear = dead.getAsYear();
-            if (asYear != null) {
-                final String yearDied = String.valueOf(asYear);
-                recordTransferDTO.setDeathYear(yearDied);
-            }
+            recordTransferDTO.setDeathYear(dead.toString());
         }
 
         final Boolean deathDateUnknown = medicalRecord.getDeathDateUnknown();
