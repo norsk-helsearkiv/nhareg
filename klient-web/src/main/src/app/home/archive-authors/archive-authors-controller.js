@@ -40,6 +40,14 @@ angular.module('nha.home')
             $scope.isCurrentAuthorNew = true;
         };
 
+        $scope.createOrUpdateAuthor = function () {
+            if($scope.isCurrentAuthorNew){
+                $scope.createArchiveAuthor();
+            } else {
+                $scope.updateArchiveAuthor();
+            }
+        };
+
         $scope.createArchiveAuthor = function () {
             $scope.error = [];
 
@@ -81,7 +89,12 @@ angular.module('nha.home')
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    errorService.errorCode(status);
+                    if (status === 400) {
+                        var errorMessage = $filter('translate')('formError.' + data.constraint);
+                        errorService.errorCode(status, errorMessage);
+                    } else {
+                        errorService.errorCode(status);
+                    }
                 });
         };
 

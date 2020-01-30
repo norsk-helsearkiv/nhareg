@@ -235,7 +235,8 @@
     "Error in IP format": "Feil format på printer-IP",
     "Error with integers in IP": "Printer-IP kan kun inneholde tall",
     "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR",
-    "ErLaast": "Avleveringen er låst"
+    "ErLaast": "Avleveringen er låst",
+    "Delete": "Kunne ikke slette"
   },
   "attributes" :  {
     "born" : "fodt",

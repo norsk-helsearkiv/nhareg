@@ -13,10 +13,11 @@ function errorService($modal) {
     return {
 
         //ERROR 400 BAD REQUEST
-        badRequest: function () {
+        badRequest: function (message) {
             template.templateUrl = 'common/http-service/error-modal-400.tpl.html';
 
             template.controller = function ($scope, $modalInstance) {
+                $scope.message = message;
                 $scope.ok = function () {
                     $modalInstance.close();
                 };
@@ -105,10 +106,10 @@ function errorService($modal) {
             return $modal.open(template);
         },
 
-        errorCode: function (status) {
+        errorCode: function (status, message) {
             switch(status){
                 case 400:
-                    return this.badRequest();
+                    return this.badRequest(message);
                 case 401:
                     return this.unauthorizedError();
                 case 403:
