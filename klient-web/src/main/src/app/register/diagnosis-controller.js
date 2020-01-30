@@ -174,7 +174,7 @@ angular.module('nha.register')
 
                 return parsedDate;
             }
-        };
+        }
 
         $scope.sokDiagnoseDisplayNameLike = function (displayName) {
             if (displayName.length > 2) {
