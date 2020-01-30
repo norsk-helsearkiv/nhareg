@@ -363,7 +363,8 @@ angular.module('nha.home', [
                 .success(function () {
                     fjern($scope.avleveringer, element);
                 }).error(function (data, status) {
-                  errorService.errorCode(status);
+                  var errorMessage = $filter('translate')('formError.' + data[0].constraint);
+                  errorService.errorCode(status, errorMessage);
               });
           });
       };

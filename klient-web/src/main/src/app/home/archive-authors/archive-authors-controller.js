@@ -90,7 +90,7 @@ angular.module('nha.home')
                 })
                 .error(function (data, status) {
                     if (status === 400) {
-                        var errorMessage = $filter('translate')('formError.' + data.constraint);
+                        var errorMessage = $filter('translate')('formError.' + data[0].constraint);
                         errorService.errorCode(status, errorMessage);
                     } else {
                         errorService.errorCode(status);
