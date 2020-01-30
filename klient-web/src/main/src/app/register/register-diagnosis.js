@@ -111,7 +111,7 @@ angular.module('nha.register')
                     $scope.formDiagnose.oppdatertDato = data.oppdatertDato;
                     $scope.pasientjournalDTO.diagnoser.push($scope.formDiagnose);
                     $scope.resetDiagnose(true);
-                    $scope.setFirstContactDate();
+                    $scope.shouldFirstAndLastContactDateChange(data.diagnosedato);
                 }).error(function (data, status) {
                     if (status === 400) {
                         $scope.setFeilmeldinger(data, status);
@@ -121,20 +121,60 @@ angular.module('nha.register')
                 });
         };
 
-        $scope.setFirstContactDate = function () {
-            if($scope.pasientjournalDTO.diagnoser.length === 1){
-                switch ($scope.formData.fKontakt) {
-                    case undefined:
-                    case null:
-                    case '':
-                        $scope.formData.fKontakt = $scope.formDiagnose.diagnosedato;
-                        $scope.nyEllerOppdater();
-                        break;
-                    default:
-                        break;
-                }
+        $scope.shouldFirstAndLastContactDateChange = function (diagnosisDate) {
+            if (checkIfContactDateIsEmpty($scope.formData.fKontakt)) {
+                $scope.formData.fKontakt = diagnosisDate;
+            } else {
+                setFirstContactDate(diagnosisDate);
             }
+
+            if (checkIfContactDateIsEmpty($scope.formData.sKontakt)) {
+                $scope.formData.sKontakt = diagnosisDate;
+            } else {
+                setLastContactDate(diagnosisDate);
+            }
+
+            $scope.nyEllerOppdater();
         };
+
+        function setFirstContactDate (diagnosisDate) {
+            if (parseDate(diagnosisDate) <= parseDate($scope.formData.fKontakt)) {
+                $scope.formData.fKontakt = diagnosisDate;
+            }
+        }
+
+        function setLastContactDate (diagnosisDate) {
+            if (parseDate(diagnosisDate) >= parseDate($scope.formData.sKontakt)) {
+                $scope.formData.sKontakt = diagnosisDate;
+            }
+        }
+
+        function checkIfContactDateIsEmpty (contactDate) {
+            switch (contactDate) {
+                case undefined:
+                case null:
+                case '':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        function parseDate (date) {
+            if(date.length === 4) {
+                var parsedYear = new Date(date);
+                return parsedYear.setHours(0,0,0,0);
+            } else {
+                var sliceDay = date.slice(0, 3);
+                var sliceMonth = date.slice(3, 6);
+                var sliceYear = date.slice(6, 10);
+
+                var validDate = sliceMonth + sliceDay + sliceYear;
+                var parsedDate = new Date(validDate);
+
+                return parsedDate;
+            }
+        }
 
         $scope.sokDiagnoseDisplayNameLike = function (displayName) {
             if (displayName.length > 2) {
