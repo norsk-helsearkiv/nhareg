@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Type for å representere en dato eller et årstall
@@ -45,7 +46,7 @@ public class DateOrYear implements Serializable {
      */
     public String toString() {
         if (date != null) {
-            return date.toString();
+            return date.format(DateTimeFormatter.ofPattern("dd.MM.uuuu"));
         } else if (year != null) {
             return year.toString();
         }
