@@ -5,6 +5,7 @@ angular.module('nha.home')
         $scope.archiveAuthors = [];
         $scope.selectedArchiveAuthorRow = null;
         $scope.isCurrentAuthorNew = true;
+        $scope.error = [];
 
         $scope.selectArchiveAuthor = function (selectedArchiveAuthor, index) {
             if (index === $scope.selectedArchiveAuthorRow) {
@@ -40,24 +41,36 @@ angular.module('nha.home')
         };
 
         $scope.createArchiveAuthor = function () {
+            $scope.error = [];
+
             httpService.create("authors", $scope.archiveAuthor)
                 .success(function () {
                     $scope.getArchiveAuthors();
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    errorService.errorCode(status);
+                    if (status != 400) {
+                        errorService.errorCode(status);
+                    } else {
+                        setErrorMessages(data);
+                    }
                 });
         };
 
         $scope.updateArchiveAuthor = function () {
+            $scope.error = [];
+
             httpService.update("authors", $scope.archiveAuthor)
                 .success(function () {
                     $scope.getArchiveAuthors();
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    errorService.errorCode(status);
+                    if (status != 400) {
+                        errorService.errorCode(status);
+                    } else {
+                        setErrorMessages(data);
+                    }
                 });
         };
 
@@ -70,5 +83,16 @@ angular.module('nha.home')
                 .error(function (data, status) {
                     errorService.errorCode(status);
                 });
+        };
+
+        $scope.showError = function (attribute) {
+            var error = $scope.error[attribute] !== undefined;
+            return error;
+        };
+
+        var setErrorMessages = function (data) {
+            angular.forEach(data, function (element) {
+                $scope.error[element.attribute] = $filter('translate')('formError.' + element.constraint);
+            });
         };
     });

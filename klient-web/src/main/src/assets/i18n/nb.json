@@ -211,7 +211,7 @@
     "NotNull": "Kan ikke være tom",
     "Size": "Kan ikke være tom",
     "EnObligatorisk": "Ett av feltene må fylles inn (*)",
-    "NotUnique": "Lagringsenhet finnes i annen avlevering",
+    "NotUnique": "Entiteten finnes allerede",
     "FodtEtterDodt": "Fødsel kan ikke være etter død",
     "UtenforGyldigPeriode": "Dato/år utenfor gyldighetsområde",
     "UkjentDiagnosekode": "Ukjent diagnosekode",
