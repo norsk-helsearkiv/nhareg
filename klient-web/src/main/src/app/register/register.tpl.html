@@ -78,7 +78,7 @@
                 <!-- Navn -->
                 <div class="span span43">
                     <label id="navn" data-ng-class="{error: error['navn'] !== undefined }">{{ 'register.NAME' | translate }}</label>
-                    <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="setFocusEtterNavn()" data-ng-enter="nyEllerOppdater()">
+                    <input type="text" class="form-control" placeholder="Navn..." data-ng-model="formData.navn" data-ng-blur="formatNameAndSetFocus()" data-ng-enter="nyEllerOppdater()">
                 </div>
                 <!-- Kjønn -->
                 <div class="span span4">
@@ -179,7 +179,7 @@
                     <th id="diagnosedatotab" ts-criteria="diagnosedato|parseCustomDate">{{ 'register.DIAGNOSIS_YEAR' | translate }}</th>
                     <th id="diagnosekodetab" ts-criteria="diagnosekode">{{ 'register.DIAGNOSIS_CODE_SYSTEM_SHORT' | translate }}</th>
                     <th ts-criteria="diagnosekodeverk">{{ 'register.DIAGNOSIS_CODE_SYSTEM_VERSION_SHORT' | translate }}</th>
-                    <th ts-criteria="diagnosetekst">{{ 'register.DIAGNOSIS_DISPLAY_NAME' | translate }}</th>
+                    <th id="diagnosisText" ts-criteria="diagnosetekst">{{ 'register.DIAGNOSIS_DISPLAY_NAME' | translate }}</th>
                     <th ts-criteria="oppdatertAv">{{ 'common.OPPDATERT_AV'| translate }}</th>
                     <th ts-criteria="oppdatertDato">{{ 'common.OPPDATERT_DATO'| translate }}</th>
                 </tr>
