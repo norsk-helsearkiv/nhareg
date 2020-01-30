@@ -380,14 +380,14 @@ angular.module('nha.register', [
             //Ny pasientjouranl
             $scope.prevState = 0;
             $scope.state = 0;
-            $scope.formData.archiveAuthors = $scope.avlevering.archiveAuthor;
+            $scope.formData.archiveAuthors = [];
+            $scope.formData.archiveAuthors.push($scope.avlevering.arkivskaper);
             $scope.manageStorageUnits();
 
         } else if ($scope.pasientjournalDTO !== undefined) {
             //Endre pasientjournal
             $scope.prevState = 2;
             $scope.state = 2;
-
             $scope.formData = $scope.pasientjournalDTO.persondata;
 
             //Håndtering av kjønn - Sender kode til server, viser Tekst basert på i18n
