@@ -59,15 +59,15 @@ public class PIDValidation {
     /**
      * Checks the PID formatting.
      *
-     * @param  pid PersonalID number to validate
+     * @param  pidString PersonalID number to validate as string
      * @return <code>true</code> if valid format
      */
-    public static boolean validPid(final String pid) {
-        if (pid == null || (pid.trim().length() != LEN_PID)) {
+    public static boolean validPid(final String pidString) {
+        if (pidString == null || (pidString.trim().length() != LEN_PID)) {
             return false;
         }
         
-        final String pidNum = pid.trim();
+        final String pid = pidString.trim();
         int index = 0;
         int partSumOne = 0;
         int partSumTwo = 0;
@@ -75,24 +75,24 @@ public class PIDValidation {
         final int[] factorTwo = new int[] { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
         
         while (index < factorTwo.length) {
-            final int value = Character.digit(pidNum.charAt(index), 10);
+            final int value = Character.digit(pid.charAt(index), 10);
             
             if (index < factorOne.length) { // Digits 1-8
                 partSumOne += value * factorOne[index];
                 partSumTwo += value * factorTwo[index];
             } else { // Digits 10
-                final int module = 11 - (partSumOne % 11);
-                if ( !((module == value) || (module == 11 && value == 0))) {
+                final int mod = 11 - (partSumOne % 11);
+                if ( !((mod == value) || (mod == 11 && value == 0))) {
                     return false;
                 }
                 
-                partSumTwo += module * factorTwo[index];
+                partSumTwo += mod * factorTwo[index];
             }
             
             index++;
         }
         
-        final int digitEleven = Character.digit(pidNum.charAt(index), 10); // digit 11
+        final int digitEleven = Character.digit(pid.charAt(index), 10); // digit 11
         final int modEleven = 11 - (partSumTwo % 11);
         
         return ((modEleven == digitEleven) || (modEleven == 11 && digitEleven == 0));
