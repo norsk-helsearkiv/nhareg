@@ -57,7 +57,7 @@ angular.module('nha.home')
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    if (status != 400) {
+                    if (status !== 400) {
                         errorService.errorCode(status);
                     } else {
                         setErrorMessages(data);
@@ -74,7 +74,7 @@ angular.module('nha.home')
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    if (status != 400) {
+                    if (status !== 400) {
                         errorService.errorCode(status);
                     } else {
                         setErrorMessages(data);
@@ -99,8 +99,7 @@ angular.module('nha.home')
         };
 
         $scope.showError = function (attribute) {
-            var error = $scope.error[attribute] !== undefined;
-            return error;
+          return $scope.error[attribute] !== undefined;
         };
 
         var setErrorMessages = function (data) {

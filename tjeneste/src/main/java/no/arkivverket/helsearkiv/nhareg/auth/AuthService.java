@@ -4,6 +4,6 @@ import java.util.Set;
 
 public interface AuthService {
     
-    boolean isAuthorized(String name, Set<String> rolesAllowed);
+    boolean isNotAuthorized(final String name, final Set<String> rolesAllowed);
     
 }

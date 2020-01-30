@@ -15,12 +15,4 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/")
 public class JaxRsActivator extends Application {
    /* class body intentionally left blank */
-   /*@Override
-   public Set<Class<?>> getClasses() {
-       Set<Class<?>> c = new HashSet<Class<?>>();
-       c.add(AuthSecurityInterceptor.class);
-       c.add(PasientjournalTjeneste.class);
-       c.add(DiagnosekodeTjeneste.class);
-       return c;
-   }*/
 }

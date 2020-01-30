@@ -9,10 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-/**
- * Created by haraldk on 15.04.15.
- */
+import javax.ws.rs.core.Response;
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,7 +19,7 @@ public class AuthResource {
     @GET
     @Path("logout")
     @PermitAll
-    public void logout(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+    public Response logout(@Context HttpServletRequest request, @Context HttpServletResponse response) {
         response.setHeader("Cache-Control", "no-cache, no-store");
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", new java.util.Date().toString());
@@ -36,5 +33,7 @@ public class AuthResource {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        return Response.ok().build();
     }
 }

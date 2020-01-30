@@ -6,7 +6,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 
 import javax.ejb.Stateless;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -44,10 +44,10 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
             + "LIKE :id "
             + "ORDER BY su.uuid";
         
-        final Query query = getEntityManager().createQuery(queryString);
+        final TypedQuery<StorageUnit> query = getEntityManager().createQuery(queryString, StorageUnit.class);
         query.setParameter("id", "%" + searchId + "%");
 
-        return (List<StorageUnit>) query.getResultList();
+        return query.getResultList();
     }
 
     @Override
@@ -56,11 +56,11 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
             + "FROM StorageUnit su " 
             + "WHERE su.id = :id ";
         
-        final Query query = getEntityManager().createQuery(queryString, StorageUnit.class);
+        final TypedQuery<StorageUnit> query = getEntityManager().createQuery(queryString, StorageUnit.class);
         query.setParameter("id", id);
         
         try {
-            return (StorageUnit) query.getSingleResult();
+            return query.getSingleResult();
         } catch (Exception ignored) {
             return null;
         }
@@ -72,12 +72,12 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
                 + "FROM MedicalRecord mr "
                 + "INNER JOIN mr.storageUnits su "
                 + "WHERE su.id = :id";
-        final Query query = getEntityManager().createQuery(queryString);
+        final TypedQuery<Long> query = getEntityManager().createQuery(queryString, Long.class);
         query.setParameter("id", storageUnitId);
 
-        Long res = (Long)query.getSingleResult();
+        final Long result = query.getSingleResult();
 
-        return res.intValue();
+        return result.intValue();
     }
 
     public List<MedicalRecord> fetchMedicalRecordsForStorageUnit(final String id) {
@@ -86,10 +86,10 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
             + "FROM MedicalRecord mr "
             + "INNER JOIN mr.storageUnits su "
             + "WHERE su.id = :id";
-        final Query query = getEntityManager().createQuery(queryString);
+        final TypedQuery<MedicalRecord> query = getEntityManager().createQuery(queryString, MedicalRecord.class);
         query.setParameter("id", id);
 
-        return (List<MedicalRecord>) query.getResultList();
+        return query.getResultList();
     }
 
 }

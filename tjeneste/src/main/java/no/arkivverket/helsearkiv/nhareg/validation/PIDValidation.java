@@ -4,16 +4,13 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 public class PIDValidation {
-    
-    /** Lengden på gyldig organisasjonsnummer. */
-    public static final int LEN_ORGNR = 9;
 
-    /** Lengden på gyldig fødselsnummer. */
-    private static final int LEN_FNR = 11;
+    /** Length of a valid PID number. */
+    private static final int LEN_PID = 11;
 
-    public static ValidationError validate(final String fnr) {
-        if (fnr != null && !fnr.isEmpty()) {
-            if (validPid(fnr)) {
+    public static ValidationError validate(final String pid) {
+        if (pid != null && !pid.isEmpty()) {
+            if (validPid(pid)) {
                 return null;
             }
 
@@ -29,7 +26,7 @@ public class PIDValidation {
         return validate(fnr);
     }
 
-    public static boolean isDnummer(final String number) {
+    public static boolean isDNumber(final String number) {
         if (number == null || number.isEmpty()) {
             return false;
         }
@@ -40,7 +37,7 @@ public class PIDValidation {
         return i > 3;
     }
 
-    public static boolean isHnummer(final String number) {
+    public static boolean isHNumber(final String number) {
         if (number == null || number.isEmpty()) {
             return false;
         }
@@ -51,52 +48,54 @@ public class PIDValidation {
         return i > 3;
     }
 
-    public static boolean isFnummer(final String number) {
+    public static boolean isFNumber(final String number) {
         if (number == null || number.isEmpty()) {
             return false;
         }
         
-        return !isDnummer(number) && !isHnummer(number);
+        return !isDNumber(number) && !isHNumber(number);
     }
     
     /**
-     * Sjekker om fødselsnummeret har riktig format.
+     * Checks the PID formatting.
      *
-     * @param  pid PersonalID number to validate
-     * @return <code>true</code> hvis gyldig format
+     * @param  pidString PersonalID number to validate as string
+     * @return <code>true</code> if valid format
      */
-    public static boolean validPid(final String pid) {
-        if (pid == null || (pid.trim().length() != LEN_FNR)) {
+    public static boolean validPid(final String pidString) {
+        if (pidString == null || (pidString.trim().length() != LEN_PID)) {
             return false;
         }
         
-        final String fnr = pid.trim();
+        final String pid = pidString.trim();
         int index = 0;
-        int delsum1 = 0;
-        int delsum2 = 0;
-        final int[] faktor1 = new int[] { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
-        final int[] faktor2 = new int[] { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+        int partSumOne = 0;
+        int partSumTwo = 0;
+        final int[] factorOne = new int[] { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
+        final int[] factorTwo = new int[] { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
         
-        while (index < faktor2.length) {
-            final int intverdi = Character.digit(fnr.charAt(index), 10);
+        while (index < factorTwo.length) {
+            final int value = Character.digit(pid.charAt(index), 10);
             
-            if (index < faktor1.length) { // Siffer 1-8
-                delsum1+= intverdi * faktor1[index];
-                delsum2+= intverdi * faktor2[index];
-            } else { // Siffer 10
-                final int intmod1 = 11 - (delsum1 % 11);
-                if ( !((intmod1 == intverdi) || (intmod1==11 && intverdi==0))) {
+            if (index < factorOne.length) { // Digits 1-8
+                partSumOne += value * factorOne[index];
+                partSumTwo += value * factorTwo[index];
+            } else { // Digits 10
+                final int mod = 11 - (partSumOne % 11);
+                if ( !((mod == value) || (mod == 11 && value == 0))) {
                     return false;
                 }
-                delsum2 += intmod1 * faktor2[index];
+                
+                partSumTwo += mod * factorTwo[index];
             }
+            
             index++;
         }
         
-        final int intverdi2 = Character.digit(fnr.charAt(index), 10); // Siffer 11
-        final int intmod2 = 11 - (delsum2 % 11);
+        final int digitEleven = Character.digit(pid.charAt(index), 10); // digit 11
+        final int modEleven = 11 - (partSumTwo % 11);
         
-        return ((intmod2 == intverdi2) || (intmod2 == 11 && intverdi2 == 0));
+        return ((modEleven == digitEleven) || (modEleven == 11 && digitEleven == 0));
     }
     
 }

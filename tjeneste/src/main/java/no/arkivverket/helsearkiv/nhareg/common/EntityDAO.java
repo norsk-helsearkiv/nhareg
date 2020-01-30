@@ -42,7 +42,7 @@ public abstract class EntityDAO<T> {
 
     public T update(T entity) {
         // Validerer.
-        new Validator<T>(entityClass).validateWithException(entity);
+        new Validator<>(entityClass).validateWithException(entity);
 
         // Oppdaterer.
         return getEntityManager().merge(entity);
@@ -50,6 +50,7 @@ public abstract class EntityDAO<T> {
 
     public T delete(@NotNull final String id) {
         T entity = fetchSingleInstance(id);
+        
         getEntityManager().remove(entity);
 
         return entity;
@@ -109,7 +110,7 @@ public abstract class EntityDAO<T> {
      * @param size Maximum number of results to fetch.
      * @return A list of a given max number of results, filtered by the given parameters, from the given page.
      */
-    public List<T> fetchAllPaged(final Map<String, String> queryParameters, final int page, final int size) {
+    private List<T> fetchAllPaged(final Map<String, String> queryParameters, final int page, final int size) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityClass);
         final Root<T> root = criteriaQuery.from(entityClass);
