@@ -1,29 +1,24 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 public interface MedicalRecordServiceInterface {
 
-    MedicalRecord create(final MedicalRecord medicalRecord, final String username);
-    
+    MedicalRecordDTO create(final MedicalRecordDTO medicalRecordDTO, final String username);
+
     MedicalRecordDTO update(final MedicalRecordDTO medicalRecordDTO, final String username);
     
-    MedicalRecord delete(final String id, final String username);
+    MedicalRecordDTO delete(final String id, final String username);
     
-    MedicalRecord getById(final String id);
+    MedicalRecordDTO getById(final String id);
     
     MedicalRecordDTO getByIdWithTransfer(final String id);
 
     ListObject getAllWithTransfers(final MultivaluedMap<String, String> queryParameters, final String id);
     
     void validatePID(final String pid);
-
-    MedicalRecordDTO createInTransfer(final String transferId, final PersonalDataDTO personalDataDTO,
-                                      final String username);
     
 }

@@ -10,6 +10,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
@@ -27,23 +28,18 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
     public MedicalRecord fetchById(final String id) {
         final String queryString = "SELECT DISTINCT mr " 
             + "FROM MedicalRecord mr "
-            + "LEFT JOIN FETCH mr.storageUnit "
+            + "LEFT JOIN FETCH mr.storageUnits "
             + "LEFT JOIN FETCH mr.diagnosis " 
             + "LEFT JOIN FETCH mr.archiveAuthors " 
             + "WHERE mr.uuid = :id ";
         final TypedQuery<MedicalRecord> query = getEntityManager().createQuery(queryString, MedicalRecord.class);
         query.setParameter("id", id);
 
-        return query.getSingleResult();
-    }
-
-    @Override
-    public MedicalRecord fetchSingleInstance(final String id) throws NoResultException {
-        final MedicalRecord medicalRecord = super.fetchSingleInstance(id);
-        medicalRecord.getDiagnosis().size();
-        medicalRecord.getStorageUnit().size();
-
-        return medicalRecord;
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException exception) {
+            return null;
+        }
     }
 
     public List<MedicalRecord> fetchAllRecordTransfers(final Map<String, String> queryParameters,
@@ -53,7 +49,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         final CriteriaQuery<Transfer> criteriaQuery = criteriaBuilder.createQuery(Transfer.class);
         final Root<Transfer> root = criteriaQuery.from(Transfer.class);
         final Join<Transfer, MedicalRecord> recordJoin = root.join("medicalRecords");
-        final Join<MedicalRecord, StorageUnit> unitJoin = recordJoin.join("storageUnit");
+        final Join<MedicalRecord, StorageUnit> unitJoin = recordJoin.join("storageUnits");
         final String orderBy = queryParameters.remove("orderBy");
         final String direction = queryParameters.remove("sortDirection");
         

@@ -234,7 +234,8 @@
     "Error in IP address length": "Feil lengde på printer-IP",
     "Error in IP format": "Feil format på printer-IP",
     "Error with integers in IP": "Printer-IP kan kun inneholde tall",
-    "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR"
+    "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR",
+    "ErLaast": "Avleveringen er låst"
   },
   "attributes" :  {
     "born" : "fodt",

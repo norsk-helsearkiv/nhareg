@@ -19,6 +19,7 @@ angular.module('nha.home')
             var viser = $scope.text.viser;
 
             registerService.setAvlevering(undefined);
+            registerService.setAvleveringsidentifikator(undefined);
             
             var sok = {
                 sokLagringsenhet: $scope.sok.lagringsenhet,

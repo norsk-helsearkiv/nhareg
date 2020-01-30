@@ -42,27 +42,15 @@ public class ArchiveAuthorResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(final ArchiveAuthorDTO archiveAuthorDTO) {
-        final ArchiveAuthorDTO createdAuthor = authorService.create(archiveAuthorDTO);
-        
-        if (createdAuthor == null) {
-            return Response.status(400).build();
-        } else {
-            return Response.ok(createdAuthor).build();
-        }
+    public ArchiveAuthorDTO create(final ArchiveAuthorDTO archiveAuthorDTO) {
+        return authorService.create(archiveAuthorDTO);
     }
     
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(final ArchiveAuthorDTO archiveAuthorDTO) {
-        final ArchiveAuthorDTO updated = authorService.update(archiveAuthorDTO);
-        
-        if (updated == null) {
-            return Response.status(400).build();
-        } else {
-            return Response.ok(updated).build();
-        }
+    public ArchiveAuthorDTO update(final ArchiveAuthorDTO archiveAuthorDTO) {
+        return authorService.update(archiveAuthorDTO);
     }
     
     @DELETE

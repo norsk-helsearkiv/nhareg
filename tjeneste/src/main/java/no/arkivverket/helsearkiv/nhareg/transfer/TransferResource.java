@@ -2,10 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 
@@ -15,8 +12,11 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -95,40 +95,6 @@ public class TransferResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<TransferDTO> getTransferDTOList(@Context UriInfo uriInfo) {
         return transferService.getAll(uriInfo.getQueryParameters());
-    }
-
-    /**
-     * Gets medical records for a transfer. Only returns medical records for a transfer that is not deleted. 
-     * Can also be paged with 'page' and 'size'.
-     * 
-     * @param id transfer id to fetch
-     * @param uriInfo Uri information containing query parameters
-     * @return List of Medical Records in a {@link ListObject}
-     */
-    @GET
-    @Path("/{id}/pasientjournaler")
-    @Produces(MediaType.APPLICATION_JSON)
-    public ListObject getMedicalRecordList(@PathParam("id") String id, @Context UriInfo uriInfo) {
-        final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
-        
-        return medicalRecordService.getAllWithTransfers(queryParameters, id);
-    }
-
-    /**
-     * Create a new medical record under a given transfer.
-     *
-     * @param id Create medical record under transfer matching this id.
-     * @param personalDataDTO Personal information used to create medical record.
-     * @return Response Containing the final DTO object.
-     */
-    @POST
-    @Path("/{id}/pasientjournaler")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createMedicalRecord(@PathParam("id") String id, final PersonalDataDTO personalDataDTO) {
-        final String username = sessionContext.getCallerPrincipal().getName();
-        final MedicalRecordDTO medicalRecordDTO = medicalRecordService.createInTransfer(id, personalDataDTO, username);
-
-        return Response.ok(medicalRecordDTO).build();
     }
 
     @GET

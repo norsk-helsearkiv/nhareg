@@ -6,10 +6,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-/**
- * ExceptionMapper for å gi klienter respons på NoResultException.
- * @author arnfinns
- */
 @Provider
 public class NoResultExceptionMapper implements ExceptionMapper<NoResultException> {
 

@@ -70,7 +70,7 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
         final String queryString =
             "SELECT COUNT(mr) "
                 + "FROM MedicalRecord mr "
-                + "INNER JOIN mr.storageUnit su "
+                + "INNER JOIN mr.storageUnits su "
                 + "WHERE su.id = :id";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", storageUnitId);
@@ -84,7 +84,7 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
         final String queryString = 
             "SELECT mr " 
             + "FROM MedicalRecord mr "
-            + "INNER JOIN mr.storageUnit su "
+            + "INNER JOIN mr.storageUnits su "
             + "WHERE su.id = :id";
         final Query query = getEntityManager().createQuery(queryString);
         query.setParameter("id", id);

@@ -9,7 +9,6 @@ import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 import no.arkivverket.helsearkiv.nhareg.validation.PIDValidation;
 
@@ -30,30 +29,30 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
     private ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
     
     @Override
-    public MedicalRecord fromPersonalDataDTO(final PersonalDataDTO personalDataDTO) {
-        if (personalDataDTO == null) {
+    public MedicalRecord fromMedicalRecordDTO(final MedicalRecordDTO medicalRecordDTO) {
+        if (medicalRecordDTO == null) {
             return null;
         }
 
         final MedicalRecord medicalRecord = new MedicalRecord();
 
-        final String uuid = personalDataDTO.getUuid();
-        final String recordNumber = personalDataDTO.getRecordNumber();
-        final String serialNumber = personalDataDTO.getSerialNumber();
-        final Long fanearkid = personalDataDTO.getFanearkid();
-        final String pid = personalDataDTO.getPid();
-        final String name = personalDataDTO.getName();
-        final String genderString = personalDataDTO.getGender();
+        final String uuid = medicalRecordDTO.getUuid();
+        final String recordNumber = medicalRecordDTO.getRecordNumber();
+        final String serialNumber = medicalRecordDTO.getSerialNumber();
+        final Long fanearkid = medicalRecordDTO.getFanearkid();
+        final String pid = medicalRecordDTO.getPid();
+        final String name = medicalRecordDTO.getName();
+        final String genderString = medicalRecordDTO.getGender();
         final Gender gender = new Gender();
-        final String born = personalDataDTO.getBorn();
-        final String dead = personalDataDTO.getDead();
-        final String firstContact = personalDataDTO.getFirstContact();
-        final String lastContact = personalDataDTO.getLastContact();
-        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(personalDataDTO.getArchiveAuthors());
+        final String born = medicalRecordDTO.getBorn();
+        final String dead = medicalRecordDTO.getDead();
+        final String firstContact = medicalRecordDTO.getFirstContact();
+        final String lastContact = medicalRecordDTO.getLastContact();
+        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(medicalRecordDTO.getArchiveAuthors());
 
         medicalRecord.setArchiveAuthors(authors);
         medicalRecord.setUuid(uuid);
-        medicalRecord.setNote(personalDataDTO.getNote());
+        medicalRecord.setNote(medicalRecordDTO.getNote());
         medicalRecord.setRecordNumber(recordNumber);
         medicalRecord.setSerialNumber(serialNumber);
         medicalRecord.setFanearkid(fanearkid == null ? null : fanearkid.toString());
@@ -76,95 +75,73 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             medicalRecord.setTypePID("F");
         }
 
-        final String[] storageUnits = personalDataDTO.getStorageUnits();
-        final Set<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
+        final String[] storageUnits = medicalRecordDTO.getStorageUnits();
         if (storageUnits != null) {
-            // For each storage unit: create a new StorageUnit with random UUID, then add it to the list.
-            Arrays.stream(storageUnits).forEach(
-                unitId -> {
-                    final StorageUnit storageUnit = new StorageUnit(unitId, null, false);
-                    storageUnitList.add(storageUnit);
-                }
-            );
+            final Set<StorageUnit> newUnits = Arrays.stream(storageUnits)
+                                                    .map(id -> new StorageUnit(id, null, false))
+                                                    .collect(Collectors.toSet());
+            
+            medicalRecord.getStorageUnits().addAll(newUnits);
         }
 
         return medicalRecord;
     }
 
     @Override
-    public PersonalDataDTO toPersonalDataDTO(final MedicalRecord medicalRecord) {
+    public MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord) {
         if (medicalRecord == null) {
             return null;
         }
 
-        final PersonalDataDTO personalData = new PersonalDataDTO();
+        final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
         final DateOrYear born = medicalRecord.getBorn();
         final DateOrYear dead = medicalRecord.getDead();
         final DateOrYear firstContactDate = medicalRecord.getFirstContact();
         final DateOrYear lastContactDate = medicalRecord.getLastContact();
         final Set<ArchiveAuthor> authors = medicalRecord.getArchiveAuthors();
+        final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
+        final Set<DiagnosisDTO> diagnoses = diagnosisConverter.toDiagnosisDTOSet(diagnosisSet);
 
-        personalData.setArchiveAuthors(archiveAuthorConverter.fromArchiveAuthorCollection(authors));
-        personalData.setUuid(medicalRecord.getUuid());
-        personalData.setNote(medicalRecord.getNote());
-        personalData.setSerialNumber(medicalRecord.getSerialNumber());
-        personalData.setRecordNumber(medicalRecord.getRecordNumber());
-        personalData.setName(medicalRecord.getName());
-        personalData.setPid(medicalRecord.getPid());
-        personalData.setBorn(dateOrYearConverter.fromDateOrYear(born));
-        personalData.setDead(dateOrYearConverter.fromDateOrYear(dead));
-        personalData.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
-        personalData.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
+        medicalRecordDTO.setDiagnoses(diagnoses);
+        medicalRecordDTO.setArchiveAuthors(archiveAuthorConverter.fromArchiveAuthorCollection(authors));
+        medicalRecordDTO.setUuid(medicalRecord.getUuid());
+        medicalRecordDTO.setNote(medicalRecord.getNote());
+        medicalRecordDTO.setSerialNumber(medicalRecord.getSerialNumber());
+        medicalRecordDTO.setRecordNumber(medicalRecord.getRecordNumber());
+        medicalRecordDTO.setName(medicalRecord.getName());
+        medicalRecordDTO.setPid(medicalRecord.getPid());
+        medicalRecordDTO.setBorn(dateOrYearConverter.fromDateOrYear(born));
+        medicalRecordDTO.setDead(dateOrYearConverter.fromDateOrYear(dead));
+        medicalRecordDTO.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
+        medicalRecordDTO.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
+        medicalRecordDTO.setDeleted(medicalRecord.getDeleted());
 
         final String fanearkid = medicalRecord.getFanearkid();
         if (fanearkid != null && !fanearkid.isEmpty()) {
-            personalData.setFanearkid(Long.parseLong(fanearkid));
+            medicalRecordDTO.setFanearkid(Long.parseLong(fanearkid));
         }
         
-        final Set<StorageUnit> storageUnits = medicalRecord.getStorageUnit();
+        final Set<StorageUnit> storageUnits = medicalRecord.getStorageUnits();
         if (storageUnits != null && !storageUnits.isEmpty()) {
             // Converts storageUnits to a String array of IDs.
             final String[] units = storageUnits.stream().map(StorageUnit::getId).toArray(String[]::new);
-            personalData.setStorageUnits(units);
+            medicalRecordDTO.setStorageUnits(units);
         }
 
         final Gender gender = medicalRecord.getGender();
         if (gender != null) {
-            personalData.setGender(gender.getCode());
+            medicalRecordDTO.setGender(gender.getCode());
         }
 
         final Boolean deathDateUnknown = medicalRecord.getDeathDateUnknown();
         if (deathDateUnknown != null && deathDateUnknown) {
-            personalData.setDead("mors");
+            medicalRecordDTO.setDead("mors");
         }
 
         final Boolean bornDateUnknown = medicalRecord.getBornDateUnknown();
         if (bornDateUnknown != null && bornDateUnknown) {
-            personalData.setBorn("ukjent");
+            medicalRecordDTO.setBorn("ukjent");
         }
-
-        return personalData;
-    }
-
-    @Override
-    public MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord,
-                                               final Transfer transfer,
-                                               final String business) {
-        if (medicalRecord == null) {
-            return null;
-        }
-
-        final PersonalDataDTO personalData = toPersonalDataDTO(medicalRecord);
-        final MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO();
-        final Set<Diagnosis> diagnosisSet = medicalRecord.getDiagnosis();
-        final Set<DiagnosisDTO> diagnoses = diagnosisConverter.toDiagnosisDTOSet(diagnosisSet);
-        
-        medicalRecordDTO.setPersonalDataDTO(personalData);
-        medicalRecordDTO.setTransferDescription(transfer.getTransferDescription());
-        medicalRecordDTO.setTransferId(transfer.getTransferId());
-        medicalRecordDTO.setTransferLocked(transfer.isLocked());
-        medicalRecordDTO.setDiagnoses(diagnoses);
-        medicalRecordDTO.setBusiness(business);
 
         return medicalRecordDTO;
     }
@@ -211,7 +188,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
             recordTransferDTO.setDeathYear("mors");
         }
 
-        final Set<StorageUnit> storageUnitList = medicalRecord.getStorageUnit();
+        final Set<StorageUnit> storageUnitList = medicalRecord.getStorageUnits();
         if (storageUnitList != null && storageUnitList.size() > 0) {
             final String storageUnitsString = storageUnitList.stream().distinct()
                                                              .map(StorageUnit::getId)

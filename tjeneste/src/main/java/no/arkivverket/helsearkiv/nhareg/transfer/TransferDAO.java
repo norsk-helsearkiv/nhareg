@@ -6,6 +6,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Collections;
@@ -57,17 +59,21 @@ public class TransferDAO extends EntityDAO<Transfer> {
             + "LEFT JOIN FETCH t.medicalRecords mr "
             + "WHERE mr.uuid = :id ";
 
-        final TypedQuery query = getEntityManager().createQuery(queryString, Transfer.class);
+        final TypedQuery<Transfer> query = getEntityManager().createQuery(queryString, Transfer.class);
         query.setParameter("id", recordId);
 
-        return (Transfer) query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException | NonUniqueResultException ignored) {
+            return null;
+        }
     }
 
     public Transfer fetchTransferForStorageUnit(final String id) {
         final String select = "SELECT DISTINCT t "
             + "FROM Transfer t "
             + "LEFT JOIN FETCH t.medicalRecords p "
-            + "LEFT JOIN FETCH p.storageUnit l "
+            + "LEFT JOIN FETCH p.storageUnits l "
             + "WHERE l.id = :id ";
 
         final Query query = getEntityManager().createQuery(select);
@@ -80,7 +86,7 @@ public class TransferDAO extends EntityDAO<Transfer> {
         final String queryString = "SELECT DISTINCT t.transferId " 
             + "FROM Transfer t " 
             + "INNER JOIN t.medicalRecords mr " 
-            + "INNER JOIN mr.storageUnit st "
+            + "INNER JOIN mr.storageUnits st "
             + "WHERE st.uuid = :id  ";
         final TypedQuery query = getEntityManager().createQuery(queryString, String.class);
         query.setParameter("id", storageUnitId);
