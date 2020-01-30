@@ -1,18 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Business;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferInAgreementDTO;
+
+import java.util.List;
 
 public interface TransferConverterInterface {
     
     Transfer toTransfer(final TransferDTO transferDTO);
-    
-    TransferDTO fromTransfer(final Transfer transfer);
-    
-    TransferInAgreementDTO toInAgreementDTO(final Transfer transfer, final Business business,
-                                            final AgreementDTO agreementDTO);
 
+    TransferDTO fromTransfer(final Transfer transfer);
+
+    List<TransferDTO> fromTransferList(final List<Transfer> transferList);
+    
 }

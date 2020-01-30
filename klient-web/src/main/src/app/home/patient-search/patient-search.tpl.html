@@ -49,7 +49,7 @@
 
     <h2 class="sub-header">
         {{ 'home.AVLEVERINGER' | translate }}
-        <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn}} &#x2F {{valgtAvtale.avtalebeskrivelse }}</small>
+        <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn }} &#x2F {{ valgtAvtale.avtalebeskrivelse }}</small>
         <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale" data-access-level-admin>
             {{ 'common.ADD' | translate }}
         </button>
@@ -68,7 +68,7 @@
             <tbody>
             <tr data-ng-repeat="avlevering in avleveringer" ts-repeat>
                 <td>{{ avlevering.avleveringsidentifikator }}</td>
-                <td>{{ avlevering.arkivskaper }}</td>
+                <td>{{ avlevering.arkivskaper.name }}</td>
                 <td>{{ avlevering.avleveringsbeskrivelse }}</td>
                 <td>
                     <button class="icon favorite" data-ng-click="actionSettDefaultAvlevering(avlevering)" favorite-class avlevering="avlevering"
@@ -87,7 +87,7 @@
                     <button class="icon icon-padding-left icon-delete"
                             data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)"
                             tooltip="{{text.tooltip.deleteElement}}"
-                            data-ng-show="avlevering.antallPasientjournaler === 0" data-access-level-admin></button>
+                            data-ng-show="avlevering.kanSlettes" data-access-level-admin></button>
 
                     <button ng-hide="avlevering.laast" class="icon icon-padding-left icon-unlock"
                             data-ng-click="actionLaasAvlevering(avlevering)"

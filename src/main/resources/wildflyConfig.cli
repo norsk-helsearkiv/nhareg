@@ -52,14 +52,13 @@ data-source add \
 )
 
 # Add SSL Realm
-/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:add(keystore-path=server.keystore, \
-                                                                                 keystore-password=NHAREG, \
-                                                                                 key-password=NHAREG, \
-                                                                                 alias=server, \
-                                                                                 keystore-relative-to=jboss.server.config.dir)
+/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:write-attribute(name=keystore-path, value=server.keystore)
+/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:write-attribute(name=keystore-password, value=NHAREG)
+/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:write-attribute(name=key-password, value=NHAREG)
+/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:write-attribute(name=alias, value=server)
+/core-service=management/security-realm=ApplicationRealm/server-identity=ssl:write-attribute(name=keystore-relative-to, value=jboss.server.config.dir)
 
 # Add HTTPS
-/subsystem=undertow/server=default-server/https-listener=default-https:add(security-realm=ApplicationRealm, socket-binding=https, verify-client=REQUESTED)
 /subsystem=undertow/server=default-server/host=default-host/setting=single-sign-on:add(path=/)
 
 :shutdown

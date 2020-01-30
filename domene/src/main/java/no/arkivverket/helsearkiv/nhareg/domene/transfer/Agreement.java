@@ -3,14 +3,16 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateTimeAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "avtale", propOrder = {
@@ -28,25 +30,27 @@ public class Agreement implements Serializable {
 
     @Id
     @Column(name = "avtaleidentifikator")
-    @XmlElement(required = true, name = "avtaleidentifikator")
-    protected String agreementId;
+    @XmlElement(name = "avtaleidentifikator")
+    private String agreementId;
 
     @NotNull
-    @XmlElement(required = true, type = String.class, name = "avtaledato")
-    @XmlJavaTypeAdapter(StringDateAdapter.class)
+    @XmlElement(name = "avtaledato")
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     @XmlSchemaType(name = "date")
     @Column(name = "avtaledato")
-    protected Calendar agreementDate;
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime agreementDate;
 
+    @Size(min = 1)
     @NotNull
-    @XmlElement(required = true, name = "avtalebeskrivelse")
+    @XmlElement(name = "avtalebeskrivelse")
     @Column(name = "avtalebeskrivelse")
-    protected String agreementDescription;
+    private String agreementDescription;
     
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "virksomhet_organisasjonsnummer")
-    @XmlElement(required = true, name = "virksomhet")
-    protected Business business;
+    @XmlElement(name = "virksomhet")
+    private Business business;
     
 }

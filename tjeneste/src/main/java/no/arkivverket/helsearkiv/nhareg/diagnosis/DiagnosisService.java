@@ -6,15 +6,17 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.UpdateInfo;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.Validator;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordDAO;
 import no.arkivverket.helsearkiv.nhareg.validation.DateValidation;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class DiagnosisService implements DiagnosisServiceInterface {
     
@@ -31,27 +33,27 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     private DiagnosisConverterInterface diagnosisConverter;
     
     @Override
-    public DiagnoseDTO create(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
+    public DiagnosisDTO create(final String id, final DiagnosisDTO diagnosisDTO, final String username) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
 
         if (medicalRecord == null) {
             return null;
         }
 
-        new Validator<>(DiagnoseDTO.class).validateWithException(diagnoseDTO);
+        new Validator<>(DiagnosisDTO.class).validateWithException(diagnosisDTO);
         final DateValidation dateValidator = new DateValidation();
-        List<ValidationError> errors = dateValidator.validateDiagnosis(diagnoseDTO, medicalRecord);
-        validateDiagnosisCode(diagnoseDTO.getDiagnosisCode());
+        final List<ValidationError> errors = dateValidator.validateDiagnosis(diagnosisDTO, medicalRecord);
+        validateDiagnosisCode(diagnosisDTO.getDiagnosisCode());
 
         if (errors.size() > 0) {
             throw new ValidationErrorException(errors);
         }
 
         final UpdateInfo updateInfo = createUpdateInfo(username);
-        diagnoseDTO.setUpdatedBy(updateInfo.getOppdatertAv());
+        diagnosisDTO.setUpdatedBy(updateInfo.getUpdatedBy());
 
-        final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosisCode());
-        final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnoseDTO, diagnosisCode);
+        final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisDTO.getDiagnosisCode());
+        final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnosisDTO, diagnosisCode);
         diagnosis.setUpdateInfo(updateInfo);
         diagnosis.setUuid(UUID.randomUUID().toString());
         
@@ -63,7 +65,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     }
 
     @Override 
-    public Diagnosis update(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
+    public Diagnosis update(final String id, final DiagnosisDTO diagnosisDTO, final String username) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
         
         if (medicalRecord == null) {
@@ -71,18 +73,18 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         }
 
         // Validate diagnosis
-        final ArrayList<ValidationError> validationError = new Validator<>(DiagnoseDTO.class).validate(diagnoseDTO);
+        final List<ValidationError> diagnosisValidationList = new Validator<>(DiagnosisDTO.class).validate(diagnosisDTO);
         final DateValidation dateValidation = new DateValidation();
-        final List<ValidationError> diagfeil = dateValidation.validateDiagnosis(diagnoseDTO, medicalRecord);
+        final List<ValidationError> dateValidationList = dateValidation.validateDiagnosis(diagnosisDTO, medicalRecord);
         
-        if (diagfeil.size() > 0) {
-            validationError.addAll(diagfeil);
+        if (dateValidationList.size() > 0) {
+            diagnosisValidationList.addAll(dateValidationList);
         }
 
-        validateDiagnosisCode(diagnoseDTO.getDiagnosisCode());
+        validateDiagnosisCode(diagnosisDTO.getDiagnosisCode());
         
-        if (validationError.size() != 0) {
-            for (ValidationError feil : validationError) {
+        if (diagnosisValidationList.size() != 0) {
+            for (ValidationError feil : diagnosisValidationList) {
                 if (feil.getAttribute().equals("diagnosedato")) {
                     feil.setAttribute("diagnosedatotab");
                 }
@@ -90,11 +92,11 @@ public class DiagnosisService implements DiagnosisServiceInterface {
                     feil.setAttribute("diagnosekodetab");
                 }
             }
-            throw new ValidationErrorException(validationError);
+            throw new ValidationErrorException(diagnosisValidationList);
         }
 
-        final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnoseDTO.getDiagnosisCode());
-        final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnoseDTO, diagnosisCode);
+        final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisDTO.getDiagnosisCode());
+        final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnosisDTO, diagnosisCode);
         diagnosis.setUpdateInfo(createUpdateInfo(username));
         diagnosisDAO.update(diagnosis);
 
@@ -102,9 +104,9 @@ public class DiagnosisService implements DiagnosisServiceInterface {
     }
 
     @Override
-    public boolean delete(final String id, final DiagnoseDTO diagnoseDTO, final String username) {
+    public boolean delete(final String id, final DiagnosisDTO diagnosisDTO, final String username) {
         final MedicalRecord medicalRecord = medicalRecordDAO.fetchById(id);
-        final Diagnosis diagnosis = diagnosisDAO.fetchById(diagnoseDTO.getUuid());
+        final Diagnosis diagnosis = diagnosisDAO.fetchById(diagnosisDTO.getUuid());
         
         if (medicalRecord == null || diagnosis == null) {
             return false;
@@ -119,20 +121,12 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
     private void validateDiagnosisCode(final String diagnosisCode) {
         if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
-            Map<String, String> queryParameters = new HashMap<>();
-            queryParameters.put("code", diagnosisCode);
-
-            final List<Diagnosis> diagnosisList = diagnosisDAO.fetchAll(queryParameters);
-            // Convert to diagnosis codes.
-            final List<DiagnosisCode> diagnosisCodeList = diagnosisList.stream()
-                                                                       .map(Diagnosis::getDiagnosisCode)
-                                                                       .collect(Collectors.toList());
+            final DiagnosisCode existingDiagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCode);
             
-            // Check if the diagnosis code exists
-            if (diagnosisCodeList.size() == 0) {
-                ArrayList<ValidationError> validationError = new ArrayList<>();
+            if (existingDiagnosisCode == null) {
+                final ArrayList<ValidationError> validationError = new ArrayList<>();
                 validationError.add(new ValidationError("diagnosekode", "UkjentDiagnosekode"));
-                
+
                 throw new ValidationErrorException(validationError);
             }
         }
@@ -140,8 +134,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
 
     private UpdateInfo createUpdateInfo(final String username) {
         UpdateInfo updateInfo = new UpdateInfo();
-        updateInfo.setOppdatertAv(username);
-        updateInfo.setSistOppdatert(Calendar.getInstance());
+        updateInfo.setUpdatedBy(username);
+        updateInfo.setLastUpdated(LocalDateTime.now());
 
         return updateInfo;
     }

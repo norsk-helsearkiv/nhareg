@@ -10,19 +10,26 @@ import javax.persistence.*;
 public class User {
     
     @Id
-    private String brukernavn;
+    @Column(name = "brukernavn")
+    private String username;
     
-    private String passord;
+    @Column(name = "passord")
+    private String password;
     
+    @Column(name = "authToken")
     private String authToken;
     
-    private String resetPassord;
+    @Column(name = "resetPassord")
+    private String resetPassword;
     
-    private String defaultAvleveringsUuid;
+    @Column(name = "defaultAvleveringsUuid")
+    private String defaultTransferId;
     
-    private String printerzpl;
+    @Column(name = "printerzpl")
+    private String printer;
   
-    private String lagringsenhet;
+    @Column(name = "lagringsenhet")
+    private String storageUnit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rollenavn")

@@ -9,8 +9,6 @@ public interface AgreementConverterInterface {
     
     Agreement toAgreement(final AgreementDTO agreementDTO);
 
-    List<Agreement> toAgreementList(final List<AgreementDTO> agreementDTOList);
-    
     AgreementDTO fromAgreement(final Agreement agreement);
     
     List<AgreementDTO> fromAgreementList(final List<Agreement> agreementList);

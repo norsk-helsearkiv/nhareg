@@ -2,17 +2,17 @@ package no.arkivverket.helsearkiv.nhareg.diagnosis;
 
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Diagnosis;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnoseDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 public interface DiagnosisConverterInterface {
     
-    Diagnosis fromDiagnosisDTO(DiagnoseDTO diagnosisDTO, DiagnosisCode diagnosisCode);
+    Diagnosis fromDiagnosisDTO(final DiagnosisDTO diagnosisDTO, final DiagnosisCode diagnosisCode);
 
-    DiagnoseDTO toDiagnosisDTO(Diagnosis diagnosis);
+    DiagnosisDTO toDiagnosisDTO(final Diagnosis diagnosis);
 
-    List<DiagnoseDTO> toDiagnosisDTOList(Collection<Diagnosis> diagnosisList);
+    Set<DiagnosisDTO> toDiagnosisDTOSet(final Collection<Diagnosis> diagnosisList);
     
 }

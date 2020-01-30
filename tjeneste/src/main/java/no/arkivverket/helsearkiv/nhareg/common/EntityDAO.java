@@ -16,8 +16,8 @@ import java.util.Map;
 
 public abstract class EntityDAO<T> {
 
-    protected static final String SIZE = "size";
-    protected static final String PAGE = "page";
+    private static final String SIZE = "size";
+    private static final String PAGE = "page";
 
     @PersistenceContext(name = "primary")
     private EntityManager entityManager;
@@ -45,9 +45,7 @@ public abstract class EntityDAO<T> {
         new Validator<T>(entityClass).validateWithException(entity);
 
         // Oppdaterer.
-        getEntityManager().merge(entity);
-
-        return entity;
+        return getEntityManager().merge(entity);
     }
 
     public T delete(@NotNull final String id) {

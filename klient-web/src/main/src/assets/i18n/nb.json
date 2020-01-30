@@ -8,11 +8,14 @@
     "CANCEL": "Avbryt",
     "ADD": "Ny",
     "NEW_STORAGE_UNIT": "Ny lagringsenhet",
+    "NEW_ARCHIVE_AUTHOR": "Legg til arkivskaper",
     "SAVE": "Lagre og lukk",
     "PRINT": "Utskrift",
     "tooltip": {
       "NEW_STORAGE_UNIT": "Legger til inntastet lagringsenhet i registreringen",
+      "NEW_ARCHIVE_AUTHOR": "Legger til valgt arkivskaper i registreringen",
       "SAVE": "Lagrer valgte lagringsenhet(er) på registreringen",
+      "SAVE_ARCHIVE_AUTHOR": "Lagrer valgte arkivskaper(e) på registreringen",
       "SAVE_STORAGE_UNIT": "Lagrer ny identifikator på lagringsenheten",
       "PRINT": "Skriver ut etikett til boksen",
       "CANCEL": "Avbryter registreringen",
@@ -35,6 +38,7 @@
       "KODE_SYSTEM": "Kodesett",
       "STORAGE_UNIT_FORMAT": "Lagringsenhetformat (f.eks: Fb-[0-9]{3} eller: Boks-[0-9]{4})",
       "STORAGE_UNIT": "Lagringsenhet, format: ",
+      "ARCHIVE_AUTHOR" : "Arkivskaper, kortkode: ",
       "UUID": "UUID",
       "USERNAME": "Brukernavn",
       "ROLLENAVN": "Rolle",
@@ -58,6 +62,11 @@
     "VISER": "viser",
     "ADM_LAGRINGSENHET": "Administrasjon av lagringsenheter",
     "ADM_BRUKERE": "Administrasjon av brukere",
+    "ADM_ARCHIVE_AUTHORS": "Administrasjon av arkivskapere",
+    "ARCHIVE_AUTHOR": "Arkivskaper",
+    "ARCHIVE_AUTHORS": "Arkivskapere",
+    "CHOOSE_FROM_LIST_TO_EDIT": "(Velg en i listen for å gjøre endringer)",
+    "CARD_CODE": "Kortkode",
     "TILBAKE": "Tilbake",
     "lagringsenheter": {
       "SOK_LAGRINGSENHET": "Søk lagringsenhet",
@@ -82,6 +91,9 @@
       "NYTTPASSORD": "Sett nytt passord ved neste pålogging",
       "HENT": "Hent",
       "LAGRE": "Lagre",
+      "UPDATE": "Oppdater",
+      "CREATE": "Opprett",
+      "DELETE": "Slett",
       "tooltip": {
         "ENDRE_BRUKER": "Klikk for å gjøre endringer på brukeren"
       }
@@ -122,7 +134,8 @@
     "DIAGNOSIS_DISPLAY_NAME": "Diagnosetekst",
     "NOTE": "Merknad",
     "VALIDATION_ERRORS": "Valideringsfeil",
-    "STORAGE_UNITS": "Lagringsenheter (klikk for å endre)"
+    "STORAGE_UNITS": "Lagringsenheter (klikk for å endre)",
+    "ARCHIVE_AUTHORS": "Arkivskaper (klikk for å endre)"
   },
   "login": {
     "TITTEL": "Logg inn",
@@ -221,18 +234,23 @@
     "Error in IP address length": "Feil lengde på printer-IP",
     "Error in IP format": "Feil format på printer-IP",
     "Error with integers in IP": "Printer-IP kan kun inneholde tall",
-    "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR"
+    "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR",
+    "ErLaast": "Avleveringen er låst"
   },
-  "attributes": {
-    "born": "fodt",
-    "name": "navn",
-    "gender": "kjonn",
-    "dead": "dod",
-    "firstContact": "fKontakt",
-    "lastContact": "sKontakt",
-    "note": "merknad",
-    "recordNumber": "journalnummer",
-    "serialNumber": "lopenummer"
+  "attributes" :  {
+    "born" : "fodt",
+    "name" : "navn",
+    "gender" : "kjonn",
+    "dead" : "dod",
+    "pid" : "fodselsnummer",
+    "firstContact" : "fKontakt",
+    "lastContact" : "sKontakt",
+    "note" : "merknad",
+    "date" : "dato",
+    "recordNumber" : "journalnummer",
+    "serialNumber" : "lopenummer",
+    "diagnosisDate" : "diagnosedato",
+    "agreementDate" : "avtaledato"
   },
   "konfig": {
     "ANTALL": "15"

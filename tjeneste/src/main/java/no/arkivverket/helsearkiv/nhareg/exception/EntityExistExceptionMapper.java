@@ -5,9 +5,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-/**
- * Created by haraldk on 24.04.15.
- */
 @Provider
 public class EntityExistExceptionMapper implements ExceptionMapper<EntityExistsException> {
 

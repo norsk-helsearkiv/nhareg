@@ -1,33 +1,32 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.StringDateTimeAdapter;
+import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
-import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Oppdateringsinfo", propOrder = {
-    "sistOppdatert",
-    "oppdatertAv",
-    "prosesstrinn"
-})
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class UpdateInfo implements Serializable {
     
-    @XmlElement(name = "sist_oppdatert", required = true, type = String.class)
-    @XmlJavaTypeAdapter(StringDateTimeAdapter.class)
-    @XmlSchemaType(name = "dateTime")
-    protected Calendar sistOppdatert;
+    @JsonFormat(pattern = "ddMMyyyy")
+    @Column(name = "sistOppdatert")
+    @Convert(converter = LocalDateTimeConverter.class)
+    private LocalDateTime lastUpdated;
 
-    @XmlElement(name = "oppdatert_av", required = true)
-    protected String oppdatertAv;
+    @Column(name = "oppdatertAv")
+    private String updatedBy;
 
-    @XmlElement(required = true)
-    protected String prosesstrinn;
+    @Column(name = "prosesstrinn")
+    private String processSteps;
 
 }

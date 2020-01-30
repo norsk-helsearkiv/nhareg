@@ -1,23 +1,20 @@
 package no.arkivverket.helsearkiv.nhareg.medicalrecord;
 
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.PersonalDataDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface MedicalRecordConverterInterface {
     
-    MedicalRecord fromPersonalDataDTO(PersonalDataDTO personalDataDTO);
+    MedicalRecord fromMedicalRecordDTO(final MedicalRecordDTO medicalRecordDTO);
 
-    PersonalDataDTO toPersonalDataDTO(MedicalRecord medicalRecord);
+    MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord);
     
-    MedicalRecordDTO toMedicalRecordDTO(MedicalRecord medicalRecord, Transfer transfer, String business);
+    RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord);
 
-    RecordTransferDTO toRecordTransferDTO(MedicalRecord medicalRecord);
+    List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList);
 
-    List<RecordTransferDTO> toRecordTransferDTOList(List<MedicalRecord> medicalRecordList);
-    
 }

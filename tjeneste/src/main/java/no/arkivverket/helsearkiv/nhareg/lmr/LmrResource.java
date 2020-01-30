@@ -1,6 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.lmr;
 
-import no.arkivverket.helsearkiv.nhareg.common.Roles;
+import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.lmr.LmrDTO;
 
 import javax.annotation.security.RolesAllowed;
