@@ -30,6 +30,14 @@ public class ArchiveAuthorDAO extends EntityDAO<ArchiveAuthor> {
         return updated;
     }
 
+    @Override
+    public ArchiveAuthor delete(final String id) {
+        final ArchiveAuthor delete = super.delete(id);
+        getEntityManager().flush();
+        
+        return delete;
+    }
+
     public ArchiveAuthor fetchByName(final String name) {
         final String queryString = "SELECT ac "
             + "FROM ArchiveAuthor ac "

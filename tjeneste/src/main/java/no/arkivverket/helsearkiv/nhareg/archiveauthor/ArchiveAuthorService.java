@@ -5,6 +5,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.*;
@@ -64,7 +65,13 @@ public class ArchiveAuthorService implements ArchiveAuthorServiceInterface {
 
     @Override
     public void delete(final String id) {
-        archiveAuthorDAO.delete(id);
+        try {
+            archiveAuthorDAO.delete(id);
+        } catch (EJBTransactionRolledbackException ejb) {
+            final List<ValidationError> validationErrors =
+                Collections.singletonList(new ValidationError("author", "Delete"));
+            throw new ValidationErrorException(validationErrors);
+        }
     }
     
     private void validateAuthor(final ArchiveAuthor author) {
