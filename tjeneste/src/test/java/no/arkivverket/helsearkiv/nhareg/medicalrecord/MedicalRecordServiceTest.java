@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(Arquillian.class)
 public class MedicalRecordServiceTest {
 
-    private static String USERNAME = "nhabruker1";
+    private static final String USERNAME = "nhabruker1";
     
     @Deployment
     public static WebArchive deployment() {

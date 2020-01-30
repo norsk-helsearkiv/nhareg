@@ -22,10 +22,10 @@ public class UserResource {
 
     @Resource
     private SessionContext sessionContext;
-    
+
     @Inject
     private ConfigurationDAO configurationDAO;
-    
+
     @Inject
     private UserServiceInterface userService;
 
@@ -91,6 +91,7 @@ public class UserResource {
     public Response oppdaterBruker(final UserDTO userDTO) {
         final String username = sessionContext.getCallerPrincipal().getName();
         final UserDTO updatedUser = userService.updateUser(userDTO, username);
+
         return Response.ok(updatedUser).build();
     }
 

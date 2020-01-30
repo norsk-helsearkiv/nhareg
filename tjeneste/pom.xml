@@ -7,7 +7,6 @@
         <artifactId>nhareg</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>no.arkivverket.helsearkiv.nhareg</groupId>
     <artifactId>tjeneste</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>

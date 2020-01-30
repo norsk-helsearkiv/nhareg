@@ -200,7 +200,6 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final ArrayList<ValidationError> validationError =
             new Validator<>(MedicalRecordDTO.class, medicalRecordDTO).validate();
 
-        // Validerer forholdet mellom dataoer
         final DateValidation dateValidation = new DateValidation();
         final LocalDate lowLim = configurationDAO.getDate(ConfigurationDAO.CONFIG_LOWLIM);
         final Integer waitLim = configurationDAO.getInt(ConfigurationDAO.CONFIG_WAITLIM);

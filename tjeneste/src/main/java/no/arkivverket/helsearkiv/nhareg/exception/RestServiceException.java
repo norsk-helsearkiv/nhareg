@@ -6,7 +6,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * <p>
- * This exception is thrown by RESTful services. As a subclass of {@link WebApplicationException},
+ * This exception is thrown by RESTFul services. As a subclass of {@link WebApplicationException},
  * it is translated automatically into a {@link Response}.
  * </p>
  * <p>
@@ -48,4 +48,5 @@ public class RestServiceException extends WebApplicationException {
     public RestServiceException(Throwable cause, Response.Status status) {
         super(cause, status);
     }
+    
 }

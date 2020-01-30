@@ -63,7 +63,6 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
 
         final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
         if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
-            //datostreng kan bestå av kun år eller full dato.
             final LocalDate localDate = ValidDateFormats.getDate(dateQueryParameter);
             
             if (localDate != null) {
@@ -76,8 +75,7 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
                 final List resultList = getEntityManager().createNativeQuery(queryString)
                                                           .setParameter(1, param)
                                                           .getResultList();
-                // resultList.size();
-                //kan være flere kodeverk som overlapper her...
+
                 final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
                 final SingularAttribute<CV, String> attribute =
                     type.getDeclaredSingularAttribute("codeSystemVersion", String.class);

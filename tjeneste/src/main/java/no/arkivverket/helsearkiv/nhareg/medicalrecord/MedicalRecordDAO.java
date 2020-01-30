@@ -52,7 +52,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         final Join<MedicalRecord, StorageUnit> unitJoin = recordJoin.join("storageUnits");
         final String orderBy = queryParameters.remove("orderBy");
         final String direction = queryParameters.remove("sortDirection");
-        
+
         criteriaQuery.select((Path) recordJoin);
 
         // Set all the predicates based on query parameters

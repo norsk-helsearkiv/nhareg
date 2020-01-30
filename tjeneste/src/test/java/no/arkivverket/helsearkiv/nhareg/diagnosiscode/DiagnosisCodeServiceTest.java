@@ -40,7 +40,7 @@ public class DiagnosisCodeServiceTest {
 
     @Test
     public void getAll_noPaging_shouldFindThree() {
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
         assertEquals(3, diagnosisCodes.size());
@@ -48,7 +48,7 @@ public class DiagnosisCodeServiceTest {
 
     @Test
     public void getAll_withPaging_shouldFindOne() {
-        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         queryParameters.add("page", "1");
         queryParameters.add("size", "1");
         List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
@@ -59,7 +59,7 @@ public class DiagnosisCodeServiceTest {
     @Test
     public void getAll_withCode_shouldReturnOne() {
         final String code = "Code0";
-        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         queryParameters.add("code", code);
         final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
@@ -79,7 +79,7 @@ public class DiagnosisCodeServiceTest {
     @Test
     public void getAll_displayNameParam_ignoreCase_shouldReturnOne() {
         final String displayNameLike = "oDe";
-        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         queryParameters.add("displayNameLike", displayNameLike);
         final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
@@ -98,7 +98,7 @@ public class DiagnosisCodeServiceTest {
 
     @Test
     public void getAll_nullCode_shouldReturnThree() {
-        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<String, String>();
+        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
         queryParameters.add("code", null);
         final List<DiagnosisCode> diagnosisCodes = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(diagnosisCodes);
