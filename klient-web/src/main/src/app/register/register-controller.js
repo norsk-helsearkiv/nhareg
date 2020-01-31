@@ -365,12 +365,9 @@ angular.module('nha.register', [
 
         $scope.showArchiveAuthors = function () {
             var selectedArchiveAuthors = [];
-
-            if ($scope.formData.archiveAuthors) {
-                $scope.formData.archiveAuthors.map( function (element) {
-                    selectedArchiveAuthors.push(element.code);
-                });
-            }
+            $scope.formData.archiveAuthors.map( function (element) {
+                selectedArchiveAuthors.push(element.code);
+            });
             return selectedArchiveAuthors;
         };
 
@@ -379,7 +376,15 @@ angular.module('nha.register', [
             //Ny pasientjouranl
             $scope.prevState = 0;
             $scope.state = 0;
-            $scope.formData.archiveAuthors = $scope.avlevering.archiveAuthor;
+            $scope.formData.archiveAuthors = [];
+            switch ($scope.avlevering.arkivskaper) {
+                case null:
+                case undefined:
+                case '':
+                    break;
+                default:
+                    $scope.formData.archiveAuthors.push($scope.avlevering.arkivskaper);
+            }
             $scope.manageStorageUnits();
 
         } else if ($scope.medicalRecordDTO !== undefined) {
