@@ -236,7 +236,7 @@
     "Error with integers in IP": "Printer-IP kan kun inneholde tall",
     "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR",
     "IsLocked": "Avleveringen er låst",
-    "Delete": "Kunne ikke slette",
+    "Delete": "Kunne ikke slette, entitet kan være i bruk",
     "HasChildren": "Objektet er ikke tomt"
   },
   "attributes" :  {

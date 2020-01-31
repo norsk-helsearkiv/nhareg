@@ -2,9 +2,9 @@ var mod = angular.module('nha.common.error-service', [
     'ui.bootstrap'
 ]);
 
-mod.factory('errorService', ['$modal', '$location', errorService]);
+mod.factory('errorService', ['$modal', '$filter', '$location', errorService]);
 
-function errorService($modal) {
+function errorService($modal, $filter) {
     var template = {
         backdrop: 'static',
         windowClass: "modal-center"
@@ -17,7 +17,11 @@ function errorService($modal) {
             template.templateUrl = 'common/http-service/error-modal-400.tpl.html';
 
             template.controller = function ($scope, $modalInstance) {
-                $scope.message = message;
+                if (!message) {
+                    $scope.message = $filter('translate')('error.BAD_REQUEST');
+                } else {
+                    $scope.message = message;
+                }
                 $scope.ok = function () {
                     $modalInstance.close();
                 };
