@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 public class TransferConverter implements TransferConverterInterface {
 
-    private AgreementConverterInterface agreementConverter = new AgreementConverter();
+    private final AgreementConverterInterface agreementConverter = new AgreementConverter();
     
-    private ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
+    private final ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
 
     @Override
     public Transfer toTransfer(final TransferDTO transferDTO) {

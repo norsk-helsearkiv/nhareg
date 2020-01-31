@@ -5,6 +5,7 @@ angular.module('nha.home')
         $scope.archiveAuthors = [];
         $scope.selectedArchiveAuthorRow = null;
         $scope.isCurrentAuthorNew = true;
+        $scope.error = [];
 
         $scope.selectArchiveAuthor = function (selectedArchiveAuthor, index) {
             if (index === $scope.selectedArchiveAuthorRow) {
@@ -39,25 +40,45 @@ angular.module('nha.home')
             $scope.isCurrentAuthorNew = true;
         };
 
+        $scope.createOrUpdateAuthor = function () {
+            if($scope.isCurrentAuthorNew){
+                $scope.createArchiveAuthor();
+            } else {
+                $scope.updateArchiveAuthor();
+            }
+        };
+
         $scope.createArchiveAuthor = function () {
+            $scope.error = [];
+
             httpService.create("authors", $scope.archiveAuthor)
                 .success(function () {
                     $scope.getArchiveAuthors();
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    errorService.errorCode(status);
+                    if (status !== 400) {
+                        errorService.errorCode(status);
+                    } else {
+                        setErrorMessages(data);
+                    }
                 });
         };
 
         $scope.updateArchiveAuthor = function () {
+            $scope.error = [];
+
             httpService.update("authors", $scope.archiveAuthor)
                 .success(function () {
                     $scope.getArchiveAuthors();
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    errorService.errorCode(status);
+                    if (status !== 400) {
+                        errorService.errorCode(status);
+                    } else {
+                        setErrorMessages(data);
+                    }
                 });
         };
 
@@ -68,7 +89,22 @@ angular.module('nha.home')
                     resetArchiveAuthor();
                 })
                 .error(function (data, status) {
-                    errorService.errorCode(status);
+                    if (status === 400) {
+                        var errorMessage = $filter('translate')('formError.' + data[0].constraint);
+                        errorService.errorCode(status, errorMessage);
+                    } else {
+                        errorService.errorCode(status);
+                    }
                 });
+        };
+
+        $scope.showError = function (attribute) {
+          return $scope.error[attribute] !== undefined;
+        };
+
+        var setErrorMessages = function (data) {
+            angular.forEach(data, function (element) {
+                $scope.error[element.attribute] = $filter('translate')('formError.' + element.constraint);
+            });
         };
     });

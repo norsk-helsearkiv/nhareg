@@ -36,10 +36,20 @@
         </div>
     </div>
     <form class="row input-group form-group">
+        <div class="row" data-ng-show="showError('code')">
+            <div class="span span4">
+                <label id="authorCodeError"  data-ng-class="{error: error['code'] !== undefined }">{{ error['code'] }}</label>
+            </div>
+        </div>
         <div class="row">
             <div class="span span4 padding-bottom">
                 <label>{{'home.CARD_CODE' | translate}}</label>
                 <input type="text" data-ng-model="archiveAuthor.code" class="form-control" placeholder="Kortkode">
+            </div>
+        </div>
+        <div class="row" data-ng-show="showError('name')">
+            <div class="span span4">
+                <label id="authorNameError"  data-ng-class="{error: error['name'] !== undefined }">{{ error['name'] }}</label>
             </div>
         </div>
         <div class="row">
@@ -56,8 +66,7 @@
         </div>
         <div class="span span5 padding-bottom">
             <label>&nbsp;</label>
-            <button class="form-control btn btn-primary" type="submit" data-ng-click="createArchiveAuthor()" data-ng-show="isCurrentAuthorNew">{{ 'home.brukere.CREATE' | translate }}</button>
-            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateArchiveAuthor()" data-ng-show="!isCurrentAuthorNew">{{ 'home.brukere.LAGRE' | translate }}</button>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="createOrUpdateAuthor()">{{ 'home.brukere.LAGRE' | translate }}</button>
         </div>
         <div class="span span5 padding-bottom">
             <label>&nbsp;</label>

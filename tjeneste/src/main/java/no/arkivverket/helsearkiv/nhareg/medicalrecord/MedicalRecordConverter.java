@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 
 public class MedicalRecordConverter implements MedicalRecordConverterInterface {
 
-    private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
+    private final DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
 
-    private DiagnosisConverterInterface diagnosisConverter = new DiagnosisConverter();
+    private final DiagnosisConverterInterface diagnosisConverter = new DiagnosisConverter();
     
-    private ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
+    private final ArchiveAuthorConverterInterface archiveAuthorConverter = new ArchiveAuthorConverter();
     
     @Override
     public MedicalRecord fromMedicalRecordDTO(final MedicalRecordDTO medicalRecordDTO) {
@@ -67,11 +67,11 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         medicalRecord.setFirstContact(dateOrYearConverter.toDateOrYear(firstContact));
         medicalRecord.setLastContact(dateOrYearConverter.toDateOrYear(lastContact));
 
-        if (PIDValidation.isHnummer(pid)) {
+        if (PIDValidation.isHNumber(pid)) {
             medicalRecord.setTypePID("H");
-        } else if (PIDValidation.isDnummer(pid)) {
+        } else if (PIDValidation.isDNumber(pid)) {
             medicalRecord.setTypePID("D");
-        } else if(PIDValidation.isFnummer(pid)) {
+        } else if(PIDValidation.isFNumber(pid)) {
             medicalRecord.setTypePID("F");
         }
 
@@ -147,7 +147,15 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
     }
 
     @Override
-    public RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord) {
+    public List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList) {
+        if (medicalRecordList == null) {
+            return null;
+        }
+
+        return medicalRecordList.stream().map(this::toRecordTransferDTO).collect(Collectors.toList());
+    }
+
+    private RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord) {
         if (medicalRecord == null) {
             return null;
         }
@@ -206,15 +214,6 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         }
 
         return recordTransferDTO;
-    }
-
-    @Override
-    public List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList) {
-        if (medicalRecordList == null) {
-            return null;
-        }
-
-        return medicalRecordList.stream().map(this::toRecordTransferDTO).collect(Collectors.toList());
     }
 
 }

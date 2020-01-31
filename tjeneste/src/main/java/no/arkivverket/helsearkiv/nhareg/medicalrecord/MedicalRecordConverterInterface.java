@@ -13,8 +13,6 @@ public interface MedicalRecordConverterInterface {
 
     MedicalRecordDTO toMedicalRecordDTO(final MedicalRecord medicalRecord);
     
-    RecordTransferDTO toRecordTransferDTO(final MedicalRecord medicalRecord);
-
     List<RecordTransferDTO> toRecordTransferDTOList(final Collection<MedicalRecord> medicalRecordList);
 
 }

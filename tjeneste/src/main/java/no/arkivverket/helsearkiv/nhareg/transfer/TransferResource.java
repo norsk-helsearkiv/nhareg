@@ -3,7 +3,6 @@ package no.arkivverket.helsearkiv.nhareg.transfer;
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
-import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 
 import javax.annotation.Resource;
@@ -33,10 +32,7 @@ public class TransferResource {
 
     @Inject
     private UserServiceInterface userService;
-    
-    @Inject
-    private MedicalRecordServiceInterface medicalRecordService;
-    
+
     @Inject
     private TransferServiceInterface transferService;
 

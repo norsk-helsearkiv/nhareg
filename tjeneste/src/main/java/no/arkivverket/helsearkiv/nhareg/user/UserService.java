@@ -28,13 +28,13 @@ public class UserService implements UserServiceInterface {
     public UserDTO updateUser(final UserDTO userDTO, final String username) {
         final User user = userConverter.toUser(userDTO);
 
-        //defaulter til bruker-rolle hvis det mangler..
+        // Defaults to user role if missing.
         final String userName = user.getRole().getName();
         if (userName != null && userName.isEmpty()) {
             user.getRole().setName(Roles.ROLE_USER);
         }
 
-        //admin bruker kan ikke endre rolle på seg selv... bare overskriver i første omgang, kan forfines ved behov...
+        // An admin cannot change their own role.
         final String loggedInRole = userDAO.getRole(username);
         if (loggedInRole.equals("admin") && userDTO.getUsername().equals(username)) {
             user.getRole().setName(loggedInRole);
@@ -42,13 +42,13 @@ public class UserService implements UserServiceInterface {
 
         boolean resetPass = false;
         if (userDTO.getResetPassword() != null && userDTO.getResetPassword()) {
-            user.setResetPassword("Y"); // enkel resetpassord-indikator kan forfines ved behov...
+            user.setResetPassword("Y");
             resetPass = true;
         } else {
             user.setResetPassword("");
         }
 
-        if (!resetPass) { // lite poeng å validere passord hvis det skal resettes
+        if (!resetPass) { // Skip validation if password should be reset
             List<ValidationError> feil = validateNewChangeUser(userDTO.getPassword());
             if (feil.size() > 0) {
                 throw new ValidationErrorException(feil);
@@ -81,13 +81,13 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public List<UserDTO> getUsers() {
-        final List<UserDTO> dtos = new ArrayList<>();
+        final List<UserDTO> userDTOS = new ArrayList<>();
         for (User user : userDAO.getAllUsers()) {
             final UserDTO userDto = userConverter.fromUser(user);
-            dtos.add(userDto);
+            userDTOS.add(userDto);
         }
 
-        return dtos;
+        return userDTOS;
     }
 
     @Override
@@ -100,11 +100,6 @@ public class UserService implements UserServiceInterface {
         final User user = userDAO.fetchByUsername(username);
 
         return "Y".equals(user.getResetPassword());
-    }
-
-    @Override
-    public User getByUsername(final String username) {
-        return userDAO.fetchByUsername(username);
     }
 
     @Override 

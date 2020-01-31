@@ -1,6 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.agreement;
 
-import no.arkivverket.helsearkiv.nhareg.archiveauthor.ArchiveAuthorServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
@@ -41,9 +40,6 @@ public class AgreementResource {
     
     @Inject
     private TransferConverterInterface transferConverter;
-    
-    @Inject
-    private ArchiveAuthorServiceInterface archiveCreatorService;
 
     @POST
     @RolesAllowed(value = {Roles.ROLE_ADMIN})

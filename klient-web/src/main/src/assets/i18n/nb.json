@@ -211,7 +211,7 @@
     "NotNull": "Kan ikke være tom",
     "Size": "Kan ikke være tom",
     "EnObligatorisk": "Ett av feltene må fylles inn (*)",
-    "NotUnique": "Lagringsenhet finnes i annen avlevering",
+    "NotUnique": "Må være unik",
     "FodtEtterDodt": "Fødsel kan ikke være etter død",
     "UtenforGyldigPeriode": "Dato/år utenfor gyldighetsområde",
     "UkjentDiagnosekode": "Ukjent diagnosekode",
@@ -235,7 +235,9 @@
     "Error in IP format": "Feil format på printer-IP",
     "Error with integers in IP": "Printer-IP kan kun inneholde tall",
     "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR",
-    "ErLaast": "Avleveringen er låst"
+    "IsLocked": "Avleveringen er låst",
+    "Delete": "Kunne ikke slette, entitet kan være i bruk",
+    "HasChildren": "Objektet er ikke tomt"
   },
   "attributes" :  {
     "born" : "fodt",

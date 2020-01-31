@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 
-/**
- * Created by haraldk on 08/12/2017.
- */
 public class SocketPrinter {
 
     public void print(final String content, final String hostIp, final Integer printerPort) throws IOException {

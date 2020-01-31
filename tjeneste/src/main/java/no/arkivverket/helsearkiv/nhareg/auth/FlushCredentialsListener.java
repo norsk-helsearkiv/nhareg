@@ -8,10 +8,6 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.security.Principal;
 
-/**
- * Created by haraldk on 24.04.15.
- * WFLY-3221
- */
 @WebListener
 public class FlushCredentialsListener implements HttpSessionListener {
 

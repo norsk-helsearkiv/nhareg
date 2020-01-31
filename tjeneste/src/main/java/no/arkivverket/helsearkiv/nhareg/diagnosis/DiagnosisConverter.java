@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class DiagnosisConverter implements DiagnosisConverterInterface {
 
-    private DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
+    private final DateOrYearConverterInterface dateOrYearConverter = new DateOrYearConverter();
     
     @Override
     public Diagnosis fromDiagnosisDTO(final DiagnosisDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
