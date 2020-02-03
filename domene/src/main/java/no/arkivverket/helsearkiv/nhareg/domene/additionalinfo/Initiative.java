@@ -1,14 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ProcedureAdapter;
 
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @XmlAccessorType(value = XmlAccessType.FIELD)
@@ -18,11 +20,11 @@ import java.util.List;
 })
 public class Initiative implements Serializable {
     
-    @NotNull
     @XmlElement(name = "typeTiltak")
     private InitiativeType initiativeType;
-    
+
+    @XmlJavaTypeAdapter(value = ProcedureAdapter.class)
     @XmlElement(name = "prosedyre")
-    private List<Procedure> procedures;
+    private Set<Procedure> procedures = new HashSet<>();
     
 }

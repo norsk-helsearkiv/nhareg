@@ -13,8 +13,4 @@ public class Gender extends CS implements Serializable {
 
     public Gender() {}
 
-    public Gender(final String code, final String displayName) {
-        super(code, displayName);
-    }
-
 }

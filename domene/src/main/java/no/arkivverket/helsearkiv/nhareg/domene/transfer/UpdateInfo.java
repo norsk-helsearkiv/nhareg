@@ -1,6 +1,5 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 @Embeddable
 public class UpdateInfo implements Serializable {
     
-    @JsonFormat(pattern = "ddMMyyyy")
     @Column(name = "sistOppdatert")
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime lastUpdated;

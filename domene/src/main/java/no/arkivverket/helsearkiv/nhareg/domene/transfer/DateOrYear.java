@@ -2,8 +2,8 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateTimeAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.LocalDateTimeAdapter;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;

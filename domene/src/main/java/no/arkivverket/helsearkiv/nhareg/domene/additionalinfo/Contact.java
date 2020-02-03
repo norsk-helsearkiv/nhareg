@@ -1,36 +1,50 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ServiceAdapter;
 
-import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@EqualsAndHashCode(callSuper = true) 
-@XmlType(name = "kontakt", propOrder = {
-    "services",
-    "contactType",
-    "activityLocation",
-    "activityType"
-})
+@EqualsAndHashCode(callSuper = true)
+@XmlType(name = "kontakt",
+    propOrder = {
+        "episodeId",
+        "seriesId",
+        "admittedDateTime",
+        "dischargeDateTime",
+        "episodeSubject",
+        "careLevel",
+        "municipalNrHome",
+        "district",
+        "address",
+        "services",
+        "contactType",
+        "activityLocation",
+        "activityType",
+    })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class Contact extends Episode implements Serializable {
-    
+
+    @XmlJavaTypeAdapter(value = ServiceAdapter.class)
     @XmlElement(name = "tjeneste")
-    private List<Service> services;
-    
-    @NotNull
+    private Set<Service> services = new HashSet<>();
+
     @XmlElement(name = "kontakttype")
     private ContactType contactType;
-    
+
     @XmlElement(name = "stedAktivitet")
     private ActivityLocation activityLocation;
-    
+
     @XmlElement(name = "polkonAktivitet")
     private ActivityType activityType;
-    
+
 }

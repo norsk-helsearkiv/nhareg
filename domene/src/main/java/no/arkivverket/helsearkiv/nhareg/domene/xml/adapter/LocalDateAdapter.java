@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.domene.adapter;
+package no.arkivverket.helsearkiv.nhareg.domene.xml.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDate;
@@ -8,7 +8,7 @@ public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
     
     @Override
     public LocalDate unmarshal(final String date) {
-        return LocalDate.parse(date);
+        throw new UnsupportedOperationException();
     }
 
     @Override

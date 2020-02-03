@@ -1,32 +1,29 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
-
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateAdapter;
 
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
-@XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(
+    namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
     name = "saksreferanser",
-    // namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup",
     propOrder = {
+        "xmlns",
         "caseReferenceDate",
         "caseReferenceNumber",
         "caseReferenceText",
     })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class CaseReference implements Serializable {
 
+    @XmlAttribute(name = "xmlns")
+    private String xmlns = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup";
+    
     @NotNull
-    @XmlJavaTypeAdapter(value = LocalDateAdapter.class)
     @XmlElement(name = "saksereferansedato")
     private LocalDate caseReferenceDate;
 

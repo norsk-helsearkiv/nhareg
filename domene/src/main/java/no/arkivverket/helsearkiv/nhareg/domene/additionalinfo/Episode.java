@@ -3,7 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateTimeAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.LocalDateTimeAdapter;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
@@ -14,10 +14,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlSeeAlso({
-    HospitalAdmission.class
-})
-@XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(propOrder = {
     "episodeId",
     "seriesId",
@@ -29,6 +25,7 @@ import java.time.LocalDateTime;
     "district",
     "address",
 })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public abstract class Episode implements Serializable {
 
     @NotNull

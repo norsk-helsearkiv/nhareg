@@ -1,8 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.transfer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
+import com.fasterxml.jackson.databind.ser.SerializerFactory;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.Transfer;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.TransferDTO;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.EmptyPropertySerializerModifier;
 import no.arkivverket.helsearkiv.nhareg.user.UserServiceInterface;
 
 import javax.annotation.Resource;
@@ -16,10 +24,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
 import java.util.List;
 
 @Stateless
@@ -101,21 +105,26 @@ public class TransferResource {
         final Transfer transfer = transferService.getTransferById(id);
         
         try {
-            final Marshaller marshaller = JAXBContext.newInstance(transfer.getClass()).createMarshaller();
-            final StringWriter stringWriter = new StringWriter();
-            marshaller.setProperty(marshaller.JAXB_SCHEMA_LOCATION, "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd");
-            marshaller.setProperty(marshaller.JAXB_FORMATTED_OUTPUT, true);
+            final EmptyPropertySerializerModifier modifier = new EmptyPropertySerializerModifier();
+            final SerializerFactory factory = BeanSerializerFactory.instance.withSerializerModifier(modifier);
+            final XmlMapper xmlMapper = new XmlMapper();
             
-            marshaller.marshal(transfer, stringWriter);
-            ResponseBuilder response = Response.ok(stringWriter.toString());
+            xmlMapper.registerModule(new JaxbAnnotationModule());
+            xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            xmlMapper.setSerializerFactory(factory);
+            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
+            xmlMapper.setDefaultUseWrapper(false);
+            
+            final String xmlOutput = xmlMapper.writeValueAsString(transfer);
+            ResponseBuilder response = Response.ok(xmlOutput);
             response.header("Content-Disposition", "attachment; filename=" + id + ".xml");
 
             return response.build();
-        } catch (JAXBException e) {
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
 
             return Response.serverError().build();
-        }
+        } 
     }
 
     @POST

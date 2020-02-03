@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 /**
@@ -20,9 +17,8 @@ import java.io.Serializable;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CS", propOrder = {
+@XmlType(name = "CodeSystem", propOrder = {
     "code",
-    "displayName"
 })
 @Data
 @NoArgsConstructor
@@ -34,10 +30,10 @@ public class CS implements Serializable {
 
     @Id
     @NotNull
-    @XmlElement(required = true)
+    @XmlElement
     protected String code;
     
-    @XmlElement(required = true)
+    @XmlTransient
     protected String displayName;
 
 }

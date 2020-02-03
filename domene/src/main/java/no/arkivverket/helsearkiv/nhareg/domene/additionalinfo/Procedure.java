@@ -1,14 +1,16 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ProcedureCodeAdapter;
 
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @XmlAccessorType(value = XmlAccessType.FIELD)
@@ -21,8 +23,8 @@ public class Procedure implements Serializable {
     @XmlElement(name = "prosNr")
     private Integer procedureNumber;
     
-    @Size(min = 1)
+    @XmlJavaTypeAdapter(value = ProcedureCodeAdapter.class)
     @XmlElement(name = "Prosedyrekode")
-    private List<ProcedureCode> procedureCode;
+    private Set<ProcedureCode> procedureCode = new HashSet<>();
     
 }

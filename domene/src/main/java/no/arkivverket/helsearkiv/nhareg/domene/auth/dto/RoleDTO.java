@@ -1,16 +1,17 @@
 package no.arkivverket.helsearkiv.nhareg.domene.auth.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.xml.bind.annotation.XmlElement;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDTO {
     
-    @JsonProperty(value = "navn")
+    @XmlElement(name = "navn")
     private String name;
 
 }

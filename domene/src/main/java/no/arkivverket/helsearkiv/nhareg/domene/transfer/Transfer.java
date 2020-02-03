@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.ArchiveAuthorAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ArchiveAuthorAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.MedicalRecordAdapter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,49 +18,65 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "avlxml")
-@XmlType(name = "avlevering", propOrder = {
-    "xmlVersion",
-    "transferId",
-    "transferDescription",
-    "archiveAuthor",
-    "agreement",
-    "medicalRecords",
-})
 @Data
 @EqualsAndHashCode(exclude = {"medicalRecords", "agreement"})
 @NoArgsConstructor
 @AllArgsConstructor
+@XmlRootElement(name = "avlxml")
+@XmlType(name = "avlevering", propOrder = {
+    "xmlns",
+    "xsi",
+    "schema",
+    "xmlVersion",
+    "transferId",
+    "transferDescription",
+    "dateGenerated",
+    "archiveAuthor",
+    "agreement",
+    "medicalRecords",
+})
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "avlevering")
 public class Transfer implements Serializable {
+    
+    @XmlAttribute(name = "xmlns")
+    @Transient
+    private final String xmlns = "http://www.arkivverket.no/standarder/nha/avlxml";
+    
+    @XmlAttribute(name = "xmlns:xsi")
+    @Transient
+    private final String xsi = "http://www.w3.org/2001/XMLSchema-instance";
+
+    @XmlAttribute(name = "xsi:schemaLocation")
+    @Transient
+    private final String schema = "http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd";
+
+    @XmlElement(name = "avlxmlversjon")
+    @Transient
+    private String xmlVersion = "2.16.578.1.39.100.11.2.2";
 
     @NotNull
+    @XmlElement(name = "avleveringsidentifikator")
     @Id
     @Column(name = "avleveringsidentifikator")
-    @XmlElement(required = true, name = "avleveringsidentifikator")
     private String transferId;
 
     @Size(min = 1)
+    @XmlElement(name = "avleveringsbeskrivelse")
     @Column(name = "avleveringsbeskrivelse")
-    @XmlElement(required = true, name = "avleveringsbeskrivelse")
     private String transferDescription;
 
-    @Transient
-    @XmlElement(name = "avlxmlversjon")
-    private String xmlVersion = "2.16.578.1.39.100.11.2.2";
-    
     @NotNull
+    @XmlElement(name = "avtale")
     @ManyToOne
     @JoinColumn(name = "avtale_avtaleidentifikator", referencedColumnName = "avtaleidentifikator")
-    @XmlElement(required = true, name = "avtale")
     private Agreement agreement;
 
+    @XmlElement(name = "arkivskaper")
+    @XmlJavaTypeAdapter(value = ArchiveAuthorAdapter.class)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
-    @XmlElement(required = true, name = "arkivskaper")
-    @XmlJavaTypeAdapter(value = ArchiveAuthorAdapter.class)
     private ArchiveAuthor archiveAuthor;
 
     @NotNull
@@ -67,7 +84,8 @@ public class Transfer implements Serializable {
     @Column(name = "lagringsenhetformat")
     private String storageUnitFormat;
     
-    @XmlElement(required = true, name = "pasientjournal", nillable = true)
+    @XmlElement(name = "pasientjournal")
+    @XmlJavaTypeAdapter(value = MedicalRecordAdapter.class)
     @OneToMany
     @JoinTable(name = "avlevering_pasientjournal",
         joinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator"),
@@ -83,10 +101,11 @@ public class Transfer implements Serializable {
     @Embedded
     private UpdateInfo updateInfo;
 
-    @XmlTransient
+    @XmlElement
     @Column(name = "dateGenerated")
     @Convert(converter = LocalDateConverter.class)
-    private LocalDate dateGenerated; 
+    @Transient
+    private LocalDate dateGenerated = LocalDate.now();
     
     public Set<MedicalRecord> getMedicalRecords() {
         if (medicalRecords == null) {

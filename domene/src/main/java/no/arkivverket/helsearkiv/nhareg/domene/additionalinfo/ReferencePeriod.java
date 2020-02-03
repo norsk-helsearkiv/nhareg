@@ -1,17 +1,17 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ContactAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.HospitalAdmissionAdapter;
 
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(
     propOrder = {
         "id",
@@ -23,20 +23,19 @@ import java.util.Set;
         "refToInstitutionId",
         "admissions",
 })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class ReferencePeriod implements Serializable {
 
-    @NotNull
     @XmlAttribute(name = "henvisningsperiodeID")
     private String id;
 
     @XmlAttribute(name = "xmlns")
-    private String xmlns = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup";
+    private final String xmlns = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup";
     
     @XmlElement(name = "henvTilInstitusjonID")
     private String refFromInstitutionId;
 
     @XmlElement(name = "ansienDato")
-    @XmlJavaTypeAdapter(value = LocalDateAdapter.class)
     private LocalDate ansiDate;
 
     @XmlElement(name = "trydgenasjon")
@@ -48,7 +47,12 @@ public class ReferencePeriod implements Serializable {
     @XmlElement(name = "henvFraInstitusjonID")
     private String refToInstitutionId;
 
-    @XmlElement(name = "episode")
-    private Set<Episode> admissions;
+    @XmlJavaTypeAdapter(value = HospitalAdmissionAdapter.class)
+    @XmlElement(name = "avdelingsopphold")
+    private Set<HospitalAdmission> admissions = new HashSet<>();
+    
+    @XmlJavaTypeAdapter(value = ContactAdapter.class)
+    @XmlElement(name = "kontakt")
+    private Set<Contact> contacts = new HashSet<>();
     
 }

@@ -1,12 +1,11 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.AdditionalInfoAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.DeathDateKnownAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.GenderAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.StorageUnitAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DeathDateKnownAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.GenderAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.StorageUnitAdapter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -19,96 +18,99 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@XmlType(
+    namespace = "http://www.arkivverket.no/standarder/nha/avlxml",
+    name = "pasientjournal",
+    propOrder = {
+        "uuid",
+        "fanearkid",
+        "serialNumber",
+        "recordNumber",
+        "pid",
+        "name",
+        "born",
+        "dead",
+        "deathDateUnknown",
+        "gender",
+        "firstContact",
+        "lastContact",
+        "note",
+        "diagnosis",
+        "storageUnits",
+        "additionalInfo",
+    })
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "pasientjournal", propOrder = {
-    "uuid",
-    "fanearkid",    
-    "serialNumber",
-    "recordNumber",
-    "pid",
-    "name",
-    "born",
-    "dead",
-    "deathDateUnknown",
-    "gender",
-    "firstContact",
-    "lastContact",
-    "note",
-    "diagnosis",
-    "storageUnits",
-    "additionalInfo",
-})
 @Data
 @Entity
 @Table(name = "pasientjournal")
 public class MedicalRecord implements Serializable {
 
     @NotNull
+    @XmlElement(name = "journalidentifikator")
     @Id
-    @XmlElement(required = true, name = "journalidentifikator")
     private String uuid;
-    
+
+    @XmlElement(name = "journalnummer")
     @Column(name = "journalnummer")
-    @XmlElement(required = true, name = "journalnummer")
     private String recordNumber;
 
-    @Column(name = "lopenummer")
     @XmlElement(name = "lopenummer")
+    @Column(name = "lopenummer")
     private String serialNumber;
 
     @NotNull
-    @Column(name = "pid")
     @XmlElement(name = "fodselsnummer")
+    @Column(name = "pid")
     private String pid;
 
-    @Column(name = "typePID")
     @XmlTransient
+    @Column(name = "typePID")
     private String typePID;
 
     @Size(min = 1)
+    @XmlElement(name = "pasientnavn")
     @Column(name = "pnavn")
-    @XmlElement(required = true, name = "pasientnavn")
     private String name;
 
+    @XmlElement(name = "fodtdato")
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(column = @Column(name = "fdato"), name = "date"),
         @AttributeOverride(column = @Column(name = "faar"), name = "year")
     })
-    @XmlElement(required = true, name = "fodtdato")
     private DateOrYear born;
 
     @NotNull
     @Valid
+    @XmlElement(name = "kjonn")
+    @XmlJavaTypeAdapter(value = GenderAdapter.class)
     @ManyToOne
     @JoinColumn(name = "kjonn")
-    @XmlElement(required = true, name = "kjonn")
-    @XmlJavaTypeAdapter(value = GenderAdapter.class)
     private Gender gender;
 
-    @Column(name = "dodsdatoUkjent")
     @XmlElement(name = "sikkermors")
     @XmlJavaTypeAdapter(DeathDateKnownAdapter.class)
+    @Column(name = "dodsdatoUkjent")
     private Boolean deathDateUnknown;
 
-    @Column(name = "fodtdatoUkjent")
     @XmlTransient
+    @Column(name = "fodtdatoUkjent")
     private Boolean bornDateUnknown;
 
+    @XmlElement(name = "morsdato")
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(column = @Column(name = "ddato"), name = "date"),
         @AttributeOverride(column = @Column(name = "daar"), name = "year")
     })
-    @XmlElement(name = "morsdato")
     private DateOrYear dead;
 
+    @XmlElement(name = "forstekontakt")
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(name = "date", column = @Column(name = "foersteKontaktDato")),
         @AttributeOverride(name = "year", column = @Column(name = "foersteKontaktAar"))
     })
-    @XmlElement(name = "forstekontakt")
     private DateOrYear firstContact;
 
     @Embedded
@@ -119,9 +121,8 @@ public class MedicalRecord implements Serializable {
     @XmlElement(name = "sistekontakt")
     private DateOrYear lastContact;
 
-
     @Size(min = 1)
-    @XmlElement(required = true, name = "lagringsenhet")
+    @XmlElement(name = "lagringsenhet")
     @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "pasientjournal_lagringsenhet",
@@ -130,12 +131,12 @@ public class MedicalRecord implements Serializable {
     )
     private Set<StorageUnit> storageUnits;
 
-    @Embedded
     @XmlTransient
+    @Embedded
     private UpdateInfo updateInfo;
 
-    @Column(name = "merknad")
     @XmlElement(name="merknad")
+    @Column(name = "merknad")
     private String note;
 
     @XmlTransient
@@ -143,35 +144,34 @@ public class MedicalRecord implements Serializable {
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime createdDate;
 
-    @Transient
     @XmlElement(name = "supplerendeopplysninger")
-    @XmlJavaTypeAdapter(value = AdditionalInfoAdapter.class)
+    @Transient
     private AdditionalInfo additionalInfo;
 
+    @XmlElement(name = "diagnose")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pasientjournal_diagnose",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "diagnose_uuid")
     )
-    @XmlElement(name = "diagnose")
     private Set<Diagnosis> diagnosis;
 
     @XmlTransient
     @Column(name = "slettet")
     private Boolean deleted;
-    
-    @Column(name = "fanearkid")
+
     @XmlElement(name = "fanearkidentifikator")
+    @Column(name = "fanearkid")
     private String fanearkid;
 
+    @XmlTransient
     @ManyToMany
     @JoinTable(name = "pasientjournal_arkivskaper",
         joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "arkivskaper_uuid")
     )
-    @XmlTransient
     private Set<ArchiveAuthor> archiveAuthors;
-    
+
     public Set<Diagnosis> getDiagnosis() {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;
     }
@@ -189,7 +189,7 @@ public class MedicalRecord implements Serializable {
         if (this == other) {
             return true;
         }
-        
+
         if (other == null || getClass() != other.getClass()) {
             return false;
         }

@@ -1,12 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.domene.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 
 @Data
 @Entity
@@ -15,7 +15,7 @@ public class Role {
 
     @Id
     @Column(name = "navn")
-    @JsonProperty(value = "navn")
+    @XmlElement(name = "navn")
     private String name;
 
 }
