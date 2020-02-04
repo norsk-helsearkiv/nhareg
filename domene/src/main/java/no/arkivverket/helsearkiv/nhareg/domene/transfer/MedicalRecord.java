@@ -163,7 +163,7 @@ public class MedicalRecord implements Serializable {
     private Boolean deleted;
 
     @XmlElement(name = "fanearkidentifikator")
-    @Column(name = "fanearkid")
+    @Column(name = "fanearkid", unique = true)
     private String fanearkid;
 
     @XmlTransient
