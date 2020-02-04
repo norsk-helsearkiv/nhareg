@@ -1,9 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.LocalDateTimeAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.InitiativeAdapter;
 
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,10 +10,10 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(name = "Tjeneste", propOrder = {
     "institutionId",
     "startDateTime",
@@ -23,17 +22,15 @@ import java.util.List;
     "unit",
     "initiatives",
 })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class Service implements Serializable {
     
     @XmlElement(name = "instID")
     private String institutionId;
  
-    @NotNull
-    @XmlJavaTypeAdapter(value = LocalDateTimeAdapter.class)
-    @XmlElement(name = "startDatoTid", required = true)
+    @XmlElement(name = "startDatoTid")
     private LocalDateTime startDateTime;
 
-    @XmlJavaTypeAdapter(value = LocalDateTimeAdapter.class)
     @XmlElement(name = "sluttDatoTid")
     private LocalDateTime endDateTime;
     
@@ -43,7 +40,8 @@ public class Service implements Serializable {
     @XmlElement(name = "enhet")
     private Unit unit;
     
+    @XmlJavaTypeAdapter(value = InitiativeAdapter.class)
     @XmlElement(name = "tiltak")
-    private List<Initiative> initiatives;
+    private Set<Initiative> initiatives = new HashSet<>();
     
 }

@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.domene.adapter;
+package no.arkivverket.helsearkiv.nhareg.domene.xml.adapter;
 
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 
@@ -9,23 +9,11 @@ public class DateOrYearAdapter extends XmlAdapter<String, DateOrYear> {
     
     @Override
     public DateOrYear unmarshal(final String date) {
-        final DateOrYear dateOrYear = new DateOrYear();
-
-        if (date.length() == 4) {
-            dateOrYear.setYear(Integer.parseInt(date));
-        } else {
-            dateOrYear.setDate(dateOrYear.getDate());
-        }
-        
-        return dateOrYear;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String marshal(final DateOrYear dateOrYear) {
-        if (dateOrYear == null) {
-            return "";
-        }
-        
         if (dateOrYear.getDate() == null) {
             return String.valueOf(dateOrYear.getAsYear());
         } else {

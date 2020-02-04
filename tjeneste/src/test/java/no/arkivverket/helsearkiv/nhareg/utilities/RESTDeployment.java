@@ -1,5 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
+import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import no.arkivverket.helsearkiv.nhareg.agreement.*;
 import no.arkivverket.helsearkiv.nhareg.archiveauthor.*;
 import no.arkivverket.helsearkiv.nhareg.business.BusinessDAO;
@@ -12,7 +14,6 @@ import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisService;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeDAO;
-import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeResource;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeService;
 import no.arkivverket.helsearkiv.nhareg.diagnosiscode.DiagnosisCodeServiceInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
@@ -27,6 +28,8 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ListObject;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.EmptyPropertySerializerModifier;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.NullStringSerializer;
 import no.arkivverket.helsearkiv.nhareg.gender.GenderDAO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.*;
 import no.arkivverket.helsearkiv.nhareg.storageunit.*;
@@ -73,7 +76,6 @@ public class RESTDeployment {
                                .addPackage(DiagnosisConverterInterface.class.getPackage())
                                .addPackage(DiagnosisConverter.class.getPackage())
                                // DiagnosisCode
-                               .addPackage(DiagnosisCodeResource.class.getPackage())
                                .addPackage(DiagnosisCodeService.class.getPackage())
                                .addPackage(DiagnosisCodeServiceInterface.class.getPackage())
                                .addPackage(DiagnosisCodeDAO.class.getPackage())
@@ -107,13 +109,17 @@ public class RESTDeployment {
                                .addPackage(UserDAO.class.getPackage())
                                // Util
                                .addPackage(DateValidation.class.getPackage())
+                               .addPackage(EmptyPropertySerializerModifier.class.getPackage())
                                .addPackage(ListObject.class.getPackage())
                                .addPackage(LocalDateTimeConverter.class.getPackage())
+                               .addPackage(JaxbAnnotationModule.class.getPackage())
+                               .addPackage(NullStringSerializer.class.getPackage())
                                .addPackage(ParameterConverter.class.getPackage())
                                .addPackage(ValidDateFormats.class.getPackage())
                                .addPackage(ValidationError.class.getPackage())
                                .addPackage(ValidationErrorException.class.getPackage())
+                               .addPackage(XmlBeanSerializerModifier.class.getPackage())
             ;
     }
-    
+
 }

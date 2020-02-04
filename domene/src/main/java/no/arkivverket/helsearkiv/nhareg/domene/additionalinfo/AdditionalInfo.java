@@ -3,20 +3,21 @@ package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.CaseReferenceAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ReferencePeriodAdapter;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
     name = "Supplerendeopplysninger",
     propOrder = {
@@ -25,20 +26,21 @@ import java.util.Set;
     "caseReferences",
     "referencePeriods",
 })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class AdditionalInfo implements Serializable {
 
-    @NotNull
     @XmlElement(name = "avleveringsidentifikator")
-    private String transferId;
+    private Identifier transferId;
     
-    @Size(min = 1)
     @XmlElement(name = "journalidentifikator")
-    private String recordId;
+    private Identifier recordId;
     
-    @XmlElement(name = "saksreferanser", nillable = true)
-    private Set<CaseReference> caseReferences;
+    @XmlJavaTypeAdapter(value = CaseReferenceAdapter.class)
+    @XmlElement(name = "saksreferanser")
+    private Set<CaseReference> caseReferences = new HashSet<>();
     
-    @XmlElement(name = "henvisningsperiode", nillable = true)
-    private Set<ReferencePeriod> referencePeriods;
+    @XmlJavaTypeAdapter(value = ReferencePeriodAdapter.class)
+    @XmlElement(name = "henvisningsperiode")
+    private Set<ReferencePeriod> referencePeriods = new HashSet<>();
 
 }

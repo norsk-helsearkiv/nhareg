@@ -73,14 +73,14 @@ public class StorageUnitResource {
     @Path("/flytt")
     public Response moveMedicalRecords(final MoveRecordDTO moveMedicalRecordDTO) {
         final StorageUnitDTO storageUnitDTO =
-            storageUnitService.getById(moveMedicalRecordDTO.getLagringsenhetIdentifikator());
+            storageUnitService.getById(moveMedicalRecordDTO.getStorageUnitId());
 
         if (storageUnitDTO == null) {
             ValidationError feil = new ValidationError("identifikator", "Lagringsenheten finnes ikke");
             return Response.status(Response.Status.BAD_REQUEST).entity(Collections.singletonList(feil)).build();
         }
 
-        storageUnitService.updateRecordStorageUnit(moveMedicalRecordDTO.getPasientjournalUuids(), storageUnitDTO);
+        storageUnitService.updateRecordStorageUnit(moveMedicalRecordDTO.getMedicalRecordIdList(), storageUnitDTO);
 
         return Response.ok().build();
     }

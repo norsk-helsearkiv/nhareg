@@ -51,11 +51,11 @@ public class MedicalRecordDTO implements Serializable {
     private String dead;
 
     @DateOrYearConstraint
-    @JsonProperty("fKontakt")
+    @JsonProperty(value = "fKontakt")
     private String firstContact;
 
     @DateOrYearConstraint
-    @JsonProperty("sKontakt")
+    @JsonProperty(value = "sKontakt")
     private String lastContact;
 
     @JsonProperty(value = "merknad")

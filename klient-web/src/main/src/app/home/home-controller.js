@@ -270,6 +270,7 @@ angular.module('nha.home', [
       httpService.get("avtaler/virksomhet", false)
         .success(function (data) {
             $scope.virksomhet = data;
+            registerService.setVirksomhet($scope.virksomhet.navn);
         }).error(function (data, status) {
             errorService.errorCode(status);
       });
@@ -419,7 +420,6 @@ angular.module('nha.home', [
       $scope.actionLeggTilPasientjournald = function (avlevering) {
           registerService.setAvlevering(avlevering);
           registerService.setPasientjournalDTO(null);
-          registerService.setVirksomhet($scope.virksomhet.navn);
           registerService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
           registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
           registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);

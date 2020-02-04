@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.domene.adapter;
+package no.arkivverket.helsearkiv.nhareg.domene.xml.adapter;
 
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 
@@ -8,18 +8,12 @@ public class StorageUnitAdapter extends XmlAdapter<String, StorageUnit> {
     
     @Override
     public StorageUnit unmarshal(final String storageUnit) {
-        final String[] storageUnitId = storageUnit.split(";");
-        
-        return new StorageUnit(storageUnitId[0], storageUnitId[1], false);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String marshal(final StorageUnit storageUnit) {
-        if (storageUnit == null) {
-            return "";
-        }
-        
-        return storageUnit.getUuid() + ":" + storageUnit.getId();
+        return "LID:" + storageUnit.getUuid() + ":" + storageUnit.getId();
     }
     
 }

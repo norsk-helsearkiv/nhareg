@@ -1,25 +1,26 @@
 package no.arkivverket.helsearkiv.nhareg.domene.lmr;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.xml.bind.annotation.XmlElement;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LmrDTO {
     
-    @JsonProperty(value = "fnavn")
+    @XmlElement(name = "fnavn")
     private String firstName;
     
-    @JsonProperty(value = "enavn")
+    @XmlElement(name = "enavn")
     private String lastName;
     
-    @JsonProperty(value = "mnavn")
+    @XmlElement(name = "mnavn")
     private String middleName;
     
-    @JsonProperty(value = "ddato")
+    @XmlElement(name = "ddato")
     private String deathDate;
     
 }

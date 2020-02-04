@@ -1,4 +1,4 @@
-package no.arkivverket.helsearkiv.nhareg.domene.adapter;
+package no.arkivverket.helsearkiv.nhareg.domene.xml.adapter;
 
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.ArchiveAuthor;
 
@@ -8,15 +8,11 @@ public class ArchiveAuthorAdapter extends XmlAdapter<String, ArchiveAuthor> {
     
     @Override
     public ArchiveAuthor unmarshal(final String archiveCreator) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override 
     public String marshal(final ArchiveAuthor archiveAuthor) {
-        if (archiveAuthor == null) {
-            return "";
-        }
-        
         return archiveAuthor.getName();
     }
     

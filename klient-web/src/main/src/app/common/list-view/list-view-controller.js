@@ -197,7 +197,6 @@ angular.module('nha.common.list-view', [
 
             httpService.get(baseEndpointUrl + first.uuid)
                 .success(function (data) {
-                    registerService.setVirksomhet(data.virksomhet);
                     registerService.setPasientjournalDTO(null);
                     $location.path('/registrer');
                 }).error(function (data, status) {

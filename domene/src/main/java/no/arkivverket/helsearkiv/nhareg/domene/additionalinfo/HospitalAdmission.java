@@ -2,27 +2,40 @@ package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ServiceAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@XmlAccessorType(value = XmlAccessType.FIELD)
 @XmlType(name = "avdelingsopphold",
     propOrder = {
+        "episodeId",
+        "seriesId",
+        "admittedDateTime",
+        "dischargeDateTime",
+        "episodeSubject",
+        "careLevel",
+        "municipalNrHome",
+        "district",
+        "address",
         "services",
         "admissionType",
         "departmentAdmissionActivity",        
     })
+@XmlAccessorType(value = XmlAccessType.FIELD)
 public class HospitalAdmission extends Episode implements Serializable {
 
+    @XmlJavaTypeAdapter(value = ServiceAdapter.class)
     @XmlElement(name = "tjeneste")
-    private List<Service> services; 
+    private Set<Service> services = new HashSet<>();
 
     @XmlElement(name = "oppholdstype")
     private AdmissionType admissionType;

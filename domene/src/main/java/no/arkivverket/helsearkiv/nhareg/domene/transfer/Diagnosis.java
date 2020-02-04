@@ -3,16 +3,13 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.arkivverket.helsearkiv.nhareg.domene.adapter.DiagnosisCodingSystemAdapter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.*;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -36,23 +33,21 @@ public class Diagnosis implements Serializable {
     @XmlElement(name = "diagnosedato")
     private DateOrYear diagnosisDate;
     
-    @Column(name = "diagnosekode_code")
     @XmlElement(name = "diagnosekode")
+    @Column(name = "diagnosekode_code")
     private String diagnosisCode;
 
     @NotNull
-    @Size(min = 2, max = 255)
+    @XmlElement(name = "diagnosetekst")
     @Column(name = "diagnosetekst")
-    @XmlElement(required = true, name = "diagnosetekst")
     private String diagnosisText;
 
-    @Column(name = "diagnosekode_codeSystem")
     @XmlElement(name = "diagnosekodeverk")
-    @XmlJavaTypeAdapter(DiagnosisCodingSystemAdapter.class)
+    @Column(name = "diagnosekode_codeSystem")
     private String diagnosisCodingSystem;
 
-    @Column(name = "diagnosekode_codeSystemVersion")
     @XmlTransient
+    @Column(name = "diagnosekode_codeSystemVersion")
     private String diagnosisCodingSystemVersion;
     
     @XmlTransient

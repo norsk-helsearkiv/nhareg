@@ -2,7 +2,6 @@ package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -20,7 +19,6 @@ import java.io.Serializable;
 })
 public class Unit implements Serializable {
     
-    @NotNull
     @XmlElement(name = "enhetID")
     private String unitId;
     
