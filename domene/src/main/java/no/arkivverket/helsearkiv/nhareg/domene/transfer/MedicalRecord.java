@@ -4,6 +4,7 @@ import lombok.Data;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DeathDateKnownAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DiagnosisAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.GenderAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.StorageUnitAdapter;
 
@@ -148,6 +149,7 @@ public class MedicalRecord implements Serializable {
     @Transient
     private AdditionalInfo additionalInfo;
 
+    @XmlJavaTypeAdapter(value = DiagnosisAdapter.class)
     @XmlElement(name = "diagnose")
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pasientjournal_diagnose",
