@@ -166,7 +166,11 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         recordTransferDTO.setPid(medicalRecord.getPid());
         recordTransferDTO.setRecordNumber(medicalRecord.getRecordNumber());
         recordTransferDTO.setSerialNumber(medicalRecord.getSerialNumber());
-        recordTransferDTO.setFanearkid(Long.parseLong(medicalRecord.getFanearkid()));
+
+        final String fanearkid = medicalRecord.getFanearkid();
+        if (fanearkid != null && !fanearkid.isEmpty()) {
+            recordTransferDTO.setFanearkid(Long.parseLong(fanearkid));
+        }
 
         final DateOrYear born = medicalRecord.getBorn();
         if (born != null) {

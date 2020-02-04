@@ -42,6 +42,16 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         }
     }
 
+    public Long fetchFanearkidCount(final String fanearkid) {
+        final String queryString = "SELECT COUNT(mr) "
+            + "FROM MedicalRecord mr "
+            + "WHERE mr.fanearkid = :fanearkid";
+        final TypedQuery<Long> query = getEntityManager().createQuery(queryString, Long.class);
+        query.setParameter("fanearkid", fanearkid);
+
+        return query.getSingleResult();
+    }
+    
     public List<MedicalRecord> fetchAllRecordTransfers(final Map<String, String> queryParameters,
                                                        final int page, final int size) {
         final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
