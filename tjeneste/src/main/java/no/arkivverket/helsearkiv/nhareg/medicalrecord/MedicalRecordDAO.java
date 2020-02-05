@@ -249,9 +249,9 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
             case "lnr":
                 return recordRoot.get("serialNumber");
             case "faar":
-                return recordRoot.get("born").get("year");
+                return recordRoot.get("born").get("date");
             case "daar":
-                return recordRoot.get("dead").get("year");
+                return recordRoot.get("dead").get("date");
             default:
                 return null;
         }
