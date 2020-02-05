@@ -41,8 +41,9 @@ public class TransferDAO extends EntityDAO<Transfer> {
             + "AND t.transferId = :id ";
         final TypedQuery<Long> query = getEntityManager().createQuery(queryString, Long.class);
         query.setParameter("id", id);
-        final Long size = query.getSingleResult();
         
+        final Long size = query.getSingleResult();
+
         // Cannot delete non-empty transfers
         if (size > 0) {
             final ValidationError validationError = new ValidationError("Avlevering", "HasChildren");

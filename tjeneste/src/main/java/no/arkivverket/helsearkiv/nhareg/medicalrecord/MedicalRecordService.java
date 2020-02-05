@@ -222,8 +222,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Validate that fanearkid is unique.
         final Long fanearkid = medicalRecordDTO.getFanearkid();
         if (fanearkid != null) {
-            final Long fanearkidCount = medicalRecordDAO.fetchFanearkidCount(fanearkid.toString());
-            if (fanearkidCount > 0) {
+            final MedicalRecord duplicate = medicalRecordDAO.fetchByFanearkid(fanearkid.toString());
+            if (duplicate != null && !duplicate.getUuid().equals(medicalRecordDTO.getUuid())) {
                 validationErrors.add(new ValidationError("fanearkid", "NotUnique"));
             }
         }

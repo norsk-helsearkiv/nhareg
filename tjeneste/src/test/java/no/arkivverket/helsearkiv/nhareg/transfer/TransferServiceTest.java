@@ -54,7 +54,7 @@ public class TransferServiceTest {
 
     @Test(expected = ValidationErrorException.class)
     public void delete_hasMedicalRecords_shouldThrowValidationException() {
-        transferService.delete("Avlevering-1");
+        transferService.delete("Avlevering-2");
     }
 
     @Test
@@ -114,4 +114,5 @@ public class TransferServiceTest {
         final TransferDTO unlockedDTO = transferService.unlockTransfer(id);
         assertFalse(unlockedDTO.isLocked());
     }
+    
 }
