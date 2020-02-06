@@ -125,7 +125,7 @@ public class MedicalRecord implements Serializable {
     @Size(min = 1)
     @XmlElement(name = "lagringsenhet")
     @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "pasientjournal_lagringsenhet",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
@@ -145,10 +145,9 @@ public class MedicalRecord implements Serializable {
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime createdDate;
 
-    @XmlElement(name = "supplerendeopplysninger")
     @Transient
     private AdditionalInfo additionalInfo;
-
+    
     @XmlJavaTypeAdapter(value = DiagnosisAdapter.class)
     @XmlElement(name = "diagnose")
     @OneToMany(cascade = CascadeType.ALL)
@@ -173,6 +172,14 @@ public class MedicalRecord implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "arkivskaper_uuid")
     )
     private Set<ArchiveAuthor> archiveAuthors;
+    
+    @XmlTransient
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "avlevering_pasientjournal",
+        joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
+        inverseJoinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator")
+    )
+    private Transfer transfer;
 
     public Set<Diagnosis> getDiagnosis() {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;
@@ -182,8 +189,9 @@ public class MedicalRecord implements Serializable {
         return storageUnits == null ? storageUnits = new HashSet<>() : storageUnits;
     }
 
+    @XmlElement(name = "supplerendeopplysninger")
     public AdditionalInfo getAdditionalInfo() {
-        return additionalInfo == null ? new AdditionalInfo() : additionalInfo;
+        return additionalInfo == null ? new AdditionalInfo(this) : additionalInfo;
     }
 
     @Override

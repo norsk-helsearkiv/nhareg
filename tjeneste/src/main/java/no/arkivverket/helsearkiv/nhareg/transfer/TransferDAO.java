@@ -55,8 +55,8 @@ public class TransferDAO extends EntityDAO<Transfer> {
     }
 
     public Transfer fetchTransferFromRecordId(final String recordId) {
-        final String queryString = "SELECT t " 
-            + "FROM Transfer t " 
+        final String queryString = "SELECT t "
+            + "FROM Transfer t "
             + "LEFT JOIN FETCH t.medicalRecords mr "
             + "WHERE mr.uuid = :id ";
 

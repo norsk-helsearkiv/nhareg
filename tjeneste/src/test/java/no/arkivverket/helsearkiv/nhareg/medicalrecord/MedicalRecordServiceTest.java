@@ -35,10 +35,13 @@ public class MedicalRecordServiceTest {
     }
 
     @Test
-    public void updateMedicalRecord_newJournalNumber() {
-        MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
+    public void updateMedicalRecord_newRecordNumber() {
+        MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid2");
         medicalRecordDTO.setRecordNumber("12345");
-        medicalRecordService.update(medicalRecordDTO, USERNAME);
+        final MedicalRecordDTO updated = medicalRecordService.update(medicalRecordDTO, USERNAME);
+
+        assertNotNull(updated);
+        assertEquals("12345", updated.getRecordNumber());
     }
 
     @Test
@@ -72,7 +75,8 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void delete_validId_shouldSetDeletedToTrue() {
-        final MedicalRecordDTO recordDTO = medicalRecordService.delete("uuid1", USERNAME);
+        final MedicalRecordDTO recordDTO = medicalRecordService.delete("uuid3", USERNAME);
+        
         assertNotNull(recordDTO);
         assertEquals(true, recordDTO.getDeleted());
     }
