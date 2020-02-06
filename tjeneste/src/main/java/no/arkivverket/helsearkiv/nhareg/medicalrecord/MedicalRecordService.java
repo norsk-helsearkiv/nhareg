@@ -59,13 +59,14 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Convert DTO to medical record and create medical record.
         final MedicalRecord medicalRecord = medicalRecordConverter.fromMedicalRecordDTO(medicalRecordDTO);
-        final String uuid = UUID.randomUUID().toString().toUpperCase();
+        final String uuid = UUID.randomUUID().toString();
         medicalRecord.setUuid(uuid);
 
         createAndAttachStorageUnits(medicalRecord.getStorageUnits());
 
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
         medicalRecord.setCreatedDate(LocalDateTime.now());
+        medicalRecord.setTransfer(transfer);
 
         // Save record
         medicalRecordDAO.create(medicalRecord);
@@ -101,6 +102,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final MedicalRecord medicalRecord = medicalRecordConverter.fromMedicalRecordDTO(medicalRecordDTO);
         createAndAttachStorageUnits(medicalRecord.getStorageUnits());
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
+        medicalRecord.setTransfer(transfer);
 
         // Fetch original diagnoses. This is done because of the cascading properties of medical records diagnoses.
         // I.E. not doing this will result in all diagnoses not part of the update being deleted.
@@ -131,6 +133,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
 
         medicalRecord.setDeleted(true);
+        medicalRecord.setFanearkid(null);
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
 
         final MedicalRecord deleted = medicalRecordDAO.update(medicalRecord);
@@ -193,7 +196,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         }
 
         if (validationErrors.size() > 0) {
-            throw  new ValidationErrorException(validationErrors);
+            throw new ValidationErrorException(validationErrors);
         }
     }
 

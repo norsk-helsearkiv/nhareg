@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.utilities;
 
+import com.fasterxml.jackson.core.FormatFeature;
 import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import no.arkivverket.helsearkiv.nhareg.agreement.*;
@@ -23,6 +24,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
 import no.arkivverket.helsearkiv.nhareg.domene.configuration.ConfigurationParameter;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.AgreementDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
@@ -45,6 +47,7 @@ public class RESTDeployment {
                                // Models
                                .addPackage(AdditionalInfo.class.getPackage())
                                .addPackage(ConfigurationParameter.class.getPackage())
+                               .addPackage(DateOrYear.class.getPackage())
                                // DTOs
                                .addPackage(AgreementDTO.class.getPackage())
                                .addPackage(MedicalRecordDTO.class.getPackage())
@@ -112,12 +115,14 @@ public class RESTDeployment {
                                .addPackage(EmptyPropertySerializerModifier.class.getPackage())
                                .addPackage(ListObject.class.getPackage())
                                .addPackage(LocalDateTimeConverter.class.getPackage())
-                               .addPackage(JaxbAnnotationModule.class.getPackage())
                                .addPackage(NullStringSerializer.class.getPackage())
                                .addPackage(ParameterConverter.class.getPackage())
                                .addPackage(ValidDateFormats.class.getPackage())
                                .addPackage(ValidationError.class.getPackage())
                                .addPackage(ValidationErrorException.class.getPackage())
+                               // Jackson
+                               .addPackage(JaxbAnnotationModule.class.getPackage())
+                               .addPackage(FormatFeature.class.getPackage())
                                .addPackage(XmlBeanSerializerModifier.class.getPackage())
             ;
     }

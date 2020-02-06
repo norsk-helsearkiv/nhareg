@@ -86,11 +86,7 @@ public class Transfer implements Serializable {
     
     @XmlElement(name = "pasientjournal")
     @XmlJavaTypeAdapter(value = MedicalRecordAdapter.class)
-    @OneToMany
-    @JoinTable(name = "avlevering_pasientjournal",
-        joinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator"),
-        inverseJoinColumns = @JoinColumn(name = "pasientjournal_uuid")
-    )
+    @OneToMany(mappedBy = "transfer")
     private Set<MedicalRecord> medicalRecords;
 
     @XmlTransient
