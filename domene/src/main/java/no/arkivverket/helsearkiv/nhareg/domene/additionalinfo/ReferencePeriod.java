@@ -38,7 +38,7 @@ public class ReferencePeriod implements Serializable {
     @XmlElement(name = "ansienDato")
     private LocalDate ansiDate;
 
-    @XmlElement(name = "trydgenasjon")
+    @XmlElement(name = "trygdenasjon")
     private SocialSecurityCode socialSecurityCode;
     
     @XmlElement(name = "sluttDato")

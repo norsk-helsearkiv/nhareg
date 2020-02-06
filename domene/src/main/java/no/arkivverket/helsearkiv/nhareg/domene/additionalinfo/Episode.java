@@ -29,10 +29,10 @@ import java.time.LocalDateTime;
 public abstract class Episode implements Serializable {
 
     @NotNull
-    @XmlAttribute(name = "episodeId")
+    @XmlAttribute(name = "episodeID")
     private String episodeId;
 
-    @XmlAttribute(name = "serieId")
+    @XmlAttribute(name = "serieID")
     private String seriesId;
 
     @NotNull
@@ -48,7 +48,7 @@ public abstract class Episode implements Serializable {
     private EpisodeSubject episodeSubject;
     
     @NotNull
-    @XmlElement(name = "omsorgsnivå")
+    @XmlElement(name = "omsorgsniva")
     private CareLevel careLevel;
     
     @NotNull
@@ -58,7 +58,7 @@ public abstract class Episode implements Serializable {
     @XmlElement(name = "bydel")
     private String district;
     
-    @XmlElement(name = "addresse")
+    @XmlElement(name = "adresse")
     private String address;
     
 }

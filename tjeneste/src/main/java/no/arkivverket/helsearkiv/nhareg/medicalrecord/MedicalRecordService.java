@@ -59,7 +59,8 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Convert DTO to medical record and create medical record.
         final MedicalRecord medicalRecord = medicalRecordConverter.fromMedicalRecordDTO(medicalRecordDTO);
-        medicalRecord.setUuid(UUID.randomUUID().toString());
+        final String uuid = UUID.randomUUID().toString().toUpperCase();
+        medicalRecord.setUuid(uuid);
 
         createAndAttachStorageUnits(medicalRecord.getStorageUnits());
 

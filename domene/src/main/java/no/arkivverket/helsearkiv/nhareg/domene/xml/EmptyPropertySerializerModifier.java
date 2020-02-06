@@ -20,7 +20,6 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
         AdditionalInfo.class,
         CV.class,
         Episode.class,
-        Identifier.class,
         Initiative.class,
         Procedure.class,
         Unit.class
@@ -52,7 +51,14 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
             // All the classes in EMPTY_CLASSES are assigned a serializer which prints an empty string.
             for (Class c: EMPTY_CLASSES) {
                 if (javaType.isTypeOrSubTypeOf(c)) {
-                    propertyWriter.assignNullSerializer(NullStringSerializer.INSTANCE);
+                    if ("sikkermors".equals(propertyWriter.getName())) {
+                        // Special case where null should write 1.
+                        propertyWriter.assignNullSerializer(DeathDateSerializer.INSTANCE);
+                        break;
+                    } else {
+                        propertyWriter.assignNullSerializer(NullStringSerializer.INSTANCE);
+                        break;
+                    }
                 }
             }
 
@@ -62,6 +68,7 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
                     final ObjectSerializer serializer = new ObjectSerializer();
                     serializer.settClass(c);
                     propertyWriter.assignNullSerializer(serializer);
+                    break;
                 }
             }
         }
