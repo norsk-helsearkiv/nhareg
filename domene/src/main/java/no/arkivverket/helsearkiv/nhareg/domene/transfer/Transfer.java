@@ -96,7 +96,6 @@ public class Transfer implements Serializable {
     private UpdateInfo updateInfo;
 
     @XmlElement
-    @Column(name = "dateGenerated")
     @Convert(converter = LocalDateConverter.class)
     @Transient
     private LocalDate dateGenerated = LocalDate.now();

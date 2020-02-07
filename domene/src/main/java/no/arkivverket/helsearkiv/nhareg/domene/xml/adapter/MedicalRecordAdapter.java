@@ -4,6 +4,7 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MedicalRecordAdapter extends XmlAdapter<Set<MedicalRecord>, Set<MedicalRecord>> {
 
@@ -14,10 +15,16 @@ public class MedicalRecordAdapter extends XmlAdapter<Set<MedicalRecord>, Set<Med
 
     @Override
     public Set<MedicalRecord> marshal(final Set<MedicalRecord> value) {
-        if (value.isEmpty()) {
-            value.add(new MedicalRecord());
+        // Filter out deleted records
+        final Set<MedicalRecord> filtered = value.stream()
+                                                 .filter(record -> record.getDeleted() == null ||
+                                                                 (record.getDeleted() != null && !record.getDeleted()))
+                                                 .collect(Collectors.toSet());
+
+        if (filtered.isEmpty()) {
+            filtered.add(new MedicalRecord());
         }
-        
-        return value;
+
+        return filtered;
     }
 }
