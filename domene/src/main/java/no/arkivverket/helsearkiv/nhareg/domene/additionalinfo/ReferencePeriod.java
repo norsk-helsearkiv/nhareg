@@ -1,8 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ContactAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.HospitalAdmissionAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.SetAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -47,11 +46,11 @@ public class ReferencePeriod implements Serializable {
     @XmlElement(name = "henvFraInstitusjonID")
     private String refToInstitutionId;
 
-    @XmlJavaTypeAdapter(value = HospitalAdmissionAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.HospitalAdmissionAdapter.class)
     @XmlElement(name = "avdelingsopphold")
     private Set<HospitalAdmission> admissions = new HashSet<>();
     
-    @XmlJavaTypeAdapter(value = ContactAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.ContactAdapter.class)
     @XmlElement(name = "kontakt")
     private Set<Contact> contacts = new HashSet<>();
     

@@ -3,17 +3,26 @@ package no.arkivverket.helsearkiv.nhareg.domene.xml.adapter;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class StorageUnitAdapter extends XmlAdapter<String, StorageUnit> {
+public class StorageUnitAdapter extends XmlAdapter<Set<String>, Set<StorageUnit>> {
     
     @Override
-    public StorageUnit unmarshal(final String storageUnit) {
+    public Set<StorageUnit> unmarshal(final Set<String> storageUnits) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public String marshal(final StorageUnit storageUnit) {
-        return "LID:" + storageUnit.getUuid() + ":" + storageUnit.getId();
+    public Set<String> marshal(final Set<StorageUnit> storageUnits) {
+        if (storageUnits.isEmpty()) {
+            return Stream.of("").collect(Collectors.toSet());
+        }
+        
+        return storageUnits.stream()
+                           .map(storageUnit -> "LID:" + storageUnit.getUuid() + ":" + storageUnit.getId())
+                           .collect(Collectors.toSet());
     }
     
 }

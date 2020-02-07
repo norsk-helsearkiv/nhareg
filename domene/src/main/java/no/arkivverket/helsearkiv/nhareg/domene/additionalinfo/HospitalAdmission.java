@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ServiceAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.SetAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,7 +33,7 @@ import java.util.Set;
 @XmlAccessorType(value = XmlAccessType.FIELD)
 public class HospitalAdmission extends Episode implements Serializable {
 
-    @XmlJavaTypeAdapter(value = ServiceAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.ServiceAdapter.class)
     @XmlElement(name = "tjeneste")
     private Set<Service> services = new HashSet<>();
 

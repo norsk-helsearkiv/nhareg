@@ -12,22 +12,22 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
-@XmlAccessorType(XmlAccessType.FIELD)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @XmlType(name = "diagnose", propOrder = {
     "diagnosisDate",
     "diagnosisCode",
     "diagnosisText",
     "diagnosisCodingSystem",
 })
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "diagnose")
 public class Diagnosis implements Serializable {
 
-    @Id
     @XmlTransient
+    @Id
     private String uuid;
     
     @XmlElement(name = "diagnosedato")
@@ -65,7 +65,7 @@ public class Diagnosis implements Serializable {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return uuid == null ? 0 : uuid.hashCode();
     }
 
 }
