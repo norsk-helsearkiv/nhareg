@@ -54,11 +54,10 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
                     if ("sikkermors".equals(propertyWriter.getName())) {
                         // Special case where null should write 1.
                         propertyWriter.assignNullSerializer(DeathDateSerializer.INSTANCE);
-                        break;
                     } else {
                         propertyWriter.assignNullSerializer(NullStringSerializer.INSTANCE);
-                        break;
                     }
+                    break;
                 }
             }
 

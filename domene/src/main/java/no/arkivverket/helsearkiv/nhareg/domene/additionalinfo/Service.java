@@ -1,7 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.additionalinfo;
 
 import lombok.Data;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.InitiativeAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.SetAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,7 +40,7 @@ public class Service implements Serializable {
     @XmlElement(name = "enhet")
     private Unit unit;
     
-    @XmlJavaTypeAdapter(value = InitiativeAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.InitiativeAdapter.class)
     @XmlElement(name = "tiltak")
     private Set<Initiative> initiatives = new HashSet<>();
     

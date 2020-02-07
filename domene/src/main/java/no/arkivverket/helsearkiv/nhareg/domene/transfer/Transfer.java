@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.MedicalRecordAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.SetAdapter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -83,7 +83,7 @@ public class Transfer implements Serializable {
     private String storageUnitFormat;
     
     @XmlElement(name = "pasientjournal")
-    @XmlJavaTypeAdapter(value = MedicalRecordAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.MedicalRecordAdapter.class)
     @OneToMany(mappedBy = "transfer")
     private Set<MedicalRecord> medicalRecords;
 

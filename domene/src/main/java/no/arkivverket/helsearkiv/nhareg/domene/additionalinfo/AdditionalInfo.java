@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.CaseReferenceAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ReferencePeriodAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.SetAdapter;
 
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -48,11 +47,11 @@ public class AdditionalInfo implements Serializable {
     @XmlTransient
     private MedicalRecord medicalRecord;
     
-    @XmlJavaTypeAdapter(value = CaseReferenceAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.CaseReferenceAdapter.class)
     @XmlElement(name = "saksreferanser")
     private Set<CaseReference> caseReferences = new HashSet<>();
     
-    @XmlJavaTypeAdapter(value = ReferencePeriodAdapter.class)
+    @XmlJavaTypeAdapter(value = SetAdapter.ReferencePeriodAdapter.class)
     @XmlElement(name = "henvisningsperiode")
     private Set<ReferencePeriod> referencePeriods = new HashSet<>();
 
