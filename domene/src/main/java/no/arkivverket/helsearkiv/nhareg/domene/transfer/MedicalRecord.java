@@ -59,7 +59,6 @@ public class MedicalRecord implements Serializable {
     @Column(name = "lopenummer")
     private String serialNumber;
 
-    @NotNull
     @XmlElement(name = "fodselsnummer")
     @Column(name = "pid")
     private String pid;
