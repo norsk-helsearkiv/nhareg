@@ -29,6 +29,7 @@ import java.util.Set;
         "recordNumber",
         "pid",
         "name",
+        "archiveAuthors",
         "born",
         "dead",
         "deathDateUnknown",
@@ -165,7 +166,7 @@ public class MedicalRecord implements Serializable {
     @Column(name = "fanearkid", unique = true)
     private String fanearkid;
 
-    @XmlTransient
+    @XmlElement(name = "arkivskaper")
     @ManyToMany
     @JoinTable(name = "pasientjournal_arkivskaper",
         joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
