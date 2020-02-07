@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.xml.ser.XmlBeanSerializerModifier;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.CV;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
     private static final List<Class> EMPTY_CLASSES = Arrays.asList(
         Boolean.class,
         DateOrYear.class,
+        Gender.class,
         Integer.class,
         LocalDate.class,
         LocalDateTime.class,

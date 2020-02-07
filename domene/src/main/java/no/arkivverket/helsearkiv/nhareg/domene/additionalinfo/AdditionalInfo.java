@@ -26,9 +26,15 @@ import java.util.Set;
 @XmlAccessorType(value = XmlAccessType.FIELD)
 public class AdditionalInfo implements Serializable {
 
+    @XmlTransient
+    private String transferId;
+    
+    @XmlTransient
+    private String recordId;
+
     @XmlElement(name = "avleveringsidentifikator", namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup")
     public String getTransferId() {
-        if (medicalRecord != null) {
+        if (medicalRecord != null && medicalRecord.getTransfer() != null) {
             return medicalRecord.getTransfer().getTransferId();
         }
 

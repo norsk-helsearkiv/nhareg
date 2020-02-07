@@ -3,6 +3,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DateOrYearAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.LocalDateTimeAdapter;
 
 import javax.persistence.Column;
@@ -20,11 +21,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Type for å representere en dato eller et årstall
+ * Represents either a year as int or a date as a LocalDate.
  */
 @Data
 @NoArgsConstructor
 @Embeddable
+@XmlJavaTypeAdapter(value = DateOrYearAdapter.class, type = DateOrYear.class)
 @XmlAccessorType(value = XmlAccessType.FIELD)
 public class DateOrYear implements Serializable {
 

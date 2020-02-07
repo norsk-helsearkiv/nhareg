@@ -65,7 +65,7 @@ public class Diagnosis implements Serializable {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return uuid == null ? 0 : uuid.hashCode();
     }
 
 }

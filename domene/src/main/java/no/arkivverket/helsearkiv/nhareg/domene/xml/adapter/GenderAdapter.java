@@ -15,4 +15,5 @@ public class GenderAdapter extends XmlAdapter<String, Gender> {
     public String marshal(final Gender gender) {
         return gender.getCode();
     }
+    
 }

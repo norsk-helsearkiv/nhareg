@@ -1,12 +1,12 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DeathDateKnownAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.GenderAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.SetAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.StorageUnitAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.*;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -43,6 +43,9 @@ import java.util.Set;
     })
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "pasientjournal")
 public class MedicalRecord implements Serializable {
@@ -148,7 +151,9 @@ public class MedicalRecord implements Serializable {
 
     @Transient
     private AdditionalInfo additionalInfo;
-    
+
+    @XmlElement(name = "diagnose")
+    @XmlJavaTypeAdapter(value = DiagnosisAdapter.class)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pasientjournal_diagnose",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
@@ -165,6 +170,7 @@ public class MedicalRecord implements Serializable {
     private String fanearkid;
 
     @XmlElement(name = "arkivskaper")
+    @XmlJavaTypeAdapter(value = ArchiveAuthorAdapter.class)
     @ManyToMany
     @JoinTable(name = "pasientjournal_arkivskaper",
         joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
@@ -185,8 +191,6 @@ public class MedicalRecord implements Serializable {
         return additionalInfo == null ? new AdditionalInfo(this) : additionalInfo;
     }
 
-    @XmlElement(name = "diagnose")
-    // @XmlJavaTypeAdapter(value = SetAdapter.DiagnosisAdapter.class)
     public Set<Diagnosis> getDiagnosis() {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;
     }
@@ -195,9 +199,8 @@ public class MedicalRecord implements Serializable {
         return storageUnits == null ? storageUnits = new HashSet<>() : storageUnits;
     }
 
-    @XmlElement(name = "supplerendeopplysninger")
-    public AdditionalInfo getAdditionalInfo() {
-        return additionalInfo == null ? new AdditionalInfo(this) : additionalInfo;
+    public Set<ArchiveAuthor> getArchiveAuthors() {
+        return archiveAuthors == null ? archiveAuthors = new HashSet<>() : archiveAuthors;
     }
 
     @Override
@@ -217,7 +220,7 @@ public class MedicalRecord implements Serializable {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return uuid == null ? 0 : uuid.hashCode();
     }
 
 }
