@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS Diagnosekodeverk (
 
 CREATE TABLE IF NOT EXISTS Pasientjournal (
   uuid varchar(255) NOT NULL,
-  fanearkid varchar(255) DEFAULT NULL,
+  fanearkid varchar(255) DEFAULT NULL UNIQUE,
   daar int(11) DEFAULT NULL,
   ddato datetime DEFAULT NULL,
   dodsdatoUkjent bit(1) DEFAULT NULL,
@@ -94,6 +94,16 @@ CREATE TABLE IF NOT EXISTS Avtale (
   FOREIGN KEY (virksomhet_organisasjonsnummer) REFERENCES Virksomhet (organisasjonsnummer)
 );
 
+CREATE TABLE IF NOT EXISTS Arkivskaper (
+    uuid VARCHAR(255) NOT NULL,
+    kode VARCHAR(255) DEFAULT NULL,
+    beskrivelse VARCHAR(255) DEFAULT NULL,
+    navn VARCHAR(255) NOT NULL,
+    PRIMARY KEY (uuid),
+    UNIQUE KEY (navn),
+    UNIQUE KEY (kode)
+);
+
 CREATE TABLE IF NOT EXISTS Avlevering (
   avleveringsidentifikator varchar(255) NOT NULL,
   arkivskaper varchar(255) DEFAULT NULL,
@@ -106,7 +116,8 @@ CREATE TABLE IF NOT EXISTS Avlevering (
   avtale_avtaleidentifikator varchar(255) DEFAULT NULL,
   PRIMARY KEY (avleveringsidentifikator),
   KEY FK_pg9s04ts289j2uw9gpn6il799 (avtale_avtaleidentifikator),
-  FOREIGN KEY (avtale_avtaleidentifikator) REFERENCES Avtale (avtaleidentifikator)
+  FOREIGN KEY (avtale_avtaleidentifikator) REFERENCES Avtale (avtaleidentifikator),
+  FOREIGN KEY (arkivskaper_uuid) REFERENCES Arkivskaper (uuid)
 );
 
 CREATE TABLE IF NOT EXISTS Avlevering_Pasientjournal (
@@ -173,4 +184,11 @@ CREATE TABLE IF NOT EXISTS Pasientjournal_Lagringsenhet (
   KEY FK_eo35uphmr5rlmb4m3xo1g3ma8 (Pasientjournal_uuid),
   FOREIGN KEY (Pasientjournal_uuid) REFERENCES Pasientjournal (uuid),
   FOREIGN KEY (Lagringsenhet_uuid) REFERENCES Lagringsenhet (uuid)
+);
+
+CREATE TABLE IF NOT EXISTS pasientjournal_arkivskaper (
+    pasientjournal_uuid VARCHAR(255) NOT NULL,
+    arkivskaper_uuid VARCHAR(255) NOT NULL,
+    FOREIGN KEY (pasientjournal_uuid) REFERENCES pasientjournal (uuid),
+    FOREIGN KEY (arkivskaper_uuid) REFERENCES arkivskaper (uuid)
 );
