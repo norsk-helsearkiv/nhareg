@@ -50,7 +50,7 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
     public List<DiagnosisCode> fetchAllByCode(final String code, final Map<String, String> parameters) {
         final String size = parameters.remove("size");
         final String codeParam = code + "%";
-        final String queryString = "SELECT dc " 
+        final String queryString = "SELECT dc "
             + "FROM DiagnosisCode dc " 
             + "WHERE dc.code LIKE :code " 
             + "ORDER BY LENGTH(dc.code), dc.code ASC";

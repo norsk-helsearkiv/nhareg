@@ -43,4 +43,11 @@ public class DiagnosisCodeService implements DiagnosisCodeServiceInterface {
         return diagnosisCodeConverter.toDiagnosisCodeDTOList(diagnosisCodeList);
     }
 
+    @Override
+    public DiagnosisCodeDTO delete(final String id) {
+        final DiagnosisCode deleted = diagnosisCodeDAO.delete(id);
+        
+        return diagnosisCodeConverter.toDiagnosisCodeDTO(deleted);
+    }
+
 }
