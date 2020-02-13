@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
@@ -32,17 +31,14 @@ import java.io.Serializable;
 public class CV implements Serializable {
 
     @XmlTransient
-    @NotNull
     @Id
     protected String code;
 
     @XmlElement(name = "CodeSystem", namespace = "http://www.arkivverket.no/standarder/nha/avlxml/avlsup-mdk")
-    @NotNull
     @Id
     protected String codeSystem;
 
     @XmlTransient
-    @NotNull
     @Id
     protected String codeSystemVersion;
 
