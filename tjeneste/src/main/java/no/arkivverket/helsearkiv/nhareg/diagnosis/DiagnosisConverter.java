@@ -27,9 +27,14 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         final String diagnosisDateString = diagnosisDTO.getDiagnosisDate();
         final DateOrYear diagnosisDate = dateOrYearConverter.toDateOrYear(diagnosisDateString);
 
-        return new Diagnosis(diagnosisDTO.getUuid(), diagnosisDate, diagnosisCode.getCode(), 
-                             diagnosisDTO.getDiagnosisText(), diagnosisCode.getCodeSystem(),    
-                             diagnosisCode.getCodeSystemVersion(), null);
+        return Diagnosis.builder()
+                        .uuid(diagnosisDTO.getUuid())
+                        .diagnosisDate(diagnosisDate)
+                        .diagnosisCode(diagnosisCode.getCode())
+                        .diagnosisText(diagnosisDTO.getDiagnosisText())
+                        .diagnosisCodingSystem(diagnosisCode.getCodeSystem())
+                        .diagnosisCodingSystemVersion(diagnosisCode.getCodeSystemVersion())
+                        .build();
     }
     
     @Override 
@@ -42,6 +47,7 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
         final String diagnosisDate = dateOrYearConverter.fromDateOrYear(diagnosis.getDiagnosisDate());
         final String diagnosisCode = diagnosis.getDiagnosisCode();
         final String diagnosisCodingSystem = diagnosis.getDiagnosisCodingSystem();
+        final String diagnosisCodeSystemVersion = diagnosis.getDiagnosisCodingSystemVersion();
         final String diagnosisText = diagnosis.getDiagnosisText();
         final UpdateInfo updateInfo = diagnosis.getUpdateInfo();
         String updatedDate = null;
@@ -54,8 +60,16 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
             updatedDate = lastUpdated.format(formatter);
         }
 
-        return new DiagnosisDTO(uuid, diagnosisDate, diagnosisCodingSystem, diagnosisCode, diagnosisText,
-                                updatedBy, updatedDate);
+        return DiagnosisDTO.builder()
+                           .uuid(uuid)
+                           .diagnosisDate(diagnosisDate)
+                           .diagnosisCodeSystem(diagnosisCodingSystem)
+                           .diagnosisCode(diagnosisCode)
+                           .diagnosisText(diagnosisText)
+                           .diagnosisCodeSystemVersion(diagnosisCodeSystemVersion)
+                           .updatedBy(updatedBy)
+                           .updatedDate(updatedDate)
+                           .build();
     }
     
     @Override 
