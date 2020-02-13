@@ -126,6 +126,7 @@
             <button type="submit" class="btn btn-primary right" ng-hide="medicalRecordDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
         </div>
         <br>
+        
         <!-- Diagnoser -->
         <div class="well" data-ng-show="state === 0">
             <label>Diagnoser</label>
@@ -148,7 +149,11 @@
                            data-ng-blur="setDiagnoseTekst()"
                            focus-to-me="diagnoseDatoErSatt"
                            data-ng-disabled="!diagnoseDatoErSatt"
-                           data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
+                           data-ng-enter="leggTilDiagnose()"
+                           typeahead="item as item.code for item in searchDiagnosisCodes($viewValue)"
+                           typeahead-loading="Laster..."
+                           typeahead-on-select="setDiagnoseKode()"
+                           typeahead-focus-first="false">
                 </div>
                 <div class="span span4">
                     <label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">

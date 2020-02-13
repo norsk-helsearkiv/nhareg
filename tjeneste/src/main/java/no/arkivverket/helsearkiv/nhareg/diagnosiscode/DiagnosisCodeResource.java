@@ -1,13 +1,14 @@
 package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisCodeDTO;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -24,8 +25,15 @@ public class DiagnosisCodeResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<DiagnosisCode> getAll(@Context UriInfo uriInfo) {
+    public List<DiagnosisCodeDTO> getAll(@Context UriInfo uriInfo) {
         return diagnosisCodeService.getAll(uriInfo.getQueryParameters());
+    }
+    
+    @GET
+    @Path("/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<DiagnosisCodeDTO> getAll(@PathParam("code") final String code, @Context UriInfo uriInfo) {
+        return diagnosisCodeService.getAllByCode(code, uriInfo.getQueryParameters());
     }
     
 }

@@ -17,8 +17,6 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,19 +34,36 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
 
     @Override
     public DiagnosisCode fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(dc) "
+        final String queryString = "SELECT dc "
             + "FROM DiagnosisCode dc "
             + "WHERE dc.code = :id ";
-        final TypedQuery query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
+        final TypedQuery<DiagnosisCode> query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
         query.setParameter("id", id);
 
         try {
-            return (DiagnosisCode) query.getSingleResult();
+            return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException exception) {
             return null;
         }
     }
 
+    public List<DiagnosisCode> fetchAllByCode(final String code, final Map<String, String> parameters) {
+        final String size = parameters.remove("size");
+        final String codeParam = code + "%";
+        final String queryString = "SELECT dc " 
+            + "FROM DiagnosisCode dc " 
+            + "WHERE dc.code LIKE :code " 
+            + "ORDER BY LENGTH(dc.code), dc.code ASC";
+        final TypedQuery<DiagnosisCode> query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
+        query.setParameter("code", codeParam);
+        
+        if (size != null && !size.isEmpty()) {
+            query.setMaxResults(Integer.parseInt(size));
+        }
+        
+        return query.getResultList();
+    }
+    
     @Override
     protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
                                             final CriteriaBuilder criteriaBuilder,
@@ -61,28 +76,8 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
             predicates.add(predicate);
         }
 
-        final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
-        if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
-            final LocalDate localDate = ValidDateFormats.getDate(dateQueryParameter);
-            
-            if (localDate != null) {
-                final String queryString = "SELECT kodeverkversjon "
-                    + "FROM Diagnosekodeverk "
-                    + "WHERE gyldig_til_dato >= ?1 "
-                    + "AND gyldig_fra_dato <= ?1";
-                final ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
-                final Date param = new Date(zonedDateTime.toEpochSecond());
-                final List resultList = getEntityManager().createNativeQuery(queryString)
-                                                          .setParameter(1, param)
-                                                          .getResultList();
-
-                final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
-                final SingularAttribute<CV, String> attribute =
-                    type.getDeclaredSingularAttribute("codeSystemVersion", String.class);
-                final Expression<String> expression = root.get(attribute);
-                final Predicate predicate = expression.in(resultList);
-                predicates.add(predicate);
-            }
+        if (queryParameters.containsKey(DIAGNOSE_DATE_QUERY_PARAMETER)) {
+            createDatePredicate(queryParameters, root, predicates);
         }
 
         if (queryParameters.containsKey(DISPLAY_NAME_LIKE_QUERY_PARAMETER)) {
@@ -90,6 +85,32 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         }
 
         return predicates.toArray(new Predicate[] {});
+    }
+
+    private void createDatePredicate(final Map<String, String> queryParameters,
+                                     final Root<DiagnosisCode> root,
+                                     final List<Predicate> predicates) {
+        final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
+        final LocalDate localDate = ValidDateFormats.getDate(dateQueryParameter);
+        
+        if (localDate != null) {
+            final String queryString = "SELECT kodeverkversjon "
+                + "FROM Diagnosekodeverk "
+                + "WHERE gyldig_til_dato >= ?1 "
+                + "AND gyldig_fra_dato <= ?1";
+            final Date param = Date.valueOf(localDate);
+            final List resultList = getEntityManager().createNativeQuery(queryString)
+                                                      .setParameter(1, param)
+                                                      .getResultList();
+
+            final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
+            final SingularAttribute<CV, String> attribute =
+                type.getDeclaredSingularAttribute("codeSystemVersion", String.class);
+            final Expression<String> expression = root.get(attribute);
+            final Predicate predicate = expression.in(resultList);
+            
+            predicates.add(predicate);
+        }
     }
 
     private void createDisplayNamePredicate(final Map<String, String> queryParameters,
