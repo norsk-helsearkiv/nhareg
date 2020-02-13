@@ -1,6 +1,7 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlType(name = "diagnose", propOrder = {
