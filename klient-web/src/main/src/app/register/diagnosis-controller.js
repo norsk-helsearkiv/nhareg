@@ -24,12 +24,14 @@ angular.module('nha.register')
     };
 
     // Tar vare på verdi ved fokus, for å sammenligne etterpå, for å ikke endre teksten
-    $scope.setDiagnoseKode = function () {
+    $scope.setDiagnosisCode = function () {
       if ($scope.formDiagnose === null || $scope.formDiagnose.diagnosekode === null) {
         return;
       }
-      diagnosekode = $scope.formDiagnose.diagnosekode;
-      $scope.setDiagnoseTekst(false);
+
+      var codeObject = $scope.formDiagnose.diagnosekode;
+      $scope.formDiagnose.diagnosekode = $scope.formDiagnose.diagnosekode.code;
+      $scope.formDiagnose.diagnosetekst = codeObject.displayName;
     };
 
     var prevDiagnose = "";
@@ -179,11 +181,11 @@ angular.module('nha.register')
           return response.data;
         });
     };
-    
+
     $scope.sokDiagnoseDisplayNameLike = function (displayName) {
       if (displayName.length > 2) {
-        var results = [];
-        var diagnoseDate = $scope.formDiagnose.diagnosedato === undefined ? "" : $scope.formDiagnose.diagnosedato;
+        var diagnosisDate = $scope.formDiagnose.diagnosedato === undefined ? "" : $scope.formDiagnose.diagnosedato;
+        var diagnosisCode = $scope.formDiagnose.diagnosekode === undefined ? "" : $scope.formDiagnose.diagnosekode;
 
         return httpService.getAll("diagnosekoder?name=" + displayName + "&date=" + diagnosisDate + "&code=" + diagnosisCode, false)
           .then(function (response) {
@@ -195,12 +197,14 @@ angular.module('nha.register')
                 return res;
               });
           });
+      } else {
+        return { 'displayName': null };
       }
     };
 
-    $scope.onSelectDiagnose = function ($item, $model, $label) {
+    $scope.onSelectDiagnose = function ($item) {
       $scope.formDiagnose.diagnosekode = $item.code;
-      $scope.formDiagnose.diagnosetekst = null;
+      $scope.formDiagnose.diagnosetekst = $item.displayName;
       $scope.setDiagnoseTekst(true);
     };
 
@@ -210,14 +214,14 @@ angular.module('nha.register')
         delete diagnose.diagnosekode;
       }
       httpService.deleteData("diagnoser/" + $scope.medicalRecordDTO.uuid, diagnose)
-        .success(function (data, status, headers, config) {
+        .success(function () {
           for (var i = 0; i < $scope.medicalRecordDTO.diagnoser.length; i++) {
             if (diagnose === $scope.medicalRecordDTO.diagnoser[i]) {
               $scope.medicalRecordDTO.diagnoser.splice(i, 1);
             }
           }
           $scope.resetDiagnose();
-        }).error(function (data, status, headers, config) {
+        }).error(function (data, status) {
         errorService.errorCode(status);
       });
 
@@ -249,10 +253,10 @@ angular.module('nha.register')
       diagnose.diagnosedato = $scope.injectCentury(diagnose.diagnosedato);
       $scope.feilmeldinger = [];
       httpService.update("diagnoser/" + $scope.medicalRecordDTO.uuid, diagnose)
-        .success(function (data, status, headers, config) {
+        .success(function () {
           $scope.editingData[diagnose.uuid] = false;
         })
-        .error(function (data, status, headers, config) {
+        .error(function (data, status) {
           if (status === 400) {
             $scope.setFeilmeldinger(data, status);
           } else {
