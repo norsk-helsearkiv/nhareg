@@ -176,18 +176,27 @@ angular.module('nha.register')
     }
 
     $scope.searchDiagnosisCodes = function (code) {
-      return httpService.getAll("diagnosekoder/" + code + "?size=50")
+      var diagnosisDate = $scope.formDiagnose.diagnosedato == null ? "" : $scope.formDiagnose.diagnosedato;
+
+      return httpService.getAll("diagnosekoder?code=" + code + "&date=" + diagnosisDate + "&page=1&size=50")
         .then(function (response) {
           return response.data;
+        }, function (response) {
+          if (response.status === 400) {
+            $scope.setFeilmeldinger(response.data, response.status);
+          } else {
+            errorService.errorCode(response.status);
+          }
         });
     };
 
     $scope.sokDiagnoseDisplayNameLike = function (displayName) {
       if (displayName.length > 2) {
-        var diagnosisDate = $scope.formDiagnose.diagnosedato === undefined ? "" : $scope.formDiagnose.diagnosedato;
-        var diagnosisCode = $scope.formDiagnose.diagnosekode === undefined ? "" : $scope.formDiagnose.diagnosekode;
+        var diagnosisDate = $scope.formDiagnose.diagnosedato == null ? "" : $scope.formDiagnose.diagnosedato;
+        var diagnosisCode = $scope.formDiagnose.diagnosekode == null ? "" : $scope.formDiagnose.diagnosekode;
 
-        return httpService.getAll("diagnosekoder?name=" + displayName + "&date=" + diagnosisDate + "&code=" + diagnosisCode, false)
+        return httpService.getAll("diagnosekoder?name=" + displayName + "&date=" + diagnosisDate + "&code=" + diagnosisCode +
+          "&page=1&size=50", false)
           .then(function (response) {
             return response.data.map(
               function (item) {
@@ -196,6 +205,12 @@ angular.module('nha.register')
                 res.displayName = item.codeSystemVersion + " | "  + item.code + " | " + item.displayName;
                 return res;
               });
+          }, function (response) {
+            if (response.status === 400) {
+              $scope.setFeilmeldinger(response.data, response.status);
+            } else {
+              errorService.errorCode(response.status);
+            }
           });
       } else {
         return { 'displayName': null };

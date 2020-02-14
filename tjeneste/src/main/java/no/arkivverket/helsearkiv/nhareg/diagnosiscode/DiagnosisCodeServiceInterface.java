@@ -11,8 +11,6 @@ public interface DiagnosisCodeServiceInterface {
 
     DiagnosisCodeDTO create(final DiagnosisCodeDTO diagnosisCodeDTO);
 
-    List<DiagnosisCodeDTO> getAllByCode(final String code, final MultivaluedMap<String, String> queryParameters);
-
     DiagnosisCodeDTO delete(final String id);
     
 }

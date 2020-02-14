@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -27,13 +26,6 @@ public class DiagnosisCodeResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<DiagnosisCodeDTO> getAll(@Context UriInfo uriInfo) {
         return diagnosisCodeService.getAll(uriInfo.getQueryParameters());
-    }
-    
-    @GET
-    @Path("/{code}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<DiagnosisCodeDTO> getAll(@PathParam("code") final String code, @Context UriInfo uriInfo) {
-        return diagnosisCodeService.getAllByCode(code, uriInfo.getQueryParameters());
     }
     
 }

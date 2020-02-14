@@ -209,7 +209,7 @@ angular.module('nha', [
         $scope.events = [];
 
         $scope.$on('IdleStart', function() {
-            console.log("User entered idle-mode");
+            //console.log("User entered idle-mode");
             // the user appears to have gone idle
         });
 

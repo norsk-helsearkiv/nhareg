@@ -122,47 +122,43 @@ public class DiagnosisCodeServiceTest {
     }
     
     @Test
-    public void getAllByCode_nullCode_shouldReturnNone() {
+    public void getAll_matchingAll_shouldReturnThreeOrMore() {
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
-        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAllByCode(null, queryParameters);
-        
-        assertNotNull(codeDTOList);
-        assertEquals(0, codeDTOList.size());        
-    }
-    
-    @Test
-    public void getAllByCode_matchingAll_shouldReturnThreeOrMore() {
-        final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
-        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAllByCode("Code", queryParameters);
+        queryParameters.put("code", Collections.singletonList("Code"));
+        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAll(queryParameters);
         
         assertNotNull(codeDTOList);
         assertTrue(codeDTOList.size() >= 3);
     }
 
     @Test
-    public void getAllByCode_matchingOne_shouldReturnOne() {
+    public void getAll_matchingOne_shouldReturnOne() {
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
-        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAllByCode("Code1", queryParameters);
+        queryParameters.put("code", Collections.singletonList("Code1"));
+        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAll(queryParameters);
 
         assertNotNull(codeDTOList);
         assertEquals(1, codeDTOList.size());
     }
 
     @Test
-    public void getAllByCode_matchingNone_shouldReturnNone() {
+    public void getAll_matchingNone_shouldReturnNone() {
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
-        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAllByCode("NoCode", queryParameters);
+        queryParameters.put("code", Collections.singletonList("NoCode"));
+        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAll(queryParameters);
 
         assertNotNull(codeDTOList);
         assertEquals(0, codeDTOList.size());
     }
     
     @Test
-    public void getAllByCode_matchingAll_sizeOne_shouldReturnOne() {
+    public void getAll_matchingAll_sizeOne_shouldReturnOne() {
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
+        queryParameters.put("code", Collections.singletonList("Code"));
+        queryParameters.put("page", Collections.singletonList("1"));
         queryParameters.put("size", Collections.singletonList("1"));
         
-        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAllByCode("Code", queryParameters);
+        final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAll(queryParameters);
 
         assertNotNull(codeDTOList);
         assertEquals(1, codeDTOList.size());
