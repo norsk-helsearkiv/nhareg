@@ -15,16 +15,16 @@ public class DiagnosisCodeDTO {
     @JsonProperty(value = "code")
     private String code;
     
-    @JsonProperty(value = "CodeSystem")
+    @JsonProperty(value = "codeSystem")
     private String codeSystem;
     
-    @JsonProperty(value = "CodeSystemVersion")
+    @JsonProperty(value = "codeSystemVersion")
     private String codeSystemVersion;
 
-    @JsonProperty(value = "DisplayName")
+    @JsonProperty(value = "displayName")
     private String displayName;
 
-    @JsonProperty(value = "OriginalText")
+    @JsonProperty(value = "originalText")
     private String originalText;
     
 }

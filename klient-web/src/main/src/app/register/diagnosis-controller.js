@@ -176,8 +176,7 @@ angular.module('nha.register')
     $scope.searchDiagnosisCodes = function (code) {
       return httpService.getAll("diagnosekoder/" + code + "?size=50")
         .then(function (response) {
-          $scope.setDiagnoseTekst(false)
-          return response.data.code;
+          return response.data;
         });
     };
     
@@ -186,14 +185,15 @@ angular.module('nha.register')
         var results = [];
         var diagnoseDate = $scope.formDiagnose.diagnosedato === undefined ? "" : $scope.formDiagnose.diagnosedato;
 
-        return httpService.getAll("diagnosekoder?displayNameLike=" + displayName + "&diagnoseDate=" + diagnoseDate, false)
-          .then(function (resp) {
-            return resp.data.map(function (item) {
-              var res = [];
-              res.code = item.code;
-              res.displayName = item.codeSystemVersion + " | "  + item.code + " | " + item.displayName;
-              return res;
-            });
+        return httpService.getAll("diagnosekoder?name=" + displayName + "&date=" + diagnosisDate + "&code=" + diagnosisCode, false)
+          .then(function (response) {
+            return response.data.map(
+              function (item) {
+                var res = [];
+                res.code = item.code;
+                res.displayName = item.codeSystemVersion + " | "  + item.code + " | " + item.displayName;
+                return res;
+              });
           });
       }
     };
