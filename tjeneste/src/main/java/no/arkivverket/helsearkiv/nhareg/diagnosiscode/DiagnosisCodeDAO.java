@@ -62,6 +62,8 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         final CriteriaQuery<DiagnosisCode> criteriaQuery = criteriaBuilder.createQuery(DiagnosisCode.class);
         final Root<DiagnosisCode> root = criteriaQuery.from(DiagnosisCode.class);
         final List<Predicate> predicates = new ArrayList<>();
+        final String page = parameters.remove("page");
+        final String size = parameters.remove("size");
 
         createPredicates(parameters, root, criteriaBuilder, predicates);
 
@@ -72,6 +74,13 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
 
         setPredicates(parameters, query);
 
+        if (page != null && size != null) {
+            final int parsedPage = Integer.parseInt(page);
+            final int parsedSize = Integer.parseInt(size);
+            query.setFirstResult((parsedPage - 1) * parsedSize);
+            query.setMaxResults(parsedSize);
+        }
+
         return query.getResultList();
     }
 
@@ -79,7 +88,7 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         parameters.forEach((key, value) -> {
             switch (key) {
                 case "name":
-                    query.setParameter(key, "%" + value + "%");
+                    query.setParameter(key, "%" + value.toLowerCase() + "%");
                     break;
                 case "code":
                     query.setParameter(key, value + "%");
@@ -127,8 +136,8 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
             + "WHERE :date BETWEEN d.validFromDate AND d.validToDate ";
 
         final List<String> resultList = getEntityManager().createQuery(queryString, String.class)
-                                                                       .setParameter("date", localDate)
-                                                                       .getResultList();
+                                                          .setParameter("date", localDate)
+                                                          .getResultList();
 
         // Create a predicate for X in the list of results from the query.
         final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);

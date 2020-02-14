@@ -82,7 +82,7 @@ public class DiagnosisCodeServiceTest {
     public void getAll_odeParam_shouldReturnOne() {
         final String displayNameLike = "ode";
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
-        queryParameters.add("displayNameLike", displayNameLike);
+        queryParameters.add("name", displayNameLike);
         
         final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(codeDTOList);
@@ -93,7 +93,7 @@ public class DiagnosisCodeServiceTest {
     public void getAll_displayNameParam_ignoreCase_shouldReturnThree() {
         final String displayNameLike = "oDe";
         final MultivaluedMap<String, String> queryParameters = new MultivaluedHashMap<>();
-        queryParameters.add("displayNameLike", displayNameLike);
+        queryParameters.add("name", displayNameLike);
         
         final List<DiagnosisCodeDTO> codeDTOList = diagnosisCodeService.getAll(queryParameters);
         assertNotNull(codeDTOList);
