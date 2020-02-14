@@ -17,7 +17,7 @@
 
     <!-- Validation error messages -->
     <div class="col-sm-3 col-md-2 sidebar">
-        <h4>{{ 'register.VALIDATION_ERRORS' | translate }}</h4>
+        <h4 ng-show="feilmeldinger.length" >{{ 'register.VALIDATION_ERRORS' | translate }}</h4>
         <ul class="nav nav-sidebar">
             <li data-ng-repeat="feil in feilmeldinger">
                 <span class="error error-title">{{ feil.felt }}</span><br/>
