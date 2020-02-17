@@ -2,7 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
 import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.RoleDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 
 import javax.annotation.Resource;
@@ -35,8 +35,7 @@ public class UserResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/brukere")
     public Response createUser(final UserDTO userDTO) {
-        final String username = sessionContext.getCallerPrincipal().getName();
-        final UserDTO updatedUser = userService.createUser(userDTO, username);
+        final UserDTO updatedUser = userService.createUser(userDTO);
 
         return Response.ok(updatedUser).build();
     }
@@ -97,7 +96,7 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/roller")
-    public List<Role> getRoles() {
+    public List<RoleDTO> getRoles() {
         return userService.getRoles();
     }
 

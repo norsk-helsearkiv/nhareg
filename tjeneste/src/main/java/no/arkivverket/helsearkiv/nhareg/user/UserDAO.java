@@ -37,7 +37,7 @@ public class UserDAO extends EntityDAO<User> {
         final User user = fetchById(username);
         user.setStorageUnit(storageUnit);
       
-        getEntityManager().persist(user);
+        getEntityManager().merge(user);
     }
 
     public String fetchStorageUnitByUsername(final String username) {
@@ -53,6 +53,6 @@ public class UserDAO extends EntityDAO<User> {
             user.setDefaultTransferId(transferId);
         }
         
-        getEntityManager().persist(user);
+        getEntityManager().merge(user);
     }
 }

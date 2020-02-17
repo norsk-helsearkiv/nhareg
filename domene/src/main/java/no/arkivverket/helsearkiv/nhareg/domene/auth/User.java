@@ -37,7 +37,7 @@ public class User {
     @Column(name = "lagringsenhet")
     private String storageUnit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rollenavn")
     private Role role;
 

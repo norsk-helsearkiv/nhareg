@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.RoleDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserService implements UserServiceInterface {
 
@@ -22,13 +23,19 @@ public class UserService implements UserServiceInterface {
     private UserConverterInterface userConverter;
 
     @Override 
-    public UserDTO createUser(final UserDTO userDTO, final String username) {
+    public UserDTO createUser(final UserDTO userDTO) {
         validatePrinterIP(userDTO.getPrinter());
         validatePassword(userDTO.getPassword());
         
         final User user = userConverter.toUser(userDTO);
         final String hashedPassword = passwordToHash(userDTO.getPassword());
         user.setPassword(hashedPassword);
+
+        // Default to "user" role.
+        final String name = user.getRole().getName();
+        if (name == null || name.isEmpty()) {
+            user.getRole().setName(Roles.ROLE_USER);
+        }
         
         final User newUser = userDAO.create(user); 
         
@@ -80,6 +87,13 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
+    public UserDTO getUser(final String username) {
+        final User user = userDAO.fetchById(username);
+        
+        return userConverter.fromUser(user);
+    }
+
+    @Override
     public void updatePassword(final String newPassword, final String username) {
         validatePassword(newPassword);
 
@@ -97,12 +111,16 @@ public class UserService implements UserServiceInterface {
     }
 
     @Override
-    public List<Role> getRoles() {
-        return userDAO.getRoles();
+    public List<RoleDTO> getRoles() {
+        return userDAO.getRoles().stream()
+                      .map(role -> RoleDTO.builder()
+                                          .name(role.getName())
+                                          .build())
+                      .collect(Collectors.toList());
     }
 
     @Override
-    public Boolean checkPasswordReset(final String username) {
+    public boolean checkPasswordReset(final String username) {
         final User user = userDAO.fetchById(username);
 
         return "Y".equals(user.getResetPassword());
