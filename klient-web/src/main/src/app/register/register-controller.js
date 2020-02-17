@@ -364,10 +364,15 @@ angular.module('nha.register', [
         };
 
         $scope.showArchiveAuthors = function () {
+            if ($scope.formData.archiveAuthors === undefined) {
+                return null;
+            }
+            
             var selectedArchiveAuthors = [];
             $scope.formData.archiveAuthors.map( function (element) {
                 selectedArchiveAuthors.push(element.code);
             });
+          
             return selectedArchiveAuthors;
         };
 

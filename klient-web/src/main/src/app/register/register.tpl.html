@@ -126,6 +126,7 @@
             <button type="submit" class="btn btn-primary right" ng-hide="medicalRecordDTO.avleveringLaast" ng-btnFocus="" data-ng-click="nyEllerOppdater()">Kontroller og lagre</button>
         </div>
         <br>
+        
         <!-- Diagnoser -->
         <div class="well" data-ng-show="state === 0">
             <label>Diagnoser</label>
@@ -137,7 +138,7 @@
                     <label id="diagnosedato" data-ng-class="{error: error['diagnosedato'] !== undefined }">
                         Diagnosedato
                     </label>
-                    <input type="text" id="diagnosisDate-input" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-enter="leggTilDiagnose()" data-ng-show="state !== 0" maxlength="10" focus-on-show>
+                    <input type="text" id="diagnosisDate-input" class="form-control" placeholder="dd.mm.åååå..." data-ng-model="formDiagnose.diagnosedato" data-ng-blur="setDiagnoseDato()" data-ng-show="state !== 0" maxlength="10" focus-on-show>
                 </div>
                 <div class="span span4">
                     <label id="diagnosekode" data-ng-class="{error: error['diagnosekode'] !== undefined }">
@@ -148,7 +149,10 @@
                            data-ng-blur="setDiagnoseTekst()"
                            focus-to-me="diagnoseDatoErSatt"
                            data-ng-disabled="!diagnoseDatoErSatt"
-                           data-ng-enter="leggTilDiagnose()" data-ng-focus="setDiagnoseKode()">
+                           typeahead="item as item.code for item in searchDiagnosisCodes($viewValue)"
+                           typeahead-loading="Laster..."
+                           typeahead-on-select="setDiagnosisCode()"
+                           typeahead-focus-first="false">
                 </div>
                 <div class="span span4">
                     <label id="diagnosetekst" data-ng-class="{error: error['diagnosetekst'] !== undefined }">
@@ -161,7 +165,6 @@
                            data-ng-model="formDiagnose.diagnosetekst"
                            data-ng-show="!diagnosetekstErSatt"
                            data-ng-disabled="!diagnoseDatoErSatt"
-                           data-ng-enter="leggTilDiagnose()"
                            typeahead="item as item.displayName for item in sokDiagnoseDisplayNameLike($viewValue)"
                            typeahead-loading="Laster"
                            typeahead-focus-first="false"

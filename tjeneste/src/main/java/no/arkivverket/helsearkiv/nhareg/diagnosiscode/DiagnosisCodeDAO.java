@@ -2,33 +2,23 @@ package no.arkivverket.helsearkiv.nhareg.diagnosiscode;
 
 import no.arkivverket.helsearkiv.nhareg.common.EntityDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.common.ValidDateFormats;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.CV;
+import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.DiagnosisCode;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.SingularAttribute;
-import java.sql.Date;
+import javax.persistence.criteria.*;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @Stateless
 public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
-
-    private static final String DISPLAY_NAME_LIKE_QUERY_PARAMETER = "displayNameLike";
-    private static final String DIAGNOSE_DATE_QUERY_PARAMETER = "diagnoseDate";
-    private static final String CODE_QUERY_PARAMETER = "code";
 
     public DiagnosisCodeDAO() {
         super(DiagnosisCode.class, "code");
@@ -36,74 +26,111 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
 
     @Override
     public DiagnosisCode fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(dc) "
+        final String queryString = "SELECT dc "
             + "FROM DiagnosisCode dc "
             + "WHERE dc.code = :id ";
-        final TypedQuery query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
+        final TypedQuery<DiagnosisCode> query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
         query.setParameter("id", id);
 
         try {
-            return (DiagnosisCode) query.getSingleResult();
+            return query.getSingleResult();
         } catch (NoResultException | NonUniqueResultException exception) {
             return null;
         }
     }
 
     @Override
-    protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
-                                            final CriteriaBuilder criteriaBuilder,
-                                            final Root<DiagnosisCode> root) {
+    public List<DiagnosisCode> fetchAll(final Map<String, String> parameters) {
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        final CriteriaQuery<DiagnosisCode> criteriaQuery = criteriaBuilder.createQuery(DiagnosisCode.class);
+        final Root<DiagnosisCode> root = criteriaQuery.from(DiagnosisCode.class);
+        final String page = parameters.remove("page");
+        final String size = parameters.remove("size");
         final List<Predicate> predicates = new ArrayList<>();
-        final String codeQueryParameter = queryParameters.get(CODE_QUERY_PARAMETER);
 
-        if (codeQueryParameter != null && !codeQueryParameter.isEmpty()) {
-            final Predicate predicate = criteriaBuilder.equal(root.get("code"), codeQueryParameter);
-            predicates.add(predicate);
+        createPredicates(parameters, root, criteriaBuilder, predicates);
+
+        criteriaQuery.select(criteriaQuery.getSelection())
+                     .where(predicates.toArray(new Predicate[0]));
+
+        final Order codeLength = criteriaBuilder.asc(criteriaBuilder.length(root.get("code")));
+        final Order code = criteriaBuilder.asc(root.get("code"));
+        criteriaQuery.orderBy(codeLength, code);
+        final TypedQuery<DiagnosisCode> query = getEntityManager().createQuery(criteriaQuery);
+
+        setPredicates(parameters, query);
+
+        if (page != null && size != null) {
+            final int parsedPage = Integer.parseInt(page);
+            final int parsedSize = Integer.parseInt(size);
+            query.setFirstResult((parsedPage - 1) * parsedSize);
+            query.setMaxResults(parsedSize);
         }
 
-        final String dateQueryParameter = queryParameters.get(DIAGNOSE_DATE_QUERY_PARAMETER);
-        if (dateQueryParameter != null && !dateQueryParameter.isEmpty()) {
-            final LocalDate localDate = ValidDateFormats.getDate(dateQueryParameter);
-            
-            if (localDate != null) {
-                final String queryString = "SELECT kodeverkversjon "
-                    + "FROM Diagnosekodeverk "
-                    + "WHERE gyldig_til_dato >= ?1 "
-                    + "AND gyldig_fra_dato <= ?1";
-                final ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
-                final Date param = new Date(zonedDateTime.toEpochSecond());
-                final List resultList = getEntityManager().createNativeQuery(queryString)
-                                                          .setParameter(1, param)
-                                                          .getResultList();
-
-                final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
-                final SingularAttribute<CV, String> attribute =
-                    type.getDeclaredSingularAttribute("codeSystemVersion", String.class);
-                final Expression<String> expression = root.get(attribute);
-                final Predicate predicate = expression.in(resultList);
-                predicates.add(predicate);
-            }
-        }
-
-        if (queryParameters.containsKey(DISPLAY_NAME_LIKE_QUERY_PARAMETER)) {
-            createDisplayNamePredicate(queryParameters, criteriaBuilder, root, predicates);
-        }
-
-        return predicates.toArray(new Predicate[] {});
+        return query.getResultList();
     }
 
-    private void createDisplayNamePredicate(final Map<String, String> queryParameters,
-                                            final CriteriaBuilder criteriaBuilder,
-                                            final Root<DiagnosisCode> root,
-                                            final List<Predicate> predicates) {
-        final EntityType<CV> type = getEntityManager().getMetamodel().entity(CV.class);
-        final String displayNameLike = queryParameters.get(DISPLAY_NAME_LIKE_QUERY_PARAMETER);
-        final SingularAttribute<CV, String> attribute = type.getDeclaredSingularAttribute("displayName", String.class);
-        final Expression<String> lower = criteriaBuilder.lower(root.get(attribute));
-        final String pattern = "%" + displayNameLike.toLowerCase() + "%";
-        final Predicate predicate = criteriaBuilder.like(lower, pattern);
+    private void setPredicates(final Map<String, String> parameters, final TypedQuery<DiagnosisCode> query) {
+        parameters.forEach((key, value) -> {
+            switch (key) {
+                case "name":
+                    query.setParameter(key, "%" + value.toLowerCase() + "%");
+                    break;
+                case "code":
+                    query.setParameter(key, value + "%");
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
 
-        predicates.add(predicate);
+    private void createPredicates(final Map<String, String> parameters, final Root<DiagnosisCode> root,
+                                  final CriteriaBuilder criteriaBuilder,
+                                  final List<Predicate> predicates) {
+        parameters.forEach((key, value) -> {
+            final ParameterExpression<String> stringParam = criteriaBuilder.parameter(String.class, key);
+            switch (key) {
+                case "name":
+                    final Predicate namePredicate = criteriaBuilder.like(root.get("displayName"), stringParam);
+                    predicates.add(namePredicate);
+                    break;
+                case "code":
+                    final Predicate codePredicate = criteriaBuilder.like(root.get("code"), stringParam);
+                    predicates.add(codePredicate);
+                    break;
+                case "date":
+                    final Predicate datePredicate = createDatePredicate(root, value);
+                    if (datePredicate != null) {
+                        predicates.add(datePredicate);
+                    }
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        });
+    }
+
+    private Predicate createDatePredicate(final Root<DiagnosisCode> root, final String value) {
+        final LocalDate localDate = ValidDateFormats.getDate(value);
+
+        if (localDate == null) {
+            final ValidationError validationError = new ValidationError("diagnosisDate", "DiagFormatFeil");
+            final List<ValidationError> validationErrors = Collections.singletonList(validationError);
+
+            throw new ValidationErrorException(validationErrors);
+        }
+
+        final String queryString = "SELECT d.code "
+            + "FROM DiagnosisCodeSystem d "
+            + "WHERE :date BETWEEN d.validFromDate AND d.validToDate ";
+
+        final List<String> resultList = getEntityManager().createQuery(queryString, String.class)
+                                                          .setParameter("date", localDate)
+                                                          .getResultList();
+        final Expression<String> version = root.get("codeSystemVersion");
+
+        return version.in(resultList);
     }
 
 }

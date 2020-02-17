@@ -8,7 +8,7 @@ function diagnosisService(httpService) {
 
     function getDiagnosisServer(date, diagnosisCode, callback) {
 
-        httpService.getAll("diagnosekoder?code=" + diagnosisCode + "&diagnoseDate=" + (date || ''), false)
+        httpService.getAll("diagnosekoder?code=" + diagnosisCode + "&date=" + (date || ''), false)
             .success(function (data) {
                 callback(extractMap(data));
             });
