@@ -14,7 +14,7 @@ public class AuthServiceBean implements AuthService {
     private UserDAO userDAO;
 
     public boolean isNotAuthorized(final String name, final Set<String> rolesAllowed) {
-        final User user = userDAO.fetchByUsername(name);
+        final User user = userDAO.fetchById(name);
         return !rolesAllowed.contains(user.getRole().getName());
     }
     

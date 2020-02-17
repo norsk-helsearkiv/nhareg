@@ -137,7 +137,7 @@ public class TransferService implements TransferServiceInterface {
 
     @Override
     public TransferDTO getDefaultTransfer(final String username) {
-        final User user = userDAO.fetchByUsername(username);
+        final User user = userDAO.fetchById(username);
         final String defaultUuid = user.getDefaultTransferId();
 
         if (defaultUuid == null || defaultUuid.isEmpty()) {

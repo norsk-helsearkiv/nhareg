@@ -5,6 +5,9 @@ import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.RoleDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserConverter implements UserConverterInterface {
     
     @Override
@@ -29,6 +32,13 @@ public class UserConverter implements UserConverterInterface {
                       .resetPassword(resetPassword)
                       .printer(user.getPrinter())
                       .build();
+    }
+
+    @Override
+    public List<UserDTO> fromUserList(final List<User> users) {
+        return users.stream()
+                    .map(this::fromUser)
+                    .collect(Collectors.toList());        
     }
 
     @Override
