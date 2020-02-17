@@ -196,7 +196,7 @@ angular.module('nha.common.list-view', [
             var first = $scope.data.liste[0];
 
             httpService.get(baseEndpointUrl + first.uuid)
-                .success(function (data) {
+                .success(function () {
                     registerService.setPasientjournalDTO(null);
                     $location.path('/registrer');
                 }).error(function (data, status) {
@@ -207,7 +207,7 @@ angular.module('nha.common.list-view', [
 
         $scope.showAddPatientJournalBtn = function () {
             return registerService.getAvleveringsidentifikator() !== undefined;
-        };
+        };  
 
         $scope.actionVisJournal = function (pasientjournal) {
             httpService.get(baseEndpointUrl + pasientjournal)

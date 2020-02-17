@@ -16,11 +16,7 @@ public class UserDAO extends EntityDAO<User> {
     }
 
     public String getRole(final String username) {
-        return fetchByUsername(username).getRole().getName();
-    }
-
-    public User fetchByUsername(final String username) {
-        return getEntityManager().find(User.class, username);
+        return fetchById(username).getRole().getName();
     }
 
     public List<User> getAllUsers() {

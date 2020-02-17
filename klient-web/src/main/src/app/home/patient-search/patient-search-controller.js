@@ -35,7 +35,7 @@ angular.module('nha.home')
             stateService.sokState = $scope.sok;
 
             httpService.getAll("pasientjournaler?page=1&size=" + $scope.size + listService.getQuery())
-                .success(function (data, status, headers, config) {
+                .success(function (data) {
                     var tittel = {
                         "tittel": sokeresultat,
                         "underTittel": viser + " " + data.size + " / " + data.total + " " + sokeresultat.toLowerCase()
@@ -45,7 +45,7 @@ angular.module('nha.home')
                     listService.setSok(sok);
 
                     $location.path('/list');
-                }).error(function (data, status, headers, config) {
+                }).error(function (data, status) {
                     errorService.errorCode(status);
             });
         };

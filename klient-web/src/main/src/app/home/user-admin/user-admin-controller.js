@@ -1,25 +1,28 @@
 angular.module('nha.home')
 
   .controller('UserAdminCtrl', function($rootScope, $scope, $location, $filter, httpService, errorService){
+    $scope.createNewUser = true;
     $scope.bruker = {};
-    $scope.bruker.printerzpl = '127.0.0.1';
+    $scope.bruker.printer = '127.0.0.1';
     $scope.brukere = [];
     $scope.selectedBrukerRow = null;
     $scope.error = [];
 
     $scope.selectUser = function (selectedUser, index) {
       if (index === $scope.selectedBrukerRow) {
+        $scope.createNewUser = true;
         $scope.selectedBrukerRow = null;
         $scope.bruker.brukernavn = null;
         $scope.bruker.rolle = null;
-        $scope.bruker.printerzpl = null;
+        $scope.bruker.printer = '127.0.0.1';
       } else {
         var rolleIndex = $scope.roller.map(function (e) {
           return e.navn;
         }).indexOf(selectedUser.rolle.navn);
+        $scope.createNewUser = false;
         $scope.selectedBrukerRow = index;
         $scope.bruker.brukernavn = selectedUser.brukernavn;
-        $scope.bruker.printerzpl = selectedUser.printerzpl;
+        $scope.bruker.printer = selectedUser.printer;
         $scope.bruker.rolle = $scope.roller[rolleIndex];
       }
     };
@@ -34,14 +37,18 @@ angular.module('nha.home')
     };
 
     var resetUser = function () {
-      $scope.bruker = {'printerpzl': $scope.bruker.printerpzl };
+      var printer = $scope.bruker.printer;
+      $scope.bruker = {};
+      $scope.bruker.printer = printer;
+      $scope.createNewUser = true;
+      $scope.selectUser(null, $scope.selectedBrukerRow);
     };
 
     var arePasswordsIdentical = function () {
       return $scope.bruker.password === $scope.bruker.passwordConfirm;
     };
 
-    $scope.updateUser = function () {
+    $scope.createOrUpdateUser = function() {
       $scope.error = [];
 
       if (!arePasswordsIdentical()) {
@@ -49,16 +56,37 @@ angular.module('nha.home')
         return;
       }
 
+      if ($scope.createNewUser) {
+        $scope.createUser();
+      } else {
+        $scope.updateUser();
+      }
+    };
+
+    $scope.createUser = function () {
       httpService.create("admin/brukere", $scope.bruker)
-        .success(function () {
+        .then(function () {
           $scope.getUsers();
           resetUser();
-        })
-        .error(function (data, status) {
-          if (status !== 400) {
-            errorService.errorCode(status);
+        }, function (reason) {
+          if (reason.status !== 400) {
+            errorService.errorCode(reason.status);
           } else {
-            setErrorMessages(data);
+            setErrorMessages(reason.data);
+          }
+        });
+    };
+
+    $scope.updateUser = function () {
+      httpService.update("admin/brukere", $scope.bruker)
+        .then(function() {
+          $scope.getUsers();
+          resetUser();
+        }, function (reason) {
+          if (reason.status !== 400) {
+            errorService.errorCode(reason.status);
+          } else {
+            setErrorMessages(reason.data);
           }
         });
     };

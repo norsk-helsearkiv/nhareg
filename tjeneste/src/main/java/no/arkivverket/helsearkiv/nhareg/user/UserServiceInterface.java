@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserServiceInterface {
 
+    UserDTO createUser(final UserDTO userDTO, final String username);
+    
     UserDTO updateUser(final UserDTO userDTO, final String username);
 
     void updatePassword(final String newPassword, final String username);
@@ -22,5 +24,5 @@ public interface UserServiceInterface {
     Boolean checkPasswordReset(final String username);
 
     void updateDefaultTransferForUser(final String username, final String transferId);
-    
+
 }

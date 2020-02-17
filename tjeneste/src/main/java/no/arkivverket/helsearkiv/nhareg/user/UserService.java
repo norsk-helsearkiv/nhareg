@@ -11,10 +11,8 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserService implements UserServiceInterface {
 
@@ -23,7 +21,21 @@ public class UserService implements UserServiceInterface {
 
     @Inject
     private UserConverterInterface userConverter;
-    
+
+    @Override 
+    public UserDTO createUser(final UserDTO userDTO, final String username) {
+        validatePrinterIP(userDTO.getPrinter());
+        validatePassword(userDTO.getPassword());
+        
+        final User user = userConverter.toUser(userDTO);
+        final String hashedPassword = passwordToHash(userDTO.getPassword());
+        user.setPassword(hashedPassword);
+        
+        final User newUser = userDAO.create(user); 
+        
+        return userConverter.fromUser(newUser);
+    }
+
     @Override
     public UserDTO updateUser(final UserDTO userDTO, final String username) {
         final User user = userConverter.toUser(userDTO);
@@ -40,42 +52,18 @@ public class UserService implements UserServiceInterface {
             user.getRole().setName(loggedInRole);
         }
 
-        boolean resetPass = false;
-        if (userDTO.getResetPassword() != null && userDTO.getResetPassword()) {
-            user.setResetPassword("Y");
-            resetPass = true;
-        } else {
-            user.setResetPassword("");
-        }
-
-        if (!resetPass) { // Skip validation if password should be reset
-            List<ValidationError> feil = validateNewChangeUser(userDTO.getPassword());
-            if (feil.size() > 0) {
-                throw new ValidationErrorException(feil);
-            }
-        }
-
-        validatePrinterIP(user.getPrinter());
-
-        String b64Pwd = passwordToHash(user.getPassword());
-        user.setPassword(b64Pwd);
-
-        final User newUser = userDAO.createUser(user);
+        final User updatedUser = userDAO.update(user);
         
-        return userConverter.fromUser(newUser);
+        return userConverter.fromUser(updatedUser);
     }
 
     @Override
     public void updatePassword(final String newPassword, final String username) {
-        final User user = userDAO.fetchByUsername(username);
-        final String b64pwd = passwordToHash(newPassword);
+        validatePassword(newPassword);
 
-        final List<ValidationError> feil = validateNewChangeUser(newPassword);
-        if (feil.size() > 0) {
-            throw new ValidationErrorException(feil);
-        }
-
-        user.setPassword(b64pwd);
+        final User user = userDAO.fetchById(username);
+        final String hashedPassword = passwordToHash(newPassword);
+        user.setPassword(hashedPassword);
         user.setResetPassword("");
     }
 
@@ -117,21 +105,6 @@ public class UserService implements UserServiceInterface {
         return userDAO.fetchStorageUnitByUsername(username);
     }
 
-    private List<ValidationError> validateNewChangeUser(final String password) {
-        final List<ValidationError> validationErrors = new ArrayList<>();
-        
-        if (!validatePassword(password)) {
-            ValidationError validationError = new ValidationError("passord", "FeilPassord");
-            validationErrors.add(validationError);
-        }
-
-        return validationErrors;
-    }
-
-    private boolean validatePassword(final String password) {
-        return password != null && password.length() >= 5;
-    }
-
     private String passwordToHash(final String password) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -143,6 +116,14 @@ public class UserService implements UserServiceInterface {
         }
 
         return null;
+    }
+
+    private void validatePassword(final String password) {
+        if (password == null || password.length() < 5) {
+            final ValidationError validationError = new ValidationError("passord", "FeilPassord");
+            final List<ValidationError> validationErrors = Collections.singletonList(validationError);
+            throw new ValidationErrorException(validationErrors);
+        }
     }
 
     private void validatePrinterIP(final String printerIP) {
