@@ -41,14 +41,26 @@ public class StorageUnitServiceTest {
     }
 
     @Test
-    public void getById_validId_shouldReturnStorageUnit() {
-        final StorageUnitDTO storageUnitDTO = storageUnitService.getById("boks1");
+    public void getById_validUUID_shouldReturnStorageUnit() {
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getById("enhet-1");
         assertNotNull(storageUnitDTO);
     }
 
     @Test
-    public void getById_invalidId_shouldReturnNull() {
+    public void getById_invalidUUID_shouldReturnNull() {
         final StorageUnitDTO storageUnitDTO = storageUnitService.getById("invalid");
+        assertNull(storageUnitDTO);
+    }
+    
+    @Test
+    public void getByIdentifier_validId_shouldReturnStorageUnit() {
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getByIdentifier("boks-1");
+        assertNotNull(storageUnitDTO);
+    }
+    
+    @Test
+    public void getByIdentifier_invalidId_shouldReturnNull() {
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getByIdentifier("invalid");
         assertNull(storageUnitDTO);
     }
     

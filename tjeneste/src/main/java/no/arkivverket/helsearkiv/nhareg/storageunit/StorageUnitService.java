@@ -56,6 +56,11 @@ public class StorageUnitService implements StorageUnitServiceInterface {
     }
 
     @Override
+    public StorageUnitDTO getByIdentifier(final String id) {
+        return storageUnitConverter.fromStorageUnit(storageUnitDAO.fetchByIdentifier(id));
+    }
+
+    @Override
     public StorageUnitDTO create(final StorageUnit storageUnit) {
         final StorageUnit newStorageUnit = storageUnitDAO.create(storageUnit);
         
