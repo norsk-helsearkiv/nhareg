@@ -16,11 +16,7 @@ public class UserDAO extends EntityDAO<User> {
     }
 
     public String getRole(final String username) {
-        return fetchByUsername(username).getRole().getName();
-    }
-
-    public User fetchByUsername(final String username) {
-        return getEntityManager().find(User.class, username);
+        return fetchById(username).getRole().getName();
     }
 
     public List<User> getAllUsers() {
@@ -30,11 +26,7 @@ public class UserDAO extends EntityDAO<User> {
         return query.getResultList();
     }
 
-    public User createUser(final User user) {
-        return getEntityManager().merge(user);
-    }
-    
-    public List<Role> getRoller() {
+    public List<Role> getRoles() {
         final String queryString = "SELECT r FROM Role r";
         final TypedQuery<Role> query = getEntityManager().createQuery(queryString, Role.class);
         
@@ -42,18 +34,18 @@ public class UserDAO extends EntityDAO<User> {
     }
 
     public void updateStorageUnit(final String username, final String storageUnit) {
-        final User user = fetchByUsername(username);
+        final User user = fetchById(username);
         user.setStorageUnit(storageUnit);
       
-        getEntityManager().persist(user);
+        getEntityManager().merge(user);
     }
 
     public String fetchStorageUnitByUsername(final String username) {
-        return fetchByUsername(username).getStorageUnit();
+        return fetchById(username).getStorageUnit();
     }
 
     public void updateDefaultTransfer(final String username, final String transferId) {
-        final User user = fetchByUsername(username);
+        final User user = fetchById(username);
         
         if (transferId.equals(user.getDefaultTransferId())) {
             user.setDefaultTransferId(null);
@@ -61,6 +53,6 @@ public class UserDAO extends EntityDAO<User> {
             user.setDefaultTransferId(transferId);
         }
         
-        getEntityManager().persist(user);
+        getEntityManager().merge(user);
     }
 }

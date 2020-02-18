@@ -1,77 +1,103 @@
 angular.module('nha.home')
 
-    .controller('UserAdminCtrl', function($rootScope, $scope, $location, $filter, httpService, errorService){
-        $scope.bruker = {};
-        $scope.bruker.printerzpl = '127.0.0.1';
-        $scope.brukere = [];
+  .controller('UserAdminCtrl', function($rootScope, $scope, $location, $filter, httpService, errorService){
+    $scope.createNewUser = true;
+    $scope.bruker = {};
+    $scope.bruker.printer = '127.0.0.1';
+    $scope.brukere = [];
+    $scope.selectedBrukerRow = null;
+    $scope.error = [];
+
+    $scope.selectUser = function (selectedUser, index) {
+      if (index === $scope.selectedBrukerRow) {
+        $scope.createNewUser = true;
         $scope.selectedBrukerRow = null;
-        $scope.error = [];
+        $scope.bruker.brukernavn = null;
+        $scope.bruker.rolle = null;
+        $scope.bruker.printer = '127.0.0.1';
+      } else {
+        var rolleIndex = $scope.roller.map(function (e) {
+          return e.navn;
+        }).indexOf(selectedUser.rolle.navn);
+        $scope.createNewUser = false;
+        $scope.selectedBrukerRow = index;
+        $scope.bruker.brukernavn = selectedUser.brukernavn;
+        $scope.bruker.printer = selectedUser.printer;
+        $scope.bruker.rolle = $scope.roller[rolleIndex];
+      }
+    };
 
-        $scope.selectUser = function (selectedUser, index) {
-            if (index === $scope.selectedBrukerRow) {
-                $scope.selectedBrukerRow = null;
-                $scope.bruker.brukernavn = null;
-                $scope.bruker.rolle = null;
-                $scope.bruker.printerzpl = null;
-            } else {
-                var rolleIndex = $scope.roller.map(function (e) {
-                    return e.navn;
-                }).indexOf(selectedUser.rolle.navn);
-                $scope.selectedBrukerRow = index;
-                $scope.bruker.brukernavn = selectedUser.brukernavn;
-                $scope.bruker.printerzpl = selectedUser.printerzpl;
-                $scope.bruker.rolle = $scope.roller[rolleIndex];
-            }
-        };
+    $scope.getUsers = function () {
+      httpService.getAll("admin/brukere", false)
+        .success(function (data) {
+          $scope.brukere = data;
+        }).error(function (data, status) {
+        errorService.errorCode(status);
+      });
+    };
 
-        $scope.getUsers = function () {
-            httpService.getAll("admin/brukere", false)
-                .success(function (data) {
-                    $scope.brukere = data;
-                }).error(function (data, status) {
-                    errorService.errorCode(status);
-                });
-        };
+    var resetUser = function () {
+      var printer = $scope.bruker.printer;
+      $scope.bruker = {};
+      $scope.bruker.printer = printer;
+      $scope.createNewUser = true;
+      $scope.selectUser(null, $scope.selectedBrukerRow);
+    };
 
-        var resetUser = function () {
-            $scope.bruker = {};
-        };
+    var arePasswordsIdentical = function () {
+      return $scope.bruker.password === $scope.bruker.passwordConfirm;
+    };
 
-        var arePasswordsIdentical = function () {
-            return $scope.bruker.password === $scope.bruker.passwordConfirm;
-        };
+    $scope.createOrUpdateUser = function() {
+      $scope.error = [];
 
-        $scope.updateUser = function () {
-            $scope.error = [];
+      if (!arePasswordsIdentical()) {
+        $scope.error['passord'] = $filter('translate')('formError.NotIdentical');
+        return;
+      }
 
-            if (!arePasswordsIdentical()) {
-                $scope.error['passord'] = $filter('translate')('formError.NotIdentical');
-                return;
-            }
+      if ($scope.createNewUser) {
+        $scope.createUser();
+      } else {
+        $scope.updateUser();
+      }
+    };
 
-            httpService.create("admin/brukere", $scope.bruker)
-                .success(function () {
-                    $scope.getUsers();
-                    resetUser();
-                })
-                .error(function (data, status) {
-                    if (status != 400) {
-                        errorService.errorCode(status);
-                        return;
-                    } else {
-                        setErrorMessages(data);
-                    }
-                });
-        };
+    $scope.createUser = function () {
+      httpService.create("admin/brukere", $scope.bruker)
+        .then(function () {
+          $scope.getUsers();
+          resetUser();
+        }, function (reason) {
+          if (reason.status !== 400) {
+            errorService.errorCode(reason.status);
+          } else {
+            setErrorMessages(reason.data);
+          }
+        });
+    };
 
-        $scope.showError = function (attribute) {
-            var error = $scope.error[attribute] !== undefined;
-            return error;
-        };
+    $scope.updateUser = function () {
+      httpService.update("admin/brukere", $scope.bruker)
+        .then(function() {
+          $scope.getUsers();
+          resetUser();
+        }, function (reason) {
+          if (reason.status !== 400) {
+            errorService.errorCode(reason.status);
+          } else {
+            setErrorMessages(reason.data);
+          }
+        });
+    };
 
-        var setErrorMessages = function (data) {
-            angular.forEach(data, function (element) {
-                $scope.error[element.attribute] = $filter('translate')('formError.' + element.constraint);
-            });
-        };
-    });
+    $scope.showError = function (attribute) {
+      return $scope.error[attribute] !== undefined;
+    };
+
+    var setErrorMessages = function (data) {
+      angular.forEach(data, function (element) {
+        $scope.error[element.attribute] = $filter('translate')('formError.' + element.constraint);
+      });
+    };
+  });

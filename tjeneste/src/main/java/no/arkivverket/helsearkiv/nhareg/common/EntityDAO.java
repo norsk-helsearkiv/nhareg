@@ -41,10 +41,8 @@ public abstract class EntityDAO<T> {
     }
 
     public T update(T entity) {
-        // Validerer.
         new Validator<>(entityClass).validateWithException(entity);
 
-        // Oppdaterer.
         return getEntityManager().merge(entity);
     }
 

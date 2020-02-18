@@ -17,7 +17,9 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr data-ng-repeat="bruker in brukere" ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}" ng-click="selectUser(bruker, $index)" ts-repeat>
+                        <tr data-ng-repeat="bruker in brukere"
+                            ng-class="{'sokeresultat-selected':$index == selectedBrukerRow}"
+                            ng-click="selectUser(bruker, $index)" ts-repeat>
                             <td>{{ bruker.brukernavn }}</td>
                             <td>{{ bruker.rolle.navn }}</td>
                         </tr>
@@ -26,15 +28,26 @@
                 </div>
                 <div class="span span5 padding-bottom">
                     <label>&nbsp;</label>
-                    <button class="form-control btn btn-primary" type="submit" data-ng-click="getUsers()">{{ 'home.brukere.HENT' | translate }}</button>
+                    <button class="form-control btn btn-primary" type="submit" data-ng-click="getUsers()">
+                        {{ 'home.brukere.HENT' | translate }}
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     <form class="row input-group form-group">
+        <div class="row" data-ng-show="showError('username')">
+            <div class="span span4">
+                <label id="labelUsernameError" data-ng-class="{error: error['username'] !== undefined }">
+                    {{ error['username'] }}
+                </label>
+            </div>
+        </div>
         <div class="row">
             <div class="span span4 padding-bottom">
-                <label>{{'common.table.USERNAME' | translate}}</label>
+                <label id="labelUsername">
+                    {{'common.table.USERNAME' | translate}}
+                </label>
                 <input type="text" data-ng-model="bruker.brukernavn" class="form-control" placeholder="Brukernavn">
             </div>
         </div>
@@ -48,23 +61,27 @@
         </div>
         <div class="row" data-ng-show="showError('printer')">
             <div class="span span4">
-                <label id="labelPrinterError"  data-ng-class="{error: error['printer'] !== undefined }">{{ error['printer'] }}</label>
+                <label id="labelPrinterError" data-ng-class="{error: error['printer'] !== undefined}">
+                    {{ error['printer'] }}
+                </label>
             </div>
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
                 <label>{{'common.table.PRINTER' | translate}}</label>
-                <input type="text" data-ng-model="bruker.printerzpl" class="form-control" placeholder="Printer-ip">
+                <input type="text" data-ng-model="bruker.printer" class="form-control" placeholder="Printer-ip">
             </div>
         </div>
         <div class="row" data-ng-show="showError('passord')">
             <div class="span span4">
-                <label id="labelPassordFeil"  data-ng-class="{error: error['passord'] !== undefined }">{{ error['passord'] }}</label>
+                <label id="labelPassordFeil"  data-ng-class="{error: error['passord'] !== undefined}">{{ error['passord'] }}</label>
             </div>
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
-                <label id="labelPassord" data-ng-class="{error: error['passord'] !== undefined }">{{'home.brukere.PASSORD' | translate}}</label>
+                <label id="labelPassord" data-ng-class="{error: error['passord'] !== undefined}">
+                    {{'home.brukere.PASSORD' | translate}}
+                </label>
                 <input type="checkbox" data-ng-model="bruker.resetPassword">
                 {{ 'home.brukere.NYTTPASSORD' | translate }}
                 </label>
@@ -73,14 +90,18 @@
         </div>
         <div class="row">
             <div class="span span4 padding-bottom">
-                <label id="labelPassordConfirm" data-ng-class="{error: error['passord'] !== undefined }">{{'home.brukere.PASSORD_BEKREFT' | translate}}</label>
+                <label id="labelPassordConfirm" data-ng-class="{error: error['passord'] !== undefined}">
+                    {{'home.brukere.PASSORD_BEKREFT' | translate}}
+                </label>
                 <input type="password" data-ng-model="bruker.passwordConfirm" class="form-control" placeholder="Bekreft passord">
                 </label>
             </div>
         </div>
         <div class="span span5 padding-bottom">
             <label>&nbsp;</label>
-            <button class="form-control btn btn-primary" type="submit" data-ng-click="updateUser()">{{ 'home.brukere.LAGRE' | translate }}</button>
+            <button class="form-control btn btn-primary" type="submit" data-ng-click="createOrUpdateUser()">
+                {{ createNewUser == true ? ('home.brukere.CREATE' | translate) : ('home.brukere.UPDATE' | translate) }}
+            </button>
         </div>
     </form>
 

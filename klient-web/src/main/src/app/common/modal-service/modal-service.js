@@ -109,10 +109,10 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             $scope.ok = function() {
                 if (relativeUrl){
                     httpService.create(relativeUrl, $scope.formData)
-                        .success(function(data, status, headers, config) {
+                        .success(function() {
                             $modalInstance.close();
                             okFunction();
-                        }).error(function(data, status, headers, config) {
+                        }).error(function(data, status) {
                         errorService.errorCode(status);
                     });
                 }else{
@@ -296,10 +296,10 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     lagringsenhetIdentifikator : identifikator
                 };
                 httpService.create(relativeUrl, data)
-                    .success(function(data, status, headers, config) {
+                    .success(function() {
                         $modalInstance.close();
                         okFunction();
-                    }).error(function(data, status, headers, config) {
+                    }).error(function(data, status) {
                     if (data[0].attribute==='identifikator'){
                         $modalInstance.close();
                         var msg = $filter('translate')('modal.FlyttLagringsenhetFeil.msg');
@@ -335,9 +335,9 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     return;
                 }
                 httpService.create("admin/oppdaterPassord", $scope.formData.passord)
-                    .success(function(data, status, headers, config) {
+                    .success(function() {
                         $modalInstance.close();
-                    }).error(function(data, status, headers, config) {
+                    }).error(function(data, status) {
                     errorService.errorCode(status);
                 });
             };

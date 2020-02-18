@@ -1,8 +1,8 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
-import no.arkivverket.helsearkiv.nhareg.domene.auth.Role;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.User;
+import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.RoleDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.ValidationErrorException;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
@@ -11,10 +11,8 @@ import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserService implements UserServiceInterface {
 
@@ -23,14 +21,57 @@ public class UserService implements UserServiceInterface {
 
     @Inject
     private UserConverterInterface userConverter;
-    
+
+    @Override 
+    public UserDTO createUser(final UserDTO userDTO) {
+        validatePrinterIP(userDTO.getPrinter());
+        validatePassword(userDTO.getPassword());
+        
+        final User user = userConverter.toUser(userDTO);
+        final String hashedPassword = passwordToHash(userDTO.getPassword());
+        user.setPassword(hashedPassword);
+
+        // Default to "user" role.
+        final String name = user.getRole().getName();
+        if (name == null || name.isEmpty()) {
+            user.getRole().setName(Roles.ROLE_USER);
+        }
+        
+        final User newUser = userDAO.create(user); 
+        
+        return userConverter.fromUser(newUser);
+    }
+
     @Override
     public UserDTO updateUser(final UserDTO userDTO, final String username) {
+        final Boolean resetPassword = userDTO.getResetPassword();
+        boolean resetPass = resetPassword != null && resetPassword;
+        final String password = userDTO.getPassword();
+        
+        validatePrinterIP(userDTO.getPrinter());
+
+        final User original = userDAO.fetchById(userDTO.getUsername());
         final User user = userConverter.toUser(userDTO);
 
-        // Defaults to user role if missing.
-        final String userName = user.getRole().getName();
-        if (userName != null && userName.isEmpty()) {
+        if (original == null) {
+            final ValidationError validationError = new ValidationError("username", "UserDoesNotExist");
+            final List<ValidationError> validationErrors = Collections.singletonList(validationError);
+            throw new ValidationErrorException(validationErrors);
+        }
+        
+        // if password is empty or we are resetting the password on login we do
+        // not need to validate the password as it will not get updated.
+        if ((password != null && !password.isEmpty()) && !resetPass) {
+            validatePassword(password);
+            final String hashedPassword = passwordToHash(password);
+            user.setPassword(hashedPassword);
+        } else {
+            user.setPassword(original.getPassword());
+        }
+
+        // Default to "user" role.
+        final String name = user.getRole().getName();
+        if (name == null || name.isEmpty()) {
             user.getRole().setName(Roles.ROLE_USER);
         }
 
@@ -40,64 +81,47 @@ public class UserService implements UserServiceInterface {
             user.getRole().setName(loggedInRole);
         }
 
-        boolean resetPass = false;
-        if (userDTO.getResetPassword() != null && userDTO.getResetPassword()) {
-            user.setResetPassword("Y");
-            resetPass = true;
-        } else {
-            user.setResetPassword("");
-        }
-
-        if (!resetPass) { // Skip validation if password should be reset
-            List<ValidationError> feil = validateNewChangeUser(userDTO.getPassword());
-            if (feil.size() > 0) {
-                throw new ValidationErrorException(feil);
-            }
-        }
-
-        validatePrinterIP(user.getPrinter());
-
-        String b64Pwd = passwordToHash(user.getPassword());
-        user.setPassword(b64Pwd);
-
-        final User newUser = userDAO.createUser(user);
+        final User updatedUser = userDAO.update(user);
         
-        return userConverter.fromUser(newUser);
+        return userConverter.fromUser(updatedUser);
+    }
+
+    @Override
+    public UserDTO getUser(final String username) {
+        final User user = userDAO.fetchById(username);
+        
+        return userConverter.fromUser(user);
     }
 
     @Override
     public void updatePassword(final String newPassword, final String username) {
-        final User user = userDAO.fetchByUsername(username);
-        final String b64pwd = passwordToHash(newPassword);
+        validatePassword(newPassword);
 
-        final List<ValidationError> feil = validateNewChangeUser(newPassword);
-        if (feil.size() > 0) {
-            throw new ValidationErrorException(feil);
-        }
-
-        user.setPassword(b64pwd);
+        final User user = userDAO.fetchById(username);
+        final String hashedPassword = passwordToHash(newPassword);
+        user.setPassword(hashedPassword);
         user.setResetPassword("");
     }
 
     @Override
     public List<UserDTO> getUsers() {
-        final List<UserDTO> userDTOS = new ArrayList<>();
-        for (User user : userDAO.getAllUsers()) {
-            final UserDTO userDto = userConverter.fromUser(user);
-            userDTOS.add(userDto);
-        }
+        final List<User> users = userDAO.getAllUsers();
 
-        return userDTOS;
+        return userConverter.fromUserList(users);
     }
 
     @Override
-    public List<Role> getRoles() {
-        return userDAO.getRoller();
+    public List<RoleDTO> getRoles() {
+        return userDAO.getRoles().stream()
+                      .map(role -> RoleDTO.builder()
+                                          .name(role.getName())
+                                          .build())
+                      .collect(Collectors.toList());
     }
 
     @Override
-    public Boolean checkPasswordReset(final String username) {
-        final User user = userDAO.fetchByUsername(username);
+    public boolean checkPasswordReset(final String username) {
+        final User user = userDAO.fetchById(username);
 
         return "Y".equals(user.getResetPassword());
     }
@@ -117,21 +141,6 @@ public class UserService implements UserServiceInterface {
         return userDAO.fetchStorageUnitByUsername(username);
     }
 
-    private List<ValidationError> validateNewChangeUser(final String password) {
-        final List<ValidationError> validationErrors = new ArrayList<>();
-        
-        if (!validatePassword(password)) {
-            ValidationError validationError = new ValidationError("passord", "FeilPassord");
-            validationErrors.add(validationError);
-        }
-
-        return validationErrors;
-    }
-
-    private boolean validatePassword(final String password) {
-        return password != null && password.length() >= 5;
-    }
-
     private String passwordToHash(final String password) {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -145,16 +154,24 @@ public class UserService implements UserServiceInterface {
         return null;
     }
 
+    private void validatePassword(final String password) {
+        if (password == null || password.length() < 5) {
+            final ValidationError validationError = new ValidationError("passord", "FeilPassord");
+            final List<ValidationError> validationErrors = Collections.singletonList(validationError);
+            throw new ValidationErrorException(validationErrors);
+        }
+    }
+
     private void validatePrinterIP(final String printerIP) {
         final List<ValidationError> errorList = new ArrayList<>();
 
         if (printerIP == null || printerIP.isEmpty()) {
-            final ValidationError emptyPrinterError = new ValidationError("printer", "Empty printer IP");
+            final ValidationError emptyPrinterError = new ValidationError("printer", "IPEmpty");
             errorList.add(emptyPrinterError);
         } else {
             final String[] ipGroups = printerIP.split("\\.");
             if (ipGroups.length != 4) {
-                errorList.add(new ValidationError("printer", "Error in IP address length"));
+                errorList.add(new ValidationError("printer", "IPLength"));
             }
 
             try {
@@ -164,11 +181,11 @@ public class UserService implements UserServiceInterface {
                                               .filter(group -> (group >= 0 && group <= 255))
                                               .count() == 4;
                 if (!correctFormat) {
-                    errorList.add(new ValidationError("printer", "Error in IP format"));
+                    errorList.add(new ValidationError("printer", "IPFormat"));
                 }
             } catch (NumberFormatException nfe) {
                 nfe.printStackTrace();
-                errorList.add(new ValidationError("printer", "Error with integers in IP"));
+                errorList.add(new ValidationError("printer", "IPIntegers"));
             }
         }
 

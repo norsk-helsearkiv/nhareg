@@ -20,7 +20,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class StorageUnitService implements StorageUnitServiceInterface {
 
@@ -82,7 +81,7 @@ public class StorageUnitService implements StorageUnitServiceInterface {
         final Map<String, String> mappedParameters = ParameterConverter.multivaluedToMap(queryParameters);
         final List<StorageUnit> storageUnits = storageUnitDAO.fetchAll(mappedParameters);
         
-        return storageUnits.stream().map(storageUnitConverter::fromStorageUnit).collect(Collectors.toList());
+        return storageUnitConverter.fromStorageUnitList(storageUnits);
     }
 
     @Override
@@ -101,13 +100,10 @@ public class StorageUnitService implements StorageUnitServiceInterface {
         final Integer medicalRecordCount = storageUnitDAO.fetchCountOfRecordsForStorageUnit(id);
         final String firstTransferId = transferDAO.fetchFirstTransferIdFromStorageUnit(storageUnit.getUuid());
         final Transfer transfer = transferDAO.fetchById(firstTransferId);
-        final User user = userDAO.fetchByUsername(username);
+        final User user = userDAO.fetchById(username);
 
-        String printerIp = user.getPrinter();
-        if (printerIp == null) {
-            printerIp = "127.0.0.1";
-        }
-
+        final String printerIp = user.getPrinter() == null ? "127.0.0.1" : user.getPrinter();
+        
         Integer printerPort = configurationDAO.getInt(ConfigurationDAO.CONFIG_PRINTER_PORT);
         if (printerPort == null) {
             printerPort = 9100;
