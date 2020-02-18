@@ -22,7 +22,7 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
     public StorageUnit create(final StorageUnit storageUnit) {
         new Validator<>(StorageUnit.class).validateWithException(storageUnit);
 
-        final StorageUnit existingUnit = this.fetchById(storageUnit.getId());
+        final StorageUnit existingUnit = this.fetchByIdentifier(storageUnit.getId());
         
         if (existingUnit == null) {
             storageUnit.setUuid(UUID.randomUUID().toString());

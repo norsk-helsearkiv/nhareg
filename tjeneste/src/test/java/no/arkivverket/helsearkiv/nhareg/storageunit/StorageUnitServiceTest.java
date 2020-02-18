@@ -54,7 +54,7 @@ public class StorageUnitServiceTest {
     
     @Test
     public void getByIdentifier_validId_shouldReturnStorageUnit() {
-        final StorageUnitDTO storageUnitDTO = storageUnitService.getByIdentifier("boks-1");
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getByIdentifier("boks1");
         assertNotNull(storageUnitDTO);
     }
     
