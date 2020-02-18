@@ -1,0 +1,57 @@
+<div ng-controller="PatientSearchCtrl">
+    <h2>{{ 'home.PASIENTSOK' | translate }}</h2>
+    <form class="input-group">
+        <div class="well">
+            <div class="row">
+                <div class="span span4 padding-bottom">
+                    <label for="storageUnitInput">Lagringsenhet</label>
+                    <input id="storageUnitInput" type="text" data-ng-model="sok.lagringsenhet"
+                           class="form-control" placeholder="Lagringsenhet">
+                </div>
+                <div class="span span4 padding-bottom">
+                    <label for="fanearkidInput">Fanearkid</label>
+                    <input id="fanearkidInput" type="text" data-ng-model="sok.fanearkId" 
+                           class="form-control" placeholder="Fanearkid">
+                </div>
+                <div class="span span4 padding-bottom">
+                    <label for="pidInput">Fødselsnummer</label>
+                    <input id="pidInput" type="text" data-ng-model="sok.fodselsnummer" 
+                           class="form-control" placeholder="Fødselsnummer">
+                </div>
+                <div class="span span4 padding-bottom">
+                    <label for="nameInput">Navn</label>
+                    <input id="nameInput" type="text" data-ng-model="sok.navn" 
+                           class="form-control" placeholder="Navn">
+                </div>
+            </div>
+            <div class="row">
+                <div class="span span4">
+                    <label for="bornInput">Født</label>
+                    <input id="bornInput" type="text" data-ng-model="sok.fodt"
+                           class="form-control" placeholder="Født">
+                </div>
+                <div class="span span4">
+                    <label for="updatedByInput">Oppdatert av</label>
+                    <input id="updatedByInput" type="text" data-ng-model="sok.oppdatertAv" class="form-control"
+                           placeholder="Oppdatert av">
+                </div>
+                <div class="span span4">
+                    <label for="lastUpdatedInput">Sist oppdatert</label>
+                    <input id="lastUpdatedInput" type="text" data-ng-model="sok.sistOppdatert" class="form-control"
+                           placeholder="dd.mm.åååå">
+                </div>
+                <div class="span span4">
+                    <label>&nbsp;</label>
+                    <div>
+                        <button class="btn btn-primary" type="submit" data-ng-click="actionSearch()">
+                            {{ 'common.SEARCH' | translate }}
+                        </button>
+                        <button class="btn btn-primary" type="submit" data-ng-click="actionCleanSearch()">
+                            {{ 'common.CLEAR_SEARCH' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

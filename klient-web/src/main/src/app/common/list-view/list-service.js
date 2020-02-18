@@ -3,16 +3,13 @@ var mod = angular.module('nha.common.list-service', []);
 mod.factory('listService', [listService]);
 
 function listService() {
-    var tittel;
+    var title;
+    var subtitle;
     var data;
     var avlevering = null;
     var sok = null;
     var size = 15;
-
-    function init(t, d) {
-        tittel = t;
-        data = d;
-    }
+    var clean = false;
 
     function setAvlevering(a) {
         avlevering = a;
@@ -28,14 +25,39 @@ function listService() {
         avlevering = null;
     }
 
-    function getTittel() {
-        return tittel;
+    function setTitle(value) {
+        title = value;
+    }
+    
+    function getTitle() {
+        return title;
+    }
+    
+    function setSubtitle(value) {
+        subtitle = value;
+    }
+    
+    function getSubtitle() {
+        return subtitle;
+    }
+    
+    function setData(value) {
+        data = value;
     }
 
     function getData() {
         return data;
     }
 
+    function createSubtitle(data) {
+        var max = (data.page * data.size);
+        if (max > data.total) {
+            max = data.total;
+        }
+        
+        return ((data.page - 1) * data.size) + 1 + "..." + max + " / " + data.total;
+    }
+    
     function getQuery() {
         if (sok !== null && sok !== undefined) {
             return "&lagringsenhet=" + (sok.sokLagringsenhet ? sok.sokLagringsenhet : "") +
@@ -55,19 +77,33 @@ function listService() {
         return size;
     }
 
-    function setSize(newSize) {
-        size = newSize;
+    function setSize(value) {
+        size = value;
     }
 
+    function setClean(value) {
+        clean = value;
+    }
+    
+    function getClean() {
+        return clean;
+    }
+    
     return {
-        init: init,
         setAvlevering: setAvlevering,
         getAvlevering: getAvlevering,
         setSok: setSok,
-        getTittel: getTittel,
+        setTitle: setTitle,
+        getTitle: getTitle,
+        setSubtitle: setSubtitle,
+        getSubtitle: getSubtitle,
+        setData: setData,
         getData: getData,
         getQuery: getQuery,
         getSize: getSize,
-        setSize: setSize
+        setSize: setSize,
+        createSubtitle: createSubtitle,
+        setClean: setClean,
+        getClean: getClean
     };
 }

@@ -1,8 +1,8 @@
 var mod = angular.module('nha.state', []);
 
-mod.factory('stateService', ['$http', stateService]);
+mod.factory('stateService', [stateService]);
 
-function stateService($http) {
+function stateService() {
     var sokState = {};
     
     this.sokState = function() {
