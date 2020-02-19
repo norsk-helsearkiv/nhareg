@@ -72,8 +72,8 @@ public class StorageUnitResource {
     @RolesAllowed(value = {Roles.ROLE_ADMIN})
     @Path("/flytt")
     public Response moveMedicalRecords(final MoveRecordDTO moveMedicalRecordDTO) {
-        final StorageUnitDTO storageUnitDTO =
-            storageUnitService.getById(moveMedicalRecordDTO.getStorageUnitId());
+        final String storageUnitIdentifier = moveMedicalRecordDTO.getStorageUnitId();
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getByIdentifier(storageUnitIdentifier);
 
         if (storageUnitDTO == null) {
             ValidationError feil = new ValidationError("identifikator", "Lagringsenheten finnes ikke");
@@ -97,8 +97,8 @@ public class StorageUnitResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Roles.ROLE_ADMIN, Roles.ROLE_USER})
     @Path("/{uuid}/maske")
-    public String getStorageUnitMask(@PathParam("uuid") String id) {
-        final StorageUnitDTO storageUnitDTO = storageUnitService.getById(id);
+    public String getStorageUnitMask(@PathParam("uuid") String uuid) {
+        final StorageUnitDTO storageUnitDTO = storageUnitService.getById(uuid);
         final TransferDTO transfer = transferService.getTransferForStorageUnit(storageUnitDTO.getId());
 
         return transfer.getStorageUnitFormat();

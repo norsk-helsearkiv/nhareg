@@ -242,7 +242,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         storageUnits.forEach(storageUnitDAO::create);
 
         final Set<StorageUnit> existingStorageUnits = storageUnits.stream()
-                                                                  .map(unit -> storageUnitDAO.fetchById(unit.getId()))
+                                                                  .map(unit -> storageUnitDAO.fetchByIdentifier(unit.getId()))
                                                                   .collect(Collectors.toSet());
         storageUnits.clear();
         storageUnits.addAll(existingStorageUnits);

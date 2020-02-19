@@ -22,7 +22,7 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
     public StorageUnit create(final StorageUnit storageUnit) {
         new Validator<>(StorageUnit.class).validateWithException(storageUnit);
 
-        final StorageUnit existingUnit = this.fetchById(storageUnit.getId());
+        final StorageUnit existingUnit = this.fetchByIdentifier(storageUnit.getId());
         
         if (existingUnit == null) {
             storageUnit.setUuid(UUID.randomUUID().toString());
@@ -51,13 +51,13 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
     }
 
     @Override
-    public StorageUnit fetchById(final String id) {
-        final String queryString = "SELECT OBJECT(su)" 
+    public StorageUnit fetchById(final String uuid) {
+        final String queryString = "SELECT su " 
             + "FROM StorageUnit su " 
-            + "WHERE su.id = :id ";
+            + "WHERE su.uuid = :uuid ";
         
         final TypedQuery<StorageUnit> query = getEntityManager().createQuery(queryString, StorageUnit.class);
-        query.setParameter("id", id);
+        query.setParameter("uuid", uuid);
         
         try {
             return query.getSingleResult();
@@ -66,6 +66,21 @@ public class StorageUnitDAO extends EntityDAO<StorageUnit> {
         }
     }
 
+    public StorageUnit fetchByIdentifier(final String id) {
+        final String queryString = "SELECT su "
+            + "FROM StorageUnit su "
+            + "WHERE su.id = :id ";
+
+        final TypedQuery<StorageUnit> query = getEntityManager().createQuery(queryString, StorageUnit.class);
+        query.setParameter("id", id);
+
+        try {
+            return query.getSingleResult();
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    
     public Integer fetchCountOfRecordsForStorageUnit(final String storageUnitId) {
         final String queryString =
             "SELECT COUNT(mr) "

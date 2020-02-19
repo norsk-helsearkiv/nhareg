@@ -9,12 +9,14 @@ import java.util.List;
 
 public interface StorageUnitServiceInterface {
 
-    StorageUnitDTO getById(final String id);
-
     StorageUnitDTO create(final StorageUnit storageUnit);
 
     StorageUnitDTO update(final StorageUnit storageUnit);
+    
+    StorageUnitDTO getById(final String id);
 
+    StorageUnitDTO getByIdentifier(final String id);
+    
     List<RecordTransferDTO> getMedicalRecordsForId(final String id);
 
     List<StorageUnitDTO> getStorageUnits(final MultivaluedMap<String, String> queryParameters);
