@@ -4,78 +4,78 @@ var mod = angular.module('nha.register.register-service', [
 mod.factory('registerService', [registerService]);
 
 function registerService() {
-    var avlevering;
-    var pasientjournalDTO;
-    var avleveringsidentifikator;
-    var valgtAvtale;
-    var virksomhet;
-    var avleveringsbeskrivelse;
+    var transfer;
+    var medicalRecordDTO;
+    var transferId;
+    var chosenAgreement;
+    var business;
+    var transferDescription;
 
-    function setPasientjournalDTO(data) {
-        pasientjournalDTO = data;
+    function setMedicalRecordDTO(data) {
+        medicalRecordDTO = data;
     }
 
-    function getPasientjournalDTO() {
-        return pasientjournalDTO;
+    function getMedicalRecordDTO() {
+        return medicalRecordDTO;
     }
 
-    function setAvlevering(a) {
-        avlevering = a;
+    function setTransfer(value) {
+        transfer = value;
     }
 
-    function getAvlevering() {
-        return avlevering;
+    function getTransfer() {
+        return transfer;
     }
 
-    function getAvleveringsidentifikator() {
-        return avleveringsidentifikator;
+    function getTransferId() {
+        return transferId;
     }
 
-    function setAvleveringsidentifikator(id) {
-        avleveringsidentifikator = id;
+    function setTransferId(value) {
+        transferId = value;
     }
 
-    function setValgtAvtale(avtale) {
-        valgtAvtale = avtale;
+    function setChosenAgreement(value) {
+        chosenAgreement = value;
     }
 
-    function getValgtAvtale() {
-        return valgtAvtale;
+    function getChosenAgreement() {
+        return chosenAgreement;
     }
 
-    function setVirksomhet(v) {
-        virksomhet = v;
+    function setBusiness(value) {
+        business = value;
     }
 
-    function getVirksomhet() {
-        return virksomhet;
+    function getBusiness() {
+        return business;
     }
 
-    function setAvleveringsbeskrivelse(beskrivelse) {
-        avleveringsbeskrivelse = beskrivelse;
+    function setTransferDescription(value) {
+        transferDescription = value;
     }
 
-    function getAvleveringsbeskrivelse() {
-        return avleveringsbeskrivelse;
+    function getTransferDescription() {
+        return transferDescription;
     }
 
     return {
-        setAvlevering: setAvlevering,
-        getAvlevering: getAvlevering,
+        setTransfer: setTransfer,
+        getTransfer: getTransfer,
 
-        setPasientjournalDTO: setPasientjournalDTO,
-        getPasientjournalDTO: getPasientjournalDTO,
+        setMedicalRecordDTO: setMedicalRecordDTO,
+        getMedicalRecordDTO: getMedicalRecordDTO,
 
-        setAvleveringsidentifikator : setAvleveringsidentifikator,
-        getAvleveringsidentifikator : getAvleveringsidentifikator,
+        setTransferId : setTransferId,
+        getTransferId : getTransferId,
 
-        getValgtAvtale : getValgtAvtale,
-        setValgtAvtale : setValgtAvtale,
+        getChosenAgreement : getChosenAgreement,
+        setChosenAgreement : setChosenAgreement,
 
-        getVirksomhet : getVirksomhet,
-        setVirksomhet : setVirksomhet,
+        getBusiness : getBusiness,
+        setBusiness : setBusiness,
 
-        setAvleveringsbeskrivelse : setAvleveringsbeskrivelse,
-        getAvleveringsbeskrivelse : getAvleveringsbeskrivelse
+        setTransferDescription : setTransferDescription,
+        getTransferDescription : getTransferDescription
     };
 }

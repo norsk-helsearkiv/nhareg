@@ -6,23 +6,23 @@ function listService() {
     var title;
     var subtitle;
     var data;
-    var avlevering = null;
-    var sok = null;
+    var transfer = null;
+    var search = null;
     var size = 15;
     var clean = false;
 
-    function setAvlevering(a) {
-        avlevering = a;
-        sok = null;
+    function setTransfer(value) {
+        transfer = value;
+        search = null;
     }
 
-    function getAvlevering() {
-        return avlevering;
+    function getTransfer() {
+        return transfer;
     }
 
-    function setSok(s) {
-        sok = s;
-        avlevering = null;
+    function setSearch(value) {
+        search = value;
+        transfer = null;
     }
 
     function setTitle(value) {
@@ -59,15 +59,15 @@ function listService() {
     }
     
     function getQuery() {
-        if (sok !== null && sok !== undefined) {
-            return "&lagringsenhet=" + (sok.sokLagringsenhet ? sok.sokLagringsenhet : "") +
-              "&fanearkid=" + (sok.sokFanearkId ? sok.sokFanearkId : "") +
-              "&fodselsnummer=" + (sok.sokFodselsnummer ? sok.sokFodselsnummer : "") +
-              "&navn=" + (sok.sokNavn ? sok.sokNavn : "") +
-              "&fodt=" + (sok.sokFodt ? sok.sokFodt : "") +
-              "&oppdatertAv=" + (sok.sokOppdatertAv ? sok.sokOppdatertAv : "") +
-              "&sistOppdatert=" + (sok.sokSistOppdatert ? sok.sokSistOppdatert : "") + 
-              "&transferId=" + (avlevering ? avlevering : "");
+        if (search !== null && search !== undefined) {
+            return "&lagringsenhet=" + (search.sokLagringsenhet ? search.sokLagringsenhet : "") +
+              "&fanearkid=" + (search.sokFanearkId ? search.sokFanearkId : "") +
+              "&fodselsnummer=" + (search.sokFodselsnummer ? search.sokFodselsnummer : "") +
+              "&navn=" + (search.sokNavn ? search.sokNavn : "") +
+              "&fodt=" + (search.sokFodt ? search.sokFodt : "") +
+              "&oppdatertAv=" + (search.sokOppdatertAv ? search.sokOppdatertAv : "") +
+              "&sistOppdatert=" + (search.sokSistOppdatert ? search.sokSistOppdatert : "") + 
+              "&transferId=" + (transfer ? transfer : "");
         }
 
         return '';
@@ -90,9 +90,9 @@ function listService() {
     }
     
     return {
-        setAvlevering: setAvlevering,
-        getAvlevering: getAvlevering,
-        setSok: setSok,
+        setTransfer: setTransfer,
+        getTransfer: getTransfer,
+        setSok: setSearch,
         setTitle: setTitle,
         getTitle: getTitle,
         setSubtitle: setSubtitle,

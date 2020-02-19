@@ -46,8 +46,8 @@ angular.module('nha.home')
         sokSistOppdatert: $scope.sok.sistOppdatert
       };
 
-      registerService.setAvlevering(undefined);
-      registerService.setAvleveringsidentifikator(undefined);
+      registerService.setTransfer(undefined);
+      registerService.setTransferId(undefined);
       listService.setSok(sok);
       
       stateService.sokState = $scope.sok;

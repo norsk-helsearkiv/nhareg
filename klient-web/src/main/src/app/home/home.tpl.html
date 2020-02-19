@@ -21,7 +21,7 @@
                 </h4>
                 <ul class="nav nav-sidebar">
                     <li data-ng-repeat="avtale in avtaler"
-                        data-ng-click="setValgtAvtale(avtale)"
+                        data-ng-click="setChosenAgreement(avtale)"
                         data-ng-class="{ active: valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator}">
                         <a href="">
                             <button class="icon icon-edit" data-ng-click="actionEndreAvtale(avtale)"
@@ -29,7 +29,8 @@
                             <button class="icon icon-delete icon-padding-right"
                                     data-ng-click="actionDeleteAvtale(text.avtale, avtale.avtaleidentifikator, avtale)"
                                     tooltip="{{text.tooltip.deleteElement}}"
-                                    data-ng-show="valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0" data-access-level-admin>
+                                    data-ng-show="valgtAvtale.avtaleidentifikator === avtale.avtaleidentifikator && avleveringer.length === 0"
+                                    data-access-level-admin>
                             </button>
                             {{ avtale.avtalebeskrivelse }}
                         </a>

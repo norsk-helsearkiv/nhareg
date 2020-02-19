@@ -135,7 +135,8 @@
     "NOTE": "Merknad",
     "VALIDATION_ERRORS": "Valideringsfeil",
     "STORAGE_UNITS": "Lagringsenheter (klikk for å endre)",
-    "ARCHIVE_AUTHORS": "Arkivskaper (klikk for å endre)"
+    "ARCHIVE_AUTHORS": "Arkivskaper (klikk for å endre)",
+    "CONTROL_SAVE": "Kontroller og lagre"
   },
   "login": {
     "TITTEL": "Logg inn",

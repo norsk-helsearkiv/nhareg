@@ -39,7 +39,7 @@ angular.module('nha.register')
             //Setting focus on the right element
             if ($scope.formData.navn && skipFields) {
                 if ($scope.formData.dod) {
-                    document.getElementById("fKontakt-input").focus();
+                    document.getElementById("fKontaktInput").focus();
                 } else {
                     document.getElementById("ddato").focus();
                 }

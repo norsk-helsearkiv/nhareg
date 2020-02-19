@@ -33,7 +33,7 @@ function errorService($modal, $filter) {
         },
 
         //ERROR 401 UNAUTHORIZED ERROR
-        unauthorizedError: function(message) {
+        unauthorizedError: function (message) {
             template.templateUrl = 'common/http-service/error-modal-401.tpl.html';
 
             template.controller = function ($scope, $modalInstance) {

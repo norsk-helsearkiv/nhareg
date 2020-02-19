@@ -1,24 +1,24 @@
 angular.module('nha', [
-    'templates-app',
-    'templates-common',
-    'ui.router',
-    'cfp.hotkeys',
-    'tableSort',
-    'underscore',
-    'pascalprecht.translate',
-    'nha.common.error-service',
-    'nha.common.http-service',
-    'nha.common.modal-service',
-    'nha.common.list-service',
-    'nha.common.list-view',
-    'nha.common.diagnosis-service',
-    'nha.home',
-    'nha.state',
-    'nha.register',
-    'nha.register.register-service',
-    'ngCookies',
-    'ngIdle'
-])
+        'templates-app',
+        'templates-common',
+        'ui.router',
+        'cfp.hotkeys',
+        'tableSort',
+        'underscore',
+        'pascalprecht.translate',
+        'nha.common.error-service',
+        'nha.common.http-service',
+        'nha.common.modal-service',
+        'nha.common.list-service',
+        'nha.common.list-view',
+        'nha.common.diagnosis-service',
+        'nha.home',
+        'nha.state',
+        'nha.register',
+        'nha.register.register-service',
+        'ngCookies',
+        'ngIdle'
+    ])
 
     .config(function myAppConfig($stateProvider, $urlRouterProvider, $translateProvider, $httpProvider, IdleProvider, KeepaliveProvider) {
 
@@ -32,7 +32,7 @@ angular.module('nha', [
         $translateProvider.preferredLanguage('nb');
 
         IdleProvider.idle(10); //idle starts after 10 seconds.
-        IdleProvider.timeout(30*60); //after 30 minutes idle, time the user out
+        IdleProvider.timeout(30 * 60); //after 30 minutes idle, time the user out
         KeepaliveProvider.interval(30); //10 sec ping interval for keep-alive ping
     })
 
@@ -222,7 +222,7 @@ angular.module('nha', [
         });
 
         $scope.$on('IdleTimeout', function() {
-            console.log("User timed-out...");
+            // console.log("User timed-out...");
             // the user has timed out (meaning idleDuration + timeout has passed without any activity)
             // this is where you'd log them
             httpService.logout();

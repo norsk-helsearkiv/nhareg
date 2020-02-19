@@ -235,12 +235,12 @@ angular.module('nha.home', [
 
                       for (var i = 0; i < data.length; i++) {
                           if (data[i].avtaleidentifikator.toLowerCase() === avtaleIdent.toLowerCase()) {
-                              $scope.setValgtAvtale(data[i]);
+                              $scope.setChosenAgreement(data[i]);
                               break;
                           }
                       }
                   } else {
-                      $scope.setValgtAvtale(data[0]);
+                      $scope.setChosenAgreement(data[0]);
                   }
               }).error(function (data, status) {
                 errorService.errorCode(status);
@@ -252,13 +252,13 @@ angular.module('nha.home', [
       httpService.get("avtaler/virksomhet", false)
         .success(function (data) {
             $scope.virksomhet = data;
-            registerService.setVirksomhet($scope.virksomhet.navn);
+            registerService.setBusiness($scope.virksomhet.navn);
         }).error(function (data, status) {
             errorService.errorCode(status);
       });
 
       //Avtale
-      $scope.setValgtAvtale = function (avtale) {
+      $scope.setChosenAgreement = function (avtale) {
           if (avtale === undefined) {
               return;
           }
@@ -276,7 +276,7 @@ angular.module('nha.home', [
               httpService.deleteElement("avtaler/" + id)
                 .success(function () {
                     removeFromList($scope.avtaler, element);
-                    $scope.setValgtAvtale($scope.avtaler[0]);
+                    $scope.setChosenAgreement($scope.avtaler[0]);
                 }).error(function (data, status) {
                   errorService.errorCode(status);
               });
@@ -355,16 +355,16 @@ angular.module('nha.home', [
       $scope.actionSettDefaultAvlevering = function(avlevering){
           httpService.get("avleveringer/" + avlevering.avleveringsidentifikator + "/aktiv")
             .success(function() {
-                $scope.setValgtAvtale($scope.valgtAvtale);
+                $scope.setChosenAgreement($scope.valgtAvtale);
             }).error(function(data, status) {
               errorService.errorCode(status);
           });
       };
 
       $scope.actionVisAvlevering = function (avlevering) {
-          registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
-          registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-          registerService.setAvlevering(avlevering);
+          registerService.setTransferDescription(avlevering.avleveringsbeskrivelse);
+          registerService.setTransferId(avlevering.avleveringsidentifikator);
+          registerService.setTransfer(avlevering);
 
           var endpoint = "pasientjournaler/" + avlevering.avleveringsidentifikator + "/all";
           var params = {
@@ -381,7 +381,7 @@ angular.module('nha.home', [
               listService.setTitle(title);
               listService.setSubtitle(subtitle);
               listService.setData(response.data);
-              listService.setAvlevering(avlevering);
+              listService.setTransfer(avlevering);
               listService.setClean(true);
 
               $location.path("/list");
@@ -401,11 +401,11 @@ angular.module('nha.home', [
       };
 
       $scope.actionCreateNewMedicalRecord = function (avlevering) {
-          registerService.setAvlevering(avlevering);
-          registerService.setPasientjournalDTO(null);
-          registerService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
-          registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-          registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
+          registerService.setTransfer(avlevering);
+          registerService.setMedicalRecordDTO(null);
+          registerService.setChosenAgreement($scope.valgtAvtale.avtalebeskrivelse);
+          registerService.setTransferId(avlevering.avleveringsidentifikator);
+          registerService.setTransferDescription(avlevering.avleveringsbeskrivelse);
           $location.path('/registrer');
       };
 
@@ -416,7 +416,7 @@ angular.module('nha.home', [
           var tittel = $filter('translate')('modal.warning_laas.TITTEL');
           var beskrivelse = $filter('translate')('modal.warning_laas.BESKRIVELSE');
           modalService.warningModal(tpl, url, id, tittel, beskrivelse, function () {
-              $scope.setValgtAvtale($scope.valgtAvtale);
+              $scope.setChosenAgreement($scope.valgtAvtale);
           });
       };
 
@@ -426,7 +426,7 @@ angular.module('nha.home', [
           var id = avlevering.avleveringsidentifikator;
           var tittel = $filter('translate')('modal.warning_laas_opp.TITTEL');
           modalService.warningModal(tpl, url, id, tittel, null, function () {
-              $scope.setValgtAvtale($scope.valgtAvtale);
+              $scope.setChosenAgreement($scope.valgtAvtale);
           });
       };
 
