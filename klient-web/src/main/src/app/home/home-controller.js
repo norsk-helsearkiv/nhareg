@@ -307,11 +307,13 @@ angular.module('nha.home', [
       };
 
       $scope.actionLeggTilAvtale = function () {
-          modalService.nyModal('common/modal-service/agreement-modal.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
+          modalService.nyModal('common/modal-service/agreement-modal.tpl.html', 
+              $scope.avtaler, "avtaler", validerAvtale);
       };
 
       $scope.actionEndreAvtale = function (avtale) {
-          modalService.endreModal('common/modal-service/agreement-modal.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
+          modalService.endreModal('common/modal-service/agreement-modal.tpl.html', 
+              $scope.avtaler, "avtaler", validerAvtale, avtale);
       };
 
       //Avlevering
@@ -333,11 +335,13 @@ angular.module('nha.home', [
       };
 
       $scope.actionLeggTilAvlevering = function () {
-          modalService.nyModal('common/modal-service/transfer-modal.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, $scope.allArchiveAuthors);
+          modalService.nyModal('common/modal-service/transfer-modal.tpl.html',
+              $scope.avleveringer, "avleveringer/ny", validering, $scope.allArchiveAuthors);
       };
 
       $scope.actionEndreAvlevering = function (avlevering) {
-          modalService.endreModal('common/modal-service/transfer-modal.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
+          modalService.endreModal('common/modal-service/transfer-modal.tpl.html',
+              $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
       };
 
       $scope.actionFjernAvlevering = function (elementType, id, element) {
@@ -361,7 +365,7 @@ angular.module('nha.home', [
           });
       };
 
-      $scope.actionVisAvlevering = function (avlevering) {
+      $scope.actionShowTransfer = function (avlevering) {
           registerService.setTransferDescription(avlevering.avleveringsbeskrivelse);
           registerService.setTransferId(avlevering.avleveringsidentifikator);
           registerService.setTransfer(avlevering);
@@ -391,13 +395,14 @@ angular.module('nha.home', [
       };
 
       $scope.actionAvleveringLeveranse = function (avlevering) {
-          window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator + "/leveranse";
+          window.location = httpService.getRoot() + "avleveringer/" + 
+              avlevering.avleveringsidentifikator + "/leveranse";
       };
 
       //Util
       $scope.loggUt = function () {
           httpService.logout();
-          $window.location="logout";
+          $window.location = "logout";
       };
 
       $scope.actionCreateNewMedicalRecord = function (avlevering) {

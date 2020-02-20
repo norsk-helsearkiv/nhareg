@@ -13,7 +13,11 @@
       </thead>
       <tbody>
         <tr data-ng-repeat="element in modalListe">
-          <td><input type="checkbox" ng-checked="element.selected" ng-click="oppdaterValg(element)"></td>
+          <td>
+              <label>
+                  <input type="checkbox" ng-checked="element.selected" ng-click="oppdaterValg(element)">
+              </label>
+          </td>
           <td>{{ element.codeSystemVersion }}</td>
           <td>{{ element.displayName }}</td>
         </tr>

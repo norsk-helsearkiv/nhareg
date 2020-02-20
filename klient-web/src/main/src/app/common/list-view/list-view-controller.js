@@ -78,6 +78,16 @@ angular.module('nha.common.list-view', [
             }
         );
 
+        $scope.$watch(
+            function () {
+                var tmp = listService.getTransfer();
+                return tmp == null ? false : tmp.laast;
+            },
+            function (value) {
+                $scope.laast = value;
+            }
+        );
+
         $scope.navHome = function () {
             $location.path('/');
         };
@@ -86,20 +96,16 @@ angular.module('nha.common.list-view', [
         //   $location.path('/login');
         // };
 
-        if (listService.getData() === undefined) {
-            $scope.navHome();
-        }
-
         $scope.actionSort = function (column, sortDirection) {
             $scope.sortDirection = sortDirection ? "asc" : "desc";
             $scope.sortColumn = column;
 
-            httpService.getAll(baseEndpointUrl + 
-                    "?page=" + $scope.pager.currentPage +
-                    "&size=" + size +
-                    listService.getQuery() +
-                    "&orderBy=" + $scope.sortColumn +
-                    "&sortDirection=" + $scope.sortDirection
+            httpService.getAll(baseEndpointUrl +
+                "?page=" + $scope.pager.currentPage +
+                "&size=" + size +
+                listService.getQuery() +
+                "&orderBy=" + $scope.sortColumn +
+                "&sortDirection=" + $scope.sortDirection
                 )
                 .then(function (response) {
                     var data = listService.getData();
@@ -121,7 +127,11 @@ angular.module('nha.common.list-view', [
             $scope.updatePager(data);
         });
 
-        $scope.updatePager(1);
+        if (listService.getData() === undefined) {
+            $scope.navHome();
+        } else {
+            $scope.updatePager(1);
+        }
 
         $scope.setPage = function (page) {
             if (page < 1 || page > $scope.pager.totalPages) {
@@ -172,9 +182,40 @@ angular.module('nha.common.list-view', [
                 });
         };
 
-    $scope.actionAddMedicalRecordFromSearch = function () {
-      console.log("You pressed me!");
-    };
+        function navigateToRegister(transfer) {
+            registerService.setTransfer(transfer);
+            registerService.setMedicalRecordDTO(null);
+            registerService.setChosenAgreement(transfer.avtale.avtalebeskrivelse);
+            registerService.setTransferId(transfer.avleveringsidentifikator);
+            registerService.setTransferDescription(transfer.avleveringsbeskrivelse);
+            $location.path('/registrer');
+        }
+
+        $scope.actionAddNewMedicalRecord = function () {
+            var transfer = registerService.getTransfer();
+            if (transfer != null) {
+                registerService.setMedicalRecordDTO(null);
+                $location.path("/registrer");
+            } else {
+                httpService.getAll("avleveringer/?locked=false")
+                    .then(function (response) {
+                        var transfers = response.data;
+                        if (transfers.length === 1) {
+                            navigateToRegister(transfers[0]);
+                        } else if (transfers.length > 1) {
+                            var modal = modalService.openSelectModal(
+                                'common/modal-service/transfer-list-modal.tpl.html', transfers);
+                            modal.result.then(function (result) {
+                                navigateToRegister(result);
+                            });
+                        } else {
+                            console.log("Something went horribly wrong");
+                        }
+                    }, function (response) {
+                        errorService.errorCode(response.status);
+                    });
+            }
+        };
 
         $scope.actionEditRecord = function (medicalRecord) {
             httpService.get(baseEndpointUrl + medicalRecord)

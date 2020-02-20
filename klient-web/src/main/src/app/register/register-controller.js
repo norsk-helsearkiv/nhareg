@@ -342,18 +342,17 @@ angular.module('nha.register', [
         };
 
         $scope.manageArchiveAuthors = function () {
-
             if ($scope.formData.archiveAuthors === undefined || $scope.formData.archiveAuthors === null) {
                 $scope.formData.archiveAuthors = [];
             }
 
             var modal = modalService.manageArchiveAuthors('common/modal-service/archive-author-modal.tpl.html',
                 function () {
-                    //TODO, callback for NHA-038
+                //TODO, callback for NHA-038
                 },
                 $scope.formData.archiveAuthors,
                 $scope.allArchiveAuthors);
-
+            
             modal.result.then(function () {
                 switch ($scope.formData.fanearkid) {
                     case undefined:
@@ -395,7 +394,6 @@ angular.module('nha.register', [
                     $scope.formData.archiveAuthors.push($scope.avlevering.arkivskaper);
             }
             $scope.manageStorageUnits();
-
         } else if ($scope.medicalRecordDTO !== undefined) {
             //Endre pasientjournal
             $scope.prevState = 2;
@@ -440,7 +438,6 @@ angular.module('nha.register', [
         };
 
         $scope.sjekkDiagnoseFeltTomt = function (caller) {
-
             if ($scope.formDiagnose.diagnosekode || $scope.formDiagnose.diagnosetekst) {
                 var tpl = 'common/modal-service/warning-modal.tpl.html';
                 var tittel = $filter('translate')('modal.warning_diagnose.TITTEL');

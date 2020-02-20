@@ -13,8 +13,8 @@
         <h3>{{ text.title }}
             <small>{{ text.subtitle }}</small>
         </h3>
-        <button class="right icon icon-padding-left icon-add-journal"
-                data-ng-click="actionAddMedicalRecordFromSearch()"
+        <button class="right icon icon-padding-left icon-padding-right icon-add-journal" ng-show="!laast"
+                data-ng-click="actionAddNewMedicalRecord()"
                 tooltip="{{ 'home.tooltip.ADD' | translate }}">
         </button>
         <div class="table-responsive">
@@ -22,12 +22,14 @@
                 <thead>
                 <tr>
                     <th>
-                        <a href="" data-ng-click="lagringsenhetAsc = !lagringsenhetAsc; actionSort('lagringsenhet', lagringsenhetAsc);">
+                        <a href="" data-ng-click="lagringsenhetAsc = !lagringsenhetAsc; 
+                        actionSort('lagringsenhet', lagringsenhetAsc);">
                             {{'home.LAGRINGSENHET' | translate}}
                         </a>
                     </th>
                     <th>
-                        <a href="" data-ng-click="fodselsnummerAsc = !fodselsnummerAsc; actionSort('fodselsnummer', fodselsnummerAsc);">
+                        <a href="" data-ng-click="fodselsnummerAsc = !fodselsnummerAsc;
+                         actionSort('fodselsnummer', fodselsnummerAsc);">
                             {{'home.FNR' | translate}}
                         </a>
                     </th>
@@ -62,8 +64,9 @@
                         </a>
                     </th>
                     <th>
-                        <a href="" data-ng-click="oppdatertAvAsc = !oppdatertAvAsc; actionSort('oppdatertAv', oppdatertAvAsc);"
-                        >{{'common.OPPDATERT_AV'| translate}}
+                        <a href="" data-ng-click="oppdatertAvAsc = !oppdatertAvAsc; 
+                        actionSort('oppdatertAv', oppdatertAvAsc);">
+                            {{'common.OPPDATERT_AV'| translate}}
                         </a>
                     </th>
                     <th></th>

@@ -1,0 +1,31 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">{{ 'modal.transfer.TITLE' | translate }}</h3>
+    </div>
+    <div class="modal-body" id="modal-body" ng-enter="ok()" autofocus>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ 'modal.transfer.column.TRANSFER' | translate }}</th>
+                <th>{{ 'modal.transfer.column.AGREEMENT' | translate }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr tabindex="0" ng-class="{ 'modal-selected': item === selected }" data-ng-repeat="item in items" 
+                ng-click="updateSelected(item)">
+                <td>{{ item.avleveringsbeskrivelse }}</td>
+                <td>{{ item.avtale.avtalebeskrivelse }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-default btn-primary" type="button" ng-click="ok()">
+            {{ 'common.OK' | translate }}
+        </button>
+        <button class="btn btn-default btn-danger" type="button" ng-click="cancel()">
+            {{ 'common.CANCEL' | translate }}
+        </button>
+    </div>
+</div>

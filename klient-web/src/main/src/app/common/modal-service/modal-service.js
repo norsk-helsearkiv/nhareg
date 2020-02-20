@@ -58,15 +58,17 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
-                if(success) {
+                if (success) {
                     httpService.create(relativUrl, $scope.formData)
-                        .success(function (data) {
+                        .then(function (response) {
+                            var data = response.data;
                             data.lagringsenhetformat = $scope.formData.lagringsenhetformat;
                             list.push(data);
-                        }).error(function (data, status) {
-                        errorService.errorCode(status);
-                    });
-                    $modalInstance.close();
+                        }, function (response) {
+                            errorService.errorCode(response.status);
+                        }).then(function () {
+                            $modalInstance.close();
+                        });
                 }
             };
 
@@ -75,6 +77,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
@@ -91,7 +94,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
-        
+
         return $modal.open(template);
     }
 
@@ -207,7 +210,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     }
                 }
             };
-            
+
             $scope.oppdaterValg($scope.modalListe[0]);
 
             $scope.ok = function () {
@@ -221,7 +224,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
-        
+
         return $modal.open(template);
     }
 
@@ -286,7 +289,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function warningFlyttLagringsenheter(templateUrl, relativeUrl, msg, title, desc, 
+    function warningFlyttLagringsenheter(templateUrl, relativeUrl, msg, title, desc,
                                          okFunction, uuids, identifikator) {
         template.templateUrl = templateUrl;
         template.controller = function ($scope, $modalInstance) {
@@ -327,7 +330,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
-        
+
         return $modal.open(template);
     }
 
@@ -345,7 +348,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     $scope.formData.error.passord= $filter('translate')('home.brukere.PASSORD_ULIKT');
                     return;
                 }
-                
+
                 httpService.create("admin/oppdaterPassord", $scope.formData.passord)
                     .then(function () {
                         $modalInstance.close();
@@ -359,7 +362,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
-        
+
         return $modal.open(template);
     }
 
@@ -439,7 +442,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
         return $modal.open(template);
     }
-    
+
     function manageArchiveAuthors(templateUrl, callback, selectedArchiveAuthors, allArchiveAuthors) {
         template.templateUrl = templateUrl;
 
@@ -469,7 +472,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 if ($scope.formData.archiveAuthor === undefined || $scope.formData.archiveAuthor === '') {
                     return true;
                 }
-                
+
                 for (var i = 0; i < $scope.formData.archiveAuthors.length; i++) {
                     if ($scope.formData.archiveAuthor === $scope.formData.archiveAuthors[i]) {
                         $scope.formData.archiveAuthor = "";
@@ -492,6 +495,79 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
+    function openSelectModal(templateUrl, items, validateFunction) {
+        var selectModalInstance = function ($scope, $modalInstance) {
+            $scope.items = items;
+            $scope.selected = $scope.items[0];
+            
+            var selectPrev = function () {
+                var list = $scope.items;
+                var selected = $scope.selected;
+                for (var i = 1; i < list.length; i++) {
+                    if (list[i] === selected) {
+                        return list[i - 1];
+                    }
+                }
+                
+                return $scope.selected;
+            };
+
+            function selectNext() {
+                var list = $scope.items;
+                var selected = $scope.selected;
+                for (var i = 0; i < list.length - 1; i++) {
+                    if (list[i] === selected) {
+                        return list[i + 1];
+                    }
+                }
+                
+                return $scope.selected;
+            }
+
+            hotkeys.bindTo($scope)
+                .add({
+                    combo: 'enter',
+                    callback: function() {
+                        $scope.ok();
+                    }
+                })
+                .add({
+                    combo: 'up',
+                    callback: function() {
+                        $scope.selected = selectPrev();
+                    }
+                })
+                .add({
+                    combo: 'down',
+                    callback: function() {
+                        $scope.selected = selectNext();
+                    }
+                });
+            
+            $scope.updateSelected = function (item) {
+                $scope.selected = item;
+            };
+
+            $scope.ok = function () {
+                if (validateFunction) {
+                    validateFunction();
+                }
+                
+                $modalInstance.close($scope.selected);
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+
+        template.templateUrl = templateUrl;
+        template.controller = selectModalInstance;
+        template.controller.$inject = ['$scope', '$modalInstance'];
+
+        return $modal.open(template);
+    }
+
     return {
         deleteModal : deleteModal,
         nyModal : nyModal,
@@ -503,8 +579,8 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         manageArchiveAuthors : manageArchiveAuthors,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
         changeStorageUnit : changeStorageUnit,
-        endrePassord : endrePassord
-
+        endrePassord : endrePassord,
+        openSelectModal : openSelectModal
     };
 
 }

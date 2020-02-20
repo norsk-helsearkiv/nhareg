@@ -1,6 +1,6 @@
 angular.module('nha.register')
 
-    .controller('RegisterDiagnosisCtrl', function ($scope, httpService, errorService, 
+    .controller('RegisterDiagnosisCtrl', function ($scope, httpService, errorService,
                                                    diagnosisService, modalService) {
 
         var diagnosekode = "";
@@ -9,7 +9,7 @@ angular.module('nha.register')
         $scope.diagnoseDatoErSatt = false;
 
         $scope.setDiagnoseDato = function () {
-            $scope.formDiagnose.diagnosedato = 
+            $scope.formDiagnose.diagnosedato =
                 $scope.injectCentury($scope.formDiagnose.diagnosedato);
 
             var dato = $scope.formDiagnose.diagnosedato;
@@ -55,10 +55,10 @@ angular.module('nha.register')
             // Henter alle diagnoser fra tjenesten
             diagnosisService.getDiagnosisServer($scope.formDiagnose.diagnosedato, $scope.formDiagnose.diagnosekode,
                 function(diagnosekoder) {
-                    if (diagnosekoder[$scope.formDiagnose.diagnosekode] && 
+                    if (diagnosekoder[$scope.formDiagnose.diagnosekode] &&
                         diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
                         // Viser en modal med en liste over valgene
-                        var modal = modalService.velgModal('common/modal-service/list-modal.tpl.html', 
+                        var modal = modalService.velgModal('common/modal-service/list-modal.tpl.html',
                             diagnosekoder[$scope.formDiagnose.diagnosekode],
                             $scope.formDiagnose);
                         modal.result.then(function () {
@@ -79,8 +79,10 @@ angular.module('nha.register')
                         });
                     } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
                         // En diagnose med gitt verdi
-                        $scope.formDiagnose.diagnosetekst = diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
-                        $scope.formDiagnose.diagnosekodeverk = diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
+                        $scope.formDiagnose.diagnosetekst =
+                            diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
+                        $scope.formDiagnose.diagnosekodeverk =
+                            diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
                         if (laasDiagnosetekst) {
                             $scope.diagnosetekstErSatt = true;
                         }
@@ -98,11 +100,11 @@ angular.module('nha.register')
         $scope.leggTilDiagnose = function() {
             $scope.error = {};
             $scope.feilmeldinger = [];
-            
+
             if (!$scope.formDiagnose.diagnosekode) {
                 $scope.formDiagnose.diagnosekode = null;
             }
-            
+
             if ($scope.formDiagnose.diagnosekode === '') {
                 $scope.formDiagnose.diagnosekode = null;
             }
@@ -205,14 +207,17 @@ angular.module('nha.register')
                 var diagnosisDate = $scope.formDiagnose.diagnosedato == null ? "" : $scope.formDiagnose.diagnosedato;
                 var diagnosisCode = $scope.formDiagnose.diagnosekode == null ? "" : $scope.formDiagnose.diagnosekode;
 
-                return httpService.getAll("diagnosekoder?name=" + displayName + "&date=" + diagnosisDate + "&code=" + diagnosisCode +
+                return httpService.getAll("diagnosekoder?name=" + displayName +
+                    "&date=" + diagnosisDate +
+                    "&code=" + diagnosisCode +
                     "&page=1&size=50", false)
                     .then(function (response) {
                         return response.data.map(
                             function (item) {
                                 var res = [];
                                 res.code = item.code;
-                                res.displayName = item.codeSystemVersion + " | "  + item.code + " | " + item.displayName;
+                                res.displayName =
+                                    item.codeSystemVersion + " | "  + item.code + " | " + item.displayName;
                                 return res;
                             });
                     }, function (response) {

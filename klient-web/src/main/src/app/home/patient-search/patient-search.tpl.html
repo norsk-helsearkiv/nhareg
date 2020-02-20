@@ -4,7 +4,9 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
     <h2 class="sub-header">
         {{ 'home.AVLEVERINGER' | translate }}
-        <small> {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn }} &#x2F {{ valgtAvtale.avtalebeskrivelse }}</small>
+        <small>
+            {{ 'home.FOR' | translate }} {{ virksomhet.foretaksnavn }} &#x2F {{ valgtAvtale.avtalebeskrivelse }}
+        </small>
         <button class="right btn btn-success" data-ng-click="actionLeggTilAvlevering()" data-ng-show="valgtAvtale"
                 data-access-level-admin>
             {{ 'common.ADD' | translate }}
@@ -28,28 +30,29 @@
                 <td>
                     <button class="icon favorite" data-ng-click="actionSettDefaultAvlevering(avlevering)"
                             favorite-class avlevering="avlevering"
-                            tooltip="{{text.tooltip.favorite}}"></button>
-                    <button class="icon icon-padding-left icon-list" data-ng-click="actionVisAvlevering(avlevering)"
-                            tooltip="{{text.tooltip.list}}"></button>
+                            tooltip="{{ text.tooltip.favorite }}"></button>
+                    <button class="icon icon-padding-left icon-list" data-ng-click="actionShowTransfer(avlevering)"
+                            tooltip="{{ text.tooltip.list }}"></button>
                     <button class="icon icon-padding-left icon-add-journal" ng-hide="avlevering.laast"
                             data-ng-click="actionCreateNewMedicalRecord(avlevering)"
-                            tooltip="{{text.tooltip.add}}"></button>
+                            tooltip="{{ text.tooltip.add }}"></button>
                     <button class="icon icon-padding-left icon-folder"
                             data-ng-click="actionAvleveringLeveranse(avlevering)"
-                            tooltip="{{text.tooltip.folder}}" data-access-level-admin></button>
+                            tooltip="{{ text.tooltip.folder }}" data-access-level-admin></button>
                     <button class="icon icon-padding-left icon-edit" ng-hide="avlevering.laast"
                             data-ng-click="actionEndreAvlevering(avlevering)"
-                            tooltip="{{text.tooltip.endre}}" data-access-level-admin></button>
+                            tooltip="{{ text.tooltip.endre }}" data-access-level-admin></button>
                     <button class="icon icon-padding-left icon-delete"
-                            data-ng-click="actionFjernAvlevering(text.avlevering, avlevering.avleveringsidentifikator, avlevering)"
-                            tooltip="{{text.tooltip.deleteElement}}"
+                            data-ng-click="actionFjernAvlevering(text.avlevering, 
+                            avlevering.avleveringsidentifikator, avlevering)"
+                            tooltip="{{ text.tooltip.deleteElement }}"
                             data-ng-show="avlevering.kanSlettes" data-access-level-admin></button>
                     <button ng-hide="avlevering.laast" class="icon icon-padding-left icon-unlock"
                             data-ng-click="actionLockTransfer(avlevering)"
-                            tooltip="{{text.tooltip.laas}}" data-access-level-admin></button>
+                            tooltip="{{ text.tooltip.laas }}" data-access-level-admin></button>
                     <button ng-hide="!avlevering.laast" class="icon icon-padding-left icon-lock"
                             data-ng-click="actionUnlockTransfer(avlevering)"
-                            tooltip="{{text.tooltip.laast}}" data-access-level-admin></button>
+                            tooltip="{{ text.tooltip.laast }}" data-access-level-admin></button>
                 </td>
             </tr>
             </tbody>

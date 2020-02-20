@@ -190,6 +190,13 @@
       "msg": "Lagringsenheten det ble forsøkt å flytte til finnes ikke i systemet",
       "title": "Feil ved flytting",
       "descr": ""
+    },
+    "transfer": {
+      "TITLE": "Velg avlevering",
+      "column": {
+        "TRANSFER": "Avlevering navn",
+        "AGREEMENT": "Avtale"
+      }
     }
   },
   "error": {
