@@ -84,7 +84,7 @@ public class Transfer implements Serializable {
     
     @XmlElement(name = "pasientjournal")
     @XmlJavaTypeAdapter(value = MedicalRecordAdapter.class)
-    @OneToMany(mappedBy = "transfer")
+    @OneToMany(mappedBy = "transfer", cascade = CascadeType.ALL)
     private Set<MedicalRecord> medicalRecords;
 
     @XmlTransient

@@ -128,7 +128,7 @@ public class MedicalRecord implements Serializable {
     @Size(min = 1)
     @XmlElement(name = "lagringsenhet")
     @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
-    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(name = "pasientjournal_lagringsenhet",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "lagringsenhet_uuid")
@@ -178,7 +178,7 @@ public class MedicalRecord implements Serializable {
     private Set<ArchiveAuthor> archiveAuthors;
     
     @XmlTransient
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "avlevering_pasientjournal",
         joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator")
@@ -189,7 +189,7 @@ public class MedicalRecord implements Serializable {
     public AdditionalInfo getAdditionalInfo() {
         return additionalInfo == null ? new AdditionalInfo(this) : additionalInfo;
     }
-
+ 
     public Set<Diagnosis> getDiagnosis() {
         return diagnosis == null ? diagnosis = new HashSet<>() : diagnosis;
     }
