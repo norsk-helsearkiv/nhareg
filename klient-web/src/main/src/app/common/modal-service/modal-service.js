@@ -159,75 +159,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
         return $modal.open(template);
     }
-
-    function velgModal(templateUrl, list, formDiagnose) {
-        template.templateUrl = templateUrl;
-        template.controller = function ($scope, $modalInstance) {
-            hotkeys.bindTo($scope)
-                .add({
-                    combo: 'down',
-                    callback: function () {
-                        if(valgtIndex === $scope.modalListe.length - 1) {
-                            $scope.oppdaterValg($scope.modalListe[valgtIndex]);
-                            return;
-                        }
-                        $scope.oppdaterValg($scope.modalListe[++valgtIndex]);
-                    }
-                })
-                .add({
-                    combo: 'up',
-                    callback: function () {
-                        if (valgtIndex === 0) {
-                            $scope.oppdaterValg($scope.modalListe[valgtIndex]);
-                            return;
-                        }
-                        $scope.oppdaterValg($scope.modalListe[--valgtIndex]);
-                    }
-                })
-                .add({
-                    combo: 'enter',
-                    callback: function() {
-                        $scope.ok();
-                    }
-                });
-
-            $scope.modalListe = list;
-            var valgtIndex = 0;
-
-            var resetValg = function () {
-                angular.forEach($scope.modalListe, function (e) {
-                    e.selected = false;
-                });
-            };
-
-            $scope.oppdaterValg = function (element) {
-                resetValg();
-
-                for(var i = 0; i < $scope.modalListe.length; i++) {
-                    if(element === $scope.modalListe[i]) {
-                        $scope.modalListe[i].selected = true;
-                        valgtIndex = i;
-                    }
-                }
-            };
-
-            $scope.oppdaterValg($scope.modalListe[0]);
-
-            $scope.ok = function () {
-                formDiagnose.diagnosetekst = $scope.modalListe[valgtIndex].displayName;
-                formDiagnose.diagnosekodeverk = $scope.modalListe[valgtIndex].codeSystemVersion;
-                $modalInstance.close();
-            };
-
-            $scope.avbryt = function() {
-                $modalInstance.dismiss('cancel');
-            };
-        };
-        template.controller.$inject = ['$scope', '$modalInstance'];
-
-        return $modal.open(template);
-    }
-
+    
     function changeStorageUnit(templateUrl, relativeUrl, storageUnit, storageUnitFormat) {
         template.templateUrl = templateUrl;
 
@@ -500,7 +432,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             $scope.items = items;
             $scope.selected = $scope.items[0];
             
-            var selectPrev = function () {
+            function selectPrev () {
                 var list = $scope.items;
                 var selected = $scope.selected;
                 for (var i = 1; i < list.length; i++) {
@@ -510,7 +442,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 }
                 
                 return $scope.selected;
-            };
+            }
 
             function selectNext() {
                 var list = $scope.items;
@@ -574,7 +506,6 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         endreModal : endreModal,
         warningModal : warningModal,
         warningMessageModal : warningMessageModal,
-        velgModal : velgModal,
         manageStorageUnits : manageStorageUnits,
         manageArchiveAuthors : manageArchiveAuthors,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,

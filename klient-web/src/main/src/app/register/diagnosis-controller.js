@@ -55,29 +55,7 @@ angular.module('nha.register')
             // Henter alle diagnoser fra tjenesten
             diagnosisService.getDiagnosisServer($scope.formDiagnose.diagnosedato, $scope.formDiagnose.diagnosekode,
                 function(diagnosekoder) {
-                    if (diagnosekoder[$scope.formDiagnose.diagnosekode] &&
-                        diagnosekoder[$scope.formDiagnose.diagnosekode].length > 1) {
-                        // Viser en modal med en liste over valgene
-                        var modal = modalService.velgModal('common/modal-service/list-modal.tpl.html',
-                            diagnosekoder[$scope.formDiagnose.diagnosekode],
-                            $scope.formDiagnose);
-                        modal.result.then(function () {
-                            // Dersom teksten er satt, settes fokus på legg til diagnose
-                            if ($scope.formDiagnose.diagnosetekst) {
-                                if (laasDiagnosetekst) {
-                                    $scope.diagnosetekstErSatt = true;
-                                }
-                                document.getElementById("btn-diagnosis").focus();
-                            } else {
-                                $scope.diagnosetekstErSatt = false;
-                                document.getElementById("diagnosekode-input").focus();
-                            }
-                            prevDiagnose = diagnosekode;
-                        }, function() {
-                            document.getElementById("diagnosekode-input").focus();
-                            $scope.formDiagnose.diagnosekode = prevDiagnose;
-                        });
-                    } else if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
+                    if (diagnosekoder[$scope.formDiagnose.diagnosekode]) {
                         // En diagnose med gitt verdi
                         $scope.formDiagnose.diagnosetekst =
                             diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
@@ -192,6 +170,12 @@ angular.module('nha.register')
 
             return httpService.getAll("diagnosekoder?code=" + code + "&date=" + diagnosisDate + "&page=1&size=50")
                 .then(function (response) {
+                    response.data.forEach(
+                        function (item) {
+                            item.displayChoice = item.code + " | " + item.displayName;
+                        }
+                    );
+
                     return response.data;
                 }, function (response) {
                     if (response.status === 400) {
