@@ -72,7 +72,8 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         // Set all the predicates based on query parameters
         createPredicates(queryParameters, criteriaBuilder, root, recordJoin, unitJoin, predicates);
 
-        predicates.add(criteriaBuilder.isNull(((Path) recordJoin).get("deleted")));
+        final Predicate deleted = criteriaBuilder.isNull(((Path) recordJoin).get("deleted"));
+        predicates.add(deleted);
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         criteriaQuery.distinct(true);
 

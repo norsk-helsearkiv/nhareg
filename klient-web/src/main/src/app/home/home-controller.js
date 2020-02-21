@@ -54,8 +54,8 @@ angular.module('nha.home', [
 
   })
 
-  .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, listService, modalService, registerService, stateService, $modal, $window) {
-
+  .controller('HomeCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService, 
+                                                  listService, modalService, registerService, stateService, $modal, $window) {
       //Displays the correct template based on current state/path
       $scope.$on('$stateChangeSuccess', function () {
           $scope.sokVisible = false;
@@ -109,7 +109,7 @@ angular.module('nha.home', [
 
       $scope.size = listService.getSize();
 
-      //Tekster i vinduet lastet fra kontroller
+      // These are texts that are dynamically loaded into the template.
       $scope.text = {
           "tooltip": {}
       };
@@ -118,18 +118,9 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('konfig.ANTALL');
         },
-        function (newval) {
-            listService.setSize(Number(newval));
+        function (value) {
+            listService.setSize(Number(value));
             $scope.size = listService.getSize();
-        }
-      );
-
-      $scope.$watch(
-        function () {
-            return $filter('translate')('home.PASIENTSOK');
-        },
-        function (newval) {
-            $scope.text.pasientsok = newval;
         }
       );
 
@@ -137,8 +128,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.AVLEVERING');
         },
-        function (newval) {
-            $scope.text.avlevering = newval;
+        function (value) {
+            $scope.text.avlevering = value;
         }
       );
 
@@ -146,17 +137,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.AVTALE');
         },
-        function (newval) {
-            $scope.text.avtale = newval;
-        }
-      );
-
-      $scope.$watch(
-        function () {
-            return $filter('translate')('home.SOKERESULTAT');
-        },
-        function (newval) {
-            $scope.text.sokeresultat = newval;
+        function (value) {
+            $scope.text.avtale = value;
         }
       );
 
@@ -164,8 +146,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.VISER');
         },
-        function (newval) {
-            $scope.text.viser = newval;
+        function (value) {
+            $scope.text.viser = value;
         }
       );
 
@@ -173,8 +155,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.LIST');
         },
-        function (newval) {
-            $scope.text.tooltip.list = newval;
+        function (value) {
+            $scope.text.tooltip.list = value;
         }
       );
 
@@ -182,8 +164,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.ADD');
         },
-        function (newval) {
-            $scope.text.tooltip.add = newval;
+        function (value) {
+            $scope.text.tooltip.add = value;
         }
       );
 
@@ -191,8 +173,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.FAVORITE');
         },
-        function (newval) {
-            $scope.text.tooltip.favorite = newval;
+        function (value) {
+            $scope.text.tooltip.favorite = value;
         }
       );
 
@@ -200,8 +182,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.FOLDER');
         },
-        function (newval) {
-            $scope.text.tooltip.folder = newval;
+        function (value) {
+            $scope.text.tooltip.folder = value;
         }
       );
 
@@ -209,16 +191,16 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.ENDRE');
         },
-        function (newval) {
-            $scope.text.tooltip.endre = newval;
+        function (value) {
+            $scope.text.tooltip.endre = value;
         }
       );
       $scope.$watch(
         function () {
             return $filter('translate')('home.tooltip.DELETE');
         },
-        function (newval) {
-            $scope.text.tooltip.deleteElement = newval;
+        function (value) {
+            $scope.text.tooltip.deleteElement = value;
         }
       );
 
@@ -226,8 +208,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.LAAS');
         },
-        function (newval) {
-            $scope.text.tooltip.laas = newval;
+        function (value) {
+            $scope.text.tooltip.laas = value;
         }
       );
 
@@ -235,8 +217,8 @@ angular.module('nha.home', [
         function () {
             return $filter('translate')('home.tooltip.LAAST');
         },
-        function (newval) {
-            $scope.text.tooltip.laast = newval;
+        function (value) {
+            $scope.text.tooltip.laast = value;
         }
       );
 
@@ -253,12 +235,12 @@ angular.module('nha.home', [
 
                       for (var i = 0; i < data.length; i++) {
                           if (data[i].avtaleidentifikator.toLowerCase() === avtaleIdent.toLowerCase()) {
-                              $scope.setValgtAvtale(data[i]);
+                              $scope.setChosenAgreement(data[i]);
                               break;
                           }
                       }
                   } else {
-                      $scope.setValgtAvtale(data[0]);
+                      $scope.setChosenAgreement(data[0]);
                   }
               }).error(function (data, status) {
                 errorService.errorCode(status);
@@ -270,13 +252,13 @@ angular.module('nha.home', [
       httpService.get("avtaler/virksomhet", false)
         .success(function (data) {
             $scope.virksomhet = data;
-            registerService.setVirksomhet($scope.virksomhet.navn);
+            registerService.setBusiness($scope.virksomhet.navn);
         }).error(function (data, status) {
             errorService.errorCode(status);
       });
 
       //Avtale
-      $scope.setValgtAvtale = function (avtale) {
+      $scope.setChosenAgreement = function (avtale) {
           if (avtale === undefined) {
               return;
           }
@@ -293,8 +275,8 @@ angular.module('nha.home', [
           modalService.deleteModal(elementType, id, function () {
               httpService.deleteElement("avtaler/" + id)
                 .success(function () {
-                    fjern($scope.avtaler, element);
-                    $scope.setValgtAvtale($scope.avtaler[0]);
+                    removeFromList($scope.avtaler, element);
+                    $scope.setChosenAgreement($scope.avtaler[0]);
                 }).error(function (data, status) {
                   errorService.errorCode(status);
               });
@@ -325,11 +307,13 @@ angular.module('nha.home', [
       };
 
       $scope.actionLeggTilAvtale = function () {
-          modalService.nyModal('common/modal-service/agreement-modal.tpl.html', $scope.avtaler, "avtaler", validerAvtale);
+          modalService.nyModal('common/modal-service/agreement-modal.tpl.html', 
+              $scope.avtaler, "avtaler", validerAvtale);
       };
 
       $scope.actionEndreAvtale = function (avtale) {
-          modalService.endreModal('common/modal-service/agreement-modal.tpl.html', $scope.avtaler, "avtaler", validerAvtale, avtale);
+          modalService.endreModal('common/modal-service/agreement-modal.tpl.html', 
+              $scope.avtaler, "avtaler", validerAvtale, avtale);
       };
 
       //Avlevering
@@ -351,18 +335,20 @@ angular.module('nha.home', [
       };
 
       $scope.actionLeggTilAvlevering = function () {
-          modalService.nyModal('common/modal-service/transfer-modal.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, $scope.allArchiveAuthors);
+          modalService.nyModal('common/modal-service/transfer-modal.tpl.html',
+              $scope.avleveringer, "avleveringer/ny", validering, $scope.allArchiveAuthors);
       };
 
       $scope.actionEndreAvlevering = function (avlevering) {
-          modalService.endreModal('common/modal-service/transfer-modal.tpl.html', $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
+          modalService.endreModal('common/modal-service/transfer-modal.tpl.html',
+              $scope.avleveringer, "avleveringer/ny", validering, avlevering, $scope.allArchiveAuthors);
       };
 
       $scope.actionFjernAvlevering = function (elementType, id, element) {
           modalService.deleteModal(elementType, id, function () {
               httpService.deleteElement("avleveringer/" + id)
                 .success(function () {
-                    fjern($scope.avleveringer, element);
+                    removeFromList($scope.avleveringer, element);
                 }).error(function (data, status) {
                   var errorMessage = $filter('translate')('formError.' + data[0].constraint);
                   errorService.errorCode(status, errorMessage);
@@ -373,16 +359,16 @@ angular.module('nha.home', [
       $scope.actionSettDefaultAvlevering = function(avlevering){
           httpService.get("avleveringer/" + avlevering.avleveringsidentifikator + "/aktiv")
             .success(function() {
-                $scope.setValgtAvtale($scope.valgtAvtale);
+                $scope.setChosenAgreement($scope.valgtAvtale);
             }).error(function(data, status) {
               errorService.errorCode(status);
           });
       };
 
-      $scope.actionVisAvlevering = function (avlevering) {
-          registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
-          registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-          registerService.setAvlevering(avlevering);
+      $scope.actionShowTransfer = function (avlevering) {
+          registerService.setTransferDescription(avlevering.avleveringsbeskrivelse);
+          registerService.setTransferId(avlevering.avleveringsidentifikator);
+          registerService.setTransfer(avlevering);
 
           var endpoint = "pasientjournaler/" + avlevering.avleveringsidentifikator + "/all";
           var params = {
@@ -391,68 +377,71 @@ angular.module('nha.home', [
           };
 
           httpService.getAll(endpoint, false, params)
-            .success(function (data) {
-                var title = {
-                    "tittel": $scope.virksomhet.navn + "/" + avlevering.avtale.avtalebeskrivelse + "/" + avlevering.avleveringsbeskrivelse,
-                    "underTittel": avlevering.arkivskaper
-                };
+            .then(function (response) {
+              var title = $scope.virksomhet.navn + "/" + avlevering.avtale.avtalebeskrivelse + "/" + 
+                avlevering.avleveringsbeskrivelse;
+              var subtitle = avlevering.arkivskaper.name;
+              
+              listService.setTitle(title);
+              listService.setSubtitle(subtitle);
+              listService.setData(response.data);
+              listService.setTransfer(avlevering);
+              listService.setClean(true);
 
-                listService.init(title, data);
-                listService.setAvlevering(avlevering);
-
-                $location.path("/list");
-
-            }).error(function (data, status) {
-              errorService.errorCode(status);
+              $location.path("/list");
+            }, function (response) {
+              errorService.errorCode(response.status);
           });
       };
 
       $scope.actionAvleveringLeveranse = function (avlevering) {
-          window.location = httpService.getRoot() + "avleveringer/" + avlevering.avleveringsidentifikator + "/leveranse";
+          window.location = httpService.getRoot() + "avleveringer/" + 
+              avlevering.avleveringsidentifikator + "/leveranse";
       };
 
       //Util
       $scope.loggUt = function () {
           httpService.logout();
-          $window.location="logout";
+          $window.location = "logout";
       };
 
-      $scope.actionLeggTilPasientjournald = function (avlevering) {
-          registerService.setAvlevering(avlevering);
-          registerService.setPasientjournalDTO(null);
-          registerService.setValgtAvtale($scope.valgtAvtale.avtalebeskrivelse);
-          registerService.setAvleveringsidentifikator(avlevering.avleveringsidentifikator);
-          registerService.setAvleveringsbeskrivelse(avlevering.avleveringsbeskrivelse);
+      $scope.actionCreateNewMedicalRecord = function (avlevering) {
+          registerService.setTransfer(avlevering);
+          registerService.setMedicalRecordDTO(null);
+          registerService.setChosenAgreement($scope.valgtAvtale.avtalebeskrivelse);
+          registerService.setTransferId(avlevering.avleveringsidentifikator);
+          registerService.setTransferDescription(avlevering.avleveringsbeskrivelse);
           $location.path('/registrer');
       };
 
-      $scope.actionLaasAvlevering = function (avlevering) {
+      $scope.actionLockTransfer = function (avlevering) {
           var tpl = 'common/modal-service/warning-modal.tpl.html';
           var url = "avleveringer/" + avlevering.avleveringsidentifikator + "/laas";
           var id = avlevering.avleveringsidentifikator;
           var tittel = $filter('translate')('modal.warning_laas.TITTEL');
           var beskrivelse = $filter('translate')('modal.warning_laas.BESKRIVELSE');
           modalService.warningModal(tpl, url, id, tittel, beskrivelse, function () {
-              $scope.setValgtAvtale($scope.valgtAvtale);
+              $scope.setChosenAgreement($scope.valgtAvtale);
           });
       };
 
-      $scope.actionLaasOppAvlevering = function (avlevering) {
+      $scope.actionUnlockTransfer = function (avlevering) {
           var tpl = 'common/modal-service/warning-modal.tpl.html';
           var url = "avleveringer/" + avlevering.avleveringsidentifikator + "/laasOpp";
           var id = avlevering.avleveringsidentifikator;
           var tittel = $filter('translate')('modal.warning_laas_opp.TITTEL');
           modalService.warningModal(tpl, url, id, tittel, null, function () {
-              $scope.setValgtAvtale($scope.valgtAvtale);
+              $scope.setChosenAgreement($scope.valgtAvtale);
           });
       };
 
       //Hjelpe metode for å fjerne fra liste
-      var fjern = function (list, element) {
+      var removeFromList = function (list, element) {
           for (var i = 0; i < list.length; i++) {
               if (element === list[i]) {
                   list.splice(i, 1);
               }
           }
       };
+    
   });

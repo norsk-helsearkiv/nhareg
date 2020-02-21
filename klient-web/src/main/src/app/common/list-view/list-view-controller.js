@@ -1,12 +1,12 @@
 angular.module('nha.common.list-view', [
-    'nha.common.list-service',
-    'nha.common.pager-service',
-    'nha.common.http-service',
-    'nha.common.error-service',
-    'nha.common.modal-service',
-    'nha.register.register-service',
-    'ui.router'
-])
+        'nha.common.list-service',
+        'nha.common.pager-service',
+        'nha.common.http-service',
+        'nha.common.error-service',
+        'nha.common.modal-service',
+        'nha.register.register-service',
+        'ui.router'
+    ])
 
     .config(function config($stateProvider) {
         $stateProvider.state('list', {
@@ -20,21 +20,13 @@ angular.module('nha.common.list-view', [
         });
     })
 
-    .controller('ListCtrl', function HomeController($scope, $location, listService, httpService, errorService, modalService, $filter, registerService, stateService, pagerService) {
-        var size = listService.getSize();
+    .controller('ListCtrl', function HomeController($rootScope, $scope, $location, listService, httpService,
+                                                    errorService, modalService, $filter,
+                                                    registerService, pagerService) {
         var baseEndpointUrl = "pasientjournaler/";
-        
-        $scope.$watch(
-            function () {
-                return $filter('translate')('konfig.ANTALL');
-            },
-            function (newval) {
-                listService.setSize(Number(newval));
-                size = listService.getSize();
-            }
-        );
+        var size = listService.getSize();
 
-        $scope.tekster = {
+        $scope.text = {
             "tooltip": {}
         };
 
@@ -42,16 +34,57 @@ angular.module('nha.common.list-view', [
             function () {
                 return $filter('translate')('home.PASIENTSOK');
             },
-            function (newval) {
-                $scope.tekster.pasientsok = newval;
+            function (value) {
+                $scope.text.patientsearch = value;
             }
         );
+
         $scope.$watch(
             function () {
                 return $filter('translate')('common.PASIENTJOURNAL');
             },
-            function (newval) {
-                $scope.tekster.pasientjournal = newval;
+            function (value) {
+                $scope.text.pasientjournal = value;
+            }
+        );
+
+        $scope.$watch(
+            function () {
+                return listService.getData();
+            },
+            function (value) {
+                listService.setData(value);
+                $scope.data = value;
+            }
+        );
+
+        $scope.$watch(
+            function () {
+                return listService.getTitle();
+            },
+            function (value) {
+                listService.setTitle(value);
+                $scope.text.title = value;
+            }
+        );
+
+        $scope.$watch(
+            function () {
+                return listService.getSubtitle();
+            },
+            function (value) {
+                listService.setSubtitle(value);
+                $scope.text.subtitle = value;
+            }
+        );
+
+        $scope.$watch(
+            function () {
+                var tmp = listService.getTransfer();
+                return tmp == null ? false : tmp.laast;
+            },
+            function (value) {
+                $scope.laast = value;
             }
         );
 
@@ -59,99 +92,48 @@ angular.module('nha.common.list-view', [
             $location.path('/');
         };
 
-        $scope.navLoggut = function () {
-            $location.path('/login');
-        };
-
-        $scope.data = listService.getData();
-        if ($scope.data === undefined) {
-            $scope.navHome();
-        }
-
-        var setTittel = function (data) {
-            var max = (data.page * data.size);
-            if (max > data.total) {
-                max = data.total;
-            }
-            $scope.tittel.underTittel = ((data.page - 1) * data.size) + 1 + "..." + max + " / " + data.total;
-        };
-
-        $scope.tittel = listService.getTittel();
-        setTittel($scope.data);
-
-        $scope.lagringsenhetAsc = false;
-        $scope.fodselsnummerAsc = false;
-        $scope.fanearkidAsc = false;
-        $scope.jnrAsc = false;
-        $scope.lnrAsc = false;
-        $scope.navnAsc = false;
-        $scope.faarAsc = false;
-        $scope.daarAsc = false;
-        $scope.oppdatertAvAsc = false;
-        $scope.sortDirection = null;
-        $scope.sortColumn = null;
-        $scope.sok = stateService.sokState;
+        // $scope.navLoggut = function () {
+        //   $location.path('/login');
+        // };
 
         $scope.actionSort = function (column, sortDirection) {
             $scope.sortDirection = sortDirection ? "asc" : "desc";
             $scope.sortColumn = column;
 
-            httpService.getAll(baseEndpointUrl + "?page=" + $scope.pager.currentPage +
-                               "&size=" + size +
-                               listService.getQuery() +
-                               "&orderBy=" + $scope.sortColumn +
-                               "&sortDirection=" + $scope.sortDirection)
-                .success(function (data, status, headers, config) {
-                    setTittel(data);
-                    $scope.data = data;
+            httpService.getAll(baseEndpointUrl +
+                "?page=" + $scope.pager.currentPage +
+                "&size=" + size +
+                listService.getQuery() +
+                "&orderBy=" + $scope.sortColumn +
+                "&sortDirection=" + $scope.sortDirection
+                )
+                .then(function (response) {
+                    var data = listService.getData();
+                    var subtitle = listService.createSubtitle(data);
+                    listService.setSubtitle(subtitle);
+                    listService.setData(response.data);
                     $scope.updatePager($scope.pager.currentPage);
-                }).error(function (data, status, headers, config) {
-                errorService.errorCode(status);
-            });
+                }, function (response) {
+                    errorService.errorCode(response.status);
+                });
         };
 
-        $scope.actionRensSok = function() {
-            $scope.sok.lagringsenhet = '';
-            $scope.sok.fanearkId = '';
-            $scope.sok.fodselsnummer = '';
-            $scope.sok.navn = '';
-            $scope.sok.fodt = '';
-            $scope.sok.oppdatertAv = '';
-            $scope.sok.sistOppdatert = '';
+        $scope.updatePager = function (page) {
+            var data = listService.getData();
+            $scope.pager = pagerService.getPager(data.total, page, size);
         };
 
-        $scope.actionSok = function () {
-            var sok = {
-                sokLagringsenhet: $scope.sok.lagringsenhet,
-                sokFanearkId: $scope.sok.fanearkId,
-                sokFodselsnummer: $scope.sok.fodselsnummer,
-                sokNavn: $scope.sok.navn,
-                sokFodt: $scope.sok.fodt,
-                sokOppdatertAv: $scope.sok.oppdatertAv,
-                sokSistOppdatert: $scope.sok.sistOppdatert
-            };
+        $rootScope.$on("UpdatePager", function (event, data) {
+            $scope.updatePager(data);
+        });
 
-            registerService.setAvlevering(undefined);
-            registerService.setAvleveringsidentifikator(undefined);
-            listService.setSok(sok);
-            httpService.getAll(baseEndpointUrl + "?page=1&size=" + size + listService.getQuery())
-                .success(function (data, status, headers, config) {
-                    setTittel(data);
-                    $scope.tittel.tittel = $scope.tekster.pasientsok;
-                    $scope.data = data;
-                    $scope.updatePager(1);
-                }).error(function (data, status, headers, config) {
-                    errorService.errorCode(status);
-            });
-        };
+        if (listService.getData() === undefined) {
+            $scope.navHome();
+        } else {
+            $scope.updatePager(1);
+        }
 
-        $scope.updatePager = function(page) {
-            $scope.pager = pagerService.getPager($scope.data.total, page, size);
-        };
-
-        $scope.updatePager(1);
-
-        $scope.setPage = function(page) {
+        $scope.setPage = function (page) {
             if (page < 1 || page > $scope.pager.totalPages) {
                 return;
             }
@@ -168,59 +150,85 @@ angular.module('nha.common.list-view', [
                 ordering += "&sortDirection=" + $scope.sortDirection;
             }
 
-            httpService.getAll(baseEndpointUrl + "?page=" + page + "&size=" + $scope.pager.pageSize + listService.getQuery() + ordering)
-                .success(function (data) {
-                    setTittel(data);
-                    $scope.data = data;
-
-                }).error(function (data, status) {
-                errorService.errorCode(status);
-            });
-        };
-
-        $scope.actionFjernPasientjournal = function (pasientjournal) {
-            modalService.deleteModal($scope.tekster.pasientjournal, pasientjournal.navn + " (" + pasientjournal.fodselsnummer + ") ", function () {
-                httpService.deleteElement(baseEndpointUrl + pasientjournal.uuid)
-                    .success(function () {
-                        fjern($scope.data.liste, pasientjournal);
-                        --$scope.data.antall;
-                        --$scope.data.total;
-                        setTittel($scope.data);
-                    }).error(function (data, status) {
-                    errorService.errorCode(status);
+            httpService.getAll(baseEndpointUrl + "?page=" + page + "&size=" +
+                $scope.pager.pageSize + listService.getQuery() + ordering)
+                .then(function (response) {
+                    var data = listService.getData();
+                    var subtitle = listService.createSubtitle(data);
+                    listService.setSubtitle(subtitle);
+                    listService.setData(response.data);
+                }, function (response) {
+                    errorService.errorCode(response.status);
                 });
-            });
         };
 
-        $scope.actionLeggTilPasientjournal = function () {
-            var first = $scope.data.liste[0];
+        $scope.actionRemoveMedicalRecord = function (medicalRecord) {
+            modalService.deleteModal($scope.text.pasientjournal,
+                medicalRecord.navn + " (" + medicalRecord.fodselsnummer + ") ",
+                function () {
+                    httpService.deleteElement(baseEndpointUrl + medicalRecord.uuid)
+                        .then(function () {
+                            var data = listService.getData();
+                            removeFromList(data.liste, medicalRecord);
+                            --data.size;
+                            --data.total;
 
-            httpService.get(baseEndpointUrl + first.uuid)
-                .success(function () {
-                    registerService.setPasientjournalDTO(null);
+                            var subtitle = listService.createSubtitle(data);
+                            listService.setSubtitle(subtitle);
+                            listService.setData(data);
+                        }, function (response) {
+                            errorService.errorCode(response.status);
+                        });
+                });
+        };
+
+        function navigateToRegister(transfer) {
+            registerService.setTransfer(transfer);
+            registerService.setMedicalRecordDTO(null);
+            registerService.setChosenAgreement(transfer.avtale.avtalebeskrivelse);
+            registerService.setTransferId(transfer.avleveringsidentifikator);
+            registerService.setTransferDescription(transfer.avleveringsbeskrivelse);
+            $location.path('/registrer');
+        }
+
+        $scope.actionAddNewMedicalRecord = function () {
+            var transfer = registerService.getTransfer();
+            if (transfer != null) {
+                registerService.setMedicalRecordDTO(null);
+                $location.path("/registrer");
+            } else {
+                httpService.getAll("avleveringer/?locked=false")
+                    .then(function (response) {
+                        var transfers = response.data;
+                        if (transfers.length === 1) {
+                            navigateToRegister(transfers[0]);
+                        } else if (transfers.length > 1) {
+                            var modal = modalService.openSelectModal(
+                                'common/modal-service/transfer-list-modal.tpl.html', transfers);
+                            modal.result.then(function (result) {
+                                navigateToRegister(result);
+                            });
+                        } else {
+                            console.log("Something went horribly wrong");
+                        }
+                    }, function (response) {
+                        errorService.errorCode(response.status);
+                    });
+            }
+        };
+
+        $scope.actionEditRecord = function (medicalRecord) {
+            httpService.get(baseEndpointUrl + medicalRecord)
+                .then(function (response) {
+                    registerService.setMedicalRecordDTO(response.data);
                     $location.path('/registrer');
-                }).error(function (data, status) {
-                errorService.errorCode(status);
-            });
-
+                }, function (response) {
+                    errorService.errorCode(response.status);
+                });
         };
 
-        $scope.showAddPatientJournalBtn = function () {
-            return registerService.getAvleveringsidentifikator() !== undefined;
-        };  
-
-        $scope.actionVisJournal = function (pasientjournal) {
-            httpService.get(baseEndpointUrl + pasientjournal)
-                .success(function (data, status, headers, config) {
-                    registerService.setPasientjournalDTO(data);
-                    $location.path('/registrer');
-                }).error(function (data, status, headers, config) {
-                    errorService.errorCode(status);
-            });
-        };
-
-        //Hjelpe metode for å fjerne fra liste
-        var fjern = function (list, element) {
+        // Utility method for removing from a given list
+        var removeFromList = function (list, element) {
             for (var i = 0; i < list.length; i++) {
                 if (element === list[i]) {
                     list.splice(i, 1);

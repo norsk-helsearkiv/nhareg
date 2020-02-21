@@ -37,7 +37,9 @@ angular.module('nha.register', [
         });
     })
 
-    .controller('RegisterCtrl', function HomeController($scope, $location, $filter, httpService, errorService, registerService, diagnosisService, hotkeys, modalService, $window, $controller) {
+    .controller('RegisterCtrl', function HomeController($scope, $location, $filter, httpService, errorService,
+                                                        registerService, diagnosisService, hotkeys, modalService,
+                                                        $window, $controller) {
 
         //Util
         $scope.navHome = function () {
@@ -72,32 +74,32 @@ angular.module('nha.register', [
             function () {
                 return $filter('translate')('register.gender.MALE');
             },
-            function (newval) {
-                $scope.kjonn[0].tekst = newval;
+            function (value) {
+                $scope.kjonn[0].tekst = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('register.gender.FEMALE');
             },
-            function (newval) {
-                $scope.kjonn[1].tekst = newval;
+            function (value) {
+                $scope.kjonn[1].tekst = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('register.gender.UNKNOWN');
             },
-            function (newval) {
-                $scope.kjonn[2].tekst = newval;
+            function (value) {
+                $scope.kjonn[2].tekst = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('register.gender.NOT_SPECIFIED');
             },
-            function (newval) {
-                $scope.kjonn[3].tekst = newval;
+            function (value) {
+                $scope.kjonn[3].tekst = value;
             }
         );
 
@@ -108,48 +110,48 @@ angular.module('nha.register', [
             function () {
                 return $filter('translate')('formError.NotNull');
             },
-            function (newval) {
-                $scope.feilTekster['NotNull'] = newval;
+            function (value) {
+                $scope.feilTekster['NotNull'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.DagEllerAar');
             },
-            function (newval) {
-                $scope.feilTekster['DagEllerAar'] = newval;
+            function (value) {
+                $scope.feilTekster['DagEllerAar'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.NotUnique');
             },
-            function (newval) {
-                $scope.feilTekster['NotUnique'] = newval;
+            function (value) {
+                $scope.feilTekster['NotUnique'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.Size');
             },
-            function (newval) {
-                $scope.feilTekster['Size'] = newval;
+            function (value) {
+                $scope.feilTekster['Size'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.FodtEtterDodt');
             },
-            function (newval) {
-                $scope.feilTekster['FodtEtterDodt'] = newval;
+            function (value) {
+                $scope.feilTekster['FodtEtterDodt'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.FeilFodselsnummer');
             },
-            function (newval) {
-                $scope.feilTekster['FeilFodselsnummer'] = newval;
+            function (value) {
+                $scope.feilTekster['FeilFodselsnummer'] = value;
             }
         );
 
@@ -157,155 +159,157 @@ angular.module('nha.register', [
             function () {
                 return $filter('translate')('formError.FeilFanearkid');
             },
-            function (newval) {
-                $scope.feilTekster['FeilFanearkid'] = newval;
+            function (value) {
+                $scope.feilTekster['FeilFanearkid'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.FeilFanearkidNull');
             },
-            function (newval) {
-                $scope.feilTekster['FeilFanearkidNull'] = newval;
+            function (value) {
+                $scope.feilTekster['FeilFanearkidNull'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.EnObligatorisk');
             },
-            function (newval) {
-                $scope.feilTekster['EnObligatorisk'] = newval;
+            function (value) {
+                $scope.feilTekster['EnObligatorisk'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.fKontaktForFodt');
             },
-            function (newval) {
-                $scope.feilTekster['fKontaktForFodt'] = newval;
+            function (value) {
+                $scope.feilTekster['fKontaktForFodt'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.sKontaktForFodt');
             },
-            function (newval) {
-                $scope.feilTekster['sKontaktForFodt'] = newval;
+            function (value) {
+                $scope.feilTekster['sKontaktForFodt'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.fKontaktEtterDod');
             },
-            function (newval) {
-                $scope.feilTekster['fKontaktEtterDod'] = newval;
+            function (value) {
+                $scope.feilTekster['fKontaktEtterDod'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.sKontaktEtterDod');
             },
-            function (newval) {
-                $scope.feilTekster['sKontaktEtterDod'] = newval;
+            function (value) {
+                $scope.feilTekster['sKontaktEtterDod'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.fKontaktEttersKontakt');
             },
-            function (newval) {
-                $scope.feilTekster['fKontaktEttersKontakt'] = newval;
+            function (value) {
+                $scope.feilTekster['fKontaktEttersKontakt'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.UtenforGyldigPeriode');
             },
-            function (newval) {
-                $scope.feilTekster['UtenforGyldigPeriode'] = newval;
+            function (value) {
+                $scope.feilTekster['UtenforGyldigPeriode'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.UkjentDiagnosekode');
             },
-            function (newval) {
-                $scope.feilTekster['UkjentDiagnosekode'] = newval;
+            function (value) {
+                $scope.feilTekster['UkjentDiagnosekode'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.manglermors');
             },
-            function (newval) {
-                $scope.feilTekster['manglermors'] = newval;
+            function (value) {
+                $scope.feilTekster['manglermors'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.DiagEtterDod');
             },
-            function (newval) {
-                $scope.feilTekster['DiagEtterDod'] = newval;
+            function (value) {
+                $scope.feilTekster['DiagEtterDod'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.DiagForFodt');
             },
-            function (newval) {
-                $scope.feilTekster['DiagForFodt'] = newval;
+            function (value) {
+                $scope.feilTekster['DiagForFodt'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.DiagFormatFeil');
             },
-            function (newval) {
-                $scope.feilTekster['DiagFormatFeil'] = newval;
+            function (value) {
+                $scope.feilTekster['DiagFormatFeil'] = value;
             }
         );
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.sKontaktNotNull');
             },
-            function (newval) {
-                $scope.feilTekster['sKontaktNotNull'] = newval;
+            function (value) {
+                $scope.feilTekster['sKontaktNotNull'] = value;
             }
         );
 
-        httpService.getAll("admin/century", false).success(function (data) {
-            $scope.century = data;
-        }).error(function (status) {
-            errorService.errorCode(status);
-        });
+        httpService.getAll("admin/century", false)
+            .then(function (response) {
+                $scope.century = response.data;
+            }, function (response) {
+                errorService.errorCode(response.status);
+            });
 
-        httpService.getAll("authors/all").success(function (data) {
-            $scope.allArchiveAuthors = data;
-        }).error(function (status) {
-            errorService.errorCode(status);
-        });
+        httpService.getAll("authors/all")
+            .then(function (response) {
+                $scope.allArchiveAuthors = response.data;
+            }, function (response) {
+                errorService.errorCode(response.status);
+            });
 
         $scope.formData = {
             lagringsenheter: []
         };
 
         $scope.formDiagnose = {};
-        $scope.avlevering = registerService.getAvlevering();
-        $scope.medicalRecordDTO = registerService.getPasientjournalDTO();
-        $scope.avleveringsidentifikator = registerService.getAvleveringsidentifikator();
-        $scope.virksomhet = registerService.getVirksomhet();
-        $scope.valgtAvtale = registerService.getValgtAvtale();
-        $scope.avleveringsbeskrivelse = registerService.getAvleveringsbeskrivelse();
+        $scope.avlevering = registerService.getTransfer();
+        $scope.medicalRecordDTO = registerService.getMedicalRecordDTO();
+        $scope.avleveringsidentifikator = registerService.getTransferId();
+        $scope.virksomhet = registerService.getBusiness();
+        $scope.valgtAvtale = registerService.getChosenAgreement();
+        $scope.avleveringsbeskrivelse = registerService.getTransferDescription();
 
         $scope.manageStorageUnits = function () {
             var lagringsenhetmaske;
 
-            var avlevering = registerService.getAvlevering();
+            var avlevering = registerService.getTransfer();
             if (avlevering !== null && avlevering !== undefined) {
                 lagringsenhetmaske = avlevering.lagringsenhetformat;
             }
-            
+
             if ($scope.formData.lagringsenheter === undefined || $scope.formData.lagringsenheter === null) {
                 $scope.formData.lagringsenheter = [];
             }
@@ -338,18 +342,17 @@ angular.module('nha.register', [
         };
 
         $scope.manageArchiveAuthors = function () {
-
             if ($scope.formData.archiveAuthors === undefined || $scope.formData.archiveAuthors === null) {
                 $scope.formData.archiveAuthors = [];
             }
 
             var modal = modalService.manageArchiveAuthors('common/modal-service/archive-author-modal.tpl.html',
                 function () {
-                    //TODO, callback for NHA-038
+                //TODO, callback for NHA-038
                 },
                 $scope.formData.archiveAuthors,
                 $scope.allArchiveAuthors);
-
+            
             modal.result.then(function () {
                 switch ($scope.formData.fanearkid) {
                     case undefined:
@@ -367,12 +370,12 @@ angular.module('nha.register', [
             if ($scope.formData.archiveAuthors === undefined) {
                 return null;
             }
-            
+
             var selectedArchiveAuthors = [];
             $scope.formData.archiveAuthors.map( function (element) {
                 selectedArchiveAuthors.push(element.code);
             });
-          
+
             return selectedArchiveAuthors;
         };
 
@@ -391,7 +394,6 @@ angular.module('nha.register', [
                     $scope.formData.archiveAuthors.push($scope.avlevering.arkivskaper);
             }
             $scope.manageStorageUnits();
-
         } else if ($scope.medicalRecordDTO !== undefined) {
             //Endre pasientjournal
             $scope.prevState = 2;
@@ -426,7 +428,7 @@ angular.module('nha.register', [
             $scope.formDiagnose = {};
             $scope.diagnosetekstErSatt = false;
             $scope.diagnoseDatoErSatt = false;
-            diagnosekode = "";
+            $scope.diagnosekode = "";
 
             if (keepDate) {
                 document.getElementById("diagnosisDate-input").focus();
@@ -436,7 +438,6 @@ angular.module('nha.register', [
         };
 
         $scope.sjekkDiagnoseFeltTomt = function (caller) {
-
             if ($scope.formDiagnose.diagnosekode || $scope.formDiagnose.diagnosetekst) {
                 var tpl = 'common/modal-service/warning-modal.tpl.html';
                 var tittel = $filter('translate')('modal.warning_diagnose.TITTEL');
@@ -470,8 +471,8 @@ angular.module('nha.register', [
         };
 
         $scope.nyEllerOppdaterCallback = function () {
-
-            if (!$scope.sjekkDiagnoseFeltTomt) {//ikke ny journal hvis ikke feltet er tomt..
+            // ikke ny journal hvis ikke feltet er tomt..
+            if (!$scope.sjekkDiagnoseFeltTomt) {
                 return;
             }
 
@@ -487,20 +488,23 @@ angular.module('nha.register', [
                 $scope.formData.kjonn = $scope.formData.kjonn.kode;
             }
 
+            function updateScopeData(data) {
+                $scope.medicalRecordDTO = data;
+                $scope.formData = data;
+                $scope.formData.kjonn = kjonn;
+                $scope.prevState = $scope.state;
+                $scope.state = 2;
+            }
+
             //NY
             if ($scope.state === 0) {
-                //TODO popup for å finne lagringsenhet..
                 $scope.formData.avleveringsidentifikator = $scope.avleveringsidentifikator;
                 httpService.create("pasientjournaler/", $scope.formData)
-                    .success(function (data) {
-                        $scope.medicalRecordDTO = data;
-                        $scope.formData = data;
+                    .then(function(response) {
+                        updateScopeData(response.data);
+                    }, function(response) {
                         $scope.formData.kjonn = kjonn;
-                        $scope.prevState = $scope.state;
-                        $scope.state = 2;
-                    }).error(function (data, status) {
-                        $scope.formData.kjonn = kjonn;
-                        $scope.setFeilmeldinger(data, status);
+                        $scope.setFeilmeldinger(response.data, response.status);
                     });
             }
 
@@ -508,20 +512,17 @@ angular.module('nha.register', [
             if ($scope.state === 2) {
                 $scope.formData.avleveringsidentifikator = $scope.avleveringsidentifikator;
                 httpService.update("pasientjournaler/", $scope.medicalRecordDTO)
-                    .success(function (data) {
+                    .then(function (response) {
                         var lagringsenheter = $scope.formData.lagringsenheter;
-                        $scope.medicalRecordDTO = data;
-                        $scope.formData = data;
-                        $scope.formData.kjonn = kjonn;
+                        updateScopeData(response.data);
                         $scope.formData.lagringsenheter = lagringsenheter;
-                        $scope.prevState = $scope.state;
-                        $scope.state = 2;
                         $scope.setFocus();
-                    }).error(function (data, status) {
+                    }, function(response) {
                         $scope.formData.kjonn = kjonn;
-                        $scope.setFeilmeldinger(data, status);
+                        $scope.setFeilmeldinger(response.data, response.status);
                     });
             }
+
             //start en ny journal
             if ($scope.state === 3) {
                 if (!$scope.medicalRecordDTO) {
@@ -529,7 +530,7 @@ angular.module('nha.register', [
                 }
                 $scope.formData.avleveringsidentifikator = $scope.avleveringsidentifikator;
                 httpService.update("pasientjournaler/", $scope.medicalRecordDTO)
-                    .success(function () {
+                    .then(function() {
                         var lagringsenheter = $scope.formData.lagringsenheter;
                         $scope.prevState = $scope.state;
                         $scope.state = 0;
@@ -537,9 +538,9 @@ angular.module('nha.register', [
                             lagringsenheter: lagringsenheter
                         };
                         $scope.setFocus();
-                    }).error(function (data, status) {
+                    }, function(response) {
                         $scope.formData.kjonn = kjonn;
-                        $scope.setFeilmeldinger(data, status);
+                        $scope.setFeilmeldinger(response.data, response.status);
                     });
             }
         };

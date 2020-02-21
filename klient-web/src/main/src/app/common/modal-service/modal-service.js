@@ -14,11 +14,11 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
     };
 
     /*
-        Deletes an element
-        elementType: the type of the element that is to be deleted
-        id: the id of the element
-        okFunction: method for validation
-    */
+     Deletes an element
+     elementType: the type of the element that is to be deleted
+     id: the id of the element
+     okFunction: method for validation
+     */
     function deleteModal(elementType, id, okFunction) {
         template.templateUrl = 'common/modal-service/delete-modal.tpl.html';
 
@@ -42,16 +42,14 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
     }
 
     /*
-        Modal for å opprette ny
+     Modal for å opprette ny
 
-        tpl: link til tpl.html som skal brukes
-        list: liste over elementer som det skal legges til et element i scope
-        valideringFunction: overskrevet metode for validering, returnerer boolean om det
-            gikk bra.
-    */
-
-    function nyModal(tpl, list, relativUrl, valideringFunction, allArchiveAuthors) {
-        template.templateUrl = tpl;
+     tpl: link til tpl.html som skal brukes
+     list: liste over elementer som det skal legges til et element i scope
+     valideringFunction: overskrevet metode for validering, returnerer boolean om det gikk bra.
+     */
+    function nyModal(templateUrl, list, relativUrl, valideringFunction, allArchiveAuthors) {
+        template.templateUrl = templateUrl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
                 "error" : {}
@@ -60,15 +58,17 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
-                if(success) {
+                if (success) {
                     httpService.create(relativUrl, $scope.formData)
-                        .success(function(data) {
+                        .then(function (response) {
+                            var data = response.data;
                             data.lagringsenhetformat = $scope.formData.lagringsenhetformat;
                             list.push(data);
-                        }).error(function(data, status) {
-                            errorService.errorCode(status);
+                        }, function (response) {
+                            errorService.errorCode(response.status);
+                        }).then(function () {
+                            $modalInstance.close();
                         });
-                    $modalInstance.close();
                 }
             };
 
@@ -77,10 +77,11 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
-    function warningMessageModal(msg, title, desc){
+    function warningMessageModal(msg, title, desc) {
         template.templateUrl = "common/modal-service/warning-message-modal.tpl.html";
         template.controller = function ($scope, $modalInstance) {
             $scope.melding = msg;
@@ -93,11 +94,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
-    function warningModal(tpl, relativeUrl, msg, title, desc, okFunction){
-        template.templateUrl = tpl;
+    function warningModal(templateUrl, relativeUrl, msg, title, desc, okFunction) {
+        template.templateUrl = templateUrl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
                 "error" : {}
@@ -107,15 +109,15 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             $scope.beskrivelse = desc;
 
             $scope.ok = function() {
-                if (relativeUrl){
+                if (relativeUrl) {
                     httpService.create(relativeUrl, $scope.formData)
-                        .success(function() {
+                        .then(function() {
                             $modalInstance.close();
                             okFunction();
-                        }).error(function(data, status) {
-                        errorService.errorCode(status);
-                    });
-                }else{
+                        }, function(response) {
+                            errorService.errorCode(response.status);
+                        });
+                } else {
                     $modalInstance.close();
                     okFunction();
                 }
@@ -126,11 +128,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
-    function endreModal(tpl, list, relativUrl, valideringFunction, entitet, allArchiveAuthors) {
-        template.templateUrl = tpl;
+    function endreModal(templateUrl, list, relativUrl, valideringFunction, entitet, allArchiveAuthors) {
+        template.templateUrl = templateUrl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = entitet;
             $scope.erEndring = true;
@@ -138,11 +141,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
 
             $scope.ok = function() {
                 var success = valideringFunction($scope.formData);
-                if(success) {
+                if (success) {
                     httpService.update(relativUrl, $scope.formData)
-                        .error(function(data, status) {
-                            errorService.errorCode(status);
-                        });
+                        .then(function() {},
+                            function (response) {
+                                errorService.errorCode(response.status);
+                            });
                     $modalInstance.close();
                 }
             };
@@ -152,80 +156,14 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
-
-    function velgModal(tpl, list, formDiagnose) {
-        template.templateUrl = tpl;
-        template.controller = function($scope, $modalInstance) {
-
-            hotkeys.bindTo($scope)
-                .add({
-                    combo: 'down',
-                    callback: function() {
-                        if(valgtIndex === $scope.modalListe.length - 1) {
-                            $scope.oppdaterValg($scope.modalListe[valgtIndex]);
-                            return;
-                        }
-                        $scope.oppdaterValg($scope.modalListe[++valgtIndex]);
-                    }
-                })
-                .add({
-                    combo: 'up',
-                    callback: function() {
-                        if(valgtIndex === 0) {
-                            $scope.oppdaterValg($scope.modalListe[valgtIndex]);
-                            return;
-                        }
-                        $scope.oppdaterValg($scope.modalListe[--valgtIndex]);
-                    }
-                })
-                .add({
-                    combo: 'enter',
-                    callback: function() {
-                        $scope.ok();
-                    }
-                });
-
-            $scope.modalListe = list;
-            var valgtIndex = 0;
-
-            var resetValg = function() {
-                angular.forEach($scope.modalListe, function(e) {
-                    e.selected = false;
-                });
-            };
-
-            $scope.oppdaterValg = function(element) {
-                resetValg();
-
-                for(var i = 0; i < $scope.modalListe.length; i++) {
-                    if(element === $scope.modalListe[i]) {
-                        $scope.modalListe[i].selected = true;
-                        valgtIndex = i;
-                    }
-                }
-            };
-            $scope.oppdaterValg($scope.modalListe[0]);
-
-            $scope.ok = function() {
-                formDiagnose.diagnosetekst = $scope.modalListe[valgtIndex].displayName;
-                formDiagnose.diagnosekodeverk = $scope.modalListe[valgtIndex].codeSystemVersion;
-                $modalInstance.close();
-            };
-
-            $scope.avbryt = function() {
-                $modalInstance.dismiss('cancel');
-            };
-        };
-        template.controller.$inject = ['$scope', '$modalInstance'];
-        return $modal.open(template);
-    }
-
-    function changeStorageUnit(templateUrl, relativeUrl, storageUnit, storageUnitFormat){
+    
+    function changeStorageUnit(templateUrl, relativeUrl, storageUnit, storageUnitFormat) {
         template.templateUrl = templateUrl;
 
-        template.controller = function( $scope, $modalInstance) {
+        template.controller = function ($scope, $modalInstance) {
             $scope.storageUnitFormat = storageUnitFormat;
 
             $scope.formData = {
@@ -233,7 +171,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 "storageUnit": storageUnit
             };
 
-            $scope.save = function(){
+            $scope.save = function () {
                 var input = $scope.formData.storageUnit;
 
                 if (input.newIdentification === undefined || input.newIdentification === '') {
@@ -253,26 +191,29 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 }
 
                 httpService.update(relativeUrl, newStorageUnit)
-                    .success(function() {
+                    .then(function () {
                         $scope.formData.storageUnit.identification = newStorageUnit.identification;
                         $scope.formData.storageUnit.newIdentification = '';
 
                         $modalInstance.close();
-                    }).error(function(data, status) {
-                    if (status === 400){
-                        if (data.length > 0){
-                            var attribute = data[0].attribute;
-                            if (attribute === 'identifikator'){
-                                $scope.formData.error.identification = data[0].constraint;
+                    }, function (response) {
+                        var status = response.status;
+                        var data = response.data;
+
+                        if (status === 400) {
+                            if (data.length > 0) {
+                                var attribute = data[0].attribute;
+                                if (attribute === 'identifikator') {
+                                    $scope.formData.error.identification = data[0].constraint;
+                                }
                             }
+                        } else {
+                            errorService.errorCode(status);
                         }
-                    } else {
-                        errorService.errorCode(status);
-                    }
-                });
+                    });
             };
 
-            $scope.cancel = function(){
+            $scope.cancel = function () {
                 $modalInstance.close();
             };
         };
@@ -280,8 +221,9 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function warningFlyttLagringsenheter(tpl, relativeUrl, msg, title, desc, okFunction, uuids, identifikator){
-        template.templateUrl = tpl;
+    function warningFlyttLagringsenheter(templateUrl, relativeUrl, msg, title, desc,
+                                         okFunction, uuids, identifikator) {
+        template.templateUrl = templateUrl;
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
                 "error" : {}
@@ -296,64 +238,70 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                     lagringsenhetIdentifikator : identifikator
                 };
                 httpService.create(relativeUrl, data)
-                    .success(function() {
+                    .then(function() {
                         $modalInstance.close();
                         okFunction();
-                    }).error(function(data, status) {
-                    if (data[0].attribute==='identifikator'){
-                        $modalInstance.close();
-                        var msg = $filter('translate')('modal.FlyttLagringsenhetFeil.msg');
-                        var title = $filter('translate')('modal.FlyttLagringsenhetFeil.title');
-                        var desc = $filter('translate')('modal.FlyttLagringsenhetFeil.descr');
-                        warningMessageModal(msg, title, desc);
-                    }else{
-                        errorService.errorCode(status);
-                    }
-                });
+                    }, function(response) {
+                        var data = response.data;
+                        var status = response.status;
 
+                        if (data[0].attribute === 'identifikator') {
+                            $modalInstance.close();
+                            var msg = $filter('translate')('modal.FlyttLagringsenhetFeil.msg');
+                            var title = $filter('translate')('modal.FlyttLagringsenhetFeil.title');
+                            var desc = $filter('translate')('modal.FlyttLagringsenhetFeil.descr');
+                            warningMessageModal(msg, title, desc);
+                        } else {
+                            errorService.errorCode(status);
+                        }
+                    });
             };
 
-            $scope.avbryt = function() {
+            $scope.avbryt = function () {
                 $modalInstance.close();
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
-    function endrePassord(){
+    function endrePassord() {
         template.templateUrl = 'common/modal-service/change-password-modal.tpl.html';
         template.controller = function ($scope, $modalInstance) {
             $scope.formData = {
                 "error" : {}
             };
 
-            $scope.ok = function() {
-                $scope.formData.error.passord='';
-                if (($scope.formData.passord !== $scope.formData.passordConfirm)){
+            $scope.ok = function () {
+                $scope.formData.error.passord = '';
+
+                if (($scope.formData.passord !== $scope.formData.passordConfirm)) {
                     $scope.formData.error.passord= $filter('translate')('home.brukere.PASSORD_ULIKT');
                     return;
                 }
+
                 httpService.create("admin/oppdaterPassord", $scope.formData.passord)
-                    .success(function() {
+                    .then(function () {
                         $modalInstance.close();
-                    }).error(function(data, status) {
-                    errorService.errorCode(status);
-                });
+                    }, function (response) {
+                        errorService.errorCode(response.status);
+                    });
             };
 
-            $scope.avbryt = function() {
+            $scope.avbryt = function () {
                 $modalInstance.close();
             };
         };
         template.controller.$inject = ['$scope', '$modalInstance'];
+
         return $modal.open(template);
     }
 
-    function manageStorageUnits(templateUrl, callback, storageUnitFormat, storageUnits){
+    function manageStorageUnits(templateUrl, callback, storageUnitFormat, storageUnits) {
         template.templateUrl = templateUrl;
 
-        template.controller = function( $scope, $modalInstance){
+        template.controller = function ($scope, $modalInstance) {
             $scope.storageUnitFormat = storageUnitFormat;
 
             $scope.formData = {
@@ -361,14 +309,14 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 "storageUnits": storageUnits
             };
 
-            $scope.save = function(){
-                if ($scope.newStorageUnit()){
+            $scope.save = function () {
+                if ($scope.newStorageUnit()) {
                     callback($scope.formData);
                     $modalInstance.close();
                 }
             };
 
-            $scope.removeStorageUnit = function(unit){
+            $scope.removeStorageUnit = function (unit) {
                 for (var i = 0; i < $scope.formData.storageUnits.length; i++) {
                     if (unit === $scope.formData.storageUnits[i]) {
                         $scope.formData.storageUnits.splice(i, 1);
@@ -377,7 +325,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 }
             };
 
-            $scope.newStorageUnit = function() {
+            $scope.newStorageUnit = function () {
                 $scope.wrongFormat = undefined;
 
                 if ($scope.formData.storageUnit === undefined || $scope.formData.storageUnit === '') {
@@ -405,19 +353,19 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 return true;
             };
 
-            $scope.print = function(){
-                if ($scope.newStorageUnit()){
+            $scope.print = function () {
+                if ($scope.newStorageUnit()) {
                     callback($scope.formData);
                     httpService.get("lagringsenheter/" + $scope.formData.lagringsenheter[0] + "/print")
-                        .success(function() {
+                        .then(function () {
                             $modalInstance.close();
-                        }).error(function(data, status) {
-                        errorService.errorCode(status);
-                    });
+                        }, function (response) {
+                            errorService.errorCode(response.status);
+                        });
                 }
             };
 
-            $scope.cancel = function(){
+            $scope.cancel = function () {
                 $modalInstance.close();
             };
         };
@@ -427,23 +375,23 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         return $modal.open(template);
     }
 
-    function manageArchiveAuthors(templateUrl, callback, selectedArchiveAuthors, allArchiveAuthors){
+    function manageArchiveAuthors(templateUrl, callback, selectedArchiveAuthors, allArchiveAuthors) {
         template.templateUrl = templateUrl;
 
-        template.controller = function( $scope, $modalInstance){
+        template.controller = function ($scope, $modalInstance) {
             $scope.allArchiveAuthors = allArchiveAuthors;
             $scope.formData = {
                 "archiveAuthors": selectedArchiveAuthors
             };
 
-            $scope.save = function(){
-                if ($scope.newArchiveAuthor()){
+            $scope.save = function () {
+                if ($scope.newArchiveAuthor()) {
                     callback($scope.formData);
                     $modalInstance.close();
                 }
             };
 
-            $scope.removeArchiveAuthor = function(archiveAuthor){
+            $scope.removeArchiveAuthor = function (archiveAuthor) {
                 for (var i = 0; i < $scope.formData.archiveAuthors.length; i++) {
                     if (archiveAuthor === $scope.formData.archiveAuthors[i]) {
                         $scope.formData.archiveAuthors.splice(i, 1);
@@ -452,7 +400,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 }
             };
 
-            $scope.newArchiveAuthor = function() {
+            $scope.newArchiveAuthor = function () {
                 if ($scope.formData.archiveAuthor === undefined || $scope.formData.archiveAuthor === '') {
                     return true;
                 }
@@ -469,11 +417,84 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
                 return true;
             };
 
-            $scope.cancel = function(){
+            $scope.cancel = function () {
                 $modalInstance.close();
             };
         };
 
+        template.controller.$inject = ['$scope', '$modalInstance'];
+
+        return $modal.open(template);
+    }
+
+    function openSelectModal(templateUrl, items, validateFunction) {
+        var selectModalInstance = function ($scope, $modalInstance) {
+            $scope.items = items;
+            $scope.selected = $scope.items[0];
+            
+            function selectPrev () {
+                var list = $scope.items;
+                var selected = $scope.selected;
+                for (var i = 1; i < list.length; i++) {
+                    if (list[i] === selected) {
+                        return list[i - 1];
+                    }
+                }
+                
+                return $scope.selected;
+            }
+
+            function selectNext() {
+                var list = $scope.items;
+                var selected = $scope.selected;
+                for (var i = 0; i < list.length - 1; i++) {
+                    if (list[i] === selected) {
+                        return list[i + 1];
+                    }
+                }
+                
+                return $scope.selected;
+            }
+
+            hotkeys.bindTo($scope)
+                .add({
+                    combo: 'enter',
+                    callback: function() {
+                        $scope.ok();
+                    }
+                })
+                .add({
+                    combo: 'up',
+                    callback: function() {
+                        $scope.selected = selectPrev();
+                    }
+                })
+                .add({
+                    combo: 'down',
+                    callback: function() {
+                        $scope.selected = selectNext();
+                    }
+                });
+            
+            $scope.updateSelected = function (item) {
+                $scope.selected = item;
+            };
+
+            $scope.ok = function () {
+                if (validateFunction) {
+                    validateFunction();
+                }
+                
+                $modalInstance.close($scope.selected);
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+
+        template.templateUrl = templateUrl;
+        template.controller = selectModalInstance;
         template.controller.$inject = ['$scope', '$modalInstance'];
 
         return $modal.open(template);
@@ -485,13 +506,12 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
         endreModal : endreModal,
         warningModal : warningModal,
         warningMessageModal : warningMessageModal,
-        velgModal : velgModal,
         manageStorageUnits : manageStorageUnits,
         manageArchiveAuthors : manageArchiveAuthors,
         warningFlyttLagringsenheter : warningFlyttLagringsenheter,
         changeStorageUnit : changeStorageUnit,
-        endrePassord : endrePassord
-
+        endrePassord : endrePassord,
+        openSelectModal : openSelectModal
     };
 
 }

@@ -10,8 +10,13 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Stateless
 public class TransferDAO extends EntityDAO<Transfer> {
@@ -23,7 +28,7 @@ public class TransferDAO extends EntityDAO<Transfer> {
     @Override
     public Transfer fetchById(final String id) {
         final String queryString = "SELECT t "
-            + "FROM Transfer t " 
+            + "FROM Transfer t "
             + "WHERE t.transferId = :id ";
 
         final TypedQuery<Transfer> query = getEntityManager().createQuery(queryString, Transfer.class);
@@ -34,14 +39,14 @@ public class TransferDAO extends EntityDAO<Transfer> {
 
     @Override
     public Transfer delete(final String id) {
-        final String queryString = "SELECT COUNT(mr) " 
-            + "FROM Transfer t " 
-            + "LEFT JOIN t.medicalRecords mr " 
+        final String queryString = "SELECT COUNT(mr) "
+            + "FROM Transfer t "
+            + "LEFT JOIN t.medicalRecords mr "
             + "WHERE (mr.deleted IS NULL OR mr.deleted = FALSE) "
             + "AND t.transferId = :id ";
         final TypedQuery<Long> query = getEntityManager().createQuery(queryString, Long.class);
         query.setParameter("id", id);
-        
+
         final Long size = query.getSingleResult();
 
         // Cannot delete non-empty transfers
@@ -84,21 +89,41 @@ public class TransferDAO extends EntityDAO<Transfer> {
     }
 
     public final String fetchFirstTransferIdFromStorageUnit(final String storageUnitId) {
-        final String queryString = "SELECT DISTINCT t.transferId " 
-            + "FROM Transfer t " 
-            + "INNER JOIN t.medicalRecords mr " 
+        final String queryString = "SELECT DISTINCT t.transferId "
+            + "FROM Transfer t "
+            + "INNER JOIN t.medicalRecords mr "
             + "INNER JOIN mr.storageUnits st "
             + "WHERE st.uuid = :id  ";
-        final TypedQuery query = getEntityManager().createQuery(queryString, String.class);
+        final TypedQuery<String> query = getEntityManager().createQuery(queryString, String.class);
         query.setParameter("id", storageUnitId);
 
-        final List result = query.getResultList();
+        final List<String> result = query.getResultList();
 
         if (result.isEmpty()) {
             return null;
         }
 
-        return result.get(0).toString();
+        return result.get(0);
     }
 
+    @Override
+    protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
+                                            final CriteriaBuilder criteriaBuilder,
+                                            final Root<Transfer> root) {
+        final List<Predicate> predicates = new ArrayList<>();
+
+        queryParameters.forEach((key, value) -> {
+            if ("locked".equals(key)) {
+                final Predicate boolPredicate;
+                if ("true".equals(value)) {
+                    boolPredicate = criteriaBuilder.isTrue(root.get("locked"));
+                } else {
+                    boolPredicate = criteriaBuilder.isFalse(root.get("locked"));
+                }
+                predicates.add(boolPredicate);
+            }
+        });
+
+        return predicates.toArray(new Predicate[0]);
+    }
 }

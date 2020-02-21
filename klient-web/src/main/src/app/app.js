@@ -1,26 +1,26 @@
 angular.module('nha', [
-    'templates-app',
-    'templates-common',
-    'ui.router',
-    'cfp.hotkeys',
-    'tableSort',
-    'underscore',
-    'pascalprecht.translate',
-    'nha.common.error-service',
-    'nha.common.http-service',
-    'nha.common.modal-service',
-    'nha.common.list-service',
-    'nha.common.list-view',
-    'nha.common.diagnosis-service',
-    'nha.home',
-    'nha.state',
-    'nha.register',
-    'nha.register.register-service',
-    'ngCookies',
-    'ngIdle'
-])
-
-    .config(function myAppConfig($stateProvider, $urlRouterProvider, $translateProvider, $httpProvider, IdleProvider, KeepaliveProvider) {
+        'templates-app',
+        'templates-common',
+        'ui.router',
+        'cfp.hotkeys',
+        'tableSort',
+        'underscore',
+        'pascalprecht.translate',
+        'nha.common.error-service',
+        'nha.common.http-service',
+        'nha.common.modal-service',
+        'nha.common.list-service',
+        'nha.common.list-view',
+        'nha.common.diagnosis-service',
+        'nha.home',
+        'nha.state',
+        'nha.register',
+        'nha.register.register-service',
+        'ngCookies',
+        'ngIdle'
+    ])
+    .config(function myAppConfig($stateProvider, $urlRouterProvider, $translateProvider, $httpProvider,
+                                 IdleProvider, KeepaliveProvider) {
 
         $urlRouterProvider.otherwise('/');
         $httpProvider.defaults.withCredentials = true;
@@ -32,7 +32,7 @@ angular.module('nha', [
         $translateProvider.preferredLanguage('nb');
 
         IdleProvider.idle(10); //idle starts after 10 seconds.
-        IdleProvider.timeout(30*60); //after 30 minutes idle, time the user out
+        IdleProvider.timeout(30 * 60); //after 30 minutes idle, time the user out
         KeepaliveProvider.interval(30); //10 sec ping interval for keep-alive ping
     })
 
@@ -75,19 +75,19 @@ angular.module('nha', [
         return {
             restrict: 'A',
             link: function($scope, $element, $attr) {
-                if ($attr.ngShow){
-                    $scope.$watch($attr.ngShow, function(newValue){
-                        if(newValue){
-                            $timeout(function(){
+                if ($attr.ngShow) {
+                    $scope.$watch($attr.ngShow, function (newValue) {
+                        if (newValue) {
+                            $timeout(function () {
                                 $element[0].focus();
                             }, 0);
                         }
                     });
                 }
-                if ($attr.ngHide){
-                    $scope.$watch($attr.ngHide, function(newValue){
-                        if(!newValue){
-                            $timeout(function(){
+                if ($attr.ngHide) {
+                    $scope.$watch($attr.ngHide, function (newValue) {
+                        if (!newValue) {
+                            $timeout(function () {
                                 $element[0].focus();
                             }, 0);
                         }
@@ -121,11 +121,10 @@ angular.module('nha', [
             restrict: 'A',
             link: function($scope, element, attrs) {
                 var prevDisp = element.css('display');
-                $rootScope.$watch('userrole', function(role) {
-                    if(role==="admin"){
+                $rootScope.$watch('userrole', function (role) {
+                    if (role === "admin") {
                         element.css('display', prevDisp);
-                    }
-                    else{
+                    } else {
                         element.css('display', 'none');
                     }
                 });
@@ -140,7 +139,7 @@ angular.module('nha', [
                 var elem = $elem[0];
 
                 // wait for data to load and then transform the table
-                $scope.$watch(tableDataLoaded, function(isTableDataLoaded) {
+                $scope.$watch(tableDataLoaded, function (isTableDataLoaded) {
                     if (isTableDataLoaded) {
                         transformTable();
                     }
@@ -160,22 +159,25 @@ angular.module('nha', [
                     // wrap in $timeout to give table a chance to finish rendering
                     $timeout(function () {
                         // set widths of columns
-                        angular.forEach(elem.querySelectorAll('tr:first-child th'), function (thElem, i) {
+                        angular.forEach(elem.querySelectorAll('tr:first-child th'),
+                            function (thElem, i) {
 
-                            var tdElems = elem.querySelector('tbody tr:first-child td:nth-child(' + (i + 1) + ')');
-                            var tfElems = elem.querySelector('tfoot tr:first-child td:nth-child(' + (i + 1) + ')');
+                                var tdElems = elem.querySelector('tbody tr:first-child td:nth-child(' +
+                                    (i + 1) + ')');
+                                var tfElems = elem.querySelector('tfoot tr:first-child td:nth-child(' +
+                                    (i + 1) + ')');
 
-                            var columnWidth = tdElems ? tdElems.offsetWidth : thElem.offsetWidth;
-                            if (tdElems) {
-                                tdElems.style.width = columnWidth + 'px';
-                            }
-                            if (thElem) {
-                                thElem.style.width = columnWidth + 'px';
-                            }
-                            if (tfElems) {
-                                tfElems.style.width = columnWidth + 'px';
-                            }
-                        });
+                                var columnWidth = tdElems ? tdElems.offsetWidth : thElem.offsetWidth;
+                                if (tdElems) {
+                                    tdElems.style.width = columnWidth + 'px';
+                                }
+                                if (thElem) {
+                                    thElem.style.width = columnWidth + 'px';
+                                }
+                                if (tfElems) {
+                                    tfElems.style.width = columnWidth + 'px';
+                                }
+                            });
 
                         // set css styles on thead and tbody
                         angular.element(elem.querySelectorAll('thead, tfoot')).css('display', 'block');
@@ -201,7 +203,7 @@ angular.module('nha', [
         };
     })
 
-    .run(function(Idle){
+    .run(function (Idle) {
         // start watching when the app runs. also starts the Keepalive service by default.
         Idle.watch();
     })
@@ -222,7 +224,7 @@ angular.module('nha', [
         });
 
         $scope.$on('IdleTimeout', function() {
-            console.log("User timed-out...");
+            // console.log("User timed-out...");
             // the user has timed out (meaning idleDuration + timeout has passed without any activity)
             // this is where you'd log them
             httpService.logout();
