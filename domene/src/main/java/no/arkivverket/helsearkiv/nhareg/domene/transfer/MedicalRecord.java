@@ -178,7 +178,7 @@ public class MedicalRecord implements Serializable {
     private Set<ArchiveAuthor> archiveAuthors;
     
     @XmlTransient
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinTable(name = "avlevering_pasientjournal",
         joinColumns = @JoinColumn(name = "pasientjournal_uuid"),
         inverseJoinColumns = @JoinColumn(name = "Avlevering_avleveringsidentifikator")

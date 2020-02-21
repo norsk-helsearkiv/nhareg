@@ -28,6 +28,109 @@ public class MedicalRecordServiceTest {
     private MedicalRecordServiceInterface medicalRecordService;
 
     @Test
+    public void create_validRecord_shouldReturnRecord() {
+        final MedicalRecordDTO medicalRecordDTO = generateDTO();
+        
+        final MedicalRecordDTO createdDTO = medicalRecordService.create(medicalRecordDTO, USERNAME);
+        
+        assertNotNull(createdDTO);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_invalidPID_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setPid("invalid");
+        
+        medicalRecordService.create(recordDTO, USERNAME);        
+    }
+    
+    @Test(expected = ValidationErrorException.class)
+    public void create_bornAfterDead_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setBorn("01.01.2000");
+        recordDTO.setDead("1950");
+        
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+    
+    @Test(expected = ValidationErrorException.class)
+    public void create_bornBeforeLowLim_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setBorn("01.01.1790");
+        recordDTO.setDead("1850");
+        
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_deadBeforeLowLim_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setBorn("ukjent");
+        recordDTO.setDead("1790");
+
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+    
+    @Test(expected = ValidationErrorException.class)
+    public void create_deadWithinWaitLim_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setBorn("01.01.1970");
+        recordDTO.setDead("2020");
+        
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+    
+    @Test(expected = ValidationErrorException.class)
+    public void create_aboveMaxAge_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setBorn("01.01.1850");
+        recordDTO.setDead("2000");
+
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_firstContactBeforeBorn_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setFirstContact("01.01.1940");
+        
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_firstContactAfterDead_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setLastContact("01.01.2001");
+
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_lastContactBeforeBorn_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setLastContact("01.01.1900");
+        
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_lastContactAfterDead_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setLastContact("01.01.2001");
+        
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+
+    @Test(expected = ValidationErrorException.class)
+    public void create_firstContactAfterLastContact_shouldThrowValidationError() {
+        final MedicalRecordDTO recordDTO = generateDTO();
+        recordDTO.setFirstContact("01.01.1970");
+        recordDTO.setLastContact("01.01.1960");
+
+        medicalRecordService.create(recordDTO, USERNAME);
+    }
+    
+    @Test
     public void getByIdWithTransfer_shouldReturnThreeStorageUnits() {
         final MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid1");
         assertEquals("Hunden Fido", medicalRecordDTO.getName());
@@ -36,7 +139,7 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void updateMedicalRecord_newRecordNumber() {
-        MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid2");
+        MedicalRecordDTO medicalRecordDTO = medicalRecordService.getByIdWithTransfer("uuid3");
         medicalRecordDTO.setRecordNumber("12345");
         final MedicalRecordDTO updated = medicalRecordService.update(medicalRecordDTO, USERNAME);
 
@@ -75,10 +178,25 @@ public class MedicalRecordServiceTest {
 
     @Test
     public void delete_validId_shouldSetDeletedToTrue() {
-        final MedicalRecordDTO recordDTO = medicalRecordService.delete("uuid3", USERNAME);
-        
-        assertNotNull(recordDTO);
-        assertEquals(true, recordDTO.getDeleted());
+        final MedicalRecordDTO deletedDTO = medicalRecordService.delete("uuid3", USERNAME);
+
+        assertNotNull(deletedDTO);
+        assertEquals(true, deletedDTO.getDeleted());
     }
-    
+
+    private MedicalRecordDTO generateDTO() {
+        final String[] storageUnits = new String[] { "testboks" };
+        return MedicalRecordDTO.builder()
+                               .uuid("test-generated")
+                               .name("test")
+                               .storageUnits(storageUnits)
+                               .fanearkid(635371878549L)
+                               .pid("01030182134")
+                               .gender("M")
+                               .born("01.01.1945")
+                               .dead("01.01.2000")
+                               .transferId("Avlevering-1")
+                               .build();
+    }
+
 }

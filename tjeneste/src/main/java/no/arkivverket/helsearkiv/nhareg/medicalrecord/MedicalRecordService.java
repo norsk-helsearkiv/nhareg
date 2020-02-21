@@ -73,13 +73,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Save record
         medicalRecordDAO.create(medicalRecord);
 
-        // Add record to transfer
-        transfer.getMedicalRecords().add(medicalRecord);
         transfer.setUpdateInfo(createUpdateInfo(username));
 
         final MedicalRecordDTO createdRecord = medicalRecordConverter.toMedicalRecordDTO(medicalRecord);
-        createdRecord.setTransferId(transfer.getTransferId());
-        createdRecord.setTransferLocked(transfer.isLocked());
 
         // Update the users last used storage unit
         final StorageUnit storageUnit = storageUnits.iterator().next();
