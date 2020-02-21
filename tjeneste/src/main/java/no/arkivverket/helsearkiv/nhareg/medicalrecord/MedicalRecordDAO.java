@@ -31,6 +31,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
             + "LEFT JOIN FETCH mr.storageUnits "
             + "LEFT JOIN FETCH mr.diagnosis " 
             + "LEFT JOIN FETCH mr.archiveAuthors " 
+            + "LEFT JOIN FETCH mr.transfer " 
             + "WHERE mr.uuid = :id ";
         final TypedQuery<MedicalRecord> query = getEntityManager().createQuery(queryString, MedicalRecord.class);
         query.setParameter("id", id);

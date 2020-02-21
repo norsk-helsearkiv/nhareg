@@ -7,6 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
@@ -116,6 +117,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         medicalRecordDTO.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
         medicalRecordDTO.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
         medicalRecordDTO.setDeleted(medicalRecord.getDeleted());
+        medicalRecordDTO.setTransferLocked(medicalRecord.getTransfer().isLocked());
 
         final String fanearkid = medicalRecord.getFanearkid();
         if (fanearkid != null && !fanearkid.isEmpty()) {
@@ -167,6 +169,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         recordTransferDTO.setPid(medicalRecord.getPid());
         recordTransferDTO.setRecordNumber(medicalRecord.getRecordNumber());
         recordTransferDTO.setSerialNumber(medicalRecord.getSerialNumber());
+        recordTransferDTO.setTransferLocked(medicalRecord.getTransfer().isLocked());
 
         final String fanearkid = medicalRecord.getFanearkid();
         if (fanearkid != null && !fanearkid.isEmpty()) {
