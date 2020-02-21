@@ -8,7 +8,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.transfer.wrapper.ValidationError;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -82,30 +81,28 @@ public class TransferDAO extends EntityDAO<Transfer> {
             + "LEFT JOIN FETCH p.storageUnits l "
             + "WHERE l.id = :id ";
 
-        final Query query = getEntityManager().createQuery(select);
+        final TypedQuery<Transfer> query = getEntityManager().createQuery(select, Transfer.class);
         query.setParameter("id", id);
 
-        return (Transfer) query.getSingleResult();
+        return query.getSingleResult();
     }
 
-    public final String fetchFirstTransferIdFromStorageUnit(final String storageUnitId) {
+    public String fetchFirstTransferIdFromStorageUnit(final String storageUnitId) {
         final String queryString = "SELECT DISTINCT t.transferId "
             + "FROM Transfer t "
             + "INNER JOIN t.medicalRecords mr "
-            + "INNER JOIN mr.storageUnits st "
-            + "WHERE st.uuid = :id  ";
+            + "INNER JOIN mr.storageUnits su "
+            + "WHERE su.id = :id ";
         final TypedQuery<String> query = getEntityManager().createQuery(queryString, String.class);
         query.setParameter("id", storageUnitId);
 
-        final List<String> result = query.getResultList();
-
-        if (result.isEmpty()) {
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException ignored) {
             return null;
         }
-
-        return result.get(0);
     }
-
+    
     @Override
     protected Predicate[] extractPredicates(final Map<String, String> queryParameters,
                                             final CriteriaBuilder criteriaBuilder,
@@ -126,4 +123,5 @@ public class TransferDAO extends EntityDAO<Transfer> {
 
         return predicates.toArray(new Predicate[0]);
     }
+
 }

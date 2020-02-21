@@ -2,6 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.domene.transfer.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.constraint.DateOrYearConstraint;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MedicalRecordDTO implements Serializable {

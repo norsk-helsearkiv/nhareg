@@ -18,7 +18,8 @@ public class DateValidation {
     private final List<String> validMors = Arrays.asList("mors", "m", "M");
     private final List<String> validUnknown = Arrays.asList("ukjent", "u", "U");
 
-    public List<ValidationError> validateDiagnosis(final DiagnosisDTO diagnosis, final MedicalRecord medicalRecord) {
+    public List<ValidationError> validateDiagnosis(final DiagnosisDTO diagnosis,
+                                                   final MedicalRecord medicalRecord) {
         final List<ValidationError> validationErrors = new ArrayList<>();
         final Boolean bornDateUnknown = medicalRecord.getBornDateUnknown();
         final Boolean deathDateUnknown = medicalRecord.getDeathDateUnknown();
@@ -131,7 +132,6 @@ public class DateValidation {
             if (pid == null || pid.isEmpty()) {
                 if (check(personBorn)) {
                     final LocalDate born = getDate(personBorn);
-
                     if (born.isBefore(lowLim) || born.isAfter(maxLim)) {
                         errors.add(new ValidationError("fodt", "UtenforGyldigPeriode",
                                                        "Person born outside valid period."));
@@ -228,7 +228,7 @@ public class DateValidation {
     //skjema 02d
     private List<ValidationError> recordDateKnownBornAndMors(final MedicalRecordDTO medicalRecordDTO,
                                                              final LocalDate lowLim,
-                                                             final LocalDate maxLim){
+                                                             final LocalDate maxLim) {
         final ArrayList<ValidationError> validationErrors = new ArrayList<>();
         final String deadString = medicalRecordDTO.getDead();
         final String bornString = medicalRecordDTO.getBorn();
@@ -335,8 +335,8 @@ public class DateValidation {
         }
     }
    
-    private LocalDate getDate(final String dato) {
-        return ValidDateFormats.getDate(dato);
+    private LocalDate getDate(final String date) {
+        return ValidDateFormats.getDate(date);
     }
 
     private boolean check(final String validationString) {
@@ -346,7 +346,6 @@ public class DateValidation {
             validationString.toLowerCase().equals("m") ||
             validationString.toLowerCase().equals("ukjent") ||
             validationString.toLowerCase().equals("u"))  {
-
             return false;
         }
 
@@ -358,7 +357,7 @@ public class DateValidation {
             return false;
         }
 
-        return (mors.toLowerCase().equals(other));
+        return mors.toLowerCase().equals(other);
     }
 
 }

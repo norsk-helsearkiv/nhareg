@@ -10,10 +10,12 @@ public class FanearkidValidation {
         
         if (fieldLength != null) {
             if (fanearkid == null) {
-                return new ValidationError("fanearkid", "FeilFanearkidNull", "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
+                return new ValidationError("fanearkid", "FeilFanearkidNull",
+                                           "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
             }
             if (fanearkid.toString().length() != fieldLength) {
-                return new ValidationError("fanearkid", "FeilFanearkid", "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
+                return new ValidationError("fanearkid", "FeilFanearkid",
+                                           "{fanearkidfeltlengde :" + fieldLength.toString() + "}");
             }
         }
         

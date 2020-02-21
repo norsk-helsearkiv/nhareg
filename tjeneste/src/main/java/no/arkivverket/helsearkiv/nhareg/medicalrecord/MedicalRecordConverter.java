@@ -48,7 +48,8 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final String dead = medicalRecordDTO.getDead();
         final String firstContact = medicalRecordDTO.getFirstContact();
         final String lastContact = medicalRecordDTO.getLastContact();
-        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(medicalRecordDTO.getArchiveAuthors());
+        final Set<ArchiveAuthorDTO> archiveAuthors = medicalRecordDTO.getArchiveAuthors();
+        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(archiveAuthors);
 
         medicalRecord.setArchiveAuthors(authors);
         medicalRecord.setUuid(uuid);

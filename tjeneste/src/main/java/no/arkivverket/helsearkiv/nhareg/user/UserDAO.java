@@ -33,7 +33,7 @@ public class UserDAO extends EntityDAO<User> {
         return query.getResultList();
     }
 
-    public void updateStorageUnit(final String username, final String storageUnit) {
+    public void updateLastUsedStorageUnit(final String username, final String storageUnit) {
         final User user = fetchById(username);
         user.setStorageUnit(storageUnit);
       
