@@ -154,7 +154,6 @@ angular.module('nha.register', [
                 $scope.feilTekster['FeilFodselsnummer'] = value;
             }
         );
-
         $scope.$watch(
             function () {
                 return $filter('translate')('formError.FeilFanearkid');
@@ -276,7 +275,7 @@ angular.module('nha.register', [
             }
         );
 
-        httpService.getAll("admin/century", false)
+        httpService.getAll("config/century", false)
             .then(function (response) {
                 $scope.century = response.data;
             }, function (response) {
@@ -290,8 +289,17 @@ angular.module('nha.register', [
                 errorService.errorCode(response.status);
             });
 
+        httpService.get("config/fanearkid")
+            .then(function (response) {
+                $scope.fanearkidMaxLength = response.data;
+            }, function () {
+                // Default to 12.
+                $scope.fanearkidMaxLength = 12;
+            });
+
         $scope.formData = {
-            lagringsenheter: []
+            lagringsenheter: [],
+            fanearkid: null
         };
 
         $scope.formDiagnose = {};
@@ -315,7 +323,8 @@ angular.module('nha.register', [
             }
 
             httpService.lastUsedStorageUnit()
-                .success(function (data) {
+                .then(function (response) {
+                    var data = response.data;
                     if ($scope.formData.lagringsenheter.length === 0 && data) {
                         $scope.formData.lagringsenheter.push(data);
                     }
@@ -338,6 +347,8 @@ angular.module('nha.register', [
                                 break;
                         }
                     });
+                }, function () {
+                    // ignored
                 });
         };
 
@@ -348,11 +359,11 @@ angular.module('nha.register', [
 
             var modal = modalService.manageArchiveAuthors('common/modal-service/archive-author-modal.tpl.html',
                 function () {
-                //TODO, callback for NHA-038
+                    //TODO, callback for NHA-038
                 },
                 $scope.formData.archiveAuthors,
                 $scope.allArchiveAuthors);
-            
+
             modal.result.then(function () {
                 switch ($scope.formData.fanearkid) {
                     case undefined:

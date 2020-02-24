@@ -57,9 +57,10 @@
                            data-ng-class="{error: error['fanearkid'] !== undefined }">
                         Fanearkid
                     </label>
-                    <input type="number" oninput="this.value = this.value.slice(0, this.maxLength)" 
-                           min="0" maxlength="12" 
-                           id="fanearkidInput" class="form-control" placeholder="Fanearkid..." 
+                    <input type="number" disable-number-change
+                           oninput="this.value = this.value.slice(0, this.maxLength)"
+                           min="0" maxlength="{{ fanearkidMaxLength }}"
+                           id="fanearkidInput" class="form-control hide-arrows" placeholder="Fanearkid..."
                            data-ng-model="formData.fanearkid" data-ng-enter="nyEllerOppdater()">
                 </div>
                 <!-- Journalnummer -->
@@ -165,7 +166,6 @@
                            data-ng-model="formData.merknad" data-ng-enter="nyEllerOppdater()">
                 </div>
             </div>
-
         </div>
         <div class="row">
             <button type="submit" class="btn btn-primary right" ng-hide="medicalRecordDTO.avleveringLaast" 
@@ -286,12 +286,10 @@
                 </tbody>
             </table>
         </div>
-
         <button class="btn btn-default" data-ng-click="navHome()">{{ 'home.TILBAKE' | translate }}</button>
         <button class="right btn btn-success" ng-hide="medicalRecordDTO.avleveringLaast" data-ng-click="nyJournal()" 
                 data-ng-show="state !== 0">
             {{ 'common.ADD' | translate }}
         </button>
-
     </div>
 </div>
