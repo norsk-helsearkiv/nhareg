@@ -101,9 +101,9 @@ public class StorageUnitService implements StorageUnitServiceInterface {
 
     @Override
     public void printMedicalRecord(final String id, final String username) {
-        final StorageUnit storageUnit = storageUnitDAO.fetchById(id);
+        final StorageUnit storageUnit = storageUnitDAO.fetchByIdentifier(id);
         final Integer medicalRecordCount = storageUnitDAO.fetchCountOfRecordsForStorageUnit(id);
-        final String firstTransferId = transferDAO.fetchFirstTransferIdFromStorageUnit(storageUnit.getUuid());
+        final String firstTransferId = transferDAO.fetchFirstTransferIdFromStorageUnit(storageUnit.getId());
         final Transfer transfer = transferDAO.fetchById(firstTransferId);
         final User user = userDAO.fetchById(username);
 

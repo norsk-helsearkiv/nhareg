@@ -356,7 +356,7 @@ function modalService($modal, httpService, errorService, hotkeys, $filter) {
             $scope.print = function () {
                 if ($scope.newStorageUnit()) {
                     callback($scope.formData);
-                    httpService.get("lagringsenheter/" + $scope.formData.lagringsenheter[0] + "/print")
+                    httpService.get("lagringsenheter/" + $scope.formData.storageUnits[0] + "/print")
                         .then(function () {
                             $modalInstance.close();
                         }, function (response) {

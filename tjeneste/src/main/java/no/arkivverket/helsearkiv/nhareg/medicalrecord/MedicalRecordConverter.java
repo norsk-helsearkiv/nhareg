@@ -7,6 +7,7 @@ import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverter;
 import no.arkivverket.helsearkiv.nhareg.diagnosis.DiagnosisConverterInterface;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.ArchiveAuthorDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.DiagnosisDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.RecordTransferDTO;
@@ -48,7 +49,8 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         final String dead = medicalRecordDTO.getDead();
         final String firstContact = medicalRecordDTO.getFirstContact();
         final String lastContact = medicalRecordDTO.getLastContact();
-        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(medicalRecordDTO.getArchiveAuthors());
+        final Set<ArchiveAuthorDTO> archiveAuthors = medicalRecordDTO.getArchiveAuthors();
+        final Set<ArchiveAuthor> authors = archiveAuthorConverter.toArchiveAuthorSet(archiveAuthors);
 
         medicalRecord.setArchiveAuthors(authors);
         medicalRecord.setUuid(uuid);
@@ -116,6 +118,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         medicalRecordDTO.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
         medicalRecordDTO.setDeleted(medicalRecord.getDeleted());
 
+        final Transfer transfer = medicalRecord.getTransfer();
+        if (transfer != null) {
+            medicalRecordDTO.setTransferLocked(transfer.isLocked());
+            medicalRecordDTO.setTransferId(transfer.getTransferId());
+        }
+
         final String fanearkid = medicalRecord.getFanearkid();
         if (fanearkid != null && !fanearkid.isEmpty()) {
             medicalRecordDTO.setFanearkid(Long.parseLong(fanearkid));
@@ -166,6 +174,7 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         recordTransferDTO.setPid(medicalRecord.getPid());
         recordTransferDTO.setRecordNumber(medicalRecord.getRecordNumber());
         recordTransferDTO.setSerialNumber(medicalRecord.getSerialNumber());
+        recordTransferDTO.setTransferLocked(medicalRecord.getTransfer().isLocked());
 
         final String fanearkid = medicalRecord.getFanearkid();
         if (fanearkid != null && !fanearkid.isEmpty()) {

@@ -62,7 +62,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final String uuid = UUID.randomUUID().toString();
         medicalRecord.setUuid(uuid);
 
-        createAndAttachStorageUnits(medicalRecord.getStorageUnits());
+        final Set<StorageUnit> storageUnits = medicalRecord.getStorageUnits();
+        validateStorageUnits(storageUnits, transfer.getTransferId());
+        createAndAttachStorageUnits(storageUnits);
 
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
         medicalRecord.setCreatedDate(LocalDateTime.now());
@@ -71,19 +73,15 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Save record
         medicalRecordDAO.create(medicalRecord);
 
-        // Add record to transfer
-        transfer.getMedicalRecords().add(medicalRecord);
         transfer.setUpdateInfo(createUpdateInfo(username));
 
         final MedicalRecordDTO createdRecord = medicalRecordConverter.toMedicalRecordDTO(medicalRecord);
-        createdRecord.setTransferId(transfer.getTransferId());
-        createdRecord.setTransferLocked(transfer.isLocked());
 
         // Update the users last used storage unit
-        final StorageUnit storageUnit = medicalRecord.getStorageUnits().iterator().next();
+        final StorageUnit storageUnit = storageUnits.iterator().next();
         final String storageUnitId = storageUnit.getId();
         if (storageUnitId != null && !storageUnitId.isEmpty()) {
-            userDAO.updateStorageUnit(username, storageUnitId);
+            userDAO.updateLastUsedStorageUnit(username, storageUnitId);
         }
 
         return createdRecord;
@@ -100,7 +98,9 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
 
         // Converting
         final MedicalRecord medicalRecord = medicalRecordConverter.fromMedicalRecordDTO(medicalRecordDTO);
-        createAndAttachStorageUnits(medicalRecord.getStorageUnits());
+        final Set<StorageUnit> storageUnits = medicalRecord.getStorageUnits();
+        validateStorageUnits(storageUnits, transfer.getTransferId());
+        createAndAttachStorageUnits(storageUnits);
         medicalRecord.setUpdateInfo(createUpdateInfo(username));
         medicalRecord.setTransfer(transfer);
 
@@ -210,13 +210,6 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         final Integer maxAge = configurationDAO.getInt(ConfigurationDAO.CONFIG_MAXAGE);
         validationErrors.addAll(dateValidation.validate(medicalRecordDTO, lowLim, waitLim, maxAge));
 
-        final ValidationError pidError = PIDValidation.validate(medicalRecordDTO);
-        if (pidError != null) {
-            if (!validationErrors.contains(pidError)) {
-                validationErrors.add(pidError);
-            }
-        }
-
         final Integer fieldLength = configurationDAO.getInt(ConfigurationDAO.CONFIG_FANEARKID);
         final ValidationError fanearkidError = FanearkidValidation.validate(medicalRecordDTO, fieldLength);
         if (fanearkidError != null) {
@@ -231,7 +224,7 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
                 validationErrors.add(new ValidationError("fanearkid", "NotUnique"));
             }
         }
- 
+
         if (validationErrors.size() > 0) {
             throw new ValidationErrorException(validationErrors);
         }
@@ -241,11 +234,31 @@ public class MedicalRecordService implements MedicalRecordServiceInterface {
         // Create new storage units, ignores existing units
         storageUnits.forEach(storageUnitDAO::create);
 
-        final Set<StorageUnit> existingStorageUnits = storageUnits.stream()
-                                                                  .map(unit -> storageUnitDAO.fetchByIdentifier(unit.getId()))
-                                                                  .collect(Collectors.toSet());
+        final Set<StorageUnit> existingStorageUnits =
+            storageUnits.stream()
+                        .map(unit -> storageUnitDAO.fetchByIdentifier(unit.getId()))
+                        .collect(Collectors.toSet());
         storageUnits.clear();
         storageUnits.addAll(existingStorageUnits);
+    }
+
+    private void validateStorageUnits(final Set<StorageUnit> storageUnits, final String transferId) {
+        storageUnits.forEach(unit -> checkStorageUnitInTransfer(transferId, unit.getId()));
+    }
+
+    /**
+     * Checks if the storage unit exists in another transfer.
+     * @param transferId Id of the current transfer.
+     * @param unitId UUID of the storage unit that is checked.
+     * @throws ValidationErrorException if the storage unit exists in another transfer.
+     */
+    private void checkStorageUnitInTransfer(final String transferId, final String unitId) {
+        final String transferIdFromStorageUnit = transferDAO.fetchFirstTransferIdFromStorageUnit(unitId);
+        if (transferIdFromStorageUnit != null && !transferId.equals(transferIdFromStorageUnit)) {
+            final ValidationError validationError =
+                new ValidationError("storageUnits", "AnotherTransfer");
+            throw new ValidationErrorException(Collections.singleton(validationError));
+        }
     }
 
     private UpdateInfo createUpdateInfo(final String username) {

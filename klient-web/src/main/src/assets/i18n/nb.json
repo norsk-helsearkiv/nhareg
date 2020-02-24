@@ -246,7 +246,8 @@
     "NationalIdentityDoesNotExist": "Fødselsnummeret finnes ikke i LMR",
     "IsLocked": "Avleveringen er låst",
     "Delete": "Kunne ikke slette, entitet kan være i bruk",
-    "HasChildren": "Objektet er ikke tomt"
+    "HasChildren": "Objektet er ikke tomt",
+    "AnotherTransfer": "Lagringsenheten finnes i en annen avlevering"
   },
   "attributes" :  {
     "born" : "fodt",
@@ -261,7 +262,9 @@
     "recordNumber" : "journalnummer",
     "serialNumber" : "lopenummer",
     "diagnosisDate" : "diagnosedato",
-    "agreementDate" : "avtaledato"
+    "agreementDate" : "avtaledato",
+    "storageUnits" :  "lagringsenheter",
+    "transfer": "Avlevering"
   },
   "konfig": {
     "ANTALL": "15"

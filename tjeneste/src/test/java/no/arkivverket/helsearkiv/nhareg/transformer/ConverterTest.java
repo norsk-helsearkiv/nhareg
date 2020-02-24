@@ -2,10 +2,7 @@ package no.arkivverket.helsearkiv.nhareg.transformer;
 
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverter;
 import no.arkivverket.helsearkiv.nhareg.common.DateOrYearConverterInterface;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.DateOrYear;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.Gender;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.MedicalRecord;
-import no.arkivverket.helsearkiv.nhareg.domene.transfer.StorageUnit;
+import no.arkivverket.helsearkiv.nhareg.domene.transfer.*;
 import no.arkivverket.helsearkiv.nhareg.domene.transfer.dto.MedicalRecordDTO;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverter;
 import no.arkivverket.helsearkiv.nhareg.medicalrecord.MedicalRecordConverterInterface;
@@ -103,6 +100,7 @@ public class ConverterTest {
         medicalRecord.setBorn(getDate());
         medicalRecord.setFirstContact(getDate());
         medicalRecord.setLastContact(getDate());
+        medicalRecord.setTransfer(new Transfer());
 
         storageUnit.setId("Boks1");
         storageUnit.setUuid("lagring-1-boks-1");

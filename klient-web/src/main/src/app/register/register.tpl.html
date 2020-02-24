@@ -250,7 +250,8 @@
                 <tbody>
                 <tr data-ng-repeat="diagnose in medicalRecordDTO.diagnoser" ts-repeat>
                     <td>
-                        <button class="icon icon-delete" data-ng-click="fjernDiagnose(diagnose)"
+                        <button class="icon icon-delete" ng-hide="medicalRecordDTO.avleveringLaast"
+                                data-ng-click="fjernDiagnose(diagnose)"
                                 tooltip="{{text.tooltip.deleteElement}}"></button>
                     </td>
                     <td>

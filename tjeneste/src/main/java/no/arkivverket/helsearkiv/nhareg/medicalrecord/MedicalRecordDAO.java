@@ -196,7 +196,8 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         }
     }
 
-    private Predicate createDateTimePredicate(final CriteriaBuilder criteriaBuilder, final Path path, final String key) {
+    private Predicate createDateTimePredicate(final CriteriaBuilder criteriaBuilder, final Path path, 
+                                              final String key) {
         final ParameterExpression<LocalDateTime> dateStart = criteriaBuilder.parameter(LocalDateTime.class, key);
         final ParameterExpression<LocalDateTime> dateEnd = criteriaBuilder.parameter(LocalDateTime.class, key + "End");
 
