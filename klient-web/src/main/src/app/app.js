@@ -71,7 +71,7 @@ angular.module('nha', [
         };
     }])
 
-    .directive('focusOnShow', function($timeout) {
+    .directive('focusOnShow', function ($timeout) {
         return {
             restrict: 'A',
             link: function($scope, $element, $attr) {
@@ -97,7 +97,7 @@ angular.module('nha', [
         };
     })
 
-    .directive('focusToMe', function($timeout) {
+    .directive('focusToMe', function ($timeout) {
         return {
             restrict: 'A',
             compile: function() {
@@ -132,7 +132,7 @@ angular.module('nha', [
         };
     }])
 
-    .directive('fixedHeader', function fixedHeader($timeout) {
+    .directive('fixedHeader', function fixedHeader ($timeout) {
         return {
             restrict: 'A',
             link: function link($scope, $elem, $attrs, $ctrl) {
@@ -203,10 +203,31 @@ angular.module('nha', [
         };
     })
 
+    // Disables up/down arrow keys and scrolling in number inputs
+    .directive('disableNumberChange', function () {
+        function disableArrows(event) {
+            if (event.keyCode === 38 || event.keyCode === 40) {
+                event.preventDefault();
+            }
+        }
+        
+        function disableScroll(event) {
+            event.preventDefault();
+        }
+        
+        return {
+            link: function(scope, element) {
+                element.on('keydown', disableArrows);
+                element.on('wheel', disableScroll);
+            }
+        };
+    })
+    
     .run(function (Idle) {
         // start watching when the app runs. also starts the Keepalive service by default.
         Idle.watch();
     })
+    
     .controller('AppCtrl', function AppCtrl($http, $scope, $location, diagnosisService, httpService, $window) {
         $scope.events = [];
 

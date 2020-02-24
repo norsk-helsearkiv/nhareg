@@ -1,7 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.user;
 
 import no.arkivverket.helsearkiv.nhareg.auth.Roles;
-import no.arkivverket.helsearkiv.nhareg.configuration.ConfigurationDAO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.RoleDTO;
 import no.arkivverket.helsearkiv.nhareg.domene.auth.dto.UserDTO;
 
@@ -22,9 +21,6 @@ public class UserResource {
 
     @Resource
     private SessionContext sessionContext;
-
-    @Inject
-    private ConfigurationDAO configurationDAO;
 
     @Inject
     private UserServiceInterface userService;
@@ -65,13 +61,6 @@ public class UserResource {
     @Path("/bruker")
     public String getUser() {
         return sessionContext.getCallerPrincipal().getName();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/century")
-    public String getCentury() {
-        return configurationDAO.getValue(ConfigurationDAO.CONFIG_CENTURY);
     }
 
     @GET
