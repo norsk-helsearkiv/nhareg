@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateConverter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ArchiveAuthorAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.MedicalRecordAdapter;
 
 import javax.persistence.*;
@@ -53,7 +54,7 @@ public class Transfer implements Serializable {
 
     @XmlElement(name = "avlxmlversjon")
     @Transient
-    private String xmlVersion = "2.16.578.1.39.100.11.2.2";
+    private final String xmlVersion = "2.16.578.1.39.100.11.2.2";
 
     @NotNull
     @XmlElement(name = "avleveringsidentifikator")
@@ -73,6 +74,7 @@ public class Transfer implements Serializable {
     private Agreement agreement;
 
     @XmlElement(name = "arkivskaper")
+    @XmlJavaTypeAdapter(value = ArchiveAuthorAdapter.class)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "arkivskaper_uuid", referencedColumnName = "uuid")
     private ArchiveAuthor archiveAuthor;
@@ -95,7 +97,7 @@ public class Transfer implements Serializable {
     @Embedded
     private UpdateInfo updateInfo;
 
-    @XmlElement
+    @XmlElement(name = "generertdato")
     @Convert(converter = LocalDateConverter.class)
     @Transient
     private LocalDate dateGenerated = LocalDate.now();
