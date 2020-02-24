@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -199,6 +200,17 @@ public class MedicalRecord implements Serializable {
 
     public Set<StorageUnit> getStorageUnits() {
         return storageUnits == null ? storageUnits = new HashSet<>() : storageUnits;
+    }
+
+    @XmlElement(name = "lagringsenhet")
+    public Set<String> getStorageUnitXML() {
+        if (storageUnits == null) {
+            return Collections.singleton("");
+        }
+        
+        return storageUnits.stream()
+                           .map(unit -> "LID:" + transfer.getTransferId() + ":" + unit.getId())
+                           .collect(Collectors.toSet()); 
     }
 
     public Set<ArchiveAuthor> getArchiveAuthors() {
