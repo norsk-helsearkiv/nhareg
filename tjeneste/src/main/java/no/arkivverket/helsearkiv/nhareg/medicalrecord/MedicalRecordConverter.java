@@ -117,8 +117,12 @@ public class MedicalRecordConverter implements MedicalRecordConverterInterface {
         medicalRecordDTO.setFirstContact(dateOrYearConverter.fromDateOrYear(firstContactDate));
         medicalRecordDTO.setLastContact(dateOrYearConverter.fromDateOrYear(lastContactDate));
         medicalRecordDTO.setDeleted(medicalRecord.getDeleted());
-        medicalRecordDTO.setTransferLocked(medicalRecord.getTransfer().isLocked());
-        medicalRecordDTO.setTransferId(medicalRecord.getTransfer().getTransferId());
+
+        final Transfer transfer = medicalRecord.getTransfer();
+        if (transfer != null) {
+            medicalRecordDTO.setTransferLocked(transfer.isLocked());
+            medicalRecordDTO.setTransferId(transfer.getTransferId());
+        }
 
         final String fanearkid = medicalRecord.getFanearkid();
         if (fanearkid != null && !fanearkid.isEmpty()) {
