@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.*;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ArchiveAuthorAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DeathDateKnownAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DiagnosisAdapter;
+import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.GenderAdapter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -16,8 +19,10 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @XmlType(
     namespace = "http://www.arkivverket.no/standarder/nha/avlxml",
@@ -25,11 +30,11 @@ import java.util.Set;
     propOrder = {
         "uuid",
         "fanearkid",
+        "archiveAuthors",
         "serialNumber",
         "recordNumber",
         "pid",
         "name",
-        "archiveAuthors",
         "born",
         "dead",
         "deathDateUnknown",
@@ -126,8 +131,7 @@ public class MedicalRecord implements Serializable {
     private DateOrYear lastContact;
 
     @Size(min = 1)
-    @XmlElement(name = "lagringsenhet")
-    @XmlJavaTypeAdapter(value = StorageUnitAdapter.class)
+    @XmlTransient
     @ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(name = "pasientjournal_lagringsenhet",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
@@ -148,6 +152,7 @@ public class MedicalRecord implements Serializable {
     @Convert(converter = LocalDateTimeConverter.class)
     private LocalDateTime createdDate;
 
+    @XmlTransient
     @Transient
     private AdditionalInfo additionalInfo;
 
@@ -185,9 +190,8 @@ public class MedicalRecord implements Serializable {
     )
     private Transfer transfer;
 
-    @XmlElement(name = "supplerendeopplysninger")
     public AdditionalInfo getAdditionalInfo() {
-        return additionalInfo == null ? new AdditionalInfo(this) : additionalInfo;
+        return additionalInfo == null ? new AdditionalInfo() : additionalInfo;
     }
  
     public Set<Diagnosis> getDiagnosis() {
@@ -196,6 +200,17 @@ public class MedicalRecord implements Serializable {
 
     public Set<StorageUnit> getStorageUnits() {
         return storageUnits == null ? storageUnits = new HashSet<>() : storageUnits;
+    }
+
+    @XmlElement(name = "lagringsenhet")
+    public Set<String> getStorageUnitXML() {
+        if (storageUnits == null) {
+            return Collections.singleton("");
+        }
+        
+        return storageUnits.stream()
+                           .map(unit -> "LID:" + transfer.getTransferId() + ":" + unit.getId())
+                           .collect(Collectors.toSet()); 
     }
 
     public Set<ArchiveAuthor> getArchiveAuthors() {
