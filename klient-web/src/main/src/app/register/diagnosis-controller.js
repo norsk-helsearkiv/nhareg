@@ -33,6 +33,7 @@ angular.module('nha.register')
 
             var codeObject = $scope.formDiagnose.diagnosekode;
             $scope.formDiagnose.diagnosekode = $scope.formDiagnose.diagnosekode.code;
+            $scope.formDiagnose.diagnosekodeverkversjon = codeObject.codeSystemVersion;
             $scope.formDiagnose.diagnosetekst = codeObject.displayName;
         };
 
@@ -60,6 +61,8 @@ angular.module('nha.register')
                         $scope.formDiagnose.diagnosetekst =
                             diagnosekoder[$scope.formDiagnose.diagnosekode][0].displayName;
                         $scope.formDiagnose.diagnosekodeverk =
+                            diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystem;
+                        $scope.formDiagnose.diagnosekodeverkversjon =
                             diagnosekoder[$scope.formDiagnose.diagnosekode][0].codeSystemVersion;
                         if (laasDiagnosetekst) {
                             $scope.diagnosetekstErSatt = true;
@@ -265,6 +268,7 @@ angular.module('nha.register')
             //TODO
             diagnose.diagnosedato = $scope.injectCentury(diagnose.diagnosedato);
             $scope.feilmeldinger = [];
+            $scope.error = {};
             httpService.update("diagnoser/" + $scope.medicalRecordDTO.uuid, diagnose)
                 .success(function () {
                     $scope.editingData[diagnose.uuid] = false;
