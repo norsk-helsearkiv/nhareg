@@ -24,13 +24,14 @@ public class DiagnosisCodeDAO extends EntityDAO<DiagnosisCode> {
         super(DiagnosisCode.class, "code");
     }
 
-    @Override
-    public DiagnosisCode fetchById(final String id) {
+    public DiagnosisCode fetchByIdAndCodeSystem(final String id, final String codeSystemVersion) {
         final String queryString = "SELECT dc "
             + "FROM DiagnosisCode dc "
-            + "WHERE dc.code = :id ";
+            + "WHERE dc.code = :id " 
+            + "AND dc.codeSystemVersion = :codeSystemVersion ";
         final TypedQuery<DiagnosisCode> query = getEntityManager().createQuery(queryString, DiagnosisCode.class);
         query.setParameter("id", id);
+        query.setParameter("codeSystemVersion", codeSystemVersion);
 
         try {
             return query.getSingleResult();

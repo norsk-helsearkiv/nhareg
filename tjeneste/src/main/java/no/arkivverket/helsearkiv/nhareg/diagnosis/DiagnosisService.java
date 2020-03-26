@@ -43,8 +43,10 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         new Validator<>(DiagnosisDTO.class).validateWithException(diagnosisDTO);
         final DateValidation dateValidator = new DateValidation();
         final List<ValidationError> errors = dateValidator.validateDiagnosis(diagnosisDTO, medicalRecord);
-        final String diagnosisCodeString = diagnosisDTO.getDiagnosisCode();
-        validateDiagnosisCode(diagnosisCodeString);
+        final String code = diagnosisDTO.getDiagnosisCode();
+        final String codeSystemVersion = diagnosisDTO.getDiagnosisCodeSystemVersion();
+
+        validateDiagnosisCode(code, codeSystemVersion);
 
         if (errors.size() > 0) {
             throw new ValidationErrorException(errors);
@@ -54,8 +56,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         diagnosisDTO.setUpdatedBy(updateInfo.getUpdatedBy());
 
         final DiagnosisCode diagnosisCode;
-        if (diagnosisCodeString != null && !diagnosisCodeString.isEmpty()) {
-             diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCodeString);
+        if (code != null && !code.isEmpty()) {
+             diagnosisCode = diagnosisCodeDAO.fetchByIdAndCodeSystem(code, codeSystemVersion);
         } else {
             diagnosisCode = null;
         }
@@ -84,12 +86,13 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         final DateValidation dateValidation = new DateValidation();
         final List<ValidationError> dateValidationList = dateValidation.validateDiagnosis(diagnosisDTO, medicalRecord);
         final String diagnosisCodeString = diagnosisDTO.getDiagnosisCode();
+        final String diagnosisCodeSystem = diagnosisDTO.getDiagnosisCodeSystem();
         
         if (dateValidationList.size() > 0) {
             diagnosisValidationList.addAll(dateValidationList);
         }
 
-        validateDiagnosisCode(diagnosisCodeString);
+        validateDiagnosisCode(diagnosisCodeString, diagnosisCodeSystem);
 
         if (diagnosisValidationList.size() != 0) {
             for (ValidationError validationError : diagnosisValidationList) {
@@ -105,7 +108,7 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         
         final DiagnosisCode diagnosisCode;
         if (diagnosisCodeString != null && !diagnosisCodeString.isEmpty()) {
-            diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCodeString);
+            diagnosisCode = diagnosisCodeDAO.fetchByIdAndCodeSystem(diagnosisCodeString, diagnosisCodeSystem);
         } else {
             diagnosisCode = null;
         }
@@ -133,9 +136,10 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         return true;
     }
 
-    private void validateDiagnosisCode(final String diagnosisCode) {
+    private void validateDiagnosisCode(final String diagnosisCode, final String diagnosisCodeSystem) {
         if (diagnosisCode != null && !diagnosisCode.isEmpty()) {
-            final DiagnosisCode existingDiagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCode);
+            final DiagnosisCode existingDiagnosisCode = 
+                diagnosisCodeDAO.fetchByIdAndCodeSystem(diagnosisCode, diagnosisCodeSystem);
 
             if (existingDiagnosisCode == null) {
                 final ArrayList<ValidationError> validationError = new ArrayList<>();
