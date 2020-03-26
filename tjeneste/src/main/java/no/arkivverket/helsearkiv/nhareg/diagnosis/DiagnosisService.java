@@ -83,12 +83,13 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         final List<ValidationError> diagnosisValidationList = new Validator<>(DiagnosisDTO.class).validate(diagnosisDTO);
         final DateValidation dateValidation = new DateValidation();
         final List<ValidationError> dateValidationList = dateValidation.validateDiagnosis(diagnosisDTO, medicalRecord);
-
+        final String diagnosisCodeString = diagnosisDTO.getDiagnosisCode();
+        
         if (dateValidationList.size() > 0) {
             diagnosisValidationList.addAll(dateValidationList);
         }
 
-        validateDiagnosisCode(diagnosisDTO.getDiagnosisCode());
+        validateDiagnosisCode(diagnosisCodeString);
 
         if (diagnosisValidationList.size() != 0) {
             for (ValidationError validationError : diagnosisValidationList) {
@@ -101,8 +102,14 @@ public class DiagnosisService implements DiagnosisServiceInterface {
             }
             throw new ValidationErrorException(diagnosisValidationList);
         }
+        
+        final DiagnosisCode diagnosisCode;
+        if (diagnosisCodeString != null && !diagnosisCodeString.isEmpty()) {
+            diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCodeString);
+        } else {
+            diagnosisCode = null;
+        }
 
-        final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisDTO.getDiagnosisCode());
         final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnosisDTO, diagnosisCode);
         diagnosis.setUpdateInfo(createUpdateInfo(username));
         diagnosisDAO.update(diagnosis);
