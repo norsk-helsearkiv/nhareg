@@ -43,7 +43,8 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         new Validator<>(DiagnosisDTO.class).validateWithException(diagnosisDTO);
         final DateValidation dateValidator = new DateValidation();
         final List<ValidationError> errors = dateValidator.validateDiagnosis(diagnosisDTO, medicalRecord);
-        validateDiagnosisCode(diagnosisDTO.getDiagnosisCode());
+        final String diagnosisCodeString = diagnosisDTO.getDiagnosisCode();
+        validateDiagnosisCode(diagnosisCodeString);
 
         if (errors.size() > 0) {
             throw new ValidationErrorException(errors);
@@ -52,7 +53,13 @@ public class DiagnosisService implements DiagnosisServiceInterface {
         final UpdateInfo updateInfo = createUpdateInfo(username);
         diagnosisDTO.setUpdatedBy(updateInfo.getUpdatedBy());
 
-        final DiagnosisCode diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisDTO.getDiagnosisCode());
+        final DiagnosisCode diagnosisCode;
+        if (diagnosisCodeString != null && !diagnosisCodeString.isEmpty()) {
+             diagnosisCode = diagnosisCodeDAO.fetchById(diagnosisCodeString);
+        } else {
+            diagnosisCode = null;
+        }
+        
         final Diagnosis diagnosis = diagnosisConverter.fromDiagnosisDTO(diagnosisDTO, diagnosisCode);
         diagnosis.setUpdateInfo(updateInfo);
         diagnosis.setUuid(UUID.randomUUID().toString());

@@ -20,20 +20,23 @@ public class DiagnosisConverter implements DiagnosisConverterInterface {
     
     @Override
     public Diagnosis fromDiagnosisDTO(final DiagnosisDTO diagnosisDTO, final DiagnosisCode diagnosisCode) {
-        if (diagnosisDTO == null || diagnosisCode == null) {
+        if (diagnosisDTO == null) {
             return null;
         }
         
         final String diagnosisDateString = diagnosisDTO.getDiagnosisDate();
         final DateOrYear diagnosisDate = dateOrYearConverter.toDateOrYear(diagnosisDateString);
+        final String code = diagnosisCode == null ? null : diagnosisCode.getCode();
+        final String codeSystem = diagnosisCode == null ? null : diagnosisCode.getCodeSystem();
+        final String codeSystemVersion = diagnosisCode == null ? null : diagnosisCode.getCodeSystemVersion();
 
         return Diagnosis.builder()
                         .uuid(diagnosisDTO.getUuid())
                         .diagnosisDate(diagnosisDate)
-                        .diagnosisCode(diagnosisCode.getCode())
+                        .diagnosisCode(code)
                         .diagnosisText(diagnosisDTO.getDiagnosisText())
-                        .diagnosisCodingSystem(diagnosisCode.getCodeSystem())
-                        .diagnosisCodingSystemVersion(diagnosisCode.getCodeSystemVersion())
+                        .diagnosisCodingSystem(codeSystem)
+                        .diagnosisCodingSystemVersion(codeSystemVersion)
                         .build();
     }
     
