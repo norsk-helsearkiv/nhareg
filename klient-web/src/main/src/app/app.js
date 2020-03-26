@@ -32,8 +32,8 @@ angular.module('nha', [
         $translateProvider.preferredLanguage('nb');
 
         IdleProvider.idle(10); //idle starts after 10 seconds.
-        IdleProvider.timeout(30 * 60); //after 30 minutes idle, time the user out
-        KeepaliveProvider.interval(30); //10 sec ping interval for keep-alive ping
+        IdleProvider.timeout(60 * 60); // after 60 minutes idle, time the user out
+        KeepaliveProvider.interval(10); // 10 sec ping interval for keep-alive ping
     })
 
     .directive('ngEnter', function () {
