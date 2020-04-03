@@ -112,7 +112,7 @@ public class TransferResource {
             xmlMapper.registerModule(new JaxbAnnotationModule());
             xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
             xmlMapper.setSerializerFactory(factory);
-            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
+            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
             xmlMapper.setDefaultUseWrapper(false);
             
             final String xmlOutput = xmlMapper.writeValueAsString(transfer);
