@@ -131,6 +131,13 @@ angular.module('nha.common.list-view', [
             $scope.navHome();
         } else {
             $scope.updatePager(1);
+            setSubtitle();
+        }
+
+        function setSubtitle() {
+            var data = listService.getData();
+            var subtitle = listService.createSubtitle(data);
+            listService.setSubtitle(subtitle);
         }
 
         $scope.setPage = function (page) {
@@ -138,7 +145,6 @@ angular.module('nha.common.list-view', [
                 return;
             }
 
-            // get pager object from service
             $scope.updatePager(page);
 
             var ordering = "";
@@ -153,10 +159,8 @@ angular.module('nha.common.list-view', [
             httpService.getAll(baseEndpointUrl + "?page=" + page + "&size=" +
                 $scope.pager.pageSize + listService.getQuery() + ordering)
                 .then(function (response) {
-                    var data = listService.getData();
-                    var subtitle = listService.createSubtitle(data);
-                    listService.setSubtitle(subtitle);
                     listService.setData(response.data);
+                    setSubtitle();
                 }, function (response) {
                     errorService.errorCode(response.status);
                 });
