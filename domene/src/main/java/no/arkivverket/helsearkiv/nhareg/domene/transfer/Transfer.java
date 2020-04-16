@@ -54,7 +54,7 @@ public class Transfer implements Serializable {
 
     @XmlElement(name = "avlxmlversjon")
     @Transient
-    private final String xmlVersion = "2.16.578.1.39.100.11.2.2";
+    private final String xmlVersion = "2.16.578.1.39.100.11.2.3";
 
     @NotNull
     @XmlElement(name = "avleveringsidentifikator")

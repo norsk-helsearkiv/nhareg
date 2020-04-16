@@ -35,7 +35,7 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
         LocalDateTime.class,
         String.class
     );
-    
+
     /**
      * Assigns NullSerializer for different classes. Lets us handle null values when marshalling XML based on the 
      * type of class that is being marshalled.
@@ -46,9 +46,10 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
                                                      final List<BeanPropertyWriter> beanProperties) {
         // Fixes XML attributes
         super.changeProperties(config, beanDesc, beanProperties);
-        
+
         for (BeanPropertyWriter propertyWriter : beanProperties) {
             final JavaType javaType  = propertyWriter.getType();
+            boolean inEmptyClasses = false;
 
             // All the classes in EMPTY_CLASSES are assigned a serializer which prints an empty string.
             for (Class c: EMPTY_CLASSES) {
@@ -56,20 +57,25 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
                     if ("sikkermors".equals(propertyWriter.getName())) {
                         // Special case where null should write 1.
                         propertyWriter.assignNullSerializer(DeathDateSerializer.INSTANCE);
+                    } else if ("diagnosekodeverk".equals(propertyWriter.getName())) {
+                        propertyWriter.assignNullSerializer(DiagnosisCodeSystemSerializer.INSTANCE);
                     } else {
                         propertyWriter.assignNullSerializer(NullStringSerializer.INSTANCE);
                     }
+                    inEmptyClasses = true;
                     break;
                 }
             }
 
-            // All the classes in CLASSES, or subclasses of them, are assigned a generic serializer which calls an empty constructor on the class.
-            for (Class c : CLASSES) {
-                if (javaType.isTypeOrSubTypeOf(c)) {
-                    final ObjectSerializer serializer = new ObjectSerializer();
-                    serializer.settClass(c);
-                    propertyWriter.assignNullSerializer(serializer);
-                    break;
+            if (!inEmptyClasses) {
+                // All the classes in CLASSES, or subclasses of them, are assigned a generic serializer which calls an empty constructor on the class.
+                for (Class c : CLASSES) {
+                    if (javaType.isTypeOrSubTypeOf(c)) {
+                        final ObjectSerializer serializer = new ObjectSerializer();
+                        serializer.settClass(c);
+                        propertyWriter.assignNullSerializer(serializer);
+                        break;
+                    }
                 }
             }
         }
