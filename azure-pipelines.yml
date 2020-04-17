@@ -71,6 +71,16 @@ stages:
         jdkArchitectureOption: 'x64'
         publishJUnitResults: false
         goals: verify
+    - task: CopyFiles@2
+      inputs:
+        flattenFolders: true
+        SourceFolder: '.'
+        Contents: '**/*.war'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'warArtifact'
 ### Package ###
 - stage: Package
   dependsOn: Build
