@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class DiagnosisCodeSystemSerializer extends JsonSerializer<Object> {
 
-    static final JsonSerializer<Object> INSTANCE = new no.arkivverket.helsearkiv.nhareg.domene.xml.DiagnosisCodeSystemSerializer();
+    static final JsonSerializer<Object> INSTANCE = new DiagnosisCodeSystemSerializer();
 
     @Override
     public void serialize(final Object value, final JsonGenerator gen, final SerializerProvider serializers)

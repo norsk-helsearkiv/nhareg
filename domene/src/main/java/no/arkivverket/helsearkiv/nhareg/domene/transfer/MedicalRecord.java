@@ -8,7 +8,6 @@ import no.arkivverket.helsearkiv.nhareg.domene.additionalinfo.AdditionalInfo;
 import no.arkivverket.helsearkiv.nhareg.domene.converter.LocalDateTimeConverter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.ArchiveAuthorAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DeathDateKnownAdapter;
-import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.DiagnosisAdapter;
 import no.arkivverket.helsearkiv.nhareg.domene.xml.adapter.GenderAdapter;
 
 import javax.persistence.*;
@@ -157,7 +156,6 @@ public class MedicalRecord implements Serializable {
     private AdditionalInfo additionalInfo;
 
     @XmlElement(name = "diagnose")
-    @XmlJavaTypeAdapter(value = DiagnosisAdapter.class)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "pasientjournal_diagnose",
         joinColumns = @JoinColumn(name = "Pasientjournal_uuid"),
