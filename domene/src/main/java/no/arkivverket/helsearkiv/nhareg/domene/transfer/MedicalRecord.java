@@ -1,5 +1,6 @@
 package no.arkivverket.helsearkiv.nhareg.domene.transfer;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -106,6 +107,7 @@ public class MedicalRecord implements Serializable {
     @Column(name = "fodtdatoUkjent")
     private Boolean bornDateUnknown;
 
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     @XmlElement(name = "morsdato")
     @Embedded
     @AttributeOverrides({

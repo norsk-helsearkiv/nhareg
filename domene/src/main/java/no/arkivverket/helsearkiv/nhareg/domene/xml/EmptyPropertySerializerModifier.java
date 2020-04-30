@@ -54,11 +54,14 @@ public class EmptyPropertySerializerModifier extends XmlBeanSerializerModifier {
             // All the classes in EMPTY_CLASSES are assigned a serializer which prints an empty string.
             for (Class c: EMPTY_CLASSES) {
                 if (javaType.isTypeOrSubTypeOf(c)) {
-                    if ("sikkermors".equals(propertyWriter.getName())) {
+                    final String propertyName = propertyWriter.getName();
+                    if ("sikkermors".equals(propertyName)) {
                         // Special case where null should write 1.
                         propertyWriter.assignNullSerializer(DeathDateSerializer.INSTANCE);
-                    } else if ("diagnosekodeverk".equals(propertyWriter.getName())) {
+                    } else if ("diagnosekodeverk".equals(propertyName)) {
                         propertyWriter.assignNullSerializer(DiagnosisCodeSystemSerializer.INSTANCE);
+                    } else if ("morsdato".equals(propertyName)) {
+                        propertyWriter.assignNullSerializer(null);
                     } else {
                         propertyWriter.assignNullSerializer(NullStringSerializer.INSTANCE);
                     }
