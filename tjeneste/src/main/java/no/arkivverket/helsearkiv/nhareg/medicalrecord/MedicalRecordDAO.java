@@ -63,7 +63,7 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         final CriteriaQuery<Transfer> criteriaQuery = criteriaBuilder.createQuery(Transfer.class);
         final Root<Transfer> root = criteriaQuery.from(Transfer.class);
         final Join<Transfer, MedicalRecord> recordJoin = root.join("medicalRecords");
-        final Join<MedicalRecord, StorageUnit> unitJoin = recordJoin.join("storageUnits");
+        final Join<MedicalRecord, StorageUnit> unitJoin = recordJoin.join("storageUnits", JoinType.LEFT);
         final String orderBy = queryParameters.remove("orderBy");
         final String direction = queryParameters.remove("sortDirection");
 
@@ -72,7 +72,9 @@ public class MedicalRecordDAO extends EntityDAO<MedicalRecord> {
         // Set all the predicates based on query parameters
         createPredicates(queryParameters, criteriaBuilder, root, recordJoin, unitJoin, predicates);
 
-        final Predicate deleted = criteriaBuilder.isNull(((Path) recordJoin).get("deleted"));
+        // Adds predicate to filter out deleted medical records.
+        final Path deletedPath = ((Path) recordJoin).get("deleted");
+        final Predicate deleted = criteriaBuilder.isNull(deletedPath);
         predicates.add(deleted);
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
         criteriaQuery.distinct(true);
