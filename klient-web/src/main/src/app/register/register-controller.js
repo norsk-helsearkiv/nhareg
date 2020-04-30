@@ -37,12 +37,12 @@ angular.module('nha.register', [
         });
     })
 
-    .controller('RegisterCtrl', function HomeController($scope, $location, $filter, httpService, errorService,
+    .controller('RegisterCtrl', function HomeController($rootScope, $scope, $location, $filter, httpService, errorService,
                                                         registerService, diagnosisService, hotkeys, modalService,
                                                         $window, $controller) {
 
         //Util
-        $scope.navHome = function () {
+        $scope.navBack = function () {
             history.back();
         };
 
@@ -430,7 +430,7 @@ angular.module('nha.register', [
             }
         } else {
             //Ingen verdier er satt, naviger til home
-            $scope.navHome();
+            $rootScope.navHome();
         }
 
         //Nullstiller diagnose skjema

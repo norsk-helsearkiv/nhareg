@@ -20,7 +20,7 @@ angular.module('nha.home')
     $scope.sortColumn = null;
     $scope.sok = stateService.sokState;
 
-    $scope.actionCleanSearch = function () {
+    $rootScope.actionCleanSearch = function () {
       $scope.sok.lagringsenhet = '';
       $scope.sok.fanearkId = '';
       $scope.sok.fodselsnummer = '';

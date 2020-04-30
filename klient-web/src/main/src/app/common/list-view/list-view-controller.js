@@ -88,14 +88,6 @@ angular.module('nha.common.list-view', [
             }
         );
 
-        $scope.navHome = function () {
-            $location.path('/');
-        };
-
-        // $scope.navLoggut = function () {
-        //   $location.path('/login');
-        // };
-
         $scope.actionSort = function (column, sortDirection) {
             $scope.sortDirection = sortDirection ? "asc" : "desc";
             $scope.sortColumn = column;
@@ -128,7 +120,7 @@ angular.module('nha.common.list-view', [
         });
 
         if (listService.getData() === undefined) {
-            $scope.navHome();
+            $rootScope.navHome();
         } else {
             $scope.updatePager(1);
             setSubtitle();

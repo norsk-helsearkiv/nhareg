@@ -400,6 +400,11 @@ angular.module('nha.home', [
       };
 
       //Util
+      $rootScope.navHome = function () {
+          $rootScope.actionCleanSearch();
+          $location.path('/');
+      };
+
       $scope.loggUt = function () {
           httpService.logout();
           $window.location = "logout";
